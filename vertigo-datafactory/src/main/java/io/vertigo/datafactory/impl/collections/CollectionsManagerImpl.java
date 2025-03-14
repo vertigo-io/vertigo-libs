@@ -17,11 +17,13 @@
  */
 package io.vertigo.datafactory.impl.collections;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -45,10 +47,11 @@ import io.vertigo.datamodel.smarttype.SmartTypeManager;
 
 /**
  * Implémentation du gestionnaire de la manipulation des collections.
- *
- * @author  pchretien
+ * Support facet multiselectionnable dans facetList()
+ * @author pchretien
  */
 public final class CollectionsManagerImpl implements CollectionsManager {
+
 	private final Optional<IndexPlugin> indexPluginOpt;
 
 	private final FacetFactory facetFactory;
@@ -77,11 +80,35 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 		//1- on applique les filtres
 		final DtList<R> resultDtList;
 		final DtList<R> filteredDtList = dtList.stream()
-				.filter(filter(facetedQuery))
+				.filter(filter(facetedQuery, Optional.empty()))
 				.collect(VCollectors.toDtList(dtList.getDefinition()));
 
 		//2- on facette
 		final List<Facet> facets = facetFactory.createFacets(facetedQuery.getDefinition(), filteredDtList);
+
+		//2-a On recalcul les facets multi
+		final List<FacetDefinition> multiFacetDefinitions = facetedQuery.getDefinition().getFacetDefinitions()
+				.stream().filter(FacetDefinition::isMultiSelectable).collect(Collectors.toList());
+
+		final List<Facet> multiFacets = new ArrayList<>();
+		for (final FacetDefinition multiFacetDefinition : multiFacetDefinitions) {
+			final DtList<R> filteredDtListMulti = dtList.stream()
+					.filter(filter(facetedQuery, Optional.of(multiFacetDefinition)))
+					.collect(VCollectors.toDtList(dtList.getDefinition()));
+			multiFacets.add(facetFactory.createFacet(multiFacetDefinition, filteredDtListMulti));
+		}
+
+		//On prend le mix entre les facets simples et les facettes multiples
+		final List<Facet> finalFacets = new ArrayList<>();
+		for (final Facet facet : facets) {
+			final String facetName = facet.getDefinition().getName();
+			final Optional<Facet> multiFacet = multiFacets.stream().filter(o -> o.getDefinition().getName().equals(facetName)).findFirst();
+			if (multiFacet.isPresent()) {
+				finalFacets.add(multiFacet.get());
+			} else {
+				finalFacets.add(facet);
+			}
+		}
 
 		//2a- cluster definition
 		//2b- cluster result
@@ -102,7 +129,7 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 				Optional.of(facetedQuery),
 				filteredDtList.size(),
 				resultDtList, //empty if clustering
-				facets,
+				finalFacets,
 				clusterFacetDefinition,
 				resultCluster,
 				highlights,
@@ -112,11 +139,12 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 	//=========================================================================
 	//=======================Filtrage==========================================
 	//=========================================================================
-	private <D extends DataObject> Predicate<D> filter(final FacetedQuery facetedQuery) {
+	private <D extends DataObject> Predicate<D> filter(final FacetedQuery facetedQuery, final Optional<FacetDefinition> facetDefinitionExcluded) {
 		final SelectedFacetValues selectedFacetValues = facetedQuery.getSelectedFacetValues();
 		Predicate<D> predicate = list -> true;
 		for (final FacetDefinition facetDefinition : facetedQuery.getDefinition().getFacetDefinitions()) {
-			if (!selectedFacetValues.getFacetValues(facetDefinition.getName()).isEmpty()) {
+			if (!selectedFacetValues.getFacetValues(facetDefinition.getName()).isEmpty()
+					&& !(facetDefinitionExcluded.isPresent() && facetDefinitionExcluded.get().getName().equals(facetDefinition.getName()))) {
 				Predicate<D> predicateValue = list -> false;
 				for (final FacetValue facetValue : selectedFacetValues.getFacetValues(facetDefinition.getName())) {
 					predicateValue = predicateValue.or(this.filter(facetValue.listFilter()));

@@ -46,6 +46,7 @@ import io.vertigo.datamodel.smarttype.SmartTypeManager;
  * @author pchretien, npiedeloup
  */
 public final class FacetFactory {
+
 	private final CollectionsManager collectionManager;
 	private final SmartTypeManager smartTypeManager;
 
@@ -108,7 +109,7 @@ public final class FacetFactory {
 				.collect(VCollectors.toDtList(fullDtList.getDefinition()));
 	}
 
-	private Facet createFacet(final FacetDefinition facetDefinition, final DtList<?> dtList) {
+	public Facet createFacet(final FacetDefinition facetDefinition, final DtList<?> dtList) {
 		if (facetDefinition.isRangeFacet()) {
 			//Cas des facettes par 'range'
 			return createRangeFacet(facetDefinition, dtList);
@@ -184,6 +185,7 @@ public final class FacetFactory {
 	}
 
 	private static final class FacetComparator<O extends DataObject> implements Comparator<FacetValue>, Serializable {
+
 		private static final long serialVersionUID = 6149508435834977887L;
 		private final Map<FacetValue, DtList<O>> clusterValues;
 
