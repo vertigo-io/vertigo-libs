@@ -47,6 +47,7 @@ public final class RateLimitingManagerImpl implements RateLimitingManager {
 	private static final String HEADER_RATE_LIMIT_LIMIT = "X-Rate-Limit-Limit"; //the rate limit ceiling for that given request
 	private static final String HEADER_RATE_LIMIT_REMAINING = "X-Rate-Limit-Remaining"; //the number of requests left for the M minute window
 	private static final String HEADER_RATE_LIMIT_RESET = "X-Rate-Limit-Reset"; //the remaining seconds before the rate limit resets
+	private static final Set<String> USER_EXCLUDED_IPS = Set.of("127.0.0.1"); //some IP can't be use as user IP
 
 	public static final int DEFAULT_WINDOW_SECONDS = 5 * 60; //the time windows use to limit calls rate
 	private static final long DEFAULT_MAX_REQUESTS_VALUE = 150; //the rate limit ceiling value
@@ -71,6 +72,7 @@ public final class RateLimitingManagerImpl implements RateLimitingManager {
 	private final boolean insertHeaders;
 
 	private final boolean useForwardedFor; //use x-forwarded-for
+	private final Optional<String> useHeaderUserIp; //use specific header as True-Client-Ip
 	private final boolean useUserIp; //use user IP or else session id
 
 	private final int errorCode; //503:SC_SERVICE_UNAVAILABLE, 429:TOO_MANY_REQUESTS
@@ -95,6 +97,7 @@ public final class RateLimitingManagerImpl implements RateLimitingManager {
 			@ParamValue("overRateLimitMode") final Optional<String> overRateLimitMode,
 			@ParamValue("insertHeaders") final Optional<Boolean> insertHeaders,
 			@ParamValue("useForwardedFor") final Optional<Boolean> useForwardedFor,
+			@ParamValue("useHeaderUserIp") final Optional<String> useHeaderUserIp,
 			@ParamValue("useUserIp") final Optional<Boolean> useUserIp,
 			@ParamValue("logEveryXRequests") final Optional<Integer> logEveryXRequests,
 			@ParamValue("banishSeconds") final Optional<Long> banishSeconds,
@@ -124,6 +127,7 @@ public final class RateLimitingManagerImpl implements RateLimitingManager {
 
 		this.insertHeaders = insertHeaders.orElse(true);
 		this.useForwardedFor = useForwardedFor.orElse(false); //use x-forwarded-for
+		this.useHeaderUserIp = useHeaderUserIp; //use specific header as True-Client-Ip
 		this.useUserIp = useUserIp.orElse(true); //use user Ip, or else session id
 
 		this.logEveryXRequests = logEveryXRequests.orElse(DEFAULT_LOG_EVERY_X_REQUEST); //limit how many logs
@@ -291,19 +295,39 @@ public final class RateLimitingManagerImpl implements RateLimitingManager {
 	}
 
 	private Optional<String> obtainUserIp(final HttpServletRequest request) {
+		if (useHeaderUserIp.isPresent()) {
+			final var userIp = obtainUserIpFromHeader(request, useHeaderUserIp.get()); //if no useHeaderUserIp : use X-Forwarded-For or remoteAddr
+			if (userIp != null) {//userIp is null if header not found
+				return userIp;
+			}
+			//if no useHeaderUserIp : use X-Forwarded-For or remoteAddr
+		}
 		if (useForwardedFor) {
-			final var ipEnumeration = request.getHeaders("X-Forwarded-For");
-			if (ipEnumeration != null) {
-				if (ipEnumeration.hasMoreElements()) {
-					return Optional.of(ipEnumeration.nextElement().trim());
-				}
-			} //if no X-Forwarded-For : use remoteAddr
+			final var userIp = obtainUserIpFromHeader(request, "X-Forwarded-For"); //if no useHeaderUserIp : use X-Forwarded-For or remoteAddr
+			if (userIp != null) {//userIp is null if header not found
+				return userIp;
+			}
+			//if no X-Forwarded-For : use remoteAddr
 		}
 		final var remoteAddr = request.getRemoteAddr();
 		if (remoteAddr != null && !remoteAddr.isBlank()) {
 			return Optional.of(remoteAddr);
 		}
 		return Optional.empty();
+	}
+
+	private Optional<String> obtainUserIpFromHeader(final HttpServletRequest request, final String headerName) {
+		final var ipEnumeration = request.getHeaders(headerName);
+		if (ipEnumeration != null) {
+			while (ipEnumeration.hasMoreElements()) {
+				final var useHeaderUserIp = ipEnumeration.nextElement().trim();
+				if (USER_EXCLUDED_IPS.contains(useHeaderUserIp)) {
+					continue;
+				}
+				return Optional.of(useHeaderUserIp);
+			}
+		}
+		return null;//header not found
 	}
 
 	private Optional<String> obtainSessionId(final HttpServletRequest request) {
