@@ -79,7 +79,7 @@ public final class EncoderDate {
 	}
 
 	/**
-	 *  Cycles through patterns to try and parse given String into a Date | LocalDate | Instant
+	 * Cycles through patterns to try and parse given String into a Date | LocalDate | Instant
 	 */
 	private static <T> T applyStringToObject(final String dateString, final Function<String, T> fun) throws FormatterException {
 		//StringToDate renvoit null si elle n'a pas réussi à convertir la date
