@@ -16,6 +16,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Log Exceptions handler. Log WebService Requests returning server errors (5XX).
+ * Body log is only available at TRACE level.
  * @author xdurand
  */
 public final class LogExceptionsHandlerPlugin implements WebServiceHandlerPlugin {
@@ -45,8 +46,14 @@ public final class LogExceptionsHandlerPlugin implements WebServiceHandlerPlugin
 					.map(wsp -> wsp.getName() + "=" + routeContext.getPathParam(wsp))
 					.collect(Collectors.joining(","));
 
-			LOGGER.error("Error [{}] for Route [{}] [{}] [{}] Body: {} ", response.getStatus(), routeContext.getWebServiceDefinition().getVerb(),
-					routeContext.getWebServiceDefinition().getPath(), pathValues, routeContext.getBody());
+			if (LOGGER.isTraceEnabled()) {
+				LOGGER.error("Error [{}] for Route [{}] [{}] [{}] Body: {} ", response.getStatus(), routeContext.getWebServiceDefinition().getVerb(),
+						routeContext.getWebServiceDefinition().getPath(), pathValues, routeContext.getBody());
+			} else {
+				LOGGER.error("Error [{}] for Route [{}] [{}] [{}]", response.getStatus(), routeContext.getWebServiceDefinition().getVerb(),
+						routeContext.getWebServiceDefinition().getPath(), pathValues);
+			}
+
 		}
 		return ret;
 	}
