@@ -316,7 +316,7 @@ public final class RateLimitingManagerImpl implements RateLimitingManager {
 		return Optional.empty();
 	}
 
-	private Optional<String> obtainUserIpFromHeader(final HttpServletRequest request, final String headerName) {
+	private static Optional<String> obtainUserIpFromHeader(final HttpServletRequest request, final String headerName) {
 		final var ipEnumeration = request.getHeaders(headerName);
 		if (ipEnumeration != null) {
 			while (ipEnumeration.hasMoreElements()) {
@@ -330,7 +330,7 @@ public final class RateLimitingManagerImpl implements RateLimitingManager {
 		return null;//header not found
 	}
 
-	private Optional<String> obtainSessionId(final HttpServletRequest request) {
+	private static Optional<String> obtainSessionId(final HttpServletRequest request) {
 		final var session = request.getSession(false);
 		if (session != null && !session.isNew()) {
 			return Optional.of(session.getId());
