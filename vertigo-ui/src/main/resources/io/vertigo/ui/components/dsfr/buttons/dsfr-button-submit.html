@@ -9,15 +9,14 @@
                     th:title="${vTitle==null ? (title?:'') : ''}"
                     th::title="${vTitle?:''}"
                     th:formaction="${action}"
-                    th:@click="${myLoading}?|if (this.$el.form.checkValidity()) pushPendingAction('${action}')|:''"
+                    th:@click="${myLoading}?| (event) => { if (isPendingAction()) { event.preventDefault() } else if (event.target.closest('form').checkValidity()) { pushPendingAction('${action}')} }|:''"
                     type="submit"
                     th::disabled="${disabled?:'('+vDisabled+')'}"
                     th::aria-disabled="${disabled?:'('+vDisabled+')'} + ' || ' + ${myLoading} + ' && isPendingAction(\'' + ${action} + '\')'"
                     th:attr="__${other_attrs}__">
             
             <span th:v-if="${myLoading}?|isPendingAction('${action}')|:false"
-                  style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; display: flex; align-items: center; justify-content: center; cursor: default;"
-                  @click.stop.prevent="">
+                  style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; display: flex; align-items: center; justify-content: center; cursor: default;">
                 <v-icon name="ri-loader-4-line" animation="spin" color="black" ></v-icon>
 	        </span>
             
