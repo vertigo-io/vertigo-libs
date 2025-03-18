@@ -379,8 +379,8 @@ defineExpose({ resetCurrentPage })
             <DsfrPagination
                 v-model:current-page="currentPage"
                 :pages="pages"
-                next-page-title="Précédent"
-                prev-page-title="Suivant"
+                next-page-title="Suivant"
+                prev-page-title="Précédent"
             />
           </div>
         </template>
