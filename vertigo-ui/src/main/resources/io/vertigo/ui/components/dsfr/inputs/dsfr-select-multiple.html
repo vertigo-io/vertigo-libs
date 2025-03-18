@@ -36,7 +36,7 @@
     <vu:dsfr-label-read object="${object}" field="${field}" label="${label}" label_attrs="${label_attrs}" after_label_slot="after_label_slot">
         <th:block th:if="${value!=null}" th:each="singleValue, iterStat : ${value}">
             <th:block th:attr="__${input_attrs}__"
-                      th:text="${singleValue!=null?model.vContext[__${list}__].getById('__${myValueField}__', singleValue)['__${myLabelField}__']:'is null'}"/>
+                      th:text="${singleValue!=null?(model.vContext[__${list}__].getById('__${myValueField}__', singleValue)['__${myLabelField}__'] + (!iterStat.last?', ':'')):'is null'}"/>
         </th:block>
         <span class="no-value" th:if="${value==null}" th:text="${myEmptyValue}"></span>
     </vu:dsfr-label-read>
