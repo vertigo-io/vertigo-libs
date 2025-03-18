@@ -3573,16 +3573,16 @@ const S = window.Quasar, vt = {
     }).bind(this)));
   },
   decodeDate: function(e, t) {
-    return e === S.date.formatDate(S.date.extractDate(e, "DD/MM/YYYY"), "DD/MM/YYYY") ? S.date.formatDate(S.date.extractDate(e, "DD/MM/YYYY"), t) : e;
+    return e === S.date.formatDate(S.date.extractDate(e, "YYYY-MM-DD"), "YYYY-MM-DD") ? S.date.formatDate(S.date.extractDate(e, "YYYY-MM-DD"), t) : e;
   },
   encodeDate: function(e, t) {
-    return e === S.date.formatDate(S.date.extractDate(e, t), t) ? S.date.formatDate(S.date.extractDate(e, t), "DD/MM/YYYY") : e;
+    return e === S.date.formatDate(S.date.extractDate(e, t), t) ? S.date.formatDate(S.date.extractDate(e, t), "YYYY-MM-DD") : e;
   },
   decodeDatetime: function(e, t) {
-    return e === S.date.formatDate(S.date.extractDate(e, "DD/MM/YYYY HH:mm"), "DD/MM/YYYY HH:mm") ? S.date.formatDate(S.date.extractDate(e, "DD/MM/YYYY HH:mm"), t) : e;
+    return e === S.date.formatDate(S.date.extractDate(e, "YYYY-MM-DD[T]HH:mm"), "YYYY-MM-DD[T]HH:mm") ? S.date.formatDate(S.date.extractDate(e, "YYYY-MM-DD[T]HH:mm"), t) : e;
   },
   encodeDatetime: function(e, t) {
-    return e === S.date.formatDate(S.date.extractDate(e, t), t) ? S.date.formatDate(S.date.extractDate(e, t), "DD/MM/YYYY HH:mm") : e;
+    return e === S.date.formatDate(S.date.extractDate(e, t), t) ? S.date.formatDate(S.date.extractDate(e, t), "YYYY-MM-DD[T]HH:mm") : e;
   },
   sortDatesAsString: function(e) {
     return function(t, n, a, s) {

@@ -283,8 +283,8 @@ export default {
             }.bind(this));
     },
     decodeDate: function (value, format) {
-        if (value === Quasar.date.formatDate(Quasar.date.extractDate(value, 'DD/MM/YYYY'), 'DD/MM/YYYY')) {
-            return Quasar.date.formatDate(Quasar.date.extractDate(value, 'DD/MM/YYYY'), format);
+        if (value === Quasar.date.formatDate(Quasar.date.extractDate(value, 'YYYY-MM-DD'), 'YYYY-MM-DD')) {
+            return Quasar.date.formatDate(Quasar.date.extractDate(value, 'YYYY-MM-DD'), format);
         } else {
             return value;
         }
@@ -292,15 +292,15 @@ export default {
 
     encodeDate: function (newValue, format) {
         if (newValue === Quasar.date.formatDate(Quasar.date.extractDate(newValue, format), format)) {
-            return Quasar.date.formatDate(Quasar.date.extractDate(newValue, format), 'DD/MM/YYYY');
+            return Quasar.date.formatDate(Quasar.date.extractDate(newValue, format), 'YYYY-MM-DD');
         } else {
             return newValue;
         }
     },
 
     decodeDatetime: function (value, format) {
-        if (value === Quasar.date.formatDate(Quasar.date.extractDate(value, 'DD/MM/YYYY HH:mm'), 'DD/MM/YYYY HH:mm')) {
-            return Quasar.date.formatDate(Quasar.date.extractDate(value, 'DD/MM/YYYY HH:mm'), format);
+        if (value === Quasar.date.formatDate(Quasar.date.extractDate(value, 'YYYY-MM-DD[T]HH:mm'), 'YYYY-MM-DD[T]HH:mm')) {
+            return Quasar.date.formatDate(Quasar.date.extractDate(value, 'YYYY-MM-DD[T]HH:mm'), format);
         } else {
             return value;
         }
@@ -308,7 +308,7 @@ export default {
 
     encodeDatetime: function (newValue, format) {
         if (newValue === Quasar.date.formatDate(Quasar.date.extractDate(newValue, format), format)) {
-            return Quasar.date.formatDate(Quasar.date.extractDate(newValue, format), 'DD/MM/YYYY HH:mm');
+            return Quasar.date.formatDate(Quasar.date.extractDate(newValue, format), 'YYYY-MM-DD[T]HH:mm');
         } else {
             return newValue;
         }

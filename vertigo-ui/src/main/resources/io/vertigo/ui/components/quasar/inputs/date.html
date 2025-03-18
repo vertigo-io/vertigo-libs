@@ -6,7 +6,7 @@
 	<vu:include-data object="${object}" field="${field}" modifiable="true"/>
 	<q-input 
 		th:v-bind:model-value="|decodeDate(${model.util.vueDataKey(object, field, rowIndex)}, '${myFormat}')|" 
-		th:@update:model-value="|function (newValue) { ${model.util.vueDataKey(object, field, rowIndex)} = encodeDate(newValue, '${myFormat}') }|" 
+		th:@update:model-value="|(newValue) => { ${model.util.vueDataKey(object, field, rowIndex)} = encodeDate(newValue, '${myFormat}') }|" 
 		th:label="${modifiableTable!=null?null:myLabel}"
 		stack-label
 		th:classappend="|${myRequired?'v-field_'+'_required':''}${after_label_slot!=null?' v-field_'+'_has_after_label':''}|"
