@@ -13,6 +13,9 @@ export default {
         const date = parse(value, formatDate, new Date());
         return format(date, 'yyyy-MM-dd');
     },
+    dsfrSearch: function(contextKey) {
+        return this.search(contextKey, 0);
+    },
     dsfrDecodeDateTime: function (value, formatDate) {
         if (value === "") {
             return value;

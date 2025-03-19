@@ -2,6 +2,36 @@ import * as Quasar from "quasar"
 import { sortDate } from "quasar/src/utils/private.sort/sort.js"
 import { isNumber, isDate } from "quasar/src/utils/is/is.js"
 
+let debounceFn = function (fn, wait = 250, immediate) {
+    let timer = null
+    
+    function debounced (/* ...args */) {
+        const args = arguments
+    
+        const later = () => {
+        timer = null
+        if (immediate !== true) {
+            fn.apply(this, args)
+        }
+        }
+    
+        if (timer !== null) {
+        clearTimeout(timer)
+        }
+        else if (immediate === true) {
+        fn.apply(this, args)
+        }
+    
+        timer = setTimeout(later, wait)
+    }
+    
+    debounced.cancel = () => {
+        timer !== null && clearTimeout(timer)
+    }
+    
+    return debounced
+};
+
 export default {
     onAjaxError: function (response) {
         //Quasar Notif Schema
@@ -60,6 +90,7 @@ export default {
             this.$q.notify(notif);
         }
     },
+    debounce: debounceFn,
     uiMessageStackToNotify : function(uiMessageStack) {
       if(uiMessageStack) {
         var notifyMessages = [];
@@ -364,7 +395,7 @@ export default {
         this.search(contextKey);
     },
 
-    search: Quasar.debounce(function (contextKey) {
+    search: debounceFn(function (contextKey, pageIndexReset = 1) {
         let componentStates = this.$data.componentStates;
         let vueData = this.$data.vueData;
         var selectedFacetsContextKey = contextKey + "_selectedFacets";
@@ -387,7 +418,7 @@ export default {
             onSuccess: function (response) {
                 if (componentStates[collectionComponentId].pagination) {
                     var collectionPagination = componentStates[collectionComponentId].pagination;
-                    collectionPagination.page = 1 // reset page
+                    collectionPagination.page = pageIndexReset // reset page (1 by default)
                     collectionPagination.rowsNumber = response.data.model[contextKey + '_list'].length
                 }
             }
