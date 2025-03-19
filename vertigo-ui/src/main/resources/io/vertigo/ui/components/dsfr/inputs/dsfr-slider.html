@@ -12,7 +12,6 @@
 	<dsfr-custom-range
 			th:label="${myLabel}"
 			th:required="${myRequired}"
-			th:name="|vContext[${object}][${field}]|"
 			th:v-model="${'vueData.' + object + '.' + field}"
 			th::min="${myMin}"
 			th::max="${myMax}"
@@ -21,6 +20,7 @@
 	>
 		<vu:content/>
 	</dsfr-custom-range>
+	<input type="hidden" th:name="|vContext[${object}][${field}]|" th:v-bind:value="|vueData.${object}.${field}|" />
 </th:block>
 
 <th:block th:fragment="dsfr-slider-read(object, field, label, min, max, step, required, input_attrs)"
