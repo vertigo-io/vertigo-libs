@@ -1,6 +1,7 @@
-<th:block th:fragment="dsfr-button-submit(label, icon, action, title, loading, disabled, v-disabled, other_attrs)"
+<th:block th:fragment="dsfr-button-submit(label, icon, action, title, loading, other_attrs)"
           th:assert="(${label} != null or (${icon} != null and ${title} != null)) and ${action} != null"
-          th:with="myComponentId='button'+${action}, myLoading=${loading}?:true" >
+          th:with="myComponentId='button'+${action},
+                   myLoading=${loading}?:true" >
         
         <dsfr-button style="position: relative"
                     th:icon="${icon?:''}"
@@ -11,9 +12,8 @@
                     th:formaction="${action}"
                     th:@click="${myLoading}?| (event) => { if (isPendingAction()) { event.preventDefault() } else if (event.target.closest('form').checkValidity()) { pushPendingAction('${action}')} }|:''"
                     type="submit"
-                    th::disabled="${disabled?:'('+vDisabled+')'}"
-                    th::aria-disabled="${disabled?:'('+vDisabled+')'} + ' || ' + ${myLoading} + ' && isPendingAction(\'' + ${action} + '\')'"
-                    th:attr="__${other_attrs}__">
+                    th::aria-disabled="'$refs[\'' + ${myComponentId} + '\']?.$props.disabled || ' + ${myLoading} + ' && isPendingAction(\'' + ${action} + '\')'"
+                    th:attr="ref=${myComponentId}, __${other_attrs}__">
             
             <span th:v-if="${myLoading}?|isPendingAction('${action}')|:false"
                   style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; display: flex; align-items: center; justify-content: center; cursor: default;">
