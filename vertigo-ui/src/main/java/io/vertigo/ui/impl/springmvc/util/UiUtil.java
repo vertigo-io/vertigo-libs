@@ -94,10 +94,12 @@ public final class UiUtil implements Serializable {
 	 * @return Name in context (use for input name)
 	 */
 	public static String generateComponentUID(final String component, final String object, final String field, final String row) {
-		final var prefix = component +
-				Long.toHexString(UUID.randomUUID().getLeastSignificantBits()) +
-				"_";
-		return contextGet(prefix, object, field, row, false);
+		return component
+				+ Long.toHexString(UUID.randomUUID().getLeastSignificantBits())
+				+ "_"
+				+ (object != null ? object : "") + "_"
+				+ (field != null ? field : "") + "_"
+				+ (row != null ? row : "");
 	}
 
 	/**
