@@ -1,13 +1,24 @@
-<th:block th:fragment="dsfr-button(label, icon, title, vTitle, other_attrs)"
-          th:assert="(${label} != null or (${icon} != null and (${title} != null or ${vTitle} != null)))">
+<th:block th:fragment="dsfr-button(componentId, label, icon, title, v-title, loading, v-loading, other_attrs)"
+          th:assert="(${label} != null or (${icon} != null and (${title} != null or ${vTitle} != null)))"
+          th:with="myComponentId=${componentId?:model.util.generateComponentUID('button', null, null, null)}">
 
-    <dsfr-button th:icon="${icon?:''}"
+    <dsfr-button style="position: relative"
+                th:icon="${icon?:''}"
                 th::icon-only="${label==null}"
                 th:label="${label?:''}"
                 th:title="${vTitle==null ? (title?:'') : ''}"
                 th::title="${vTitle?:''}"
-                th:attr="__${other_attrs}__">
+                th::aria-disabled="'$refs[\'' + ${myComponentId} + '\']?.$props.disabled || ' + ${loading?:vLoading?:false}"
+                th:attr="ref=${myComponentId}, __${other_attrs}__">
+        
+        <span th:if="${loading} OR ${vLoading} != null" 
+              th:v-if="${loading?:vLoading}"
+              style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; display: flex; align-items: center; justify-content: center; cursor: default;">
+            <v-icon name="ri-loader-4-line" animation="spin" color="black" ></v-icon>
+        </span>
+        
         <vu:content/>
+        
         <span class="sr-only" th:if="${label==null && vTitle==null}" vu:text="${title?:''}"></span>
         <span class="sr-only" th:if="${label==null && vTitle!=null}" th:text="|{{ ${vTitle?:''} }}|"></span>
     </dsfr-button>

@@ -3,29 +3,12 @@
           th:with="myComponentId='button'+${action},
                    myLoading=${loading}?:true" >
         
-        <dsfr-button style="position: relative"
-                    th:icon="${icon?:''}"
-                    th::icon-only="${label==null}"
-                    th:label="${label?:''}"
-                    th:title="${vTitle==null ? (title?:'') : ''}"
-                    th::title="${vTitle?:''}"
-                    th:formaction="${action}"
+    <vu:dsfr-button type="submit"
                     th:@click="${myLoading}?| (event) => { if (isPendingAction()) { event.preventDefault() } else if (event.target.closest('form').checkValidity()) { pushPendingAction('${action}')} }|:''"
-                    type="submit"
-                    th::aria-disabled="'$refs[\'' + ${myComponentId} + '\']?.$props.disabled || ' + ${myLoading} + ' && isPendingAction(\'' + ${action} + '\')'"
-                    th:attr="ref=${myComponentId}, __${other_attrs}__">
-            
-            <span th:v-if="${myLoading}?|isPendingAction('${action}')|:false"
-                  style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; display: flex; align-items: center; justify-content: center; cursor: default;">
-                <v-icon name="ri-loader-4-line" animation="spin" color="black" ></v-icon>
-	        </span>
-            
-            <vu:content/>
-            
-            <span class="sr-only" th:if="${label==null && vTitle==null}" vu:text="${title?:''}"></span>
-            <span class="sr-only" th:if="${label==null && vTitle!=null}" th:text="|{{ ${vTitle?:''} }}|"></span>
-        </dsfr-button>
-    </span>
+                    vLoading="${myLoading}?|isPendingAction('${action}')|:false"
+                    th:attr="__${other_attrs}__">
+        <vu:content/>
+    </vu:dsfr-button>
 </th:block>
 
 <th:block th:fragment="dsfr-button-submit-confirm(label, icon, action, componentId, title, loading, titleMessage, confirmMessage, labelOk, labelCancel, modal_attrs, other_attrs)"
