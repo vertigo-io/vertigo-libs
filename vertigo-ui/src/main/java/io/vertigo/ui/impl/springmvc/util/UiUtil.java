@@ -480,7 +480,7 @@ public final class UiUtil implements Serializable {
 		final var dataField = getDataField(object + "." + field);
 		final var smartTypeDefinition = dataField.smartTypeDefinition();
 		if (smartTypeDefinition.getScope().isBasicType()) {
-			return smartTypeDefinition.getBasicType().isNumber() ? field + "_fmt" : field;
+			return (smartTypeDefinition.getBasicType().isNumber() || smartTypeDefinition.getBasicType().isAboutDate()) ? field + "_fmt" : field;
 		}
 		return field;
 	}
