@@ -120,6 +120,11 @@ td p {
     height: 0;
 }
 
+.fr-table caption.fr-sr-only {
+    margin: -1px;
+    position: absolute;
+}
+
 /* */
 div.fr-menu {
     width: fit-content;
