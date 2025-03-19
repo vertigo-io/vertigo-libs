@@ -38,7 +38,6 @@ import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.datamodel.data.util.DataModelUtil;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.smarttype.definitions.FormatterException;
-import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 import io.vertigo.ui.core.encoders.EncoderDate;
 import io.vertigo.vega.engines.webservice.json.VegaUiObject;
 
@@ -83,20 +82,20 @@ public final class MapUiObject<D extends DataObject> extends VegaUiObject<D> imp
 	/** {@inheritDoc} */
 	@Override
 	public Serializable get(final Object key) {
-		final String keyFieldName = String.class.cast(key);
+		final var keyFieldName = String.class.cast(key);
 		Assertion.check()
 				.isNotBlank(keyFieldName)
 				.isTrue(Character.isLowerCase(keyFieldName.charAt(0)) && !keyFieldName.contains("_"), "Le nom du champs doit-être en camelCase ({0}).", keyFieldName);
 		//-----
-		final DataField dtField = getDataField(keyFieldName);
+		final var dtField = getDataField(keyFieldName);
 		if (dtField.cardinality().hasMany()) {
 			return getInputValue(keyFieldName);
 		}
 		if (isMultiple(dtField)) {
-			final String strValue = getSingleInputValue(keyFieldName);
+			final var strValue = getSingleInputValue(keyFieldName);
 			return parseMultipleValue(strValue);
 		} else if (isBoolean(dtField)) {
-			final Boolean value = getTypedValue(keyFieldName, Boolean.class);
+			final var value = getTypedValue(keyFieldName, Boolean.class);
 			return value != null ? String.valueOf(value) : null;
 		} else {
 			return getSingleInputValue(keyFieldName);
@@ -113,7 +112,7 @@ public final class MapUiObject<D extends DataObject> extends VegaUiObject<D> imp
 		//----
 		viewContextUpdateSecurity.assertIsUpdatable(getInputKey(), fieldName);
 		//----
-		final DataField dtField = getDataField(fieldName);
+		final var dtField = getDataField(fieldName);
 		if (dtField.cardinality().hasMany()) {
 			if (value instanceof String[]) {
 				if (isBlank((String[]) value)) {
@@ -137,8 +136,8 @@ public final class MapUiObject<D extends DataObject> extends VegaUiObject<D> imp
 			} else if (isAboutDate(dtField)) {
 				strValue = requestParameterToString(value);
 				try {
-					final SmartTypeManager smartTypeManager = Node.getNode().getComponentSpace().resolve(SmartTypeManager.class);
-					final Object typedValue = EncoderDate.stringToValue(strValue, dtField.smartTypeDefinition().getBasicType());
+					final var smartTypeManager = Node.getNode().getComponentSpace().resolve(SmartTypeManager.class);
+					final var typedValue = EncoderDate.stringToValue(strValue, dtField.smartTypeDefinition().getBasicType());
 					strValue = smartTypeManager.valueToString(dtField.smartTypeDefinition(), typedValue);// we fall back in the normal case if everything is right -> go to formatter
 				} catch (final FormatterException e) {
 					// do nothing we keep the input value
@@ -278,7 +277,7 @@ public final class MapUiObject<D extends DataObject> extends VegaUiObject<D> imp
 			filterSet.remove("*");
 			filterSet.addAll(fieldIndex);
 		}
-		final HashMap<String, Serializable> mapForClient = new HashMap<>(filterSet.size());
+		final var mapForClient = new HashMap<String, Serializable>(filterSet.size());
 		filterSet
 				.forEach(key -> mapForClient.put(key, getValueForClient(key, valueTransformers.get(key))));
 		return mapForClient;
@@ -286,9 +285,9 @@ public final class MapUiObject<D extends DataObject> extends VegaUiObject<D> imp
 	}
 
 	private Serializable getValueForClient(final String fieldKey, final Function<Serializable, String> valueTransformer) {
-		final boolean hasFormatModifier = fieldKey.endsWith("_fmt");
+		final var hasFormatModifier = fieldKey.endsWith("_fmt");
 		final String fieldName;
-		final int firstUnderscoreIndex = fieldKey.indexOf('_');
+		final var firstUnderscoreIndex = fieldKey.indexOf('_');
 		if (firstUnderscoreIndex > 0) {
 			//we have a modifier
 			fieldName = fieldKey.substring(0, firstUnderscoreIndex);
@@ -311,19 +310,19 @@ public final class MapUiObject<D extends DataObject> extends VegaUiObject<D> imp
 	}
 
 	private Serializable getEncodedValue(final String key) {
-		final String keyFieldName = String.class.cast(key);
+		final var keyFieldName = String.class.cast(key);
 		Assertion.check()
 				.isNotBlank(keyFieldName)
 				.isTrue(Character.isLowerCase(keyFieldName.charAt(0)) && !keyFieldName.contains("_"), "Le nom du champs doit-être en camelCase ({0}).", keyFieldName);
 		//---
-		final DataField dtField = getDataField(keyFieldName);
-		final SmartTypeDefinition smartType = dtField.smartTypeDefinition();
+		final var dtField = getDataField(keyFieldName);
+		final var smartType = dtField.smartTypeDefinition();
 		if (smartType.getScope().isBasicType()) {
 			if (isAboutDate(dtField)) {
-				final Serializable value = getTypedValue(keyFieldName, Serializable.class);
+				final var value = getTypedValue(keyFieldName, Serializable.class);
 				return EncoderDate.valueToString(value, dtField.smartTypeDefinition().getBasicType());// encodeValue
 			} else if (isMultiple(dtField)) {
-				final String value = getTypedValue(keyFieldName, String.class);
+				final var value = getTypedValue(keyFieldName, String.class);
 				return parseMultipleValue(value);
 			}
 		}
@@ -331,9 +330,9 @@ public final class MapUiObject<D extends DataObject> extends VegaUiObject<D> imp
 	}
 
 	private String getFormattedValue(final String keyFieldName) {
-		final SmartTypeManager smartTypeManager = Node.getNode().getComponentSpace().resolve(SmartTypeManager.class);
-		final DataField dtField = getDataField(keyFieldName);
-		final Serializable typedValue = getEncodedValue(keyFieldName);
+		final var smartTypeManager = Node.getNode().getComponentSpace().resolve(SmartTypeManager.class);
+		final var dtField = getDataField(keyFieldName);
+		final var typedValue = getTypedValue(keyFieldName);
 		return typedValue != null ? smartTypeManager.valueToString(dtField.smartTypeDefinition(), typedValue) : null;
 	}
 
