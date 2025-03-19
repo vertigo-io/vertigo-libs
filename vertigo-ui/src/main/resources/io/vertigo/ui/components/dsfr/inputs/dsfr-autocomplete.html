@@ -35,16 +35,15 @@
     </th:block>
 
     <autocomplete th:@vue:mounted="|() => {
-                               let res = dsfrLoadAutocompleteById('${list}', '${myValueField}', '${myLabelField}', '${myComponentId}', '${myInputUrl}','${object}','${field}', ${rowIndex});
 			                   $watch(function() {return ${model.util.vueDataKey(object, field, rowIndex)} }, (newValue, oldValue) => {
 			                        dsfrLoadAutocompleteById('${list}', '${myValueField}', '${myLabelField}', '${myComponentId}', '${myInputUrl}','${object}','${field}', ${rowIndex});
 			                   })
+			                   if (${model.util.vueDataKey(object, field, rowIndex)} !== null) { dsfrLoadAutocompleteById('${list}', '${myValueField}', '${myLabelField}', '${myComponentId}', '${myInputUrl}','${object}','${field}', ${rowIndex}) }
 			               }|"
                   th::search="|(val) => { return dsfrSearchAutocomplete('${list}', '${myValueField}', '${myLabelField}', '${myComponentId}', '${myFilterUrl}', ${myMinQueryLength}, val)
                                                     .then((res) => { componentStates.__${myComponentId}__.noResult = res.length === 0; componentStates.__${myComponentId}__.options = res; return res })
                                         }|"
                   th::get-result-value="|(res) => { __${model.util.vueDataKey(object, field, rowIndex)}__ = res.value; return res.label } |"
-                  :auto-select="true"
                   :debounce-time="200"
                   th:ref="${myComponentId}"
                   th:attr="__${input_attrs}__"
@@ -76,9 +75,22 @@
                            th:id="${myComponentId}"
                            th::aria-describedby="| hasFieldsError('${object}', '${field}', ${rowIndex}) ? ${myComponentId} + '-error' : undefined |"
                            th:required="${myRequired}"
-                           v-bind="inputProps"
-                           @input="(e) => { inputListeners.input(e) }"
-                           th:@blur="|(e) => { inputListeners.blur(e); componentStates.__${myComponentId}__.focused = false }|"
+
+                           :class="inputProps.class"
+                           :role="inputProps.role"
+                           :autocomplete="inputProps.autocomplete"
+                           :autocapitalize="inputProps.autocapitalize"
+                           :autocorrect="inputProps.autocorrect"
+                           :spellcheck="inputProps.spellcheck"
+                           :aria-autocomplete="inputProps['aria-autocomplete']"
+                           :aria-haspopup="inputProps['aria-haspopup']"
+                           :aria-owns="inputProps['aria-owns']"
+                           :aria-expanded="inputProps['aria-expanded']"
+                           :aria-activedescendant="inputProps['aria-activedescendant']"
+
+                           th:v-model="|componentStates.${myComponentId}.field|"
+                           @input="(e) => { inputListeners.input(e);  }"
+                           th:@blur="|(e) => { dsfrResetAutocomplete('${myComponentId}', '${object}', '${field}', '${rowIndex}'); inputListeners.blur(e); componentStates.__${myComponentId}__.focused = false; }|"
                            th:@focus="|(e) => { inputListeners.focus(e); componentStates.__${myComponentId}__.focused = true }|"
                            @keydown="(e) => { inputListeners.keydown(e) }"
                     >

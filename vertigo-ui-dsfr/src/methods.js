@@ -87,12 +87,9 @@ export default {
     dsfrLoadAutocompleteById: function (list, valueField, labelField, componentId, url, objectName, fieldName, rowIndex) {
         //Method use when value(id) is set by another way : like Ajax Viewcontext update, other component, ...
         //if options already contains the value (id) : we won't reload.
-        var value
-        if (rowIndex != null) {
-            value = this.$data.vueData[objectName][rowIndex][fieldName];
-        } else {
-            value = this.$data.vueData[objectName][fieldName];
-        }
+        let value = rowIndex != null && rowIndex !== 'null'
+            ? this.$data.vueData[objectName][rowIndex][fieldName]
+            : this.$data.vueData[objectName][fieldName];
 
         if (Array.isArray(value)) {
             value.forEach(element => this.dsfrLoadMissingAutocompleteOption(list, valueField, labelField, componentId, url, element));
@@ -102,7 +99,11 @@ export default {
 
     },
     dsfrLoadMissingAutocompleteOption: function (list, valueField, labelField, componentId, url, value){
-        if (!value || (this.$data.componentStates[componentId].options.filter(function (option) { return option.value === value }.bind(this)).length > 0)) {
+        let currentValue = this.componentStates[componentId].options.find((e) => e.value === value);
+        if (!value || (currentValue !== undefined)) {
+            if (currentValue?.label !== undefined) {
+                this.componentStates[componentId].field = currentValue.label;
+            }
             return
         }
         this.$data.componentStates[componentId].loading = true;
@@ -112,6 +113,9 @@ export default {
                     return { value: object[valueField], label: object[labelField].toString() } // a label is always a string
                 });
                 this.$data.componentStates[componentId].options = this.$data.componentStates[componentId].options.concat(res);
+
+                this.componentStates[componentId].field = res[0].label;
+
                 return this.$data.componentStates[componentId].options;
             }.bind(this))
             .catch(function (error) {
@@ -120,6 +124,27 @@ export default {
             .then(function () {// always executed
                 this.$data.componentStates[componentId].loading = false;
             }.bind(this));
+    },
+    dsfrResetAutocomplete: function(componentId, objectName, fieldName, rowIndex) {
+        let value = this.componentStates[componentId].field;
+        if (value === undefined) { return }
+
+        let currentValue = this.componentStates[componentId].options.find((e) => e.label.toLowerCase().startsWith(value.trim().toLowerCase()));
+        if (currentValue === undefined || value === "") {
+            this.componentStates[componentId].field = undefined;
+            if (rowIndex != null && rowIndex !== 'null') {
+                this.$data.vueData[objectName][rowIndex][fieldName] = undefined;
+            } else {
+                this.$data.vueData[objectName][fieldName] = undefined;
+            }
+        } else {
+            this.$data.componentStates[componentId].field = currentValue.label;
+            if (rowIndex != null && rowIndex !== 'null') {
+                this.$data.vueData[objectName][rowIndex][fieldName] = currentValue.value;
+            } else {
+                this.$data.vueData[objectName][fieldName] = currentValue.value;
+            }
+        }
     },
     dsfrUpdateMenuNavigationActiveState: function () {
         this.componentStates?.dsfrHeader?.navItems
