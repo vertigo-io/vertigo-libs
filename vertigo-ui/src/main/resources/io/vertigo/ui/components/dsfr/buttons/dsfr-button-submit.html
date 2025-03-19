@@ -4,6 +4,7 @@
                    myLoading=${loading}?:true" >
         
     <vu:dsfr-button type="submit"
+                    th:formaction="${action}"
                     th:@click="${myLoading}?| (event) => { if (isPendingAction()) { event.preventDefault() } else if (event.target.closest('form').checkValidity()) { pushPendingAction('${action}')} }|:''"
                     vLoading="${myLoading}?|isPendingAction('${action}')|:false"
                     th:attr="__${other_attrs}__">
