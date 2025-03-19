@@ -13,8 +13,8 @@
                  myFilterUrl=${filterUrl != null ? filterUrl : '__@{/autocomplete/_searchFullText}__'}">
 
     <vu:include-data object="${object}" field="${field}" modifiable/>
-    <vu:include-data object="${list}" field="${valueField}"/>
-    <vu:include-data object="${list}" field="${labelField}"/>
+    <vu:include-data object="${list}" field="${myValueField}"/>
+    <vu:include-data object="${list}" field="${myLabelField}"/>
 
     <th:block th:attr="objectKey=${model.vContext['componentStates'].addComponentState(myComponentId).addList('options')},
                        objectKey1=${model.vContext['componentStates'].get(myComponentId).addPrimitive('loading', false)
@@ -130,4 +130,10 @@
             </div>
         </template>
     </autocomplete>
+</th:block>
+<th:block
+        th:fragment="dsfr-autocomplete-read(object, field, label, hint, componentId, required, list, valueField, labelField, minQueryLength, noResultLabel, inputUrl, filterUrl, label_attrs, input_attrs)"
+        vu:alias="dsfr-autocomplete"
+		vu:selector="${viewMode=='read'}">
+		<vu:dsfr-select-read object="${object}" field="${field}" label="${label}" list="${list}" valueField="${valueField}" labelField="${labelField}" label_attrs="${label_attrs}" />
 </th:block>
