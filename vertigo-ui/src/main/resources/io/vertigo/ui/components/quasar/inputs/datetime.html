@@ -20,7 +20,7 @@
                       <q-date 
                         th:v-model="|${model.util.vueDataKey(object, field, rowIndex)}|" 
                         :landscape="$q.screen.gt.xs"
-                        mask="DD/MM/YYYY HH:mm"
+                        mask="YYYY-MM-DD[T]HH:mm"
                         th:@update:model-value="|() => $refs.datetime_D${myRef}.hide()|"
                         th:attr="__${date_attrs}__"><vu:content-slot name="date_content_slot"/></q-date>
                 </q-popup-proxy>
@@ -32,8 +32,7 @@
                        <q-time 
                             th:v-model="|${model.util.vueDataKey(object, field, rowIndex)}|"
                             :landscape="$q.screen.gt.xs"
-                            mask="DD/MM/YYYY HH:mm"
-                            th:@update:model-value="|() => $refs.datetime_T${myRef}.hide()|"
+                            mask="YYYY-MM-DD[T]HH:mm"
                             format24h
                             th:attr="__${time_attrs}__" ><vu:content-slot name="time_content_slot"/></q-time>
                 </q-popup-proxy>

@@ -20,7 +20,7 @@
 		             <q-date 
 		             	th:v-model="${model.util.vueDataKey(object, field, rowIndex)}"
 		             	:landscape="$q.screen.gt.xs"
-		             	mask="DD/MM/YYYY"
+		             	mask="YYYY-MM-DD"
 		             	th:@update:model-value="|() => $refs.${myRef}.hide()|"
 		             	th:attr="__${date_attrs}__">
 		             	<vu:content-slot name="date_content_slot"/>
