@@ -1,4 +1,4 @@
-<th:block th:fragment="dsfr-column-table(list, field, name, hide-label, label, align, sortable, datetimeFormat, class, td_attrs)" vu:alias="dsfr-column"
+<th:block th:fragment="dsfr-column-table(list, field, name, hide-label, label, align, sortable, sortField, datetimeFormat, class, td_attrs)" vu:alias="dsfr-column"
           vu:selector="${renderTableAsGrid == null || !renderTableAsGrid }"
           th:assert="${(field != null) or (name != null and label != null)}"
           th:with="columnName=${name != null ? name : field},
@@ -6,13 +6,16 @@
                    myHideLabel=${hideLabel?:false},
                    columnAlign=${model.util.smartTypeAlign(list, field, align)},
                    columnClass=${model.util.smartTypeCss(list, field, class, 'col_'+name)},
-                   columnSortable=${sortable != null ? sortable : (field != null) }">
+                   columnSortable=${sortable != null ? sortable : (field != null) },
+				   mySortField=${sortField?:field},
+				   myDisplayField=${field != null ? model.util.resolveDisplayField(list, field) : null},
+				   mySuffix=${model.util.smartTypeUnit(list, field, null)}">
 
     <th:block th:with="objectKey=${model.vContext['componentStates']['__${componentId}__'].addObjectToList('columns', {'key': columnName, 'field': field, 'label': columnLabel, 'align': columnAlign, 'hideLabel': myHideLabel, 'sortable': (modifiableTable!=null?false:columnSortable)})}"/>
-    <vu:include-data th:if="${field != null}" object="${list}" field="${field}"/>
-
+	<vu:include-data th:if="${myDisplayField != null}" object="${list}" field="${myDisplayField}"/>
+	<vu:include-data th:if="${mySortField != null && mySortField != myDisplayField}" object="${list}" field="${mySortField}"/>
     <template th:v-if="|colKey === '${columnName}'|">
-        <vu:content><th:block th:if="${field != null}">{{ cell.[[${field}]] }}</th:block></vu:content><!--/* Default content */-->
+        <vu:content><th:block th:if="${myDisplayField != null}">{{ cell.[[${myDisplayField}]] }}<template th:if="${mySuffix != null}" th:v-if="|cell['${myDisplayField}'] != null && cell['${myDisplayField}'] != ''|"><span vu:text="${mySuffix}"></span></template></th:block></vu:content><!--/* Default content */-->
     </template>
 </th:block>
 
