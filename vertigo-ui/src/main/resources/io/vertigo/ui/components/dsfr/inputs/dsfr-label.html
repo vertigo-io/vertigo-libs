@@ -17,7 +17,7 @@
           vu:selector="${viewMode=='read'}"
           th:with="myLabel=${label?:model.util.label(object + '.' + field)}"
           th:assert="${object} != null and ${field} != null">
-    <p class="readonly">
+    <p class="readonly" th:attr="__${label_attrs}__">
         <span class="fr-label" vu:text="${myLabel}"></span>
         <vu:content/>
     </p>

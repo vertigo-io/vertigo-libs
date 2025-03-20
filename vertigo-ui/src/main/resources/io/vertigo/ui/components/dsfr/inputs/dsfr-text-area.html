@@ -29,7 +29,7 @@
                  myEmptyValue=${emptyValue?:'Non renseigné'}">
 
     <vu:include-data object="${object}" field="${field}"/>
-    <div class="readonly">
+    <div class="readonly" th:attr="__${label_attrs}__">
         <span class="fr-label" vu:text="${myLabel}"></span>
         <pre th:if="${value != null}"
              th:text="${__${model.util.contextGet(object, field, rowIndex)}__}"
