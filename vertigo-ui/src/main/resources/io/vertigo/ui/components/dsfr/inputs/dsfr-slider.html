@@ -9,7 +9,7 @@
 		           myStep=${step?:model.util.getStep(myMin, myMax)},
 			   	   myRequired=${required != null ? required : model.util.required(object + '.' + field)}" >
 	<vu:include-data object="${object}" field="${field}" modifiable="true"/>
-	<dsfr-custom-range
+	<dsfr-range
 			th:label="${myLabel}"
 			th:required="${myRequired}"
 			th:v-model="${'vueData.' + object + '.' + field}"
@@ -19,7 +19,7 @@
 			th:attr="__${input_attrs}__"
 	>
 		<vu:content/>
-	</dsfr-custom-range>
+	</dsfr-range>
 	<input type="hidden" th:name="|vContext[${object}][${field}]|" th:v-bind:value="|vueData.${object}.${field}|" />
 </th:block>
 
