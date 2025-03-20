@@ -91,13 +91,15 @@ const selectionDisplay = computed(() => {
 // Methods
 
 let selectAll = function () {
-  if (props.modelValue.length >= localOptions.value.length) {
+  const areLocalAllSelected = localOptions.value.every(o => props.modelValue.includes(o.value));
+  if (areLocalAllSelected) {
+    const localValues = localOptions.value.map(o => o.value);
+    const valueToKeep = props.modelValue.filter(value => !localValues.includes(value));
     props.modelValue.length = 0;
+    valueToKeep.forEach((v) => props.modelValue.push(v));
   } else {
     const unduplicatedOptions = localOptions.value.filter(o => !props.modelValue.includes(o.value));
-    for (let opt of unduplicatedOptions) {
-      props.modelValue.push(opt.value)
-    }
+    unduplicatedOptions.forEach((opt) => props.modelValue.push(opt.value));
   }
 }
 
@@ -259,6 +261,7 @@ let toggleOption = (event, value) => {
     modelValue.value.push(value);
     if (localOptions.value.length === 1) {
       filterValue.value = "";
+      localOptions.value = props.options;
     }
   }
 }
