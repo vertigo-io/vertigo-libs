@@ -93,10 +93,6 @@
         </q-uploader>
 </template>
 <script>
-// we import all of `format`
-import { format } from 'quasar'
-// destructuring to keep only what is needed
-const { humanStorageSize } = format
 
 export default {
   props: {
@@ -145,6 +141,10 @@ export default {
   data : function() {
       return {
           files:[],
+          units: [this.$vui.i18n().uploader.unit_b,
+                  this.$vui.i18n().uploader.unit_kb,
+                  this.$vui.i18n().uploader.unit_mb,
+                  this.$vui.i18n().uploader.unit_gb]
       }
   },
   methods: {
@@ -230,6 +230,16 @@ export default {
     },
     getGlobalSizeLabel() {
         return humanStorageSize(this.getGlobalSize());
+    },
+    humanStorageSize(bytes, decimals = 1) {
+        let u = 0;
+        
+        while (parseInt(bytes, 10) >= 1024 && u < this.$data.units.length - 1) {
+          bytes /= 1024;
+          ++u;
+        }
+        
+        return `${ bytes.toFixed(decimals) } ${ this.$data.units[ u ] }`;
     }
   }
 }
