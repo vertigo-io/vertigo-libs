@@ -37,6 +37,8 @@ import io.vertigo.datamodel.smarttype.annotations.SmartTypeDefinition;
 import io.vertigo.datamodel.smarttype.annotations.SmartTypeProperty;
 import io.vertigo.datastore.filestore.model.FileInfoURI;
 import io.vertigo.ui.core.FileInfoURIAdapter;
+import io.vertigo.ui.data.domain.geo.GeoPoint;
+import io.vertigo.ui.data.domain.geo.GeoPointAdapter;
 
 public enum VuiTestSmartTypes {
 
@@ -166,5 +168,14 @@ public enum VuiTestSmartTypes {
 	@SmartTypeDefinition(FileInfoURI.class)
 	@Formatter(clazz = FormatterDefault.class)
 	@Adapter(clazz = FileInfoURIAdapter.class, targetBasicType = BasicType.String)
-	FileInfoURI;
+	FileInfoURI,
+
+	@SmartTypeDefinition(GeoPoint.class)
+	@Formatter(clazz = FormatterDefault.class)
+	@Adapter(clazz = GeoPointAdapter.class, targetBasicType = BasicType.String)
+	@SmartTypeProperty(property = "storeType", value = "TEXT")
+	@SmartTypeProperty(property = "indexType", value = ":geo_point")
+	GeoPoint,
+
+	;
 }

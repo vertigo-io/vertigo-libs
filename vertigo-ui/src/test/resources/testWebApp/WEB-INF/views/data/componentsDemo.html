@@ -11,7 +11,12 @@
         VUiExtensions.methods.closePopup = function(a,b,c,d,e,f) {
                     console.log(a,b,c,d,e,f);
            }
-    </script>                     
+    </script>
+   	<!-- maps -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@8.2.0/ol.min.css" type="text/css"/>
+	<link rel="stylesheet" href="https://unpkg.com/ol-geocoder@4.3.1/dist/ol-geocoder.min.css" type="text/css"/>
+	<script src="https://cdn.jsdelivr.net/npm/ol@v8.2.0/dist/ol.js"></script>
+	<script src="https://unpkg.com/ol-geocoder@4.3.1/dist/ol-geocoder.js"></script>
 </head>
 
 <body>
@@ -109,32 +114,39 @@
                 </div>
             </vu:block>
             
+	        
+	        <br/>
+	        <h6>Test Cards</h6>
+	        <vu:cards list="movies" componentId="movieCards" 
+	        cardClass="col-lg-3 col-md-6 col-xs-12" 
+	        sortUrl="@{/movies/_sort}" rowsPerPage="8" showMore="true" showMoreLabel="Show more" >
+	            <div class="nav" th:@click="|goTo('@{/basemanagement/base/information/}'+item.baseId)|">
+	                <a th::href="|'@{/movie/}'+item.movId|" >{{item.movId}}</a>
+	            </div>
+	        </vu:cards>
+	        
+	        <br/>
+	        <h6>Test table</h6>
+	        <vu:table list="movies" componentId="movieTable" selectable="true" sortUrl="@{/movies/_sort}"
+	            th:tr_@click.native="|goTo('@{/movie/}'+props.row.movId)|" tr_class="nav">
+	            <vu:slot name="actions_slot"><q-btn label="View detail" th:@click="|openModal('movieDetailModal', '@{/movie/}'+props.row.movId, {  })|"></q-btn></vu:slot>
+	            <vu:include-data object="movies" field="movId" />
+	            <vu:column field="movId" >
+	                <a th::href="|'@{/movie/}'+props.row.movId|" >{{props.row.movId}}</a>
+	            </vu:column>
+	            <vu:column field="title" sortable="true" />
+	            <vu:column name="tata" label="Tata">
+	               another column  : {{props.row.movId}} : {{props.row.title}}
+	           </vu:column>                       
+	        </vu:table>
+	        
+	        <br/>
+	        
+	        <vu:block id="location" title="Location">
+				<vu:geolocation object="casting" field="birthLocation" map_style="height: 50vh; width:100%;" map_overview></vu:geolocation>
+			</vu:block>
+			
         </vu:form>
-        
-        <br/>
-        <h6>Test Cards</h6>
-        <vu:cards list="movies" componentId="movieCards" 
-        cardClass="col-lg-3 col-md-6 col-xs-12" 
-        sortUrl="@{/movies/_sort}" rowsPerPage="8" showMore="true" showMoreLabel="Show more" >
-            <div class="nav" th:@click="|goTo('@{/basemanagement/base/information/}'+item.baseId)|">
-                <a th::href="|'@{/movie/}'+item.movId|" >{{item.movId}}</a>
-            </div>
-        </vu:cards>
-        
-        <br/>
-        <h6>Test table</h6>
-        <vu:table list="movies" componentId="movieTable" selectable="true" sortUrl="@{/movies/_sort}"
-            th:tr_@click.native="|goTo('@{/movie/}'+props.row.movId)|" tr_class="nav">
-            <vu:slot name="actions_slot"><q-btn label="View detail" th:@click="|openModal('movieDetailModal', '@{/movie/}'+props.row.movId, {  })|"></q-btn></vu:slot>
-            <vu:include-data object="movies" field="movId" />
-            <vu:column field="movId" >
-                <a th::href="|'@{/movie/}'+props.row.movId|" >{{props.row.movId}}</a>
-            </vu:column>
-            <vu:column field="title" sortable="true" />
-            <vu:column name="tata" label="Tata">
-               another column  : {{props.row.movId}} : {{props.row.title}}
-           </vu:column>                       
-        </vu:table>
             
     </div>
     
