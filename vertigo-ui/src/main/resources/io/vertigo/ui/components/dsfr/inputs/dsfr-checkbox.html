@@ -6,6 +6,7 @@
                    myLabel=${label?:model.util.label(object + '.' + field)}">
     <vu:include-data object="${object}" field="${field}" modifiable/>
     <dsfr-custom-checkbox th:label="${myLabel}"
+                          value="true"
                           th:v-model="${model.util.vueDataKey(object, field, rowIndex)}"
                           th::name="${model.util.contextKey(object, field, rowIndex)}"
                           th::required="${required}"
