@@ -1,38 +1,10 @@
 import * as Quasar from "quasar"
 import { sortDate } from "quasar/src/utils/private.sort/sort.js"
 import { isNumber, isDate } from "quasar/src/utils/is/is.js"
-
-let debounceFn = function (fn, wait = 250, immediate) {
-    let timer = null
-    
-    function debounced (/* ...args */) {
-        const args = arguments
-    
-        const later = () => {
-        timer = null
-        if (immediate !== true) {
-            fn.apply(this, args)
-        }
-        }
-    
-        if (timer !== null) {
-        clearTimeout(timer)
-        }
-        else if (immediate === true) {
-        fn.apply(this, args)
-        }
-    
-        timer = setTimeout(later, wait)
-    }
-    
-    debounced.cancel = () => {
-        timer !== null && clearTimeout(timer)
-    }
-    
-    return debounced
-};
+import Debounce from "lodash.debounce"
 
 export default {
+	debounce: Debounce,
     onAjaxError: function (response) {
         //Quasar Notif Schema
         let notif = {
@@ -90,7 +62,6 @@ export default {
             this.$q.notify(notif);
         }
     },
-    debounce: debounceFn,
     uiMessageStackToNotify : function(uiMessageStack) {
       if(uiMessageStack) {
         var notifyMessages = [];
@@ -395,7 +366,7 @@ export default {
         this.search(contextKey);
     },
 
-    search: debounceFn(function (contextKey, pageIndexReset = 1) {
+    search: Debounce(function (contextKey, pageIndexReset = 1) {
         let componentStates = this.$data.componentStates;
         let vueData = this.$data.vueData;
         var selectedFacetsContextKey = contextKey + "_selectedFacets";

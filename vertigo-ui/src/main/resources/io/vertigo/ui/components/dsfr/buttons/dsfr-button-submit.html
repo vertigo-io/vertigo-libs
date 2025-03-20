@@ -42,10 +42,10 @@
             </vu:content>
         </template>
         <template #footer>
-        	<dsfr-button-group align="right" inline-layout-when="large" reverse>
-        		<li :key="0"><vu:dsfr-button-submit label="${myLabelOk}" action="${action}" loading="${loading}"></vu:dsfr-button-submit></li>
-        		<li :key="1"><dsfr-button th:label="${myLabelCancel}" th:@click="|componentStates['${myComponentId}'].confirm = false|" secondary></dsfr-button></li>
-        	</dsfr-button-group>
+            <dsfr-button-group align="right" inline-layout-when="large" reverse>
+                <li :key="0"><vu:dsfr-button-submit label="${myLabelOk}" action="${action}" loading="${loading}"></vu:dsfr-button-submit></li>
+                <li :key="1"><dsfr-button th:label="${myLabelCancel}" th:@click="|componentStates['${myComponentId}'].confirm = false|" secondary></dsfr-button></li>
+            </dsfr-button-group>
         </template>
     </dsfr-modal>
 </th:block>

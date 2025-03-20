@@ -14,7 +14,8 @@
     "axios": "^1.7.2",
     "core-js": "^3.37.1",
     "d3-color": "^3.1.0",
-    "d3-interpolate": "^3.0.1"
+    "d3-interpolate": "^3.0.1",
+    "lodash.debounce": "^4.0.8"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.5",
