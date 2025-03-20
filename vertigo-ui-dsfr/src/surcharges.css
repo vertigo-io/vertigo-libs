@@ -155,3 +155,9 @@ button[aria-disabled="true"] {
 button[aria-disabled="true"]:hover {
     background-color: var(--background-disabled-grey);
 }
+
+/* textarea in readonly pre */
+.readonly pre {
+    all: unset;
+    white-space: pre-wrap;
+}

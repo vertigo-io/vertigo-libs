@@ -21,18 +21,20 @@
     </dsfr-input-group>
 </th:block>
 <th:block
-        th:fragment="dsfr-text-area-read(object, field, label, required, input_attrs)"
+        th:fragment="dsfr-text-area-read(object, field, label, required, emptyValue, input_attrs, label_attrs)"
         vu:alias="dsfr-text-area" vu:selector="${viewMode=='read' || (readonly!=null && readonly)}"
         th:assert="${object} != null and ${field} != null"
-        th:with="myLabel=${label?:model.util.label(object + '.' + field)}">
-    <vu:include-data object="${object}" field="${field}"/>
+        th:with="myLabel=${label?:model.util.label(object + '.' + field)},
+		         value=${__${model.util.contextGet(object, null, rowIndex)}__.getTypedValue('__${field}__')},
+                 myEmptyValue=${emptyValue?:'Non renseigné'}">
 
-    <dsfr-input-group th:label="${myLabel}"
-                      th::label-visible="${myLabel!=null}"
-                      th::name="${model.util.contextKey(object, field, rowIndex)}"
-                      :is-textarea="true"
-                      readonly
-                      th:v-model="${model.util.vueDataKey(object, field, rowIndex)}"
-                      th:attr="__${input_attrs}__">
-    </dsfr-input-group>
+    <vu:include-data object="${object}" field="${field}"/>
+    <div class="readonly">
+        <span class="fr-label" vu:text="${myLabel}"></span>
+        <pre th:if="${value != null}"
+             th:text="${__${model.util.contextGet(object, field, rowIndex)}__}"
+             th:attr="__${input_attrs}__"></pre>
+        <span class="no-value" th:if="${value==null}"
+              th:text="${myEmptyValue}"></span>
+    </div>
 </th:block>
