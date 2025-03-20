@@ -30,6 +30,7 @@ import Autocomplete from "@trevoreyre/autocomplete-vue/Autocomplete.vue";
 
 import './utils.css'
 import './surcharges.css'
+import './vertigo-ui-dsfr.css'
 
 var DSFR = {
     install: function (vueApp, options) {
