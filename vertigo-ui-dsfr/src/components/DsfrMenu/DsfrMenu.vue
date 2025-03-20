@@ -120,7 +120,7 @@ defineExpose({closeMenu})
 </script>
 
 <template>
-  <div class="relative-position" @keydown.tab="handleFocusOut" ref="container">
+  <div class="relative-position fr-menu__wrapper" @keydown.tab="handleFocusOut" ref="container">
     <button
         :id="id"
         @click.prevent.stop="expanded = !expanded"
@@ -174,6 +174,18 @@ defineExpose({closeMenu})
   position: relative;
 }
 
+.fr-btns-group .fr-menu__wrapper {
+  margin: 0 .5rem 1rem;
+}
+
+.fr-btns-group--inline-sm .fr-menu__wrapper {
+  margin: 0 .5rem 1rem;
+}
+
+.fr-menu__btn {
+  margin-bottom: 0 !important;
+}
+
 .fr-menu__btn::after {
   flex: 0 0 auto;
   display: inline-block;
@@ -201,6 +213,7 @@ defineExpose({closeMenu})
   --ul-start: 0;
   --li-bottom: 0;
   padding: 0;
+  width: max-content;
 }
 
 .fr-menu__list .fr-btn--secondary {
@@ -209,6 +222,12 @@ defineExpose({closeMenu})
 
 .fr-menu__list :deep(.fr-nav__link:not(:disabled)) {
   color: var(--text-action-high-blue-france);
+}
+
+.fr-menu__list :deep(.fr-nav__link), .fr-menu__list :deep(button) {
+  margin: 0 !important;
+  min-width: 100%;
+  justify-content: start;
 }
 
 </style>

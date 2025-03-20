@@ -10366,7 +10366,7 @@ const wv = /* @__PURE__ */ Ae(av, [["render", kv], ["__scopeId", "data-v-0be4e59
     }
     const v = w(() => ["sm", "small"].includes(o.size)), I = w(() => ["md", "medium"].includes(o.size)), E = w(() => ["lg", "large"].includes(o.size));
     return t({ closeMenu: M }), (D, F) => (i(), f("div", {
-      class: "relative-position",
+      class: "relative-position fr-menu__wrapper",
       onKeydown: F[9] || (F[9] = ae(
         //@ts-ignore
         (...P) => q(T) && q(T)(...P),
@@ -10428,7 +10428,7 @@ const wv = /* @__PURE__ */ Ae(av, [["render", kv], ["__scopeId", "data-v-0be4e59
       ], 42, xv)
     ], 544));
   }
-}), Iv = /* @__PURE__ */ Ae(Tv, [["__scopeId", "data-v-7e2a2d17"]]), Cv = { role: "none" }, Ev = ["id", "href"], Pv = /* @__PURE__ */ R({
+}), Iv = /* @__PURE__ */ Ae(Tv, [["__scopeId", "data-v-7c863055"]]), Cv = { role: "none" }, Ev = ["id", "href"], Pv = /* @__PURE__ */ R({
   inheritAttrs: !1,
   __name: "DsfrMenuLink",
   props: {
