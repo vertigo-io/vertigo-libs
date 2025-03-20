@@ -6,13 +6,17 @@
     <vu:content/>
 </ul>
 
-<li th:fragment="dsfr-tab(class, active, other_attrs)">
+<li th:fragment="dsfr-tab(label, url, class, active, other_attrs)">
     <a class="fr-tabs__tab"
+       th::href="|${disabled}?null:'${url}'|"
+       th:aria-selected="${active?'true':null}"
        th:classappend="|
             ${class}
             ${active == true ? 'fr-tabs__tab--active' : ''}
        |"
        th:attr="__${other_attrs}__">
-        <vu:content/>
+        <vu:content>
+			<span vu:text="${label}"></span>
+        </vu:content>
     </a>
 </li>
