@@ -16,7 +16,7 @@
             th:description="${description}"
             th::options="|dsfrTransformListForSelection('${list}', '${myValueField}', '${myLabelField}', ${filterFunction?:null})|"
             th::name="${model.util.contextKey(object, field, rowIndex)}"
-            th:v-model="|vueData.${object}.${field}|"
+            th:v-model="${model.util.vueDataKey(object, field, rowIndex)}"
             th::error-message="|getErrorMessage('${object}', '${field}', ${rowIndex})|"
             th:attr="__${input_attrs}__">
         >

@@ -19,7 +19,7 @@
 			th:label="${myLabel}"
 			th::options="|dsfrTransformListForSelection('${list}', '${myValueField}', '${myLabelField}', '${myNoneLabel}', ${filterFunction?:null})|"
 			th::name="${model.util.contextKey(object, field, rowIndex)}"
-			th:v-model="|vueData.${object}.${field}|"
+			th:v-model="${model.util.vueDataKey(object, field, rowIndex)}"
 			th::error-message="|getErrorMessage('${object}', '${field}', ${rowIndex})|"
 			th:attr="__${input_attrs}__">
 		<vu:content/>
