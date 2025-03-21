@@ -2225,7 +2225,7 @@ const Ya = /* @__PURE__ */ M(Va, [["render", Ja]]), Wa = {
       return e + t;
     },
     getGlobalSizeLabel() {
-      return humanStorageSize(this.getGlobalSize());
+      return this.humanStorageSize(this.getGlobalSize());
     },
     humanStorageSize(e, t = 1) {
       let n = 0;

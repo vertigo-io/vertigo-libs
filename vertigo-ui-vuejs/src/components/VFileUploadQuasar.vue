@@ -229,7 +229,7 @@ export default {
         return quasarFileSize + remoteFilesSize;
     },
     getGlobalSizeLabel() {
-        return humanStorageSize(this.getGlobalSize());
+        return this.humanStorageSize(this.getGlobalSize());
     },
     humanStorageSize(bytes, decimals = 1) {
         let u = 0;
