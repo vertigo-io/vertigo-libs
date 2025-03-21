@@ -1,16 +1,15 @@
 <template>
     <div :id="id" >
         <div :id="id+'Popup'">
-            <q-card v-if="popupDisplayed" >
-                <slot name="card" v-bind:objectDisplayed="objectDisplayed">
-                      <div class="text-subtitle2">{{objectDisplayed[nameField]}}</div>
-                </slot>
-            </q-card>
-        </div>	
+            <slot name="card" v-bind:objectDisplayed="objectDisplayed">
+                <div v-if="popupDisplayed" class="popup" >
+                    {{objectDisplayed[nameField]}}
+                </div>
+            </slot>
+        </div>
     </div>
 </template>
 <script>
-import * as Quasar from "quasar"
 import * as ol from "ol"
 
 export default {
@@ -23,8 +22,11 @@ export default {
         fitOnDataUpdate: {type: Boolean },
         baseUrl : { type: String },
         field: { type: String, required: true},
-        nameField: { type: String},        
+        nameField: { type: String },        
         markerColor : { type: String, 'default': "#000000" },
+        markerUseFont : { type: Boolean, 'default': false },
+        markerImage : { type: String },
+        markerImageDynamic : { type: Function, 'default': (size) => "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='"+size+"' height='"+size+"'><path style='fill:white' d='M18.364 3.636a9 9 0 0 1 0 12.728L12 22.728l-6.364-6.364A9 9 0 0 1 18.364 3.636ZM12 8a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z'/></svg>"},
         markerFont : { type: String, 'default': "Material Icons" },
         markerIcon : { type: String, 'default': "place" },
         markerSize : { type: Number, 'default': 30 },
@@ -315,14 +317,36 @@ export default {
                 source: clusterSource
             });
             
-            let styleIcon = new ol.style.Style({
-                text : new ol.style.Text({
-                    font : this.$props.markerSize +'px ' + this.$props.markerFont,
-                    text : this.$props.markerIcon,
-                    fill : new ol.style.Fill({color : this.$props.markerColor }),
-                    offsetY : 0
-                })
-            });
+            let styleIcon;
+            if (this.$props.markerUseFont) {
+                styleIcon = new ol.style.Style({
+                    text : new ol.style.Text({
+                        font : this.$props.markerSize +'px ' + this.$props.markerFont,
+                        text : this.$props.markerIcon,
+                        fill : new ol.style.Fill({color : this.$props.markerColor }),
+                        textBaseline : 'alphabetic'
+                    })
+                });
+            } else {
+                if (this.$props.markerImage) {
+                    styleIcon = new ol.style.Style({
+                        image : new ol.style.Icon({
+                            src : this.$props.markerImage,
+                            scale : this.$props.markerSize / 30,
+                            anchor : [0.5, 0.95],
+                            color : this.$props.markerColor
+                        })
+                    });
+                } else {
+                    styleIcon = new ol.style.Style({
+                        image : new ol.style.Icon({
+                            src : this.$props.markerImageDynamic(this.$props.markerSize),
+                            anchor : [0.5, 0.95],
+                            color : this.$props.markerColor
+                        })
+                    });
+                }
+            }
             
             let styleCache = {};
             clusterLayer.setStyle(function(feature, /*resolution*/) {
@@ -380,9 +404,9 @@ export default {
                 let topLeft = ol.extent.getTopLeft(wgs84Extent);
                 let bottomRight = ol.extent.getBottomRight(wgs84Extent);
                 if (this.baseUrl) {
-                   Quasar.debounce(this.fetchList({lat:topLeft[0] , lon:topLeft[1]},{lat:bottomRight[0] , lon:bottomRight[1]}),300);
+                   VUiPage.debounce(() => this.fetchList({lat:topLeft[0] , lon:topLeft[1]},{lat:bottomRight[0] , lon:bottomRight[1]}),300);
                 }
-                Quasar.debounce(this.$emit('moveend',topLeft, bottomRight) , 300);		
+                VUiPage.debounce(() => this.$emit('moveend',topLeft, bottomRight) , 300);
             }
             .bind(this));        
             
@@ -408,7 +432,7 @@ export default {
                             this.$data.popupDisplayed = true;
                             this.$data.objectDisplayed = feature.get('features')[0].get('innerObject');
                             evt.stopPropagation();
-                            Quasar.debounce(this.$emit('click',ol.proj.transform(coordinates, 'EPSG:3857', 'EPSG:4326')) , 300);
+                            VUiPage.debounce(() =>this.$emit('click',ol.proj.transform(coordinates, 'EPSG:3857', 'EPSG:4326')) , 300);
                         }
                     } else {
                         this.$data.popupDisplayed = false;
@@ -436,7 +460,7 @@ export default {
                     if (feature && feature.get('features') && feature.get('features').length == 1) {
                         let coordinates = feature.getGeometry().getCoordinates();
                         evt.stopPropagation();
-                        Quasar.debounce(this.$emit('click',ol.proj.transform(coordinates, 'EPSG:3857', 'EPSG:4326')) , 300);
+                        VUiPage.debounce(() =>this.$emit('click',ol.proj.transform(coordinates, 'EPSG:3857', 'EPSG:4326')) , 300);
                     }
                   }
                 }.bind(this));

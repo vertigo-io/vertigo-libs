@@ -1,8 +1,10 @@
 <template>
-    <div class="row">
-        <q-input label="Longitude" stack-label  v-model.number="inputObject.lon" @update:modelValue="updateJson" ></q-input>
-        <q-input label="Latitude" stack-label  v-model.number="inputObject.lat" @update:modelValue="updateJson" ></q-input>
-    </div>
+    <slot>
+        <div class="inputs">
+            Longitude <input v-model.number="inputObject.lon" @update:modelValue="updateJson" ></input>
+            Latitude <input v-model.number="inputObject.lat" @update:modelValue="updateJson" ></input>
+        </div>
+    </slot>
 </template>
 <script>
 export default {

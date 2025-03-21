@@ -543,6 +543,21 @@ table .q-uploader .q-btn {
 
 
 /** v-map **/
+.map {
+	height: 400px;
+	width:100%;
+}
+
+.map .popup {
+	background: #fff;
+	box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2), 0 2px 2px rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12);
+	border-radius: 4px;
+	padding-left: 16px;
+	padding-right: 16px;
+	padding-top: 4px;
+	padding-bottom: 4px;
+}
+
 .ol-v-custom-buttons {
 	top: 4em;
 	left: .5em;

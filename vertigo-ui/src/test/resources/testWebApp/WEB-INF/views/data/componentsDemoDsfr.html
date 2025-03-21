@@ -7,6 +7,12 @@
 
 <head>
     <title>Component Details</title>
+    
+    <!-- maps -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@8.2.0/ol.min.css" type="text/css"/>
+	<link rel="stylesheet" href="https://unpkg.com/ol-geocoder@4.3.1/dist/ol-geocoder.min.css" type="text/css"/>
+	<script src="https://cdn.jsdelivr.net/npm/ol@v8.2.0/dist/ol.js"></script>
+	<script src="https://unpkg.com/ol-geocoder@4.3.1/dist/ol-geocoder.js"></script>
 </head>
 
 <body>
@@ -280,54 +286,59 @@
                                        label="Bouton de confirmation"/>
 
 
+	    <br/>
+	
+	    <vu:include-data object="movies" field="movId"/>
+	    selection : {{ componentStates.movieTable2.selected }}
+	    <vu:dsfr-table list="movies"
+	                   componentId="movieTable2"
+					   sortUrl="@{/movies/_sort}"
+	                   pagination="true"
+	                   row-key="movId"
+	                   title="My Movies Table"
+					   subtitle="My movie subtitle"
+	                   footer-size="sm"
+	                   selectable
+	    >
+	        <vu:slot name="actions_slot">
+	            <dsfr-button-tooltip icon="ri-information-2-line"
+	                                 icon-only tertiary
+	                                 :content="`Ouvrir la modale de la ligne n°${idx}`"
+	            ></dsfr-button-tooltip>
+	            <dsfr-button-tooltip icon="fr-icon-delete-bin-line"
+	                                 icon-only tertiary
+	                                 :content="`Ouvrir la modale de la ligne n°${idx}`"
+	            ></dsfr-button-tooltip>
+	            <dsfr-button-tooltip icon="fr-icon-eye-line"
+	                                 icon-only tertiary
+	                                 :content="`Ouvrir la modale de la ligne n°${idx}`"
+	            ></dsfr-button-tooltip>
+	        </vu:slot>
+	        <vu:slot name="header_slot">
+	            <vu:dsfr-column-header field="movId">
+	                {{ label }}
+	                <dsfr-tooltip on-hover content="Explication du bail">
+	                    <v-icon icon="ri:information-2-line"></v-icon>
+	                </dsfr-tooltip>
+	            </vu:dsfr-column-header>
+	        </vu:slot>
+	        <vu:dsfr-column field="movId">
+	            <a th::href="|'@{/movie/}' + cell.movId|">{{ cell.movId }}</a>
+	        </vu:dsfr-column>
+	        <vu:dsfr-column field="title" align="right">
+	            <vu:dsfr-text-field-edit object="movies" field="title"></vu:dsfr-text-field-edit>
+	        </vu:dsfr-column>
+	        <vu:dsfr-column name="toto" label="Autre colonne">
+	            another column : {{ cell.movId }} : {{ cell.title }}
+	        </vu:dsfr-column>
+	    </vu:dsfr-table>
+    
+	    <br/>
+	        
+        <vu:block id="location" title="Location">
+			<vu:dsfr-geolocation object="casting" field="birthLocation" nameField="characterName" map_style="height: 50vh; width:100%;" map_overview></vu:dsfr-geolocation>
+		</vu:block>
     </vu:form>
-
-    <br/>
-
-    <vu:include-data object="movies" field="movId"/>
-    selection : {{ componentStates.movieTable2.selected }}
-    <vu:dsfr-table list="movies"
-                   componentId="movieTable2"
-				   sortUrl="@{/movies/_sort}"
-                   pagination="true"
-                   row-key="movId"
-                   title="My Movies Table"
-				   subtitle="My movie subtitle"
-                   footer-size="sm"
-                   selectable
-    >
-        <vu:slot name="actions_slot">
-            <dsfr-button-tooltip icon="ri-information-2-line"
-                                 icon-only tertiary
-                                 :content="`Ouvrir la modale de la ligne n°${idx}`"
-            ></dsfr-button-tooltip>
-            <dsfr-button-tooltip icon="fr-icon-delete-bin-line"
-                                 icon-only tertiary
-                                 :content="`Ouvrir la modale de la ligne n°${idx}`"
-            ></dsfr-button-tooltip>
-            <dsfr-button-tooltip icon="fr-icon-eye-line"
-                                 icon-only tertiary
-                                 :content="`Ouvrir la modale de la ligne n°${idx}`"
-            ></dsfr-button-tooltip>
-        </vu:slot>
-        <vu:slot name="header_slot">
-            <vu:dsfr-column-header field="movId">
-                {{ label }}
-                <dsfr-tooltip on-hover content="Explication du bail">
-                    <v-icon icon="ri:information-2-line"></v-icon>
-                </dsfr-tooltip>
-            </vu:dsfr-column-header>
-        </vu:slot>
-        <vu:dsfr-column field="movId">
-            <a th::href="|'@{/movie/}' + cell.movId|">{{ cell.movId }}</a>
-        </vu:dsfr-column>
-        <vu:dsfr-column field="title" align="right">
-            <vu:dsfr-text-field-edit object="movies" field="title"></vu:dsfr-text-field-edit>
-        </vu:dsfr-column>
-        <vu:dsfr-column name="toto" label="Autre colonne">
-            another column : {{ cell.movId }} : {{ cell.title }}
-        </vu:dsfr-column>
-    </vu:dsfr-table>
 
 </th:block>
 

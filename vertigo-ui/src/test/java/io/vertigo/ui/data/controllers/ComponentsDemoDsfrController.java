@@ -17,6 +17,25 @@
  */
 package io.vertigo.ui.data.controllers;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.Paths;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
 import io.vertigo.account.security.VSecurityManager;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.datamodel.data.model.DtList;
@@ -29,6 +48,7 @@ import io.vertigo.ui.core.ViewContext;
 import io.vertigo.ui.core.ViewContextKey;
 import io.vertigo.ui.data.domain.DtDefinitions.MovieDisplayFields;
 import io.vertigo.ui.data.domain.DtDefinitions.MovieFields;
+import io.vertigo.ui.data.domain.geo.GeoPoint;
 import io.vertigo.ui.data.domain.movies.Movie;
 import io.vertigo.ui.data.domain.movies.MovieDisplay;
 import io.vertigo.ui.data.domain.people.Casting;
@@ -42,23 +62,6 @@ import io.vertigo.vega.webservice.validation.DefaultDtObjectValidator;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
 import io.vertigo.vega.webservice.validation.UiMessageStack.Level;
 import io.vertigo.vega.webservice.validation.ValidationUserException;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import javax.inject.Inject;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.file.Paths;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 @Controller
 @RequestMapping("/componentsDemoDsfr")
@@ -146,9 +149,13 @@ public class ComponentsDemoDsfrController extends AbstractVSpringMvcController {
 		myMovie.setReleased(LocalDate.now());
 		myMovie.setLastModified(Instant.now());
 
+		final var casting = new Casting();
+		casting.setCharacterName("John doe");
+		casting.setBirthLocation(new GeoPoint(2.2370166094852078, 48.776258879279105));
+
 		viewContext
 				.publishDto(movieKey, myMovie)
-				.publishDto(castingKey, new Casting())
+				.publishDto(castingKey, casting)
 				.publishDtList(movieList, movieServices.getMovies(DtListState.defaultOf(Movie.class)))
 				.publishDtListModifiable(movieListModifiables, mySubList)
 				.publishMdl(moviesListMdl, Movie.class, null)
@@ -175,7 +182,6 @@ public class ComponentsDemoDsfrController extends AbstractVSpringMvcController {
 		viewContext.toModeReadOnly();
 	}
 
-
 	@PostMapping("/movies/{movieId}")
 	public void doSaveMovieManualValidation(final ViewContext viewContext,
 			@ViewAttribute("movie") final UiObject<Movie> movieUiObject,
@@ -197,7 +203,8 @@ public class ComponentsDemoDsfrController extends AbstractVSpringMvcController {
 	}
 
 	@PostMapping("/_saveDtCheck")
-	public void doSaveDtCheck(final ViewContext viewContext, @ViewAttribute("movie") final Movie movie, @ViewAttribute("myFilesUris1") final List<FileInfoURI> pictures, final UiMessageStack uiMessageStack) {
+	public void doSaveDtCheck(final ViewContext viewContext, @ViewAttribute("movie") final Movie movie, @ViewAttribute("myFilesUris1") final List<FileInfoURI> pictures,
+			final UiMessageStack uiMessageStack) {
 		viewContext.publishDto(movieKey, movie);
 		//we may save files on a more persistent space
 		if (movie.getTitle() == null) {
@@ -209,7 +216,8 @@ public class ComponentsDemoDsfrController extends AbstractVSpringMvcController {
 	}
 
 	@PostMapping("/_saveUiCheck")
-	public void doSaveUiCheck(final ViewContext viewContext, @ViewAttribute("movie") final UiObject<Movie> uiMovie, @ViewAttribute("myFilesUris1") final List<FileInfoURI> pictures, final UiMessageStack uiMessageStack) {
+	public void doSaveUiCheck(final ViewContext viewContext, @ViewAttribute("movie") final UiObject<Movie> uiMovie, @ViewAttribute("myFilesUris1") final List<FileInfoURI> pictures,
+			final UiMessageStack uiMessageStack) {
 		if (uiMovie.getString(MovieFields.title.name()) == null) {
 			uiMessageStack.addFieldMessage(Level.ERROR, "Test uiMessageStack error on Ui field", uiMovie.getInputKey(), MovieFields.title.name());
 			throw new ValidationUserException();
@@ -275,7 +283,7 @@ public class ComponentsDemoDsfrController extends AbstractVSpringMvcController {
 	public void saveInstant(final ViewContext viewContext, @ViewAttribute("movie") final Movie movie) {
 		viewContext.publishRef(currentInstant, movie.getLastModified());
 
-		final TestUserSession userSession = securityManager.<TestUserSession> getCurrentUserSession().get();
+		final TestUserSession userSession = securityManager.<TestUserSession>getCurrentUserSession().get();
 		userSession.setZoneId(ZoneId.of(zoneId.get()));
 		viewContext.publishRef(currentZoneId, localeManager.getCurrentZoneId().getId());
 	}
