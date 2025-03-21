@@ -9,7 +9,7 @@
 <li th:fragment="dsfr-tab(label, url, class, active, other_attrs)">
     <a class="fr-tabs__tab"
        th::href="|${disabled}?null:'${url}'|"
-       th:aria-selected="${active?'true':null}"
+       th:aria-selected="${active==true?'true':null}"
        th:classappend="|
             ${class}
             ${active == true ? 'fr-tabs__tab--active' : ''}
