@@ -64,6 +64,7 @@ import io.vertigo.datastore.entitystore.sql.SqlUtil;
  * @author pchretien
  */
 public abstract class AbstractStoreManagerTest {
+
 	@Inject
 	protected EntityStoreManager entityStoreManager;
 	@Inject
@@ -751,6 +752,28 @@ public abstract class AbstractStoreManagerTest {
 			final long count = entityStoreManager.count(dataDefinitionCar);
 			//-----
 			Assertions.assertEquals(9, count);
+		}
+	}
+
+	@Test
+	public void testCrudCountCarsByCriteria() {
+		try (var tx = transactionManager.createCurrentTransaction()) {
+			final long countByCriteria = entityStoreManager.count(dataDefinitionCar, null);
+			//-----
+			Assertions.assertEquals(9, countByCriteria);
+		}
+	}
+
+	@Test
+	public void testCrudCountCarsByCriteria2() {
+		try (var tx = transactionManager.createCurrentTransaction()) {
+			final long countPeugeot = entityStoreManager.count(dataDefinitionCar, Criterions.isEqualTo(CarFields.manufacturer, "Peugeot"));
+			//-----
+			Assertions.assertEquals(4, countPeugeot);
+
+			final long countEssence = entityStoreManager.count(dataDefinitionCar, Criterions.isEqualTo(CarFields.mtyCd, MotorTypeEnum.essence.getEntityUID().getId()));
+			//-----
+			Assertions.assertEquals(1, countEssence);
 		}
 	}
 

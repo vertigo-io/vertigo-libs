@@ -36,7 +36,7 @@ import io.vertigo.datamodel.data.model.UID;
  * this datatore is linked to a dataSpace.
  * Several dtDefinition can be included in a dataSpace.
  *
- * @author  pchretien
+ * @author pchretien
  */
 public interface EntityStorePlugin extends Plugin {
 
@@ -146,12 +146,20 @@ public interface EntityStorePlugin extends Plugin {
 	<E extends Entity> E readNullableForUpdate(DataDefinition dataDefinition, UID<?> uid);
 
 	/**
-	 * Finds a lists of entities matching a criteria.
+	 * Finds a list of entities matching a criteria.
 	 * @param dataDefinition the definition of entities to find
 	 * @param criteria the criteria to match
 	 * @param dtListState listState of rows to retrieve
 	 * @return the list
 	 */
 	<E extends Entity> DtList<E> findByCriteria(final DataDefinition dataDefinition, final Criteria<E> criteria, final DtListState dtListState);
+
+	/**
+	 * Count a list of entities matching a criteria.
+	 * @param dataDefinition the definition of entities to find
+	 * @param criteria the criteria to match
+	 * @return the count
+	 */
+	<E extends Entity> Integer countByCriteria(final DataDefinition dataDefinition, final Criteria<E> criteria);
 
 }
