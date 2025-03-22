@@ -36,7 +36,6 @@ import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.datastore.TestUtil;
-import io.vertigo.datastore.filestore.data.domain.fileinfo.FileInfoStd;
 import io.vertigo.datastore.filestore.data.domain.fileinfo.FileInfoTemp;
 import io.vertigo.datastore.filestore.model.FileInfo;
 import io.vertigo.datastore.filestore.model.VFile;
@@ -47,6 +46,7 @@ import io.vertigo.datastore.filestore.model.VFile;
  * @author pchretien
  */
 public abstract class AbstractFileStoreManagerTest {
+
 	@Inject
 	protected FileStoreManager fileStoreManager;
 	@Inject
@@ -277,7 +277,6 @@ public abstract class AbstractFileStoreManagerTest {
 		}
 	}
 
-
 	private String readFileContent(final VFile vFile) throws IOException {
 		try (final OutputStream sourceOS = new ByteArrayOutputStream()) {
 			try (final InputStream fileIS = vFile.createInputStream()) {
@@ -287,9 +286,7 @@ public abstract class AbstractFileStoreManagerTest {
 		}
 	}
 
-	protected FileInfo createFileInfo(final VFile vFile) {
-		return new FileInfoStd(vFile);
-	}
+	protected abstract FileInfo createFileInfo(final VFile vFile);
 
 	protected static String secureSubString(final String read, final int index, final String searchString) {
 		if (read != null && read.length() > index) {
