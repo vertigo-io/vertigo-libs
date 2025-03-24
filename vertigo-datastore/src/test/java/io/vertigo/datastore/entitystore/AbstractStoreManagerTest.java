@@ -758,9 +758,13 @@ public abstract class AbstractStoreManagerTest {
 	@Test
 	public void testCrudCountCarsByCriteria() {
 		try (var tx = transactionManager.createCurrentTransaction()) {
-			final long countByCriteria = entityStoreManager.count(dataDefinitionCar, null);
+			final long countByCriteria = entityStoreManager.count(dataDefinitionCar);
 			//-----
 			Assertions.assertEquals(9, countByCriteria);
+
+			final long countByCriteria2 = entityStoreManager.count(dataDefinitionCar, Criterions.alwaysTrue());
+			//-----
+			Assertions.assertEquals(9, countByCriteria2);
 		}
 	}
 
