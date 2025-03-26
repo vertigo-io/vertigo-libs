@@ -1,7 +1,7 @@
 const M = (e, t) => {
   const n = e.__vccOpts || e;
-  for (const [o, s] of t)
-    n[o] = s;
+  for (const [a, s] of t)
+    n[a] = s;
   return n;
 }, kn = {
   props: {
@@ -93,8 +93,8 @@ const M = (e, t) => {
         bgColor: "grey-4"
       }), e.buttons && e.buttons.forEach(function(n) {
         if (n.title.startsWith("#")) {
-          var o = n.title.substring(1);
-          o === "textarea" && (this.inputConfig.modeTextarea = !0), o === "eval" && (this.inputConfig.showRating = !0), o === "keep_action" && (this.keepAction = !0), n.payload && (this.inputConfig.responsePattern = n.payload);
+          var a = n.title.substring(1);
+          a === "textarea" && (this.inputConfig.modeTextarea = !0), a === "eval" && (this.inputConfig.showRating = !0), a === "keep_action" && (this.keepAction = !0), n.payload && (this.inputConfig.responsePattern = n.payload);
         } else
           this.inputConfig.buttons.push(n);
       }, this), this._scrollToBottom();
@@ -117,7 +117,7 @@ const M = (e, t) => {
     }
   }
 }, Pt = window.Vue.renderList, Nt = window.Vue.Fragment, U = window.Vue.openBlock, Be = window.Vue.createElementBlock, ye = window.Vue.resolveComponent, fe = window.Vue.createVNode, ve = window.Vue.withCtx, ae = window.Vue.createBlock, he = window.Vue.createCommentVNode, At = window.Vue.toDisplayString, Z = window.Vue.createElementVNode, Vn = window.Vue.withKeys, Dn = { class: "bot" }, qn = { class: "q-pr-md" }, Fn = { class: "sys-chat" }, En = { class: "q-pb-sm" }, Tn = { class: "sys-chat non-selectable" }, On = { class: "text-blue-2 q-caption" }, Mn = { class: "row docs-btn" }, Ln = { class: "message-processing sys-chat non-selectable" }, Pn = { class: "non-selectable" }, Nn = { class: "message-response row docs-btn q-pl-sm non-selectable" };
-function An(e, t, n, o, s, a) {
+function An(e, t, n, a, s, o) {
   const i = ye("q-rating"), r = ye("q-chat-message"), l = ye("q-btn"), d = ye("q-spinner-dots"), u = ye("q-scroll-area"), p = ye("q-input");
   return U(), Be("div", Dn, [
     fe(u, {
@@ -170,7 +170,7 @@ function An(e, t, n, o, s, a) {
                 Z("div", En, At(e.$q.lang.vui.chatbot.errorMessage), 1),
                 fe(l, {
                   class: "full-width",
-                  onClick: t[0] || (t[0] = (h) => a.askBot(e.lastPayload)),
+                  onClick: t[0] || (t[0] = (h) => o.askBot(e.lastPayload)),
                   label: e.$q.lang.vui.chatbot.tryAgain,
                   color: "white",
                   "text-color": "black"
@@ -192,7 +192,7 @@ function An(e, t, n, o, s, a) {
                   (U(!0), Be(Nt, null, Pt(e.inputConfig.buttons, (h, g) => (U(), ae(l, {
                     class: "full-width",
                     key: "repChatBtn-" + g,
-                    onClick: (c) => a.postAnswerBtn(h),
+                    onClick: (c) => o.postAnswerBtn(h),
                     label: h.title,
                     color: "white",
                     "text-color": "black"
@@ -240,7 +240,7 @@ function An(e, t, n, o, s, a) {
       fe(p, {
         type: e.inputConfig.modeTextarea ? "textarea" : "text",
         ref: "input",
-        onKeyup: t[2] || (t[2] = Vn((h) => e.inputConfig.modeTextarea || e.inputConfig.responseText.trim() === "" && e.inputConfig.rating === 0 ? !1 : a.postAnswerText(), ["enter"])),
+        onKeyup: t[2] || (t[2] = Vn((h) => e.inputConfig.modeTextarea || e.inputConfig.responseText.trim() === "" && e.inputConfig.rating === 0 ? !1 : o.postAnswerText(), ["enter"])),
         "max-height": 100,
         class: "col-grow",
         modelValue: e.inputConfig.responseText,
@@ -253,7 +253,7 @@ function An(e, t, n, o, s, a) {
         round: "",
         color: "primary",
         icon: "send",
-        onClick: t[4] || (t[4] = (h) => a.postAnswerText()),
+        onClick: t[4] || (t[4] = (h) => o.postAnswerText()),
         disable: e.processing || e.inputConfig.responseText.trim() === "" && e.inputConfig.rating === 0
       }, null, 8, ["disable"]),
       n.devMode === !0 ? (U(), ae(l, {
@@ -261,7 +261,7 @@ function An(e, t, n, o, s, a) {
         round: "",
         color: "red",
         icon: "refresh",
-        onClick: a.restart
+        onClick: o.restart
       }, null, 8, ["onClick"])) : he("", !0)
     ])
   ]);
@@ -289,8 +289,8 @@ const Un = /* @__PURE__ */ M(kn, [["render", An]]), Bn = {
         n();
         return;
       }
-      this.$http.post(this.baseUrl + "api/vertigo/commands/_search", { prefix: e }).then((function(o) {
-        this.$data.commands = o.data, t((function() {
+      this.$http.post(this.baseUrl + "api/vertigo/commands/_search", { prefix: e }).then((function(a) {
+        this.$data.commands = a.data, t((function() {
           this.$data.commandAutocompleteOptions = this.$data.commands.map(function(s) {
             return {
               label: s.commandName,
@@ -336,15 +336,15 @@ const Un = /* @__PURE__ */ M(kn, [["render", An]]), Bn = {
     handleEnter: function(e) {
       e === this.$data.selectedCommand.commandParams.length - 1 && this.$data.commandParamsValues[e].value && this.executeCommand();
     },
-    autocompleteParam: function(e, t, n, o, s) {
+    autocompleteParam: function(e, t, n, a, s) {
       if (n.length < 1) {
         s();
         return;
       }
-      this.$http.get(this.baseUrl + "api/vertigo/commands/params/_autocomplete", { params: { terms: n, entityClass: e.paramType.actualTypeArguments[0] } }).then((function(a) {
-        o((function() {
+      this.$http.get(this.baseUrl + "api/vertigo/commands/params/_autocomplete", { params: { terms: n, entityClass: e.paramType.actualTypeArguments[0] } }).then((function(o) {
+        a((function() {
           var i = this.$data.paramsAutocompleteOptions.slice();
-          i[t] = a.data.map(function(r) {
+          i[t] = o.data.map(function(r) {
             return {
               label: r.label,
               value: r.urn
@@ -393,13 +393,13 @@ const Un = /* @__PURE__ */ M(kn, [["render", An]]), Bn = {
   class: "col shadow-2 bg-secondary text-white q-px-md",
   style: { "line-height": "40px" }
 };
-function Wn(e, t, n, o, s, a) {
+function Wn(e, t, n, a, s, o) {
   const i = Ie("q-select"), r = Ie("q-input"), l = Ie("q-separator"), d = Ie("q-btn");
   return B(), ie("div", null, [
     e.isCommandCommited ? (B(), ie("div", {
       key: 1,
       class: "row col-12 justify-between bg-white round-borders overflow-hidden shadow-2 text-black",
-      onKeyup: t[0] || (t[0] = _e((...u) => a.executeCommand && a.executeCommand(...u), ["enter"]))
+      onKeyup: t[0] || (t[0] = _e((...u) => o.executeCommand && o.executeCommand(...u), ["enter"]))
     }, [
       It("div", Rn, Ve(e.selectedCommand.commandName), 1),
       e.isExecuted ? (B(), ie("div", Jn, [
@@ -416,7 +416,7 @@ function Wn(e, t, n, o, s, a) {
           _: 1
         }, 8, ["href"])) : Ut("", !0),
         dt(d, {
-          onClick: a.reset,
+          onClick: o.reset,
           flat: "",
           icon: "cancel",
           size: "sm",
@@ -433,18 +433,18 @@ function Wn(e, t, n, o, s, a) {
             borderless: "",
             "use-input": "",
             "input-debounce": "300",
-            value: a.getParamValue(p),
+            value: o.getParamValue(p),
             options: e.paramsAutocompleteOptions[p],
             autofocus: p === 0,
             "dropdown-icon": "search",
             onKeydown: _e(function(h) {
-              a.backIfNeeded(h, p === 0);
+              o.backIfNeeded(h, p === 0);
             }, ["delete"]),
             onKeyup: _e(function(h) {
-              a.backIfNeeded(h, p === 0);
+              o.backIfNeeded(h, p === 0);
             }, ["esc"]),
-            onFilter: (h) => a.autocompleteParam(u, p, e.val, e.update, e.abort),
-            "onUpdate:modelValue": (h) => a.selectParam(e.newValue, p),
+            onFilter: (h) => o.autocompleteParam(u, p, e.val, e.update, e.abort),
+            "onUpdate:modelValue": (h) => o.selectParam(e.newValue, p),
             style: { height: "32px" }
           }, null, 8, ["value", "options", "autofocus", "onKeydown", "onKeyup", "onFilter", "onUpdate:modelValue"])) : (B(), je(r, {
             key: 1,
@@ -453,10 +453,10 @@ function Wn(e, t, n, o, s, a) {
             borderless: "",
             modelValue: e.commandParamsValues[p].value,
             "onUpdate:modelValue": (h) => e.commandParamsValues[p].value = h,
-            onKeydown: _e((h) => a.backIfNeeded(e.event, p === 0), ["delete"]),
+            onKeydown: _e((h) => o.backIfNeeded(e.event, p === 0), ["delete"]),
             onKeyup: [
-              _e((h) => a.backIfNeeded(e.event, p === 0), ["esc"]),
-              _e((h) => a.handleEnter(p), ["enter"])
+              _e((h) => o.backIfNeeded(e.event, p === 0), ["esc"]),
+              _e((h) => o.handleEnter(p), ["enter"])
             ],
             autofocus: p === 0,
             dense: "",
@@ -465,7 +465,7 @@ function Wn(e, t, n, o, s, a) {
           dt(l, { vertical: "" })
         ], 64))), 128)) : (B(), ie("div", Gn, Ve(e.$q.lang.vui.commands.executeCommand), 1)),
         dt(d, {
-          onClick: a.executeCommand,
+          onClick: o.executeCommand,
           flat: "",
           icon: "play_arrow",
           size: "sm",
@@ -481,14 +481,14 @@ function Wn(e, t, n, o, s, a) {
       ref: "commandInput",
       autofocus: "",
       "dropdown-icon": "search",
-      onBlur: a.reset,
+      onBlur: o.reset,
       "use-input": "",
       "input-debounce": "300",
       "hide-selected": "",
-      onKeydown: a.commitCommand,
+      onKeydown: o.commitCommand,
       options: e.commandAutocompleteOptions,
-      onFilter: a.searchCommands,
-      "onUpdate:modelValue": a.selectCommand
+      onFilter: o.searchCommands,
+      "onUpdate:modelValue": o.selectCommand
     }, {
       default: Bt(() => [
         e.text !== "" && e.selectedCommand.commandName && e.selectedCommand.commandName.startsWith(e.text) ? (B(), ie("span", zn, Ve(e.selectedCommand.commandName), 1)) : Ut("", !0)
@@ -545,7 +545,7 @@ const Xn = /* @__PURE__ */ M(Bn, [["render", Wn]]), ct = window.Quasar, Kn = {
     }
   }
 }, De = window.Vue.toDisplayString, ze = window.Vue.createTextVNode, N = window.Vue.resolveComponent, E = window.Vue.withCtx, $e = window.Vue.openBlock, Re = window.Vue.createBlock, ut = window.Vue.createCommentVNode, F = window.Vue.createVNode, Qn = window.Vue.renderList, Zn = window.Vue.Fragment, zt = window.Vue.createElementBlock, Rt = window.Vue.createElementVNode, eo = window.Vue.normalizeClass, to = ["src"];
-function no(e, t, n, o, s, a) {
+function no(e, t, n, a, s, o) {
   const i = N("q-badge"), r = N("q-btn"), l = N("big"), d = N("q-item-label"), u = N("q-input"), p = N("q-item-section"), h = N("q-item"), g = N("q-separator"), c = N("q-avatar"), f = N("q-icon"), m = N("q-popup-edit"), w = N("q-list"), v = N("q-drawer");
   return $e(), zt("span", null, [
     F(r, {
@@ -622,7 +622,7 @@ function no(e, t, n, o, s, a) {
                       icon: "send",
                       title: e.$q.lang.vui.comments.actionLabel,
                       "aria-label": e.$q.lang.vui.comments.actionLabel,
-                      onClick: a.publishComment
+                      onClick: o.publishComment
                     }, null, 8, ["title", "aria-label", "onClick"])
                   ]),
                   _: 1
@@ -665,7 +665,7 @@ function no(e, t, n, o, s, a) {
                   default: E(() => [
                     F(d, { stamp: "" }, {
                       default: E(() => [
-                        ze(De(a.toDelay(new Date(b.creationDate))), 1)
+                        ze(De(o.toDelay(new Date(b.creationDate))), 1)
                       ]),
                       _: 2
                     }, 1024),
@@ -679,7 +679,7 @@ function no(e, t, n, o, s, a) {
                 b.author == n.connectedAccount ? ($e(), Re(m, {
                   key: 0,
                   buttons: !0,
-                  onSave: (q) => a.updateComment(b),
+                  onSave: (q) => o.updateComment(b),
                   "label-cancel": e.$q.lang.vui.comments.cancel,
                   "label-set": e.$q.lang.vui.comments.save
                 }, {
@@ -735,7 +735,7 @@ const oo = /* @__PURE__ */ M(Kn, [["render", no]]), ao = {
     }
   }
 }, io = window.Vue.renderList, so = window.Vue.Fragment, ft = window.Vue.openBlock, ht = window.Vue.createElementBlock, qe = window.Vue.resolveComponent, ro = window.Vue.normalizeStyle, Ce = window.Vue.createVNode, He = window.Vue.withCtx, Ht = window.Vue.toDisplayString, Le = window.Vue.createElementVNode, lo = { class: "row q-col-gutter-md" }, co = { class: "row col items-center" }, uo = { class: "q-subheading text-bold" }, fo = /* @__PURE__ */ Le("div", { class: "col" }, null, -1), ho = { class: "row col q-body-2 text-justify" };
-function po(e, t, n, o, s, a) {
+function po(e, t, n, a, s, o) {
   const i = qe("q-icon"), r = qe("q-item-section"), l = qe("q-toggle"), d = qe("q-item"), u = qe("q-card");
   return ft(), ht("div", lo, [
     (ft(!0), ht(so, null, io(e.extensions, (p) => (ft(), ht("div", {
@@ -754,7 +754,7 @@ function po(e, t, n, o, s, a) {
                   Ce(i, {
                     name: p.icon,
                     size: "40px",
-                    style: ro(a.getIconStyle(p.color))
+                    style: ro(o.getIconStyle(p.color))
                   }, null, 8, ["name", "style"])
                 ]),
                 _: 2
@@ -876,7 +876,7 @@ const mo = /* @__PURE__ */ M(ao, [["render", po]]), go = {
   key: 0,
   class: "selectedFacets q-pb-md"
 };
-function vo(e, t, n, o, s, a) {
+function vo(e, t, n, a, s, o) {
   const i = se("q-checkbox"), r = se("q-item-section"), l = se("q-item-label"), d = se("q-chip"), u = se("q-item"), p = se("q-select"), h = se("q-btn"), g = se("q-list");
   return n.render === "selects" ? (x(), I("div", {
     key: 0,
@@ -893,7 +893,7 @@ function vo(e, t, n, o, s, a) {
         multiple: "",
         onAdd: (f) => e.$emit("toogle-facet", c.code, f.value.code, n.contextKey),
         onRemove: (f) => e.$emit("toogle-facet", c.code, f.value, n.contextKey),
-        options: a.selectedInvisibleFacets(c.code).concat(c.values),
+        options: o.selectedInvisibleFacets(c.code).concat(c.values),
         "option-value": "code",
         "use-chips": "",
         outlined: "",
@@ -942,7 +942,7 @@ function vo(e, t, n, o, s, a) {
         label: c.label,
         "model-value": n.selectedFacets[c.code].length > 0 ? n.selectedFacets[c.code][0] : null,
         "onUpdate:modelValue": (f) => e.$emit("toogle-facet", c.code, f || n.selectedFacets[c.code][0], n.contextKey),
-        options: a.selectedInvisibleFacets(c.code).concat(c.values),
+        options: o.selectedInvisibleFacets(c.code).concat(c.values),
         "option-value": "code",
         clearable: "",
         "emit-value": "",
@@ -981,9 +981,9 @@ function vo(e, t, n, o, s, a) {
       }, 1032, ["label", "model-value", "onUpdate:modelValue", "options"]))
     ]))), 128))
   ], 2)) : (x(), I("div", bo, [
-    a.isAnyFacetValueSelected() ? (x(), I("div", yo, [
+    o.isAnyFacetValueSelected() ? (x(), I("div", yo, [
       (x(!0), I(pe, null, xe(n.selectedFacets, (c, f) => (x(), I("div", { key: f }, [
-        a.facetMultipleByCode(f) ? me("", !0) : (x(!0), I(pe, { key: 0 }, xe(c, (m) => (x(), Y(d, {
+        o.facetMultipleByCode(f) ? me("", !0) : (x(!0), I(pe, { key: 0 }, xe(c, (m) => (x(), Y(d, {
           clickable: "",
           class: "q-mb-sm",
           key: m.code,
@@ -991,7 +991,7 @@ function vo(e, t, n, o, s, a) {
           "icon-right": "cancel"
         }, {
           default: C(() => [
-            re(ee(a.facetLabelByCode(f)) + ": " + ee(a.facetValueLabelByCode(f, m)), 1)
+            re(ee(o.facetLabelByCode(f)) + ": " + ee(o.facetValueLabelByCode(f, m)), 1)
           ]),
           _: 2
         }, 1032, ["onClick"]))), 128))
@@ -1003,14 +1003,14 @@ function vo(e, t, n, o, s, a) {
       dense: ""
     }, {
       default: C(() => [
-        c.multiple || !a.isFacetSelected(c.code) ? (x(), I(pe, { key: 0 }, [
+        c.multiple || !o.isFacetSelected(c.code) ? (x(), I(pe, { key: 0 }, [
           V(l, { header: "" }, {
             default: C(() => [
               re(ee(c.label), 1)
             ]),
             _: 2
           }, 1024),
-          (x(!0), I(pe, null, xe(a.selectedInvisibleFacets(c.code), (f) => (x(), Y(u, {
+          (x(!0), I(pe, null, xe(o.selectedInvisibleFacets(c.code), (f) => (x(), Y(u, {
             key: f.code,
             class: "facetValue q-ml-md",
             clickable: "",
@@ -1032,7 +1032,7 @@ function vo(e, t, n, o, s, a) {
               }, 1024)) : me("", !0),
               V(r, null, {
                 default: C(() => [
-                  re(ee(a.facetValueLabelByCode(c.code, f.code)), 1)
+                  re(ee(o.facetValueLabelByCode(c.code, f.code)), 1)
                 ]),
                 _: 2
               }, 1024),
@@ -1045,7 +1045,7 @@ function vo(e, t, n, o, s, a) {
             ]),
             _: 2
           }, 1032, ["onClick"]))), 128)),
-          (x(!0), I(pe, null, xe(a.visibleFacets(c.code, c.values), (f) => (x(), Y(u, {
+          (x(!0), I(pe, null, xe(o.visibleFacets(c.code, c.values), (f) => (x(), Y(u, {
             key: f.code,
             class: "facetValue q-ml-md",
             clickable: "",
@@ -1059,7 +1059,7 @@ function vo(e, t, n, o, s, a) {
                 default: C(() => [
                   V(i, {
                     dense: "",
-                    modelValue: a.isFacetValueSelected(c.code, f.code),
+                    modelValue: o.isFacetValueSelected(c.code, f.code),
                     "onUpdate:modelValue": (m) => e.$emit("toogle-facet", c.code, f.code, n.contextKey)
                   }, null, 8, ["modelValue", "onUpdate:modelValue"])
                 ]),
@@ -1067,7 +1067,7 @@ function vo(e, t, n, o, s, a) {
               }, 1024)) : me("", !0),
               V(r, null, {
                 default: C(() => [
-                  re(ee(a.facetValueLabelByCode(c.code, f.code)), 1)
+                  re(ee(o.facetValueLabelByCode(c.code, f.code)), 1)
                 ]),
                 _: 2
               }, 1024),
@@ -1082,10 +1082,10 @@ function vo(e, t, n, o, s, a) {
           }, 1032, ["onClick"]))), 128)),
           V(u, null, {
             default: C(() => [
-              c.values.length > n.maxValues && !a.isFacetExpanded(c.code) ? (x(), Y(h, {
+              c.values.length > n.maxValues && !o.isFacetExpanded(c.code) ? (x(), Y(h, {
                 key: 0,
                 flat: "",
-                onClick: (f) => a.expandFacet(c.code),
+                onClick: (f) => o.expandFacet(c.code),
                 class: "q-ma-none"
               }, {
                 default: C(() => [
@@ -1093,10 +1093,10 @@ function vo(e, t, n, o, s, a) {
                 ]),
                 _: 2
               }, 1032, ["onClick"])) : me("", !0),
-              c.values.length > n.maxValues && a.isFacetExpanded(c.code) ? (x(), Y(h, {
+              c.values.length > n.maxValues && o.isFacetExpanded(c.code) ? (x(), Y(h, {
                 key: 1,
                 flat: "",
-                onClick: (f) => a.reduceFacet(c.code),
+                onClick: (f) => o.reduceFacet(c.code),
                 class: "q-ma-none"
               }, {
                 default: C(() => [
@@ -1138,14 +1138,16 @@ const _o = /* @__PURE__ */ M(go, [["render", vo]]), $o = {
     }
   }
 }, Co = window.Vue.renderSlot, Jt = window.Vue.vModelText, pt = window.Vue.createElementVNode, Yt = window.Vue.withDirectives, Wt = window.Vue.createTextVNode, xo = { class: "inputs" };
-function So(e, t, n, o, s, a) {
-  return Co(e.$slots, "default", {}, () => [
+function So(e, t, n, a, s, o) {
+  return Co(e.$slots, "default", { updateJson: o.updateJson }, () => [
     pt("div", xo, [
       Wt(" Longitude "),
       Yt(pt("input", {
-        "onUpdate:modelValue": t[0] || (t[0] = (i) => e.inputObject.lon = i),
-        "on:update:modelValue": t[1] || (t[1] = (...i) => a.updateJson && a.updateJson(...i))
-      }, null, 544), [
+        "onUpdate:modelValue": [
+          t[0] || (t[0] = (i) => e.inputObject.lon = i),
+          t[1] || (t[1] = (...i) => o.updateJson && o.updateJson(...i))
+        ]
+      }, null, 512), [
         [
           Jt,
           e.inputObject.lon,
@@ -1155,9 +1157,11 @@ function So(e, t, n, o, s, a) {
       ]),
       Wt(" Latitude "),
       Yt(pt("input", {
-        "onUpdate:modelValue": t[2] || (t[2] = (i) => e.inputObject.lat = i),
-        "on:update:modelValue": t[3] || (t[3] = (...i) => a.updateJson && a.updateJson(...i))
-      }, null, 544), [
+        "onUpdate:modelValue": [
+          t[2] || (t[2] = (i) => e.inputObject.lat = i),
+          t[3] || (t[3] = (...i) => o.updateJson && o.updateJson(...i))
+        ]
+      }, null, 512), [
         [
           Jt,
           e.inputObject.lat,
@@ -1186,7 +1190,7 @@ const ko = /* @__PURE__ */ M($o, [["render", So]]), Vo = {
     }
   }
 }, Fe = window.Vue.resolveComponent, Ge = window.Vue.createVNode, Je = window.Vue.withCtx, Do = window.Vue.renderList, qo = window.Vue.Fragment, mt = window.Vue.openBlock, Xt = window.Vue.createElementBlock, Fo = window.Vue.toDisplayString, Eo = window.Vue.createTextVNode, To = window.Vue.resolveDirective, Oo = window.Vue.createBlock, Mo = window.Vue.withDirectives;
-function Lo(e, t, n, o, s, a) {
+function Lo(e, t, n, a, s, o) {
   const i = Fe("q-icon"), r = Fe("q-input"), l = Fe("q-item-section"), d = Fe("q-item"), u = Fe("q-list"), p = To("ripple");
   return mt(), Xt("div", null, [
     Ge(r, {
@@ -1194,7 +1198,7 @@ function Lo(e, t, n, o, s, a) {
       modelValue: e.text,
       "onUpdate:modelValue": t[0] || (t[0] = (h) => e.text = h),
       debounce: 300,
-      onInput: a.searchHandles,
+      onInput: o.searchHandles,
       autofocus: "",
       outlined: "",
       "bg-color": "white",
@@ -1258,7 +1262,7 @@ const Po = /* @__PURE__ */ M(Vo, [["render", Lo]]), No = {
 }, Ao = window.Vue.renderList, Uo = window.Vue.Fragment, Ee = window.Vue.openBlock, gt = window.Vue.createElementBlock, Kt = window.Vue.resolveComponent, Qt = window.Vue.createBlock;
 window.Vue.createCommentVNode;
 const Bo = window.Vue.toDisplayString, Io = window.Vue.createElementVNode, jo = window.Vue.withCtx, zo = window.Vue.normalizeClass, Ro = { class: "row" };
-function Ho(e, t, n, o, s, a) {
+function Ho(e, t, n, a, s, o) {
   const i = Kt("q-input"), r = Kt("q-field");
   return Ee(), gt("div", Ro, [
     (Ee(!0), gt(Uo, null, Ao(e.jsonAsObject, (l, d) => (Ee(), gt("div", {
@@ -1283,7 +1287,7 @@ function Ho(e, t, n, o, s, a) {
         orientation: "vertical",
         "stack-label": "",
         modelValue: e.jsonAsObject[d],
-        "onUpdate:modelValue": [(u) => e.jsonAsObject[d] = u, a.updateJson]
+        "onUpdate:modelValue": [(u) => e.jsonAsObject[d] = u, o.updateJson]
       }, null, 8, ["label", "modelValue", "onUpdate:modelValue"]))
     ], 2))), 128))
   ]);
@@ -1325,25 +1329,25 @@ const Go = /* @__PURE__ */ M(No, [["render", Ho]]), Te = window.Quasar, Jo = {
       }).bind(this));
     },
     updateNotificationsData: function(e) {
-      const t = e.sort(function(a, i) {
-        return i.creationDate - a.creationDate;
+      const t = e.sort(function(o, i) {
+        return i.creationDate - o.creationDate;
       });
-      var n = [], o = this.list[0];
-      if (!o)
+      var n = [], a = this.list[0];
+      if (!a)
         n = t;
       else
         for (var s = 0; s < t.length; s++)
-          if (t[s].uuid != o.uuid) {
-            if (t[s].creationDate < o.creationDate)
+          if (t[s].uuid != a.uuid) {
+            if (t[s].creationDate < a.creationDate)
               break;
             n.push(t[s]);
           }
-      this.list = t, this.count = t.length, this.firstCall ? this.hasNew = n.length > 0 && Te.date.getDateDiff(Date.now(), n[0].creationDate, "seconds") < 2 * 5 : (this.hasNew = n.length > 0, n.forEach((function(a) {
+      this.list = t, this.count = t.length, this.firstCall ? this.hasNew = n.length > 0 && Te.date.getDateDiff(Date.now(), n[0].creationDate, "seconds") < 2 * 5 : (this.hasNew = n.length > 0, n.forEach((function(o) {
         this.$q.notify({
           type: "info",
-          icon: this.toIcon(a.type),
-          message: a.title,
-          detail: a.content,
+          icon: this.toIcon(o.type),
+          message: o.title,
+          detail: o.content,
           timeout: 3e3,
           position: "bottom-right"
         });
@@ -1365,7 +1369,7 @@ const Go = /* @__PURE__ */ M(No, [["render", Ho]]), Te = window.Quasar, Jo = {
     clearInterval(this.timer);
   }
 }, Ye = window.Vue.toDisplayString, We = window.Vue.createTextVNode, le = window.Vue.resolveComponent, H = window.Vue.withCtx, Xe = window.Vue.openBlock, wt = window.Vue.createBlock, Yo = window.Vue.createCommentVNode, Wo = window.Vue.renderList, Xo = window.Vue.Fragment, Ko = window.Vue.createElementBlock, te = window.Vue.createVNode;
-function Qo(e, t, n, o, s, a) {
+function Qo(e, t, n, a, s, o) {
   const i = le("q-badge"), r = le("q-icon"), l = le("q-item-section"), d = le("q-item-label"), u = le("q-item"), p = le("q-list"), h = le("q-menu"), g = le("q-btn");
   return Xe(), wt(g, {
     round: "",
@@ -1401,7 +1405,7 @@ function Qo(e, t, n, o, s, a) {
                   te(l, { avatar: "" }, {
                     default: H(() => [
                       te(r, {
-                        name: a.toIcon(c.type),
+                        name: o.toIcon(c.type),
                         size: "2rem"
                       }, null, 8, ["name"])
                     ]),
@@ -1434,7 +1438,7 @@ function Qo(e, t, n, o, s, a) {
                     default: H(() => [
                       te(d, { caption: "" }, {
                         default: H(() => [
-                          We(Ye(a.toDelay(new Date(c.creationDate))), 1)
+                          We(Ye(o.toDelay(new Date(c.creationDate))), 1)
                         ]),
                         _: 2
                       }, 1024)
@@ -1482,8 +1486,8 @@ const Zo = /* @__PURE__ */ M(Jo, [["render", Qo]]), L = window.ol, ea = {
       preload: 4,
       source: t
     });
-    const o = [ta()];
-    this.$props.overview && o.push(new L.control.OverviewMap({ layers: [new L.layer.Tile({ source: t })] })), this.$props.search && typeof Geocoder == "function" && o.push(new Geocoder("nominatim", {
+    const a = [ta()];
+    this.$props.overview && a.push(new L.control.OverviewMap({ layers: [new L.layer.Tile({ source: t })] })), this.$props.search && typeof Geocoder == "function" && a.push(new Geocoder("nominatim", {
       provider: "osm",
       lang: "fr",
       placeholder: "Search for ...",
@@ -1502,9 +1506,9 @@ const Zo = /* @__PURE__ */ M(Jo, [["render", Qo]]), L = window.ol, ea = {
       // Improve user experience by loading tiles while animating. Will make animations stutter on mobile or slow devices.
       loadTilesWhileAnimating: !0,
       view: e,
-      controls: L.control.defaults.defaults().extend(o)
+      controls: L.control.defaults.defaults().extend(a)
     }), this.$props.initialCenter && this.olMap.getView().setCenter(L.proj.fromLonLat([this.$props.initialCenter.lon, this.$props.initialCenter.lat])), this.olMap.on("moveend", (function(s) {
-      let a = s.map.getView().calculateExtent(), i = L.proj.transformExtent(a, "EPSG:3857", "EPSG:4326"), r = L.extent.getTopLeft(i), l = L.extent.getBottomRight(i);
+      let o = s.map.getView().calculateExtent(), i = L.proj.transformExtent(o, "EPSG:3857", "EPSG:4326"), r = L.extent.getTopLeft(i), l = L.extent.getBottomRight(i);
       VUiPage.debounce(() => this.$emit("moveend", r, l), 300);
     }).bind(this)), setTimeout((function() {
       this.olMap.on("click", (function(s) {
@@ -1519,16 +1523,16 @@ function ta() {
      * @param {Object} [opt_options] Control options.
      */
     constructor(t) {
-      const n = t || {}, o = document.createElement("div");
-      o.className = "ol-v-custom-buttons ol-unselectable ol-control", super({
-        element: o,
+      const n = t || {}, a = document.createElement("div");
+      a.className = "ol-v-custom-buttons ol-unselectable ol-control", super({
+        element: a,
         target: n.target
       });
     }
   }();
 }
 const na = window.Vue.normalizeProps, oa = window.Vue.guardReactiveProps, aa = window.Vue.renderSlot, ia = window.Vue.openBlock, sa = window.Vue.createElementBlock, ra = ["id"];
-function la(e, t, n, o, s, a) {
+function la(e, t, n, a, s, o) {
   return ia(), sa("div", {
     id: n.id,
     class: "map"
@@ -1624,26 +1628,26 @@ const da = /* @__PURE__ */ M(ea, [["render", la]]), y = window.ol, ca = {
   },
   computed: {
     features: function() {
-      let e = this.$props.field, t = this.$data.items.filter(function(o) {
-        return o[e] != null;
-      }).map((function(o) {
+      let e = this.$props.field, t = this.$data.items.filter(function(a) {
+        return a[e] != null;
+      }).map((function(a) {
         let s;
-        if (typeof o[e] == "string" || o[e] instanceof String ? s = JSON.parse(o[e]) : s = o[e], s != null && s.lon != null && s.lat != null) {
-          let a = new y.Feature({
+        if (typeof a[e] == "string" || a[e] instanceof String ? s = JSON.parse(a[e]) : s = a[e], s != null && s.lon != null && s.lat != null) {
+          let o = new y.Feature({
             geometry: new y.geom.Point(y.proj.fromLonLat([s.lon, s.lat]))
           });
-          return this.$props.nameField && (a.set("name", o[this.$props.nameField]), a.set("innerObject", o), a.set("totalCount", o.totalCount)), a;
+          return this.$props.nameField && (o.set("name", a[this.$props.nameField]), o.set("innerObject", a), o.set("totalCount", a.totalCount)), o;
         }
         return null;
-      }).bind(this)).filter((o) => o != null), n = this.$data.clusters.filter(function(o) {
-        return o.geoLocation != null;
-      }).map((function(o) {
+      }).bind(this)).filter((a) => a != null), n = this.$data.clusters.filter(function(a) {
+        return a.geoLocation != null;
+      }).map((function(a) {
         let s;
-        if (typeof o.geoLocation == "string" || o.geoLocation instanceof String ? s = JSON.parse(o.geoLocation) : s = o.geoLocation, s != null) {
-          let a = new y.Feature({
+        if (typeof a.geoLocation == "string" || a.geoLocation instanceof String ? s = JSON.parse(a.geoLocation) : s = a.geoLocation, s != null) {
+          let o = new y.Feature({
             geometry: new y.geom.Point(y.proj.fromLonLat([s.lon, s.lat]))
           });
-          return this.$props.nameField && (a.set("name", o[this.$props.nameField]), a.set("innerObject", o), a.set("totalCount", o.totalCount)), a;
+          return this.$props.nameField && (o.set("name", a[this.$props.nameField]), o.set("innerObject", a), o.set("totalCount", a.totalCount)), o;
         }
         return null;
       }).bind(this));
@@ -1681,9 +1685,9 @@ const da = /* @__PURE__ */ M(ea, [["render", la]]), y = window.ol, ca = {
     *     const latlon = Geohash.decode('u120fxw'); // => { lat: 52.205, lon: 0.1188 }
     */
     decode: function(e) {
-      const t = this.bounds(e), n = t.sw.lat, o = t.sw.lon, s = t.ne.lat, a = t.ne.lon;
-      let i = (n + s) / 2, r = (o + a) / 2;
-      return i = i.toFixed(Math.floor(2 - Math.log(s - n) / Math.LN10)), r = r.toFixed(Math.floor(2 - Math.log(a - o) / Math.LN10)), { lat: Number(i), lon: Number(r) };
+      const t = this.bounds(e), n = t.sw.lat, a = t.sw.lon, s = t.ne.lat, o = t.ne.lon;
+      let i = (n + s) / 2, r = (a + o) / 2;
+      return i = i.toFixed(Math.floor(2 - Math.log(s - n) / Math.LN10)), r = r.toFixed(Math.floor(2 - Math.log(o - a) / Math.LN10)), { lat: Number(i), lon: Number(r) };
     },
     /**
      * Returns SW/NE latitude/longitude bounds of specified geohash.
@@ -1695,25 +1699,25 @@ const da = /* @__PURE__ */ M(ea, [["render", la]]), y = window.ol, ca = {
     bounds: function(e) {
       if (e.length == 0) throw new Error("Invalid geohash");
       e = e.toLowerCase();
-      let t = !0, n = -90, o = 90, s = -180, a = 180;
+      let t = !0, n = -90, a = 90, s = -180, o = 180;
       for (let r = 0; r < e.length; r++) {
         const l = e.charAt(r), d = this.$data.base32.indexOf(l);
         if (d == -1) throw new Error("Invalid geohash");
         for (let u = 4; u >= 0; u--) {
           const p = d >> u & 1;
           if (t) {
-            const h = (s + a) / 2;
-            p == 1 ? s = h : a = h;
+            const h = (s + o) / 2;
+            p == 1 ? s = h : o = h;
           } else {
-            const h = (n + o) / 2;
-            p == 1 ? n = h : o = h;
+            const h = (n + a) / 2;
+            p == 1 ? n = h : a = h;
           }
           t = !t;
         }
       }
       return {
         sw: { lat: n, lon: s },
-        ne: { lat: o, lon: a }
+        ne: { lat: a, lon: o }
       };
     }
   },
@@ -1722,11 +1726,11 @@ const da = /* @__PURE__ */ M(ea, [["render", la]]), y = window.ol, ca = {
       if (this.$data.olMap = e, this.$data.items = [], this.$data.clusters = [], this.$props.list)
         this.$data.items = this.$props.list;
       else if (this.$props.cluster)
-        for (let a = 0; a < this.$props.cluster.length; a++)
-          this.$props.cluster[a].totalCount == 1 ? this.$data.items = this.$data.items.concat(this.$props.cluster[a].list) : this.$data.clusters.push({
-            geoHash: this.$props.cluster[a].code,
-            geoLocation: this.decode(this.$props.cluster[a].code),
-            totalCount: this.$props.cluster[a].totalCount
+        for (let o = 0; o < this.$props.cluster.length; o++)
+          this.$props.cluster[o].totalCount == 1 ? this.$data.items = this.$data.items.concat(this.$props.cluster[o].list) : this.$data.clusters.push({
+            geoHash: this.$props.cluster[o].code,
+            geoLocation: this.decode(this.$props.cluster[o].code),
+            totalCount: this.$props.cluster[o].totalCount
           });
       else this.$props.object && (this.$data.items = [this.$props.object]);
       this.$data.vectorSource = new y.source.Vector({
@@ -1737,22 +1741,22 @@ const da = /* @__PURE__ */ M(ea, [["render", la]]), y = window.ol, ca = {
         distance: 2 * this.$props.clusterCircleSize
       }), n = new y.layer.Vector({
         source: t
-      }), o;
-      this.$props.markerUseFont ? o = new y.style.Style({
+      }), a;
+      this.$props.markerUseFont ? a = new y.style.Style({
         text: new y.style.Text({
           font: this.$props.markerSize + "px " + this.$props.markerFont,
           text: this.$props.markerIcon,
           fill: new y.style.Fill({ color: this.$props.markerColor }),
           textBaseline: "alphabetic"
         })
-      }) : this.$props.markerImage ? o = new y.style.Style({
+      }) : this.$props.markerImage ? a = new y.style.Style({
         image: new y.style.Icon({
           src: this.$props.markerImage,
           scale: this.$props.markerSize / 30,
           anchor: [0.5, 0.95],
           color: this.$props.markerColor
         })
-      }) : o = new y.style.Style({
+      }) : a = new y.style.Style({
         image: new y.style.Icon({
           src: this.$props.markerImageDynamic(this.$props.markerSize),
           anchor: [0.5, 0.95],
@@ -1760,14 +1764,14 @@ const da = /* @__PURE__ */ M(ea, [["render", la]]), y = window.ol, ca = {
         })
       });
       let s = {};
-      if (n.setStyle((function(a) {
-        let i = 0, r = a.get("features");
+      if (n.setStyle((function(o) {
+        let i = 0, r = o.get("features");
         for (let l = 0; l < r.length; l++) {
           let d = r[l].get("totalCount");
           i += d || 1;
         }
         if (!i || i == 1)
-          return o;
+          return a;
         {
           let l = s[i];
           return l || (l = new y.style.Style({
@@ -1789,17 +1793,17 @@ const da = /* @__PURE__ */ M(ea, [["render", la]]), y = window.ol, ca = {
             })
           }), s[i] = l), l;
         }
-      }).bind(this)), this.olMap.addLayer(n), this.fitView(), this.features.length == 0 && (this.olMap.getView().setCenter(y.proj.fromLonLat([2.333333, 48.866667])), this.olMap.vInitialZoomOverride = 3), this.olMap.on("moveend", (function(a) {
-        let i = a.map.getView().calculateExtent(), r = y.proj.transformExtent(i, "EPSG:3857", "EPSG:4326"), l = y.extent.getTopLeft(r), d = y.extent.getBottomRight(r);
+      }).bind(this)), this.olMap.addLayer(n), this.fitView(), this.features.length == 0 && (this.olMap.getView().setCenter(y.proj.fromLonLat([2.333333, 48.866667])), this.olMap.vInitialZoomOverride = 3), this.olMap.on("moveend", (function(o) {
+        let i = o.map.getView().calculateExtent(), r = y.proj.transformExtent(i, "EPSG:3857", "EPSG:4326"), l = y.extent.getTopLeft(r), d = y.extent.getBottomRight(r);
         this.baseUrl && VUiPage.debounce(() => this.fetchList({ lat: l[0], lon: l[1] }, { lat: d[0], lon: d[1] }), 300), VUiPage.debounce(() => this.$emit("moveend", l, d), 300);
       }).bind(this)), this.$props.nameField) {
-        let a = new y.Overlay({
+        let o = new y.Overlay({
           element: this.$el.querySelector("#" + this.$props.id + "Popup"),
           positioning: "bottom-center",
           stopEvent: !1,
           offset: [0, -20]
         });
-        this.olMap.addOverlay(a), this.olMap.on("click", (function(i) {
+        this.olMap.addOverlay(o), this.olMap.on("click", (function(i) {
           if (i.originalEvent.target instanceof HTMLCanvasElement) {
             let r = this.olMap.forEachFeatureAtPixel(
               i.pixel,
@@ -1810,7 +1814,7 @@ const da = /* @__PURE__ */ M(ea, [["render", la]]), y = window.ol, ca = {
             if (r && r.get("features") && r.get("features").length == 1) {
               if (!Object.hasOwn(r.get("features")[0].get("innerObject"), "geoHash")) {
                 let l = r.getGeometry().getCoordinates();
-                a.setPosition(l), this.$data.popupDisplayed = !0, this.$data.objectDisplayed = r.get("features")[0].get("innerObject"), i.stopPropagation(), VUiPage.debounce(() => this.$emit("click", y.proj.transform(l, "EPSG:3857", "EPSG:4326")), 300);
+                o.setPosition(l), this.$data.popupDisplayed = !0, this.$data.objectDisplayed = r.get("features")[0].get("innerObject"), i.stopPropagation(), VUiPage.debounce(() => this.$emit("click", y.proj.transform(l, "EPSG:3857", "EPSG:4326")), 300);
               }
             } else
               this.$data.popupDisplayed = !1;
@@ -1824,28 +1828,28 @@ const da = /* @__PURE__ */ M(ea, [["render", la]]), y = window.ol, ca = {
           this.olMap.getTargetElement().style.cursor = l ? "pointer" : "";
         }).bind(this));
       } else
-        this.olMap.on("click", (function(a) {
-          if (a.originalEvent.target instanceof HTMLCanvasElement) {
+        this.olMap.on("click", (function(o) {
+          if (o.originalEvent.target instanceof HTMLCanvasElement) {
             let i = this.olMap.forEachFeatureAtPixel(
-              a.pixel,
+              o.pixel,
               function(r) {
                 return r;
               }
             );
             if (i && i.get("features") && i.get("features").length == 1) {
               let r = i.getGeometry().getCoordinates();
-              a.stopPropagation(), VUiPage.debounce(() => this.$emit("click", y.proj.transform(r, "EPSG:3857", "EPSG:4326")), 300);
+              o.stopPropagation(), VUiPage.debounce(() => this.$emit("click", y.proj.transform(r, "EPSG:3857", "EPSG:4326")), 300);
             }
           }
         }).bind(this));
       if (this.$props.object && this.$props.objectEditable) {
-        let a = new y.interaction.Draw({
+        let o = new y.interaction.Draw({
           source: this.$data.vectorSource,
           type: "Point"
         });
-        a.on("drawend", (r) => {
+        o.on("drawend", (r) => {
           let l = r.feature, d = y.proj.toLonLat(l.getGeometry().getCoordinates());
-          this.$data.vectorSource.clear(), this.olMap.removeInteraction(a), i.classList.remove("active"), this.$props.object[this.$props.field] = {
+          this.$data.vectorSource.clear(), this.olMap.removeInteraction(o), i.classList.remove("active"), this.$props.object[this.$props.field] = {
             lon: d[0],
             lat: d[1]
           };
@@ -1854,7 +1858,7 @@ const da = /* @__PURE__ */ M(ea, [["render", la]]), y = window.ol, ca = {
         i.innerHTML = "&#9678;", i.addEventListener(
           "click",
           (r) => {
-            r.preventDefault(), i.classList.contains("active") ? (this.olMap.removeInteraction(a), i.classList.remove("active")) : (this.olMap.addInteraction(a), a = this.olMap.getInteractions().getArray().slice(-1)[0], i.classList.add("active"));
+            r.preventDefault(), i.classList.contains("active") ? (this.olMap.removeInteraction(o), i.classList.remove("active")) : (this.olMap.addInteraction(o), o = this.olMap.getInteractions().getArray().slice(-1)[0], i.classList.add("active"));
           },
           !1
         ), this.olMap.getViewport().getElementsByClassName("ol-v-custom-buttons")[0].appendChild(i);
@@ -1865,7 +1869,7 @@ const da = /* @__PURE__ */ M(ea, [["render", la]]), y = window.ol, ca = {
   key: 0,
   class: "popup"
 };
-function ba(e, t, n, o, s, a) {
+function ba(e, t, n, a, s, o) {
   return Zt(), en("div", { id: n.id }, [
     pa("div", {
       id: n.id + "Popup"
@@ -1910,11 +1914,11 @@ const ya = /* @__PURE__ */ M(ca, [["render", ba]]), va = window.Quasar, _a = {
       }).bind(this))[this.$props.labelField] : null;
     },
     convertListToTree: function(e, t) {
-      var n = {}, o, s = [], a, i = [];
-      for (a = 0; a < e.length; a += 1)
-        n[e[a][this.$props.keyField]] = a, i.push({ ...e[a], children: [] });
-      for (a = 0; a < e.length; a += 1)
-        o = i[a], o[this.$props.parentKeyField] ? i[n[o[this.$props.parentKeyField]]].children.push(o) : s.push(o);
+      var n = {}, a, s = [], o, i = [];
+      for (o = 0; o < e.length; o += 1)
+        n[e[o][this.$props.keyField]] = o, i.push({ ...e[o], children: [] });
+      for (o = 0; o < e.length; o += 1)
+        a = i[o], a[this.$props.parentKeyField] ? i[n[a[this.$props.parentKeyField]]].children.push(a) : s.push(a);
       return t ? [i[n[t]]] : s;
     }
   }
@@ -1922,14 +1926,14 @@ const ya = /* @__PURE__ */ M(ca, [["render", ba]]), va = window.Quasar, _a = {
   class: "self-center full-width no-outline",
   tabindex: "0"
 };
-function qa(e, t, n, o, s, a) {
+function qa(e, t, n, a, s, o) {
   const i = Ke("q-icon"), r = Ke("q-tree"), l = Ke("q-menu"), d = Ke("q-field");
   return ka(), Va(d, xa(Sa(e.$attrs)), {
     append: Qe(() => [
       bt(i, { name: "arrow_drop_down" })
     ]),
     control: Qe(() => [
-      Ca("div", Da, $a(a.getSelectedLabel()), 1)
+      Ca("div", Da, $a(o.getSelectedLabel()), 1)
     ]),
     default: Qe(() => [
       bt(l, {
@@ -1939,18 +1943,18 @@ function qa(e, t, n, o, s, a) {
       }, {
         default: Qe(() => [
           bt(r, {
-            nodes: a.convertListToTree(e.$props.list, e.$props.subTreeKey),
+            nodes: o.convertListToTree(e.$props.list, e.$props.subTreeKey),
             "node-key": e.$props.keyField,
             "label-key": e.$props.labelField,
             expanded: e.expandedNodes,
             "onUpdate:expanded": [
               t[0] || (t[0] = (u) => e.expandedNodes = u),
-              a.handleExpanded
+              o.handleExpanded
             ],
             selected: e.selectedNode,
             "onUpdate:selected": [
               t[1] || (t[1] = (u) => e.selectedNode = u),
-              a.handleSelected
+              o.handleSelected
             ]
           }, null, 8, ["nodes", "node-key", "label-key", "expanded", "onUpdate:expanded", "selected", "onUpdate:selected"])
         ]),
@@ -1983,7 +1987,7 @@ const Fa = /* @__PURE__ */ M(_a, [["render", qa]]), Ea = window.Vue.ref, Ta = {
         e.append(this.fieldName, t);
       }), this.$http.get(this.url + "/fileInfos", { params: e, credentials: !1 }).then((function(t) {
         let n = t.data;
-        this.files = n.map((o) => ({ ...o, status: "OK" })), this.$emit("init-ok");
+        this.files = n.map((a) => ({ ...a, status: "OK" })), this.$emit("init-ok");
       }).bind(this)).catch(
         (function(t) {
           this.$emit("update:file-info-uris", []), this.$emit("init-ko"), this.$q && (t.response ? this.$q.notify(t.response.status + ":" + t.response.statusText + " Can't load file " + e) : this.$q.notify(t + " Can't load file " + e));
@@ -2041,12 +2045,12 @@ const Fa = /* @__PURE__ */ M(_a, [["render", qa]]), Ea = window.Vue.ref, Ta = {
       this.files.splice(t, 1);
       let n = [...this.fileInfoUris];
       n.splice(t, 1), this.$emit("update:file-info-uris", n);
-      let o = typeof this.callbackOnDelete == "function";
-      if (this.callbackOnDelete === !0 || o) {
+      let a = typeof this.callbackOnDelete == "function";
+      if (this.callbackOnDelete === !0 || a) {
         let s = {};
         s[this.fieldName] = e.fileUri;
-        let a = this.$http.delete(this.url, { params: s, credentials: !1 });
-        o && this.callbackOnDelete(this, a);
+        let o = this.$http.delete(this.url, { params: s, credentials: !1 });
+        a && this.callbackOnDelete(this, o);
       }
     },
     downloadFile(e) {
@@ -2080,17 +2084,17 @@ function Oa(e) {
         Accept: "application/json"
       },
       signal: t.signal,
-      onUploadProgress: (function(o) {
-        e.progress = o.progress, e.estimated = o.estimated;
+      onUploadProgress: (function(a) {
+        e.progress = a.progress, e.estimated = a.estimated;
       }).bind(this)
     }
-  ).then((function(o) {
-    this.$emit("file-ok", o.data);
-    let s = o.data;
+  ).then((function(a) {
+    this.$emit("file-ok", a.data);
+    let s = a.data;
     e.status = "OK", e.fileUri = s, this.$emit("update:file-info-uris", [...this.fileInfoUris, s]);
-  }).bind(this)).catch((function(o) {
+  }).bind(this)).catch((function(a) {
     var s;
-    this.$emit("file-failed", o), e.status = "ERROR", ((s = o == null ? void 0 : o.response) == null ? void 0 : s.status) === 413 && (e.errorMessage = this.$vui.i18n().uploader.fileErrorTooBig);
+    this.$emit("file-failed", a), e.status = "ERROR", ((s = a == null ? void 0 : a.response) == null ? void 0 : s.status) === 413 && (e.errorMessage = this.$vui.i18n().uploader.fileErrorTooBig);
   }).bind(this));
 }
 const G = window.Vue.toDisplayString, Ze = window.Vue.normalizeProps, et = window.Vue.guardReactiveProps, Oe = window.Vue.renderSlot, Ma = window.Vue.createTextVNode, j = window.Vue.openBlock, z = window.Vue.createElementBlock, ne = window.Vue.createCommentVNode, La = window.Vue.renderList, Pa = window.Vue.Fragment, Na = window.Vue.normalizeStyle, Me = window.Vue.createElementVNode, tn = window.Vue.withModifiers, nn = window.Vue.mergeProps, Aa = { class: "v-fileupload" }, Ua = {
@@ -2106,50 +2110,50 @@ const G = window.Vue.toDisplayString, Ze = window.Vue.normalizeProps, et = windo
   key: 0,
   class: "input"
 }, Ka = ["id", "accept", "multiple"];
-function Qa(e, t, n, o, s, a) {
+function Qa(e, t, n, a, s, o) {
   return j(), z("div", Aa, [
     e.$slots.header ? (j(), z("div", Ua, [
       Ma(G(e.$slots.header.$attrs) + " ", 1),
-      Oe(e.$slots, "header", Ze(et({ ...e.$data, ...e.$props, canAddFiles: a.canAddFiles, addFiles: a.addFiles, abortUpload: a.abortUpload, removeFile: a.removeFile, downloadFile: a.downloadFile, getGlobalSize: a.getGlobalSize, getGlobalSizeLabel: a.getGlobalSizeLabel, humanStorageSize: a.humanStorageSize })))
+      Oe(e.$slots, "header", Ze(et({ ...e.$data, ...e.$props, canAddFiles: o.canAddFiles, addFiles: o.addFiles, abortUpload: o.abortUpload, removeFile: o.removeFile, downloadFile: o.downloadFile, getGlobalSize: o.getGlobalSize, getGlobalSizeLabel: o.getGlobalSizeLabel, humanStorageSize: o.humanStorageSize })))
     ])) : ne("", !0),
     Me("div", Ba, [
-      Oe(e.$slots, "default", Ze(et({ ...e.$data, ...e.$props, canAddFiles: a.canAddFiles, addFiles: a.addFiles, abortUpload: a.abortUpload, removeFile: a.removeFile, downloadFile: a.downloadFile, getGlobalSize: a.getGlobalSize, getGlobalSizeLabel: a.getGlobalSizeLabel, humanStorageSize: a.humanStorageSize })), () => [
+      Oe(e.$slots, "default", Ze(et({ ...e.$data, ...e.$props, canAddFiles: o.canAddFiles, addFiles: o.addFiles, abortUpload: o.abortUpload, removeFile: o.removeFile, downloadFile: o.downloadFile, getGlobalSize: o.getGlobalSize, getGlobalSizeLabel: o.getGlobalSizeLabel, humanStorageSize: o.humanStorageSize })), () => [
         Me("div", Ia, [
-          Oe(e.$slots, "files", Ze(et({ ...e.$data, ...e.$props, canAddFiles: a.canAddFiles, addFiles: a.addFiles, abortUpload: a.abortUpload, removeFile: a.removeFile, downloadFile: a.downloadFile, getGlobalSize: a.getGlobalSize, getGlobalSizeLabel: a.getGlobalSizeLabel, humanStorageSize: a.humanStorageSize })), () => [
+          Oe(e.$slots, "files", Ze(et({ ...e.$data, ...e.$props, canAddFiles: o.canAddFiles, addFiles: o.addFiles, abortUpload: o.abortUpload, removeFile: o.removeFile, downloadFile: o.downloadFile, getGlobalSize: o.getGlobalSize, getGlobalSizeLabel: o.getGlobalSizeLabel, humanStorageSize: o.humanStorageSize })), () => [
             (j(!0), z(Pa, null, La(e.files, (i) => (j(), z("span", ja, [
               Me("span", {
                 style: Na({ color: i.status === "IN_PROGRESS" ? "blue" : i.status == "ERROR" ? "red" : "" })
               }, G(i.name), 5),
               i.status === "ERROR" ? (j(), z("span", za, G(i.errorMessage), 1)) : ne("", !0),
-              Me("span", Ra, G(a.humanStorageSize(i.size)), 1),
+              Me("span", Ra, G(o.humanStorageSize(i.size)), 1),
               i.status === "IN_PROGRESS" ? (j(), z("span", Ha, G(e.$vui.i18n().uploader.progress) + " : " + G((i.progress * 100).toFixed()) + " %", 1)) : ne("", !0),
               i.status === "IN_PROGRESS" && i.estimated != null ? (j(), z("span", Ga, G(e.$vui.i18n().uploader.estimated) + " : " + G(i.estimated.toFixed()) + " s", 1)) : ne("", !0),
               i.status === "OK" ? (j(), z("a", {
                 key: 3,
-                onClick: (r) => a.downloadFile(i),
+                onClick: (r) => o.downloadFile(i),
                 href: n.downloadUrl + i.uri
               }, G(e.$vui.i18n().uploader.download), 9, Ja)) : ne("", !0),
               i.status === "IN_PROGRESS" ? (j(), z("button", {
                 key: 4,
-                onClick: tn((r) => a.abortUpload(i), ["prevent"])
+                onClick: tn((r) => o.abortUpload(i), ["prevent"])
               }, G(e.$vui.i18n().uploader.abort), 9, Ya)) : ne("", !0),
               !this.readonly && i.status !== "IN_PROGRESS" ? (j(), z("button", {
                 key: 5,
                 style: { color: "red" },
-                onClick: tn((r) => a.removeFile(i), ["prevent"])
+                onClick: tn((r) => o.removeFile(i), ["prevent"])
               }, G(e.$vui.i18n().uploader.remove), 9, Wa)) : ne("", !0)
             ]))), 256))
           ])
         ]),
-        a.canAddFiles() ? (j(), z("div", Xa, [
-          Oe(e.$slots, "input", Ze(et({ ...e.$data, ...e.$props, canAddFiles: a.canAddFiles, addFiles: a.addFiles, abortUpload: a.abortUpload, removeFile: a.removeFile, downloadFile: a.downloadFile, getGlobalSize: a.getGlobalSize, getGlobalSizeLabel: a.getGlobalSizeLabel, humanStorageSize: a.humanStorageSize })), () => [
+        o.canAddFiles() ? (j(), z("div", Xa, [
+          Oe(e.$slots, "input", Ze(et({ ...e.$data, ...e.$props, canAddFiles: o.canAddFiles, addFiles: o.addFiles, abortUpload: o.abortUpload, removeFile: o.removeFile, downloadFile: o.downloadFile, getGlobalSize: o.getGlobalSize, getGlobalSizeLabel: o.getGlobalSizeLabel, humanStorageSize: o.humanStorageSize })), () => [
             Me("input", nn({
               id: e.$props.inputId,
               ref: "input",
               type: "file",
               accept: e.$props.accept,
               multiple: e.$props.multiple,
-              onChange: t[0] || (t[0] = (i) => a.addFiles(i.target.files))
+              onChange: t[0] || (t[0] = (i) => o.addFiles(i.target.files))
             }, e.$props.inputProps), null, 16, Ka)
           ])
         ])) : ne("", !0)
@@ -2158,7 +2162,7 @@ function Qa(e, t, n, o, s, a) {
     e.$slots.footer ? (j(), z("div", nn({
       key: 1,
       class: "footer"
-    }, { ...e.$data, ...e.$props, canAddFiles: a.canAddFiles, addFiles: a.addFiles, abortUpload: a.abortUpload, removeFile: a.removeFile, downloadFile: a.downloadFile, getGlobalSize: a.getGlobalSize, getGlobalSizeLabel: a.getGlobalSizeLabel, humanStorageSize: a.humanStorageSize }), [
+    }, { ...e.$data, ...e.$props, canAddFiles: o.canAddFiles, addFiles: o.addFiles, abortUpload: o.abortUpload, removeFile: o.removeFile, downloadFile: o.downloadFile, getGlobalSize: o.getGlobalSize, getGlobalSizeLabel: o.getGlobalSizeLabel, humanStorageSize: o.humanStorageSize }), [
       Oe(e.$slots, "footer")
     ], 16)) : ne("", !0)
   ]);
@@ -2183,7 +2187,7 @@ const Za = /* @__PURE__ */ M(Ta, [["render", Qa]]), ei = {
         e.append(this.fieldName, t);
       }), this.$http.get(this.url + "/fileInfos", { params: e, credentials: !1 }).then((function(t) {
         var n = t.data;
-        this.files = n.map((o) => o), this.$emit("init-ok");
+        this.files = n.map((a) => a), this.$emit("init-ok");
       }).bind(this)).catch(
         (function(t) {
           this.$emit("update:file-info-uris", []), this.$emit("init-ko"), t.response ? this.$q.notify(t.response.status + ":" + t.response.statusText + " Can't load file " + e) : this.$q.notify(t + " Can't load file " + e);
@@ -2226,8 +2230,8 @@ const Za = /* @__PURE__ */ M(Ta, [["render", Qa]]), ei = {
       this.$refs.quasarUploader;
     },
     removeRemoteFile(e) {
-      var t = this.files.indexOf(e), n = [...this.fileInfoUris], o = {};
-      o[this.fieldName] = e.fileUri, this.$http.delete(this.url, { params: o, credentials: !1 }).then((function() {
+      var t = this.files.indexOf(e), n = [...this.fileInfoUris], a = {};
+      a[this.fieldName] = e.fileUri, this.$http.delete(this.url, { params: a, credentials: !1 }).then((function() {
         this.multiple ? (this.files.splice(t, 1), n.splice(t, 1)) : (this.files.splice(0), n.splice(0)), this.$emit("update:file-info-uris", n);
       }).bind(this)).catch((function(s) {
         this.$q.notify(s.response.status + ":" + s.response.statusText + " Can't remove temporary file");
@@ -2244,7 +2248,7 @@ const Za = /* @__PURE__ */ M(Ta, [["render", Qa]]), ei = {
       this.globalCanAddFiles(t.files) && this.$refs.quasarUploader.addFiles(e);
     },
     getGlobalSize() {
-      var e = this.files.filter((n) => n.__status != "uploaded").reduce((n, o) => n + o.size, 0), t = this.files.reduce((n, o) => n + o.size, 0);
+      var e = this.files.filter((n) => n.__status != "uploaded").reduce((n, a) => n + a.size, 0), t = this.files.reduce((n, a) => n + a.size, 0);
       return e + t;
     },
     getGlobalSizeLabel() {
@@ -2270,7 +2274,7 @@ const Za = /* @__PURE__ */ M(Ta, [["render", Qa]]), ei = {
   key: 0,
   class: "q-field__after q-field__marginal row no-wrap items-center"
 };
-function bi(e, t, n, o, s, a) {
+function bi(e, t, n, a, s, o) {
   const i = de("q-tooltip"), r = de("q-btn"), l = de("q-spinner"), d = de("q-uploader-add-trigger"), u = de("q-icon"), p = de("q-circular-progress"), h = de("q-field"), g = de("q-uploader");
   return S(), R(g, ni({
     url: e.$props.url,
@@ -2279,9 +2283,9 @@ function bi(e, t, n, o, s, a) {
     multiple: e.$props.multiple,
     "max-files": e.$props.multiple ? void 0 : 1,
     headers: [{ name: "Accept", value: "application/json" }],
-    onUploaded: a.uploadedFiles,
-    onFailed: a.failedFiles,
-    readonly: e.$props.readonly || !a.globalCanAddFiles([])
+    onUploaded: o.uploadedFiles,
+    onFailed: o.failedFiles,
+    readonly: e.$props.readonly || !o.globalCanAddFiles([])
   }, e.$attrs, { ref: "quasarUploader" }), oi({
     list: A((c) => [
       K("div", di, [
@@ -2355,7 +2359,7 @@ function bi(e, t, n, o, s, a) {
                     dense: "",
                     flat: "",
                     icon: "delete",
-                    onClick: (m) => a.removeRemoteFile(f)
+                    onClick: (m) => o.removeRemoteFile(f)
                   }, null, 8, ["onClick"])),
                   X(r, {
                     round: "",
@@ -2375,7 +2379,7 @@ function bi(e, t, n, o, s, a) {
             key: 0,
             class: "q-uploader__spinner"
           })) : T("", !0),
-          a.globalCanAddFiles(c.files) ? (S(), R(r, {
+          o.globalCanAddFiles(c.files) ? (S(), R(r, {
             key: 1,
             type: "a",
             icon: e.$q.iconSet.uploader.add,
@@ -2438,7 +2442,7 @@ function bi(e, t, n, o, s, a) {
           }, 1032, ["icon", "onClick"])) : T("", !0),
           K("div", ii, [
             e.$props.label !== void 0 ? (S(), oe("div", si, W(e.$props.label), 1)) : T("", !0),
-            c.isUploading ? (S(), oe("div", ri, W(a.getGlobalSizeLabel()) + " / " + W(c.uploadProgressLabel), 1)) : (S(), oe("div", li, W(a.getGlobalSizeLabel()), 1))
+            c.isUploading ? (S(), oe("div", ri, W(o.getGlobalSizeLabel()) + " / " + W(c.uploadProgressLabel), 1)) : (S(), oe("div", li, W(o.getGlobalSizeLabel()), 1))
           ]),
           c.isUploading ? (S(), R(l, {
             key: 1,
@@ -2463,7 +2467,7 @@ function bi(e, t, n, o, s, a) {
             ]),
             _: 2
           }, 1032, ["icon", "onClick"])) : T("", !0),
-          a.globalCanAddFiles(c.files) && !c.readonly ? (S(), R(r, {
+          o.globalCanAddFiles(c.files) && !c.readonly ? (S(), R(r, {
             key: 3,
             icon: e.$q.iconSet.uploader.add,
             flat: "",
@@ -2493,7 +2497,7 @@ function Ft(e, t, n) {
 }
 function yn(e, t) {
   var n = Object.create(e.prototype);
-  for (var o in t) n[o] = t[o];
+  for (var a in t) n[a] = t[a];
   return n;
 }
 function Ue() {
@@ -2682,17 +2686,17 @@ function lt(e) {
 function ln(e) {
   return new P(e >> 16 & 255, e >> 8 & 255, e & 255, 1);
 }
-function nt(e, t, n, o) {
-  return o <= 0 && (e = t = n = NaN), new P(e, t, n, o);
+function nt(e, t, n, a) {
+  return a <= 0 && (e = t = n = NaN), new P(e, t, n, a);
 }
 function qi(e) {
   return e instanceof Ue || (e = lt(e)), e ? (e = e.rgb(), new P(e.r, e.g, e.b, e.opacity)) : new P();
 }
-function St(e, t, n, o) {
-  return arguments.length === 1 ? qi(e) : new P(e, t, n, o ?? 1);
+function St(e, t, n, a) {
+  return arguments.length === 1 ? qi(e) : new P(e, t, n, a ?? 1);
 }
-function P(e, t, n, o) {
-  this.r = +e, this.g = +t, this.b = +n, this.opacity = +o;
+function P(e, t, n, a) {
+  this.r = +e, this.g = +t, this.b = +n, this.opacity = +a;
 }
 Ft(P, St, yn(Ue, {
   brighter(e) {
@@ -2736,22 +2740,22 @@ function be(e) {
 function we(e) {
   return e = be(e), (e < 16 ? "0" : "") + e.toString(16);
 }
-function un(e, t, n, o) {
-  return o <= 0 ? e = t = n = NaN : n <= 0 || n >= 1 ? e = t = NaN : t <= 0 && (e = NaN), new J(e, t, n, o);
+function un(e, t, n, a) {
+  return a <= 0 ? e = t = n = NaN : n <= 0 || n >= 1 ? e = t = NaN : t <= 0 && (e = NaN), new J(e, t, n, a);
 }
 function vn(e) {
   if (e instanceof J) return new J(e.h, e.s, e.l, e.opacity);
   if (e instanceof Ue || (e = lt(e)), !e) return new J();
   if (e instanceof J) return e;
   e = e.rgb();
-  var t = e.r / 255, n = e.g / 255, o = e.b / 255, s = Math.min(t, n, o), a = Math.max(t, n, o), i = NaN, r = a - s, l = (a + s) / 2;
-  return r ? (t === a ? i = (n - o) / r + (n < o) * 6 : n === a ? i = (o - t) / r + 2 : i = (t - n) / r + 4, r /= l < 0.5 ? a + s : 2 - a - s, i *= 60) : r = l > 0 && l < 1 ? 0 : i, new J(i, r, l, e.opacity);
+  var t = e.r / 255, n = e.g / 255, a = e.b / 255, s = Math.min(t, n, a), o = Math.max(t, n, a), i = NaN, r = o - s, l = (o + s) / 2;
+  return r ? (t === o ? i = (n - a) / r + (n < a) * 6 : n === o ? i = (a - t) / r + 2 : i = (t - n) / r + 4, r /= l < 0.5 ? o + s : 2 - o - s, i *= 60) : r = l > 0 && l < 1 ? 0 : i, new J(i, r, l, e.opacity);
 }
-function kt(e, t, n, o) {
-  return arguments.length === 1 ? vn(e) : new J(e, t, n, o ?? 1);
+function kt(e, t, n, a) {
+  return arguments.length === 1 ? vn(e) : new J(e, t, n, a ?? 1);
 }
-function J(e, t, n, o) {
-  this.h = +e, this.s = +t, this.l = +n, this.opacity = +o;
+function J(e, t, n, a) {
+  this.h = +e, this.s = +t, this.l = +n, this.opacity = +a;
 }
 Ft(J, kt, yn(Ue, {
   brighter(e) {
@@ -2761,11 +2765,11 @@ Ft(J, kt, yn(Ue, {
     return e = e == null ? Ne : Math.pow(Ne, e), new J(this.h, this.s, this.l * e, this.opacity);
   },
   rgb() {
-    var e = this.h % 360 + (this.h < 0) * 360, t = isNaN(e) || isNaN(this.s) ? 0 : this.s, n = this.l, o = n + (n < 0.5 ? n : 1 - n) * t, s = 2 * n - o;
+    var e = this.h % 360 + (this.h < 0) * 360, t = isNaN(e) || isNaN(this.s) ? 0 : this.s, n = this.l, a = n + (n < 0.5 ? n : 1 - n) * t, s = 2 * n - a;
     return new P(
-      vt(e >= 240 ? e - 240 : e + 120, s, o),
-      vt(e, s, o),
-      vt(e < 120 ? e + 240 : e - 120, s, o),
+      vt(e >= 240 ? e - 240 : e + 120, s, a),
+      vt(e, s, a),
+      vt(e < 120 ? e + 240 : e - 120, s, a),
       this.opacity
     );
   },
@@ -2796,8 +2800,8 @@ function _n(e, t) {
   };
 }
 function Ei(e, t, n) {
-  return e = Math.pow(e, n), t = Math.pow(t, n) - e, n = 1 / n, function(o) {
-    return Math.pow(e + o * t, n);
+  return e = Math.pow(e, n), t = Math.pow(t, n) - e, n = 1 / n, function(a) {
+    return Math.pow(e + a * t, n);
   };
 }
 function Ti(e, t) {
@@ -2815,19 +2819,19 @@ function Pe(e, t) {
 }
 const Mi = function e(t) {
   var n = Oi(t);
-  function o(s, a) {
-    var i = n((s = St(s)).r, (a = St(a)).r), r = n(s.g, a.g), l = n(s.b, a.b), d = Pe(s.opacity, a.opacity);
+  function a(s, o) {
+    var i = n((s = St(s)).r, (o = St(o)).r), r = n(s.g, o.g), l = n(s.b, o.b), d = Pe(s.opacity, o.opacity);
     return function(u) {
       return s.r = i(u), s.g = r(u), s.b = l(u), s.opacity = d(u), s + "";
     };
   }
-  return o.gamma = e, o;
+  return a.gamma = e, a;
 }(1);
 function Li(e) {
   return function(t, n) {
-    var o = e((t = kt(t)).h, (n = kt(n)).h), s = Pe(t.s, n.s), a = Pe(t.l, n.l), i = Pe(t.opacity, n.opacity);
+    var a = e((t = kt(t)).h, (n = kt(n)).h), s = Pe(t.s, n.s), o = Pe(t.l, n.l), i = Pe(t.opacity, n.opacity);
     return function(r) {
-      return t.h = o(r), t.s = s(r), t.l = a(r), t.opacity = i(r), t + "";
+      return t.h = a(r), t.s = s(r), t.l = o(r), t.opacity = i(r), t + "";
     };
   };
 }
@@ -2835,9 +2839,9 @@ const Pi = Li(Ti);
 let ce = { color: lt, interpolateHsl: Pi, interpolateRgb: Mi };
 function _t(e, t, n) {
   if (e != "DEFAULT") {
-    var o, s = Ni;
-    e == "RAINBOW" || e == "iRAINBOW" ? o = ["#FF0000", "#FFA500", "#FFFF00", "#00FF00", "#00FF00", "rgb(75, 0, 130)", "rgb(238, 130, 238)"] : e == "SPECTRUM" || e == "iSPECTRUM" ? (o = ["rgb(230, 30, 30)", "rgb(230, 230, 30)", "rgb(30, 230, 30)", "rgb(30, 230, 230)", "rgb(30, 30, 230)", "rgb(230, 30, 230)", "rgb(230, 30, 30)"], s = Ui) : e == "RED2GREEN" || e == "iRED2GREEN" ? o = ["rgb(255, 51, 51)", "rgb(250, 235, 0)", "rgb(51, 200, 51)"] : e == "GREEN2BLUE" || e == "iGREEN2BLUE" ? o = ["rgb(51, 153, 51)", "rgb(51, 153, 200)", "rgb(51, 51, 255)"] : e == "HEAT" || e == "iHEAT" ? o = ["rgb(255, 51, 51)", "rgb(255, 255, 51)", "rgb(51, 153, 51)", "rgb(51, 153, 255)"] : e == "GREEN:INTENSITY" || e == "iGREEN:INTENSITY" ? (o = ["rgb(51, 153, 51)", "rgb(170, 250, 170)"], s = Ai) : e == "ANDROID" || e == "iANDROID" ? o = ["#0099CC", "#9933CC", "#CC0000", "#FF8800", "#669900"] : (e == "ANDROID:LIGHT" || e == "iANDROID:LIGHT") && (o = ["#33B5E5", "#AA66CC", "#ff4444", "#ffbb33", "#99cc00"]), e.charAt(0) == "i" && (o = o.reverse());
-    var i, a = o[0] == o[o.length - 1], i = s(o, t + (a ? 1 : 0));
+    var a, s = Ni;
+    e == "RAINBOW" || e == "iRAINBOW" ? a = ["#FF0000", "#FFA500", "#FFFF00", "#00FF00", "#00FF00", "rgb(75, 0, 130)", "rgb(238, 130, 238)"] : e == "SPECTRUM" || e == "iSPECTRUM" ? (a = ["rgb(230, 30, 30)", "rgb(230, 230, 30)", "rgb(30, 230, 30)", "rgb(30, 230, 230)", "rgb(30, 30, 230)", "rgb(230, 30, 230)", "rgb(230, 30, 30)"], s = Ui) : e == "RED2GREEN" || e == "iRED2GREEN" ? a = ["rgb(255, 51, 51)", "rgb(250, 235, 0)", "rgb(51, 200, 51)"] : e == "GREEN2BLUE" || e == "iGREEN2BLUE" ? a = ["rgb(51, 153, 51)", "rgb(51, 153, 200)", "rgb(51, 51, 255)"] : e == "HEAT" || e == "iHEAT" ? a = ["rgb(255, 51, 51)", "rgb(255, 255, 51)", "rgb(51, 153, 51)", "rgb(51, 153, 255)"] : e == "GREEN:INTENSITY" || e == "iGREEN:INTENSITY" ? (a = ["rgb(51, 153, 51)", "rgb(170, 250, 170)"], s = Ai) : e == "ANDROID" || e == "iANDROID" ? a = ["#0099CC", "#9933CC", "#CC0000", "#FF8800", "#669900"] : (e == "ANDROID:LIGHT" || e == "iANDROID:LIGHT") && (a = ["#33B5E5", "#AA66CC", "#ff4444", "#ffbb33", "#99cc00"]), e.charAt(0) == "i" && (a = a.reverse());
+    var i, o = a[0] == a[a.length - 1], i = s(a, t + (o ? 1 : 0));
     return n ? i.map(function(r, l) {
       var d = ce.color(r);
       return d.opacity = n, d.formatRgb();
@@ -2845,33 +2849,33 @@ function _t(e, t, n) {
   }
 }
 function Ni(e, t) {
-  return Tt(e, t, function(n, o, s, a, i) {
-    return ce.interpolateHsl(s, a)(n);
+  return Tt(e, t, function(n, a, s, o, i) {
+    return ce.interpolateHsl(s, o)(n);
   });
 }
 function Ai(e, t) {
-  return Tt(e, t, function(n, o, s, a, i) {
-    return ce.interpolateRgb(s, a)(n);
+  return Tt(e, t, function(n, a, s, o, i) {
+    return ce.interpolateRgb(s, o)(n);
   });
 }
 function Ui(e, t) {
-  return Tt(e, t, function(n, o, s, a, i) {
-    var r = { r: null, g: null, b: null }, l = o ? ce.rgb(o) : r, d = ce.rgb(s), u = ce.rgb(a), p = i ? ce.rgb(i) : r, h = Math.max(Math.min(Math.round($t(n, l.r, d.r, u.r, p.r)), 255), 0), g = Math.max(Math.min(Math.round($t(n, l.g, d.g, u.g, p.g)), 255), 0), c = Math.max(Math.min(Math.round($t(n, l.b, d.b, u.b, p.b)), 255), 0);
+  return Tt(e, t, function(n, a, s, o, i) {
+    var r = { r: null, g: null, b: null }, l = a ? ce.rgb(a) : r, d = ce.rgb(s), u = ce.rgb(o), p = i ? ce.rgb(i) : r, h = Math.max(Math.min(Math.round($t(n, l.r, d.r, u.r, p.r)), 255), 0), g = Math.max(Math.min(Math.round($t(n, l.g, d.g, u.g, p.g)), 255), 0), c = Math.max(Math.min(Math.round($t(n, l.b, d.b, u.b, p.b)), 255), 0);
     return ce.rgb(h, g, c);
   });
 }
 function Tt(e, t, n) {
   if (t == 1)
     return [e[0]];
-  for (var o = 0, s = new Array(), a = e.length, i = 0; (a - 1) % (t - 1) != 0 && i < 20; )
-    i++, a = e.length + i * (e.length - 1);
+  for (var a = 0, s = new Array(), o = e.length, i = 0; (o - 1) % (t - 1) != 0 && i < 20; )
+    i++, o = e.length + i * (e.length - 1);
   i++;
   for (var r = 0; r < e.length - 1; r++) {
-    for (var l = r - 1 >= 0 ? e[r - 1] : null, d = e[r], u = e[r + 1], p = r + 2 < e.length ? e[r + 2] : null, h = o; h < i + 1; h++) {
+    for (var l = r - 1 >= 0 ? e[r - 1] : null, d = e[r], u = e[r + 1], p = r + 2 < e.length ? e[r + 2] : null, h = a; h < i + 1; h++) {
       var g = n(h / i, l, d, u, p);
       s.push(g);
     }
-    o = 1;
+    a = 1;
   }
   for (var c = new Array(), r = 0; r < t; r++) {
     var f = (s.length - 1) / (t - 1) * r;
@@ -2879,17 +2883,17 @@ function Tt(e, t, n) {
   }
   return c;
 }
-function $t(e, t, n, o, s) {
-  var a = o - n, i = t ?? n - a, r = s ?? o + a;
-  return 0.5 * (2 * n + (-i + o) * e + (2 * i - 5 * n + 4 * o - r) * e * e + (-i + 3 * n - 3 * o + r) * e * e * e);
+function $t(e, t, n, a, s) {
+  var o = a - n, i = t ?? n - o, r = s ?? a + o;
+  return 0.5 * (2 * n + (-i + a) * e + (2 * i - 5 * n + 4 * a - r) * e * e + (-i + 3 * n - 3 * a + r) * e * e * e);
 }
 const Bi = {
   id: "verticalLineTooltipPlugin",
   afterDraw: (e) => {
     var t, n;
     if ((n = (t = e.tooltip) == null ? void 0 : t._active) != null && n.length) {
-      const { x: o } = e.tooltip._active[0].element, s = e.scales.y, { ctx: a } = e;
-      a.save(), a.beginPath(), a.moveTo(o, s.top), a.lineTo(o, s.bottom), a.lineWidth = 2, a.strokeStyle = "rgba(50, 50, 50, 0.4)", a.stroke(), a.restore();
+      const { x: a } = e.tooltip._active[0].element, s = e.scales.y, { ctx: o } = e;
+      o.save(), o.beginPath(), o.moveTo(a, s.top), o.lineTo(a, s.bottom), o.lineWidth = 2, o.strokeStyle = "rgba(50, 50, 50, 0.4)", o.stroke(), o.restore();
     }
   }
 }, Ii = {
@@ -2901,8 +2905,8 @@ const Bi = {
     return e.scales.x.getPixelForValue(t, 0);
   },
   renderVerticalLine: function(e, t) {
-    const n = e.scales.y, o = e.ctx, s = t.x ? this.getLinePositionAtX(e, t.x) : getLinePositionAtIndex(chart, t.idx);
-    o.beginPath(), o.strokeStyle = t.color ? t.color : "#ff0000", o.moveTo(s, n.top), o.lineTo(s, n.bottom), o.stroke(), o.fillStyle = t.color ? t.color : "#ff0000", o.textAlign = "center", typeof t.label == "function" ? o.fillText(t.label(), s, n.top - 8) : o.fillText(t.label ? t.label : "", s, n.top - 8);
+    const n = e.scales.y, a = e.ctx, s = t.x ? this.getLinePositionAtX(e, t.x) : getLinePositionAtIndex(chart, t.idx);
+    a.beginPath(), a.strokeStyle = t.color ? t.color : "#ff0000", a.moveTo(s, n.top), a.lineTo(s, n.bottom), a.stroke(), a.fillStyle = t.color ? t.color : "#ff0000", a.textAlign = "center", typeof t.label == "function" ? a.fillText(t.label(), s, n.top - 8) : a.fillText(t.label ? t.label : "", s, n.top - 8);
   },
   afterDatasetsDraw: function(e, t) {
     e.config.options.vLineAt && e.config.options.vLineAt.forEach((n) => this.renderVerticalLine(e, n));
@@ -2992,7 +2996,7 @@ const Bi = {
       var e = { dataFilter: this.queryDataFilter, timeFilter: this.queryTimeFilter };
       return this.queryMeasures && (e.measures = this.queryMeasures), this.queryClusteredMeasure && (e.clusteredMeasure = this.queryClusteredMeasure), this.queryGroupBy && (e.groupBy = this.queryGroupBy), e;
     },
-    showChartJsChart: function(e, t, n, o, s, a, i, r) {
+    showChartJsChart: function(e, t, n, a, s, o, i, r) {
       var l = this.timeDimToDayJsPeriod();
       if (this.fillGapDim && this.minTime && this.maxTime && l !== "hour") {
         var d = dayjs(this.minTime, this.timeFormat).startOf(l), u = dayjs(this.maxTime, this.timeFormat).startOf(l), p = dayjs(this.minTime, this.timeFormat).endOf(l);
@@ -3002,26 +3006,26 @@ const Bi = {
       var h = Object.values(s), g, c, f;
       if (this.type === "bubbles") {
         f = "bubble";
-        var m = s.filter(($) => $ !== o);
+        var m = s.filter(($) => $ !== a);
         h = Object.values(m);
-        var w = this.toChartJsBubblesData(e, m.keys(), m, o);
-        c = [{ data: w }], g = this.getChartJsBubblesOptions(e, m.keys(), o, m, i, r), this.setChartJsColorOptions(c, a, 1, 0.5);
+        var w = this.toChartJsBubblesData(e, m.keys(), m, a);
+        c = [{ data: w }], g = this.getChartJsBubblesOptions(e, m.keys(), a, m, i, r), this.setChartJsColorOptions(c, o, 1, 0.5);
       } else if (this.type === "linechart")
-        f = "line", c = this.toChartJsData(e, s, n, o), g = this.getChartJsLineOptions(e, o, s, n, i, r), this.setChartJsColorOptions(c, a);
+        f = "line", c = this.toChartJsData(e, s, n, a), g = this.getChartJsLineOptions(e, a, s, n, i, r), this.setChartJsColorOptions(c, o);
       else if (this.type === "barchart")
-        f = "bar", c = this.toChartJsData(e, s, n, o), g = this.getChartJsLineOptions(e, o, s, n, i, r), this.setChartJsColorOptions(c, a, 1, 0.5);
+        f = "bar", c = this.toChartJsData(e, s, n, a), g = this.getChartJsLineOptions(e, a, s, n, i, r), this.setChartJsColorOptions(c, o, 1, 0.5);
       else if (this.type === "stackedbarchart")
-        f = "bar", c = this.toChartJsData(e, s, n, o), g = this.getStackedOptions(e, o, s, n, i, r), this.setChartJsColorOptions(c, a, 1, 0.5);
+        f = "bar", c = this.toChartJsData(e, s, n, a), g = this.getStackedOptions(e, a, s, n, i, r), this.setChartJsColorOptions(c, o, 1, 0.5);
       else if (this.type === "polararea") {
-        f = "polarArea", c = this.toChartJsData(e, s, n, o);
+        f = "polarArea", c = this.toChartJsData(e, s, n, a);
         var v = this.toChartJsPieData(c, s);
-        c = v.datasets, h = v.labels, g = this.getPolarChartOptions(e, o, s, n, i, r), this.setChartJsPieColorOptions(c, a);
+        c = v.datasets, h = v.labels, g = this.getPolarChartOptions(e, a, s, n, i, r), this.setChartJsPieColorOptions(c, o);
       } else if (this.type === "doughnut") {
         f = "doughnut";
-        var m = s.filter((ue) => ue !== o);
-        c = this.toChartJsData(e, m, n, o);
+        var m = s.filter((ue) => ue !== a);
+        c = this.toChartJsData(e, m, n, a);
         var v = this.toChartJsPieData(c, s);
-        c = v.datasets, h = v.labels, this.setChartJsPieColorOptions(c, a), g = {
+        c = v.datasets, h = v.labels, this.setChartJsPieColorOptions(c, o), g = {
           legend: {
             display: !0,
             position: "bottom"
@@ -3046,18 +3050,18 @@ const Bi = {
         window.dashboardGraphChart[this.$data.graphChartId] = k;
       }
     },
-    setChartJsColorOptions: function(e, t, n, o) {
+    setChartJsColorOptions: function(e, t, n, a) {
       if (t)
-        for (var s = _t(t, e.length, n), a = _t(t, e.length, o || (n ? n * 0.25 : 0.25)), i = 0; i < e.length; i++)
-          e[i].borderColor = s[i], e[i].backgroundColor = a[i], e[i].pointBackgroundColor = s[i], e[i].pointBorderColor = "#FFFFFFAF", e[i].pointBorderWidth = 2, e[i].fill = !0;
+        for (var s = _t(t, e.length, n), o = _t(t, e.length, a || (n ? n * 0.25 : 0.25)), i = 0; i < e.length; i++)
+          e[i].borderColor = s[i], e[i].backgroundColor = o[i], e[i].pointBackgroundColor = s[i], e[i].pointBorderColor = "#FFFFFFAF", e[i].pointBorderWidth = 2, e[i].fill = !0;
     },
     setChartJsPieColorOptions: function(e, t, n) {
       if (t)
-        for (var o = 0; o < e.length; o++)
-          e[o].backgroundColor = _t(t, e[o].data.length, n);
+        for (var a = 0; a < e.length; a++)
+          e[a].backgroundColor = _t(t, e[a].data.length, n);
     },
-    getChartJsBubblesOptions: function(e, t, n, o, s, a) {
-      var i = this.getMaxRadius(e, t[2]), r = this.getAxisType(e, a, "xAxisType", t[0]), l = this.getAxisType(e, a, "yAxisType", t[1]);
+    getChartJsBubblesOptions: function(e, t, n, a, s, o) {
+      var i = this.getMaxRadius(e, t[2]), r = this.getAxisType(e, o, "xAxisType", t[0]), l = this.getAxisType(e, o, "yAxisType", t[1]);
       return {
         scales: {
           x: {
@@ -3089,9 +3093,9 @@ const Bi = {
               label: function(d) {
                 var u = d.dataset.data[d.dataIndex];
                 return [
-                  o[t[0]] + " : " + Math.round(u.x),
-                  o[t[1]] + " : " + Math.round(u.y),
-                  o[t[2]] + " : " + Math.round(u.r_measure)
+                  a[t[0]] + " : " + Math.round(u.x),
+                  a[t[1]] + " : " + Math.round(u.y),
+                  a[t[2]] + " : " + Math.round(u.r_measure)
                 ];
               }
             }
@@ -3099,20 +3103,20 @@ const Bi = {
         }
       };
     },
-    getPolarChartOptions: function(e, t, n, o, s) {
+    getPolarChartOptions: function(e, t, n, a, s) {
       return {};
     },
-    getAxisType: function(e, t, n, o) {
+    getAxisType: function(e, t, n, a) {
       var s = "linear";
       if (t && t[n])
         if (t[n] === "auto") {
-          var a = getMinMax(e, o);
-          a.max > 0 && a.min / a.max < 1e-3 && (s = "logarithmic");
+          var o = getMinMax(e, a);
+          o.max > 0 && o.min / o.max < 1e-3 && (s = "logarithmic");
         } else
           s = t[n];
       return s;
     },
-    getChartJsLineOptions: function(e, t, n, o, s, a) {
+    getChartJsLineOptions: function(e, t, n, a, s, o) {
       var i = {
         scales: {
           y: {
@@ -3167,7 +3171,7 @@ const Bi = {
           }
         }
       };
-      return o ? (i.scales.x = {
+      return a ? (i.scales.x = {
         type: "time",
         ticks: {
           source: "auto",
@@ -3186,8 +3190,8 @@ const Bi = {
         type: "category"
       }, i;
     },
-    getStackedOptions: function(e, t, n, o, s, a) {
-      var i = this.getChartJsLineOptions(e, t, n, o, s, a), r = {
+    getStackedOptions: function(e, t, n, a, s, o) {
+      var i = this.getChartJsLineOptions(e, t, n, a, s, o), r = {
         scales: {
           x: {
             stacked: !0
@@ -3199,30 +3203,30 @@ const Bi = {
       };
       return this.mergeDeep(i, r);
     },
-    toChartJsBubblesData: function(e, t, n, o) {
-      for (var s = new Array(), a = 0; a < e.length; a++) {
+    toChartJsBubblesData: function(e, t, n, a) {
+      for (var s = new Array(), o = 0; o < e.length; o++) {
         var i = new Object();
-        i.x = e[a].values[t[0]], i.y = e[a].values[t[1]];
-        var r = e[a].values[t[2]];
-        !this.isEmpty(e[a].values) && !r && (r = 0), i.name = e[a].values[o], i.r_measure = r, s.push(i);
+        i.x = e[o].values[t[0]], i.y = e[o].values[t[1]];
+        var r = e[o].values[t[2]];
+        !this.isEmpty(e[o].values) && !r && (r = 0), i.name = e[o].values[a], i.r_measure = r, s.push(i);
       }
       return s;
     },
     getMaxRadius: function(e, t) {
-      for (var n = 0, o = 0; o < e.length; o++) {
-        var s = e[o].values[t];
+      for (var n = 0, a = 0; a < e.length; a++) {
+        var s = e[a].values[t];
         s > n && (n = s);
       }
       return Math.max(n, 1);
     },
     getMinMax: function(e, t) {
-      for (var n = 0, o = 0, s = 0; s < e.length; s++) {
-        var a = e[s].values[t];
-        a > o && (o = a), a < n && (n = a);
+      for (var n = 0, a = 0, s = 0; s < e.length; s++) {
+        var o = e[s].values[t];
+        o > a && (a = o), o < n && (n = o);
       }
       return {
         min: n,
-        max: o
+        max: a
       };
     },
     defaultDataSeriesTranslator: function(e) {
@@ -3230,36 +3234,36 @@ const Bi = {
       return { dataValues: t, dataMetrics: n, timedSeries: !!e.timedDataSeries };
     },
     /** Conversion de données servers List<Instant, Map<NomMetric, value>> en données Chartjs.*/
-    toChartJsData: function(e, t, n, o) {
+    toChartJsData: function(e, t, n, a) {
       let s = function(m, w) {
         return m.indexOf(w, m.length - w.length) !== -1;
       };
-      var a = this.timeDimToDayJsPeriod(), i = new Array();
+      var o = this.timeDimToDayJsPeriod(), i = new Array();
       for (const m in t) {
         var r = new Object();
         r.data = new Array(), r.parsing = !1, t && t[m] && (r.label = t[m]);
-        for (var l = this.$data.truncatedMinTime ? dayjs(this.$data.truncatedMinTime).subtract(1, a) : null, d = 0; d < e.length; d++) {
+        for (var l = this.$data.truncatedMinTime ? dayjs(this.$data.truncatedMinTime).subtract(1, o) : null, d = 0; d < e.length; d++) {
           if (n && this.fillGapDim)
-            for (var u = l ? dayjs(l).add(1, a) : null, p = l ? u.add(1, a) : null, h = dayjs(e[d].time); !h.isBefore(p); )
-              r.data.push({ x: u.valueOf(), y: this.fillGapValue }), u = p, p = p.add(1, a), l = u.valueOf();
-          var g = n ? dayjs(e[d].time).valueOf() : e[d].values[o], c = e[d].values[m];
+            for (var u = l ? dayjs(l).add(1, o) : null, p = l ? u.add(1, o) : null, h = dayjs(e[d].time); !h.isBefore(p); )
+              r.data.push({ x: u.valueOf(), y: this.fillGapValue }), u = p, p = p.add(1, o), l = u.valueOf();
+          var g = n ? dayjs(e[d].time).valueOf() : e[d].values[a], c = e[d].values[m];
           !this.isEmpty(e[d].values) && !c && (c = 0), r.data.push({ x: g, y: c }), l = g;
         }
         if (n && this.fillGapDim && this.$data.truncatedMaxTime)
-          for (var u = l ? dayjs(l).add(1, a) : null, f = dayjs(this.$data.truncatedMaxTime); !u.isAfter(f); )
-            r.data.push({ x: u.valueOf(), y: this.fillGapValue }), u = u.add(1, a), l = u.valueOf();
+          for (var u = l ? dayjs(l).add(1, o) : null, f = dayjs(this.$data.truncatedMaxTime); !u.isAfter(f); )
+            r.data.push({ x: u.valueOf(), y: this.fillGapValue }), u = u.add(1, o), l = u.valueOf();
         r.label || (s(m, "count") ? r.label = "Quantité" : s(m, "mean") ? r.label = "Moyenne" : s(m, "min") ? r.label = "Minimum" : s(m, "max") && (r.label = "Maximum")), i.push(r);
       }
       return i;
     },
     toChartJsPieData: function(e, t) {
-      for (var n = new Array(), o = new Array(), s = 0; s < e[0].data.length; s++) {
-        var a = e[0].data[s].x;
-        t && t[e[0].data[s].x] && (a = t[e[0].data[s].x]), o.push(a), n.push(e[0].data[s].y);
+      for (var n = new Array(), a = new Array(), s = 0; s < e[0].data.length; s++) {
+        var o = e[0].data[s].x;
+        t && t[e[0].data[s].x] && (o = t[e[0].data[s].x]), a.push(o), n.push(e[0].data[s].y);
       }
       return {
         datasets: [{ data: n }],
-        labels: o
+        labels: a
       };
     },
     timeDimToDayJsPeriod: function() {
@@ -3276,18 +3280,18 @@ const Bi = {
       if (!t.length) return e;
       const n = t.shift();
       if (this.isObject(e) && this.isObject(n))
-        for (const o in n)
-          this.isObject(n[o]) ? (e[o] || Object.assign(e, { [o]: {} }), this.mergeDeep(e[o], n[o])) : Object.assign(e, { [o]: n[o] });
+        for (const a in n)
+          this.isObject(n[a]) ? (e[a] || Object.assign(e, { [a]: {} }), this.mergeDeep(e[a], n[a])) : Object.assign(e, { [a]: n[a] });
       return this.mergeDeep(e, ...t);
     }
   }
 }, zi = window.Vue.openBlock, Ri = window.Vue.createElementBlock, Hi = { ref: "graphCanvas" };
-function Gi(e, t, n, o, s, a) {
+function Gi(e, t, n, a, s, o) {
   return zi(), Ri("canvas", Hi, null, 512);
 }
 const Ji = /* @__PURE__ */ M(ji, [["render", Gi]]), Yi = {
   mounted: function(e, t, n) {
-    var o = t.value;
+    var a = t.value;
     if (!window.watcherUpdates && (window.watcherUpdates = {
       originalDocumentTitle: document.title,
       updates_detected: !1,
@@ -3299,14 +3303,14 @@ const Ji = /* @__PURE__ */ M(ji, [["render", Gi]]), Yi = {
  Les modifications que vous avez apportées ne seront peut-être pas enregistrées`);
       }
     }, window.addEventListener("beforeunload", window.watcherUpdates.beforeWindowUnload), t.instance.$root.uiMessageStack)) {
-      var s = t.instance.$root.uiMessageStack, a = s.globalErrors.length > 0;
-      for (let i of o.split(","))
-        if (a = a || s.objectFieldErrors[i], a)
+      var s = t.instance.$root.uiMessageStack, o = s.globalErrors.length > 0;
+      for (let i of a.split(","))
+        if (o = o || s.objectFieldErrors[i], o)
           break;
-      a && (window.watcherUpdates.updates_detected = !0);
+      o && (window.watcherUpdates.updates_detected = !0);
     }
     e.addEventListener("click", window.watcherUpdates.acceptedUpdates);
-    for (let i of o.split(","))
+    for (let i of a.split(","))
       t.instance.$root.$watch("vueData." + i, function() {
         window.watcherUpdates.updates_detected = !0, document.title = "*" + window.watcherUpdates.originalDocumentTitle;
       }, { deep: !0 });
@@ -3316,8 +3320,8 @@ const Ji = /* @__PURE__ */ M(ji, [["render", Gi]]), Yi = {
   }
 }, Wi = {
   mounted: function(e, t, n) {
-    var o = t.value;
-    o && !window.autofocus && (window.autofocus = !0, e.focus());
+    var a = t.value;
+    a && !window.autofocus && (window.autofocus = !0, e.focus());
   }
 }, Xi = window.Vue.nextTick, Ki = {
   updated: function(e, t, n) {
@@ -3327,23 +3331,23 @@ const Ji = /* @__PURE__ */ M(ji, [["render", Gi]]), Yi = {
   }
 };
 function $n(e, t = 250) {
-  let n = !1, o;
+  let n = !1, a;
   return function() {
     return n === !1 && (n = !0, setTimeout(() => {
       n = !1;
-    }, t), o = e.apply(this, arguments)), o;
+    }, t), a = e.apply(this, arguments)), a;
   };
 }
 const ge = window.Vue, Qi = {
   created: function(e, t) {
-    const n = t.value ? t.value.topOffset : null, o = t.value ? t.value.topOffsetEl : null, s = t.value ? t.value.leftOffset : null, a = t.value ? t.value.leftOffsetEl : null, i = t.value ? t.value.scrollContainerEl : ".q-page-container", r = e.querySelector(".mini");
+    const n = t.value ? t.value.topOffset : null, a = t.value ? t.value.topOffsetEl : null, s = t.value ? t.value.leftOffset : null, o = t.value ? t.value.leftOffsetEl : null, i = t.value ? t.value.scrollContainerEl : ".q-page-container", r = e.querySelector(".mini");
     for (var l = 0; l < e.childNodes.length; l++) {
       var d = e.childNodes[l];
       d.classList && !d.classList.contains("mini") && d.classList.add("not-mini");
     }
     ge.minifyHandler = function() {
       var u = e.closest(i), p = u ? -u.getBoundingClientRect().y : window.pageYOffset, h = u ? -u.getBoundingClientRect().x : window.pageXOffset, g = e.getBoundingClientRect().y + p, c = e.getBoundingClientRect().x + h;
-      (n || o) && (g = ge.minifyComputeOffset(n, o, 0, "TOP")), (s || a) && (c = ge.minifyComputeOffset(s, a, 0, "LEFT"));
+      (n || a) && (g = ge.minifyComputeOffset(n, a, 0, "TOP")), (s || o) && (c = ge.minifyComputeOffset(s, o, 0, "LEFT"));
       var f = r.getBoundingClientRect().height, m = e.getBoundingClientRect().height;
       p > m - f ? (r.classList.add("visible"), r.style.top = g + "px", r.style.left = c + "px") : (r.classList.remove("visible"), r.style.top = -f - g + "px");
     }, ge.minifyComputeOffset = function(u, p, h, g) {
@@ -3390,25 +3394,25 @@ function xn(e) {
   return e === window ? window.pageXOffset || window.scrollX || document.body.scrollLeft || 0 : e.scrollLeft;
 }
 function Ot(e, t, n = 0) {
-  const o = arguments[3] === void 0 ? performance.now() : arguments[3], s = Cn(e);
+  const a = arguments[3] === void 0 ? performance.now() : arguments[3], s = Cn(e);
   if (n <= 0) {
     s !== t && Vt(e, t);
     return;
   }
-  requestAnimationFrame((a) => {
-    const i = a - o, r = s + (t - s) / Math.max(i, n) * i;
-    Vt(e, r), r !== t && Ot(e, t, n - i, a);
+  requestAnimationFrame((o) => {
+    const i = o - a, r = s + (t - s) / Math.max(i, n) * i;
+    Vt(e, r), r !== t && Ot(e, t, n - i, o);
   });
 }
 function Mt(e, t, n = 0) {
-  const o = arguments[3] === void 0 ? performance.now() : arguments[3], s = xn(e);
+  const a = arguments[3] === void 0 ? performance.now() : arguments[3], s = xn(e);
   if (n <= 0) {
     s !== t && Dt(e, t);
     return;
   }
-  requestAnimationFrame((a) => {
-    const i = a - o, r = s + (t - s) / Math.max(i, n) * i;
-    Dt(e, r), r !== t && Mt(e, t, n - i, a);
+  requestAnimationFrame((o) => {
+    const i = o - a, r = s + (t - s) / Math.max(i, n) * i;
+    Dt(e, r), r !== t && Mt(e, t, n - i, o);
   });
 }
 function Vt(e, t) {
@@ -3458,8 +3462,8 @@ function is() {
   }), t.appendChild(e), document.body.appendChild(t);
   const n = e.offsetWidth;
   t.style.overflow = "scroll";
-  let o = e.offsetWidth;
-  return n === o && (o = t.clientWidth), t.remove(), at = n - o, at;
+  let a = e.offsetWidth;
+  return n === a && (a = t.clientWidth), t.remove(), at = n - a, at;
 }
 function ss(e, t = !0) {
   return !e || e.nodeType !== Node.ELEMENT_NODE ? !1 : t ? e.scrollHeight > e.clientHeight && (e.classList.contains("scroll") || e.classList.contains("overflow-auto") || ["auto", "scroll"].includes(window.getComputedStyle(e)["overflow-y"])) : e.scrollWidth > e.clientWidth && (e.classList.contains("scroll") || e.classList.contains("overflow-auto") || ["auto", "scroll"].includes(window.getComputedStyle(e)["overflow-x"]));
@@ -3479,8 +3483,8 @@ function rs(e) {
 }
 function hn(e, t) {
   const n = e.style;
-  for (const o in t)
-    n[o] = t[o];
+  for (const a in t)
+    n[a] = t[a];
 }
 const Se = {
   getScrollTarget: es,
@@ -3500,7 +3504,7 @@ const Se = {
       let w = document.createElement("div");
       return w.style.position = c, w.style.top = f + "px", w.style.border = "none", w.style.borderTop = m + " solid 1px", w.style.width = "100%", w.style.zIndex = "10000", w.style.padding = "0px", w.style.lineHeight = "0px", w.style.fontSize = "12px", w.style.color = m, w.innerHTML = g, document.querySelector("body").appendChild(w), w;
     };
-    const n = t.value.debug ? t.value.debug : !1, o = t.value.startingOffset ? t.value.startingOffset : 24, s = t.value.fixedPos ? t.value.fixedPos : 24, a = o - s, i = t.value.scanner ? t.value.scanner : s + 30, r = e.querySelectorAll("a");
+    const n = t.value.debug ? t.value.debug : !1, a = t.value.startingOffset ? t.value.startingOffset : 24, s = t.value.fixedPos ? t.value.fixedPos : 24, o = a - s, i = t.value.scanner ? t.value.scanner : s + 30, r = e.querySelectorAll("a");
     r[0].classList.add("active"), r[0].ariaCurrent = "step";
     const l = Se.getScrollTarget(document.querySelector(r[0].hash));
     let d = [], u, p;
@@ -3510,7 +3514,7 @@ const Se = {
           c += g.offsetLeft - g.scrollLeft, f += g.offsetTop - g.scrollTop, g = g.offsetParent;
         console.log("x: " + c), console.log("y: " + f + " (startingOffset)");
       }
-      window.pageYOffset > a ? (e.style.top || (e.style.top = s + "px", e.classList.add("fixed")), e.style.width = e.parentElement.getBoundingClientRect().width + "px") : e.style.top && (e.classList.remove("fixed"), e.style.top = null, e.style.width = null);
+      window.pageYOffset > o ? (e.style.top || (e.style.top = s + "px", e.classList.add("fixed")), e.style.width = e.parentElement.getBoundingClientRect().width + "px") : e.style.top && (e.classList.remove("fixed"), e.style.top = null, e.style.width = null);
       for (var m = Se.getVerticalScrollPosition(l), w = O.computeBreakPoints(m), v = 0; v < r.length; v++)
         w[v] <= m && (v >= r.length - 1 || m < w[v + 1]) ? (r[v].classList.add("active"), r[v].ariaCurrent = "step") : (r[v].classList.remove("active"), r[v].removeAttribute("aria-current"));
     }, O.computeBlockTop = function(g) {
@@ -3581,24 +3585,24 @@ var us = "Expected a function", gn = NaN, fs = "[object Symbol]", hs = /^\s+|\s+
   return vs.Date.now();
 };
 function Ss(e, t, n) {
-  var o, s, a, i, r, l, d = 0, u = !1, p = !1, h = !0;
+  var a, s, o, i, r, l, d = 0, u = !1, p = !1, h = !0;
   if (typeof e != "function")
     throw new TypeError(us);
-  t = wn(t) || 0, qt(n) && (u = !!n.leading, p = "maxWait" in n, a = p ? Cs(wn(n.maxWait) || 0, t) : a, h = "trailing" in n ? !!n.trailing : h);
+  t = wn(t) || 0, qt(n) && (u = !!n.leading, p = "maxWait" in n, o = p ? Cs(wn(n.maxWait) || 0, t) : o, h = "trailing" in n ? !!n.trailing : h);
   function g($) {
-    var _ = o, ue = s;
-    return o = s = void 0, d = $, i = e.apply(ue, _), i;
+    var _ = a, ue = s;
+    return a = s = void 0, d = $, i = e.apply(ue, _), i;
   }
   function c($) {
     return d = $, r = setTimeout(w, t), u ? g($) : i;
   }
   function f($) {
     var _ = $ - l, ue = $ - d, Lt = t - _;
-    return p ? xs(Lt, a - ue) : Lt;
+    return p ? xs(Lt, o - ue) : Lt;
   }
   function m($) {
     var _ = $ - l, ue = $ - d;
-    return l === void 0 || _ >= t || _ < 0 || p && ue >= a;
+    return l === void 0 || _ >= t || _ < 0 || p && ue >= o;
   }
   function w() {
     var $ = Ct();
@@ -3607,17 +3611,17 @@ function Ss(e, t, n) {
     r = setTimeout(w, f($));
   }
   function v($) {
-    return r = void 0, h && o ? g($) : (o = s = void 0, i);
+    return r = void 0, h && a ? g($) : (a = s = void 0, i);
   }
   function b() {
-    r !== void 0 && clearTimeout(r), d = 0, o = l = s = r = void 0;
+    r !== void 0 && clearTimeout(r), d = 0, a = l = s = r = void 0;
   }
   function q() {
     return r === void 0 ? i : v(Ct());
   }
   function k() {
     var $ = Ct(), _ = m($);
-    if (o = arguments, s = this, l = $, _) {
+    if (a = arguments, s = this, l = $, _) {
       if (r === void 0)
         return c(l);
       if (p)
@@ -3671,16 +3675,16 @@ const bn = /* @__PURE__ */ cs(Ds), D = window.Quasar, xt = {
       if (e.status === 401) {
         t.message = this.$q.lang.vui.ajaxErrors.code401, this.$root.$emit("unauthorized", e);
         return;
-      } else e.status === 403 ? t.message = this.$q.lang.vui.ajaxErrors.code403 : e.status === 404 ? t.message = this.$q.lang.vui.ajaxErrors.code404 : e.status === 405 ? t.message = this.$q.lang.vui.ajaxErrors.code405 : e.status === 422 ? (t.message = "", Object.keys(e.data).forEach((function(o) {
-        this.$data.uiMessageStack[o] = e.data[o];
+      } else e.status === 403 ? t.message = this.$q.lang.vui.ajaxErrors.code403 : e.status === 404 ? t.message = this.$q.lang.vui.ajaxErrors.code404 : e.status === 405 ? t.message = this.$q.lang.vui.ajaxErrors.code405 : e.status === 422 ? (t.message = "", Object.keys(e.data).forEach((function(a) {
+        this.$data.uiMessageStack[a] = e.data[a];
       }).bind(this))) : e.status >= 500 && (t.message = this.$q.lang.vui.ajaxErrors.code500);
       if (e.statusText && e.status !== 422 && (t.message = e.statusText), Object.prototype.hasOwnProperty.call(e, "data")) {
         if (Object.prototype.hasOwnProperty.call(e.data, "message") && e.data.message && e.data.message.length > 0)
           t.message = e.data.message;
         else if (Object.prototype.hasOwnProperty.call(e.data, "globalErrors") && e.data.globalErrors && e.data.globalErrors.length > 0) {
           var n = this.uiMessageStackToNotify(e.data);
-          n.forEach((function(o) {
-            this.$q.notify(o);
+          n.forEach((function(a) {
+            this.$q.notify(a);
           }).bind(this)), t.message = "";
         }
       }
@@ -3731,16 +3735,16 @@ const bn = /* @__PURE__ */ cs(Ds), D = window.Quasar, xt = {
   getSafeValue: function(e, t, n) {
     return this.$data.vueData[e] && this.$data.vueData[e][t] ? this.$data.vueData[e][t][n] : null;
   },
-  transformListForSelection: function(e, t, n, o, s) {
-    let a = this.$data.vueData[e];
-    if (o && (a = a.filter(o)), s != null && s.trim() !== "") {
+  transformListForSelection: function(e, t, n, a, s) {
+    let o = this.$data.vueData[e];
+    if (a && (o = o.filter(a)), s != null && s.trim() !== "") {
       const i = this.unaccentLower(s);
-      a = a.filter((r) => this.unaccentLower(r[n].toString()).indexOf(i) > -1), a.sort((r, l) => {
+      o = o.filter((r) => this.unaccentLower(r[n].toString()).indexOf(i) > -1), o.sort((r, l) => {
         const d = this.unaccentLower(r[n].toString()).startsWith(i), u = this.unaccentLower(l[n].toString()).startsWith(i);
         return d && !u ? -1 : !d && u ? 1 : 0;
       });
     }
-    return a.map(function(i) {
+    return o.map(function(i) {
       return { value: i[t], label: i[n].toString() };
     });
   },
@@ -3749,49 +3753,49 @@ const bn = /* @__PURE__ */ cs(Ds), D = window.Quasar, xt = {
   },
   paginationAndSortHandler: function(e) {
     var t = e.pagination;
-    let n = this.$data.componentStates, o = this.$data.vueData;
+    let n = this.$data.componentStates, a = this.$data.vueData;
     var s = n[t.componentId].pagination;
     if ((s.sortBy != t.sortBy || s.descending != t.descending) && t.sortBy) {
-      let a = n[t.componentId].columns.find((i) => i.name === t.sortBy);
-      t.sortUrl ? (t.page = 1, this.$http.post(t.sortUrl, this.objectToFormData({ sortFieldName: a.field, sortDesc: t.descending, CTX: this.$data.vueData.CTX })).then((function(i) {
-        o[t.listKey] = i.data.model[t.listKey], this.$data.vueData.CTX = i.data.model.CTX;
-      }).bind(this))) : this.$refs[t.componentId].sortMethod.apply(this.$refs[t.componentId], [o[t.listKey], a.field, t.descending]);
+      let o = n[t.componentId].columns.find((i) => i.name === t.sortBy);
+      t.sortUrl ? (t.page = 1, this.$http.post(t.sortUrl, this.objectToFormData({ sortFieldName: o.field, sortDesc: t.descending, CTX: this.$data.vueData.CTX })).then((function(i) {
+        a[t.listKey] = i.data.model[t.listKey], this.$data.vueData.CTX = i.data.model.CTX;
+      }).bind(this))) : this.$refs[t.componentId].sortMethod.apply(this.$refs[t.componentId], [a[t.listKey], o.field, t.descending]);
     }
     n[t.componentId].pagination = t;
   },
   paginatedData: function(e, t) {
-    var o = this.$data.componentStates[t].pagination;
-    if (o.rowsPerPage != 0) {
-      var s = (o.page - 1) * o.rowsPerPage, a = o.page * o.rowsPerPage;
-      return this.$data.vueData[e].slice(s, a);
+    var a = this.$data.componentStates[t].pagination;
+    if (a.rowsPerPage != 0) {
+      var s = (a.page - 1) * a.rowsPerPage, o = a.page * a.rowsPerPage;
+      return this.$data.vueData[e].slice(s, o);
     }
     return this.$data.vueData[e];
   },
   createDefaultTableSort: function(e) {
-    return this.$data.componentStates[e] ? (function(t, n, o) {
-      let s = this.$data.componentStates[e].columns.find((a) => a.name === n);
+    return this.$data.componentStates[e] ? (function(t, n, a) {
+      let s = this.$data.componentStates[e].columns.find((o) => o.name === n);
       if (s.datetimeFormat) {
-        const a = o === !0 ? -1 : 1, i = (r) => r[s.field];
+        const o = a === !0 ? -1 : 1, i = (r) => r[s.field];
         return t.sort((r, l) => {
           let d = i(r), u = i(l);
-          return (D.date.extractDate(d, s.datetimeFormat).getTime() > D.date.extractDate(u, s.datetimeFormat).getTime() ? 1 : -1) * a;
+          return (D.date.extractDate(d, s.datetimeFormat).getTime() > D.date.extractDate(u, s.datetimeFormat).getTime() ? 1 : -1) * o;
         });
       } else
-        return this.sortCiAi(t, s.field, o);
+        return this.sortCiAi(t, s.field, a);
     }).bind(this) : this.sortCiAi;
   },
   sortCiAi: function(e, t, n) {
-    const o = n === !0 ? -1 : 1, s = (i) => i[t], a = new Intl.Collator();
+    const a = n === !0 ? -1 : 1, s = (i) => i[t], o = new Intl.Collator();
     return e.sort((i, r) => {
       let l = s(i), d = s(r);
-      return l == null ? -1 * o : d == null ? 1 * o : mn(l) === !0 && mn(d) === !0 ? (l - d) * o : pn(l) === !0 && pn(d) === !0 ? ds(l, d) * o : typeof l == "boolean" && typeof d == "boolean" ? (l - d) * o : ([l, d] = [l, d].map((u) => (u + "").toLocaleString()), a.compare(l, d) * o);
+      return l == null ? -1 * a : d == null ? 1 * a : mn(l) === !0 && mn(d) === !0 ? (l - d) * a : pn(l) === !0 && pn(d) === !0 ? ds(l, d) * a : typeof l == "boolean" && typeof d == "boolean" ? (l - d) * a : ([l, d] = [l, d].map((u) => (u + "").toLocaleString()), o.compare(l, d) * a);
     });
   },
   selectedFunction: function(e, t, n) {
     this.$data.vueData[e][t] = n.value;
   },
-  searchAutocomplete: function(e, t, n, o, s, a, i, r, l) {
-    if (i.length < a) {
+  searchAutocomplete: function(e, t, n, a, s, o, i, r, l) {
+    if (i.length < o) {
       l();
       return;
     }
@@ -3800,28 +3804,28 @@ const bn = /* @__PURE__ */ cs(Ds), D = window.Quasar, xt = {
         return { value: p[t], label: p[n].toString() };
       });
       r((function() {
-        this.$data.componentStates[o].options = u;
+        this.$data.componentStates[a].options = u;
       }).bind(this));
     }).bind(this)).catch(function(d) {
       this.$q.notify(d.response.status + ":" + d.response.statusText), r([]);
     });
   },
-  loadAutocompleteById: function(e, t, n, o, s, a, i, r) {
+  loadAutocompleteById: function(e, t, n, a, s, o, i, r) {
     var l;
-    r != null ? l = this.$data.vueData[a][r][i] : l = this.$data.vueData[a][i], Array.isArray(l) ? l.forEach((d) => this.loadMissingAutocompleteOption(e, t, n, o, s, d)) : this.loadMissingAutocompleteOption(e, t, n, o, s, l);
+    r != null ? l = this.$data.vueData[o][r][i] : l = this.$data.vueData[o][i], Array.isArray(l) ? l.forEach((d) => this.loadMissingAutocompleteOption(e, t, n, a, s, d)) : this.loadMissingAutocompleteOption(e, t, n, a, s, l);
   },
-  loadMissingAutocompleteOption: function(e, t, n, o, s, a) {
-    !a || this.$data.componentStates[o].options.filter((function(i) {
-      return i.value === a;
-    }).bind(this)).length > 0 || (this.$data.componentStates[o].loading = !0, this.$http.post(s, this.objectToFormData({ value: a, list: e, valueField: t, labelField: n, CTX: this.$data.vueData.CTX })).then((function(i) {
+  loadMissingAutocompleteOption: function(e, t, n, a, s, o) {
+    !o || this.$data.componentStates[a].options.filter((function(i) {
+      return i.value === o;
+    }).bind(this)).length > 0 || (this.$data.componentStates[a].loading = !0, this.$http.post(s, this.objectToFormData({ value: o, list: e, valueField: t, labelField: n, CTX: this.$data.vueData.CTX })).then((function(i) {
       var r = i.data.map(function(l) {
         return { value: l[t], label: l[n].toString() };
       });
-      this.$data.componentStates[o].options = this.$data.componentStates[o].options.concat(r);
+      this.$data.componentStates[a].options = this.$data.componentStates[a].options.concat(r);
     }).bind(this)).catch((function(i) {
       this.$q.notify(i.response.status + ":" + i.response.statusText);
     }).bind(this)).then((function() {
-      this.$data.componentStates[o].loading = !1;
+      this.$data.componentStates[a].loading = !1;
     }).bind(this)));
   },
   decodeDate: function(e, t) {
@@ -3837,7 +3841,7 @@ const bn = /* @__PURE__ */ cs(Ds), D = window.Quasar, xt = {
     return e === D.date.formatDate(D.date.extractDate(e, t), t) ? D.date.formatDate(D.date.extractDate(e, t), "YYYY-MM-DD[T]HH:mm") : e;
   },
   sortDatesAsString: function(e) {
-    return function(t, n, o, s) {
+    return function(t, n, a, s) {
       return D.date.extractDate(t, e).getTime() > D.date.extractDate(n, e).getTime() ? 1 : -1;
     };
   },
@@ -3846,30 +3850,30 @@ const bn = /* @__PURE__ */ cs(Ds), D = window.Quasar, xt = {
   },
   openModal: function(e, t, n) {
     if (t) {
-      var o = t;
+      var a = t;
       if (n && Object.keys(n).length > 0) {
-        var s = Object.keys(n).map(function(a) {
-          return a + "=" + n[a];
+        var s = Object.keys(n).map(function(o) {
+          return o + "=" + n[o];
         }).join("&");
-        o = o + "?" + s;
+        a = a + "?" + s;
       }
-      this.$data.componentStates[e].srcUrl = o;
+      this.$data.componentStates[e].srcUrl = a;
     }
     this.$data.componentStates[e].opened = !0;
   },
   toogleFacet: function(e, t, n) {
-    let o = this.$data.vueData;
+    let a = this.$data.vueData;
     var s = !1;
-    o[n + "_facets"].forEach(function(i) {
+    a[n + "_facets"].forEach(function(i) {
       i.code === e && (s = i.multiple);
     });
-    var a = o[n + "_selectedFacets"][e];
-    a ? a.includes(t) ? s ? a.splice(a.indexOf(t), 1) : a.splice(0) : a.push(t) : o[n + "_selectedFacets"][e] = [t], this.search(n);
+    var o = a[n + "_selectedFacets"][e];
+    o ? o.includes(t) ? s ? o.splice(o.indexOf(t), 1) : o.splice(0) : o.push(t) : a[n + "_selectedFacets"][e] = [t], this.search(n);
   },
   search: bn(function(e, t = 1) {
-    let n = this.$data.componentStates, o = this.$data.vueData;
-    var s = e + "_selectedFacets", a = o[e + "_criteriaContextKey"], i = this.vueDataParams([a]);
-    i.append(s, JSON.stringify(o[s]));
+    let n = this.$data.componentStates, a = this.$data.vueData;
+    var s = e + "_selectedFacets", o = a[e + "_criteriaContextKey"], i = this.vueDataParams([o]);
+    i.append(s, JSON.stringify(a[s]));
     var r = n[e + "Search"].searchUrl, l = n[e + "Search"].collectionComponentId;
     if (n[l].pagination && n[l].pagination.sortBy) {
       var d = n[l].pagination;
@@ -3896,13 +3900,13 @@ const bn = /* @__PURE__ */ cs(Ds), D = window.Quasar, xt = {
   vueDataToObject(e) {
     return Array.isArray(e) ? e.length == 0 ? null : e.length == 1 ? e[0] : e : e || null;
   },
-  obtainVueDataAccessor(e, t, n, o) {
-    return n != null && n != "null" ? o != null ? {
+  obtainVueDataAccessor(e, t, n, a) {
+    return n != null && n != "null" ? a != null ? {
       get: function() {
-        return e.$data.vueData[t][o][n];
+        return e.$data.vueData[t][a][n];
       },
       set: function(s) {
-        e.$data.vueData[t][o][n] = s;
+        e.$data.vueData[t][a][n] = s;
       }
     } : {
       get: function() {
@@ -3943,8 +3947,8 @@ const bn = /* @__PURE__ */ cs(Ds), D = window.Quasar, xt = {
   modal_iframeAjustHeight(e) {
     let t = e.dataset.componentId, n = e.contentDocument ? e.contentDocument : e.contentWindow.document;
     setTimeout((function() {
-      let o = this.getDocHeight(n) + 4 + "px";
-      e.style.height = "", this.componentStates[t].height = o;
+      let a = this.getDocHeight(n) + 4 + "px";
+      e.style.height = "", this.componentStates[t].height = a;
     }).bind(this), 1);
   },
   getDocHeight: function(e) {
@@ -3959,8 +3963,8 @@ const bn = /* @__PURE__ */ cs(Ds), D = window.Quasar, xt = {
     );
   },
   httpPostAjax: function(e, t, n) {
-    var o = t ? Array.isArray(t) ? this.vueDataParams(t) : t : [];
-    let s = this.$data.vueData, a = this.$data.uiMessageStack, i = this.isFormData(o) ? o : this.objectToFormData(o);
+    var a = t ? Array.isArray(t) ? this.vueDataParams(t) : t : [];
+    let s = this.$data.vueData, o = this.$data.uiMessageStack, i = this.isFormData(a) ? a : this.objectToFormData(a);
     i.append("CTX", s.CTX), this.pushPendingAction(e), this.$http.post(e, i).then((function(r) {
       if (r.data.model.CTX && (s.CTX = r.data.model.CTX), Object.keys(r.data.model).forEach(function(d) {
         d != "CTX" && (s[d] = r.data.model[d]);
@@ -3971,7 +3975,7 @@ const bn = /* @__PURE__ */ cs(Ds), D = window.Quasar, xt = {
         }).bind(this));
       } else
         Object.keys(r.data.uiMessageStack).forEach(function(d) {
-          a[d] = r.data.uiMessageStack[d];
+          o[d] = r.data.uiMessageStack[d];
         });
       n && n.onSuccess && n.onSuccess.call(this, r, window);
     }).bind(this)).catch(function(r) {
@@ -3996,38 +4000,38 @@ const bn = /* @__PURE__ */ cs(Ds), D = window.Quasar, xt = {
   },
   hasFieldsError: function(e, t, n) {
     var i, r;
-    const o = this.$data.uiMessageStack.objectFieldErrors, s = t.split("_")[0];
-    if (o) {
-      var a = n != null ? e + "[" + n + "]" : e;
-      return ((r = (i = o == null ? void 0 : o[a]) == null ? void 0 : i[s]) == null ? void 0 : r.length) > 0;
+    const a = this.$data.uiMessageStack.objectFieldErrors, s = t.split("_")[0];
+    if (a) {
+      var o = n != null ? e + "[" + n + "]" : e;
+      return ((r = (i = a == null ? void 0 : a[o]) == null ? void 0 : i[s]) == null ? void 0 : r.length) > 0;
     }
     return !1;
   },
   getErrorMessage: function(e, t, n) {
-    const o = this.$data.uiMessageStack.objectFieldErrors, s = t.split("_")[0];
-    if (o) {
-      var a = n != null ? e + "[" + n + "]" : e;
-      if (Object.prototype.hasOwnProperty.call(o, a) && o[a] && Object.prototype.hasOwnProperty.call(o[a], s))
-        return o[a][s].join(", ");
+    const a = this.$data.uiMessageStack.objectFieldErrors, s = t.split("_")[0];
+    if (a) {
+      var o = n != null ? e + "[" + n + "]" : e;
+      if (Object.prototype.hasOwnProperty.call(a, o) && a[o] && Object.prototype.hasOwnProperty.call(a[o], s))
+        return a[o][s].join(", ");
     } else
       return "";
   },
   vueDataParams: function(e) {
     for (var t = new FormData(), n = 0; n < e.length; n++) {
-      var o = e[n].split(".", 2), s = o[0], a = o[1], i = this.$data.vueData[s];
-      i && typeof i == "object" && Array.isArray(i) === !1 ? a ? this._vueDataParamsKey(t, s, a, i) : Object.keys(i).forEach((function(r) {
+      var a = e[n].split(".", 2), s = a[0], o = a[1], i = this.$data.vueData[s];
+      i && typeof i == "object" && Array.isArray(i) === !1 ? o ? this._vueDataParamsKey(t, s, o, i) : Object.keys(i).forEach((function(r) {
         r.includes("_") || this._vueDataParamsKey(t, s, r, i);
       }).bind(this)) : i && Array.isArray(i) === !0 ? i.forEach((function(r, l) {
-        a ? this._vueDataParamsKey(t, s + "][" + l, a, r) : Object.keys(r).forEach((function(d) {
+        o ? this._vueDataParamsKey(t, s + "][" + l, o, r) : Object.keys(r).forEach((function(d) {
           d.includes("_") || this._vueDataParamsKey(t, s + "][" + l, d, r);
         }).bind(this));
       }).bind(this)) : this.appendToFormData(t, "vContext[" + s + "]", i);
     }
     return t;
   },
-  _vueDataParamsKey: function(e, t, n, o) {
-    let s = o[n];
-    Array.isArray(s) ? !s || s.length == 0 ? this.appendToFormData(e, "vContext[" + t + "][" + n + "]", "") : s.forEach((function(a, i) {
+  _vueDataParamsKey: function(e, t, n, a) {
+    let s = a[n];
+    Array.isArray(s) ? !s || s.length == 0 ? this.appendToFormData(e, "vContext[" + t + "][" + n + "]", "") : s.forEach((function(o, i) {
       s[i] && typeof s[i] == "object" ? this.appendToFormData(e, "vContext[" + t + "][" + n + "]", s[i]._v_inputValue) : this.appendToFormData(e, "vContext[" + t + "][" + n + "]", s[i]);
     }).bind(this)) : s && typeof s == "object" ? this.appendToFormData(e, "vContext[" + t + "][" + n + "]", s._v_inputValue) : this.appendToFormData(e, "vContext[" + t + "][" + n + "]", s);
   },
@@ -4052,23 +4056,23 @@ const bn = /* @__PURE__ */ cs(Ds), D = window.Quasar, xt = {
    */
   pastePlainTextCapture(e, t) {
     if (e.target.nodeName === "INPUT") return;
-    let n, o;
-    e.preventDefault(), e.originalEvent && e.originalEvent.clipboardData.getData ? (n = e.originalEvent.clipboardData.getData("text/plain"), this.$refs[t].runCmd("insertText", n)) : e.clipboardData && e.clipboardData.getData ? (n = e.clipboardData.getData("text/plain"), this.$refs[t].runCmd("insertText", n)) : window.clipboardData && window.clipboardData.getData && (o || (o = !0, this.$refs[t].runCmd("ms-pasteTextOnly", n)), o = !1);
+    let n, a;
+    e.preventDefault(), e.originalEvent && e.originalEvent.clipboardData.getData ? (n = e.originalEvent.clipboardData.getData("text/plain"), this.$refs[t].runCmd("insertText", n)) : e.clipboardData && e.clipboardData.getData ? (n = e.clipboardData.getData("text/plain"), this.$refs[t].runCmd("insertText", n)) : window.clipboardData && window.clipboardData.getData && (a || (a = !0, this.$refs[t].runCmd("ms-pasteTextOnly", n)), a = !1);
   },
-  editorHandlerFixHelper(e, t, n, o, s, a) {
-    if (a.hasParents(e, !0))
-      if (s.runCmd("formatBlock", o), a.range.commonAncestorContainer.hasChildNodes()) {
-        for (var r = !1, l = a.range.startContainer; l && l !== a.el && l.parentNode !== a.range.commonAncestorContainer; )
+  editorHandlerFixHelper(e, t, n, a, s, o) {
+    if (o.hasParents(e, !0))
+      if (s.runCmd("formatBlock", a), o.range.commonAncestorContainer.hasChildNodes()) {
+        for (var r = !1, l = o.range.startContainer; l && l !== o.el && l.parentNode !== o.range.commonAncestorContainer; )
           l = l.parentNode;
-        for (var d = a.range.endContainer; d && d !== a.el && d.parentNode !== a.range.commonAncestorContainer; )
+        for (var d = o.range.endContainer; d && d !== o.el && d.parentNode !== o.range.commonAncestorContainer; )
           d = d.parentNode;
-        a.range.commonAncestorContainer.childNodes.forEach(
+        o.range.commonAncestorContainer.childNodes.forEach(
           function(u) {
             u === l && (r = !0), r && (u.outerHTML = u.outerHTML.replace(t, "")), u === d && (r = !1);
           }
         );
       } else
-        for (var i = a.selection.focusNode.parentNode; i && i !== a.el; )
+        for (var i = o.selection.focusNode.parentNode; i && i !== o.el; )
           e.includes(i.nodeName.toLowerCase()) && (i.outerHTML = i.outerHTML.replace(t, "")), i = i.parentNode;
     else
       s.runCmd("formatBlock", n);
@@ -4195,7 +4199,7 @@ const bn = /* @__PURE__ */ cs(Ds), D = window.Quasar, xt = {
 var Sn = {
   getBoundMethods: function(e, t) {
     let n = {};
-    return Object.keys(t).forEach((o) => n[o] = t[o].bind(e)), n;
+    return Object.keys(t).forEach((a) => n[a] = t[a].bind(e)), n;
   },
   install: function(e, t) {
     if (e.component("v-chatbot", Un), e.component("v-commands", Xn), e.component("v-comments", oo), e.component("v-extensions-store", mo), e.component("v-facets", _o), e.component("v-geopoint-input", ko), e.component("v-handles", Po), e.component("v-json-editor", Go), e.component("v-notifications", Zo), e.component("v-map", da), e.component("v-map-layer", ya), e.component("v-tree", Fa), e.component("v-file-upload", Za), e.component("v-file-upload-quasar", yi), e.component("v-dashboard-chart", Ji), e.directive("alert-unsaved-updates", Yi), e.directive("autofocus", Wi), e.directive("if-unsaved-updates", Ki), e.directive("minify", Qi), e.directive("scroll-spy", ls), !t.axios) {

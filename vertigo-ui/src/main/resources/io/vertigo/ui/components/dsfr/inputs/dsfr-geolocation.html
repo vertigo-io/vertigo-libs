@@ -7,10 +7,10 @@
 	<vu:include-data th:if="${nameField}" object="${object}" field="${nameField}" />
 	<vu:dsfr-label-edit label=${label}  required="${myRequired}" after_label_slot="after_label_slot" label_attrs="${label_attrs}" >
 		<div class="row full-width q-gutter-md">
-			<v-geopoint-input th:v-model="|vueData.${object}.${field}|" th:class="${myRequired}?'v-field__required'" th:attr="__${input_attrs}__">
+			<v-geopoint-input th:v-model="|vueData.${object}.${field}|" th:class="${myRequired}?'v-field__required'" th:attr="__${input_attrs}__" v-slot="slotProps">
 				<div class="flex gap" style="margin-left: 15px; margin-bottom: 10px;" vu:slot="input_slot">
-					<span><dsfr-input label="Longitude" label-visible th:v-model.number="|vueData.${object}.${field}.lon|"></dsfr-input></span>
-					<span><dsfr-input label="Latitude" label-visible th:v-model.number="|vueData.${object}.${field}.lat|"></dsfr-input></span>
+					<span><dsfr-input label="Longitude" label-visible th:v-model.number="|vueData.${object}.${field}.lon|" @update:model-value="slotProps.updateJson"></dsfr-input></span>
+					<span><dsfr-input label="Latitude" label-visible th:v-model.number="|vueData.${object}.${field}.lat|" @update:model-value="slotProps.updateJson"></dsfr-input></span>
 				</div>
 			</v-geopoint-input>
 			<input type="hidden" th:name="|vContext[${object}][${field}]|"  th:v-if="|vueData.${object}.${field}!=null|" th:v-bind:value="|vueData.${object}.${field}._v_inputValue|" />
