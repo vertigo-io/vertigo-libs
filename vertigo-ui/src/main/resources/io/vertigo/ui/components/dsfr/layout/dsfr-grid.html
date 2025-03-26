@@ -1,6 +1,6 @@
 <th:block th:fragment="dsfr-grid(cols, contentTags, class, other_attrs)"
 	th:with="layout='grid', currentColumnCount=0, tableCols=${cols?:2}, overridedLabelWidth=${cols?:2}, denseMode=${dense?:false}" >
-	<div class="fr-grid-row" th:classappend="${class}" th:attr="__${other_attrs}__" >
+	<div class="fr-grid-row fr-col-12 fr-grid-row--gutters" th:classappend="${class}" th:attr="__${other_attrs}__" >
 		<th:block th:each="contentItem:${contentTags}">
 			<th:block th:if="${contentItem.isTag('dsfr-grid-cell') || contentItem.isTag('dsfr-grid-break')}">
 				<vu:content-item th:with="class=null"/>
