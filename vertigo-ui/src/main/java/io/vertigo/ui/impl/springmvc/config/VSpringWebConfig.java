@@ -69,6 +69,7 @@ import io.vertigo.ui.impl.springmvc.argumentresolvers.ViewContextReturnValueAndA
 import io.vertigo.ui.impl.springmvc.authorization.VSpringMvcAuthorizationInterceptor;
 import io.vertigo.ui.impl.springmvc.config.interceptors.VAnnotationHandlerInterceptorImpl;
 import io.vertigo.ui.impl.springmvc.config.interceptors.VControllerInterceptorEngine;
+import io.vertigo.ui.impl.springmvc.config.interceptors.VSpringMvcErrorInterceptor;
 import io.vertigo.ui.impl.springmvc.config.interceptors.VSpringMvcViewContextInterceptor;
 import io.vertigo.ui.impl.springmvc.controller.VSpringMvcControllerAdvice;
 import io.vertigo.ui.impl.springmvc.controller.VSpringMvcExceptionHandler;
@@ -323,6 +324,7 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 	@Override
 	public void addInterceptors(final InterceptorRegistry registry) {
 		registry.addInterceptor(new VSpringMvcAuthorizationInterceptor());
+		registry.addInterceptor(new VSpringMvcErrorInterceptor());
 		registry.addInterceptor(new VSpringMvcViewContextInterceptor());
 		registry.addInterceptor(new VAnnotationHandlerInterceptorImpl(getVControllerInterceptorEngines()));
 	}
