@@ -1,10 +1,14 @@
 <!--/* Notion de faux onglets pour simplifier l’écriture */-->
 
-<ul th:fragment="dsfr-tab-list(class, other_attrs)" class="fr-tabs__list"
-     th:classappend="${class}"
-     th:attr="__${other_attrs}__">
-    <vu:content/>
-</ul>
+<th:block th:fragment="dsfr-tab-list(class, other_attrs)" >
+	<div class="fr-tabs">
+		<ul class="fr-tabs__list"
+		     th:classappend="${class}"
+		     th:attr="__${other_attrs}__">
+		    <vu:content/>
+		</ul>
+	</div>
+</th:block>
 
 <li th:fragment="dsfr-tab(label, url, class, active, other_attrs)">
     <a class="fr-tabs__tab"
