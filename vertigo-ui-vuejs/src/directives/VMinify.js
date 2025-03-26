@@ -1,5 +1,5 @@
 import * as Vue from "vue"
-import * as Quasar from "quasar"
+import throttle from "quasar/src/utils/throttle/throttle.js"
 
 export default {
     created: function(elMaxi, binding) {
@@ -7,6 +7,7 @@ export default {
             const topOffsetElSelector = binding.value?binding.value.topOffsetEl:null;
             const leftOffset = binding.value?binding.value.leftOffset:null;
             const leftOffsetElSelector = binding.value?binding.value.leftOffsetEl:null;
+            const scrollContainerSelector = binding.value?binding.value.scrollContainerEl:'.q-page-container';
             const elMini = elMaxi.querySelector('.mini')
             for(var i=0 ; i<elMaxi.childNodes.length; i++) {
                 var elChild = elMaxi.childNodes[i];
@@ -16,7 +17,7 @@ export default {
             }
             
             Vue.minifyHandler = function() {
-                var scrollContainer = elMaxi.closest('.q-page-container'); 
+                var scrollContainer = elMaxi.closest(scrollContainerSelector); 
                 var currentYScroll = scrollContainer?-scrollContainer.getBoundingClientRect().y:window.pageYOffset;
                 var currentXScroll = scrollContainer?-scrollContainer.getBoundingClientRect().x:window.pageXOffset;
                 var currentTopOffset = elMaxi.getBoundingClientRect().y+currentYScroll;
@@ -57,7 +58,7 @@ export default {
                 return currentOffset;
             }
             window.addEventListener('scroll', Vue.minifyHandler)
-            window.addEventListener('resize', Quasar.throttle(Vue.minifyHandler,50))
+            window.addEventListener('resize', throttle(Vue.minifyHandler,50))
         },
         updated : function() {
             const interval = 50;
