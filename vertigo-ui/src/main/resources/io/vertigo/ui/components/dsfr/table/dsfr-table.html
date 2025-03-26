@@ -1,7 +1,7 @@
 <th:block
         th:fragment="dsfr-table(list, componentId, title, v-title, subtitle, v-subtitle, dontUseHeading, selectable, pagination, rowKey, rowsPerPage, sortUrl, sortBy, descending, noResultLabel, title_slot, top_left_slot, top_right_slot, actions_slot, header_slot, table_slot, table_attrs)"
         th:assert="${componentId} != null and (${title} != null or ${vTitle} != null) and !(${sortUrl} != null and ${sortBy} != null) and !(${descending} != null and ${sortBy} == null)"
-        th:with="tableKey=${list},
+        th:with="dsfrTableKey=${list},
                  listSize=${model.vContext[__${list}__].size()},
                  mySelectable=${selectable?:false},
                  myPagination=${pagination?:true},
