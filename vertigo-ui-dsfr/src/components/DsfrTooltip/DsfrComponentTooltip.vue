@@ -22,6 +22,8 @@ const props = withDefaults(defineProps<DsfrComponentTooltipProps>(), {
 })
 
 const show = ref(false)
+const isFocusOnTooltip = ref(false)
+const isFocusOnButton = ref(false)
 
 const source = ref<HTMLElement | null>(null)
 const tooltip = ref<HTMLElement | null>(null)
@@ -111,6 +113,7 @@ const clickHandler = (event: MouseEvent) => {
 const keydownHandler = (event: KeyboardEvent) => {
   if (event.key === 'Escape') {
     show.value = false
+    event.preventDefault();
   }
 }
 
@@ -120,8 +123,12 @@ const onMouseEnterHandler = (event: MouseEvent) => {
   }
 }
 
-const onMouseLeave = () => {
-  show.value = false
+const onMouseLeave = (event) => {
+  setTimeout(() => {
+    if (!isFocusOnTooltip.value && !isFocusOnButton.value) {
+      show.value = false
+    }
+  }, 50);
 }
 
 onMounted(() => {
@@ -174,9 +181,10 @@ watch(props.disabled, () => {
       }"
       :aria-disabled="disabled"
       :aria-labelledby="id"
-      @mouseleave="onMouseLeave()"
+      @mouseenter="isFocusOnButton = true"
+      @mouseleave="isFocusOnButton = false; onMouseLeave($event)"
       @focus="onMouseEnterHandler($event)"
-      @blur="onMouseLeave()"
+      @blur="onMouseLeave($event)"
       v-bind="$attrs"
   >
     {{ label }}
@@ -189,6 +197,8 @@ watch(props.disabled, () => {
       :style="tooltipStyle"
       role="tooltip"
       aria-hidden="true"
+      @mouseenter="isFocusOnTooltip = true"
+      @mouseleave="isFocusOnTooltip = false; onMouseLeave($event)"
   >
     <slot>
       {{ content }}
