@@ -1960,6 +1960,45 @@ public abstract class AbstractSearchManagerTest {
 		index(true);
 		final GeoPoint origin = new GeoPoint(48.80f, 2.36f);
 		final Item criteria = new Item();
+		criteria.setLocalisation(origin);
+		criteria.setPrecision(5);
+		final SearchQuery searchQuery = SearchQuery.builder("QryItemFacetGeo")
+				.withCriteria(criteria)
+				.withFacet(EMPTY_SELECTED_FACET_VALUES)
+				.withFacetClustering(geoHashClusterFacetDefinition)
+				.build();
+		final FacetedQueryResult<Item, SearchQuery> result = doQuery(searchQuery, null);
+
+		//On vérifie qu'il existe une valeur pour chaque range et que le nombre d'occurrences est correct
+		//les filtres retournent : 1220, 10001, 1030 et 20000
+		for (final Entry<FacetValue, DtList<Item>> entry : result.getClusters().entrySet()) {
+			final String searchFacetLabel = entry.getKey().label().getDisplay().toLowerCase(Locale.FRENCH);
+			final int searchFacetCount = entry.getValue().size();
+
+			if ("u09t6".equals(searchFacetLabel)) {
+				Assertions.assertEquals(3, searchFacetCount); //10, 10201,20000
+			} else if ("u09te".equals(searchFacetLabel)) {
+				Assertions.assertEquals(2, searchFacetCount); //1220, 10001
+			} else if ("u09tt".equals(searchFacetLabel)) {
+				Assertions.assertEquals(1, searchFacetCount); //1030
+			} else if ("u09td".equals(searchFacetLabel)) {
+				Assertions.assertEquals(1, searchFacetCount); //11
+			} else if ("u09t7".equals(searchFacetLabel)) {
+				Assertions.assertEquals(1, searchFacetCount); //12
+			} else {
+				Assertions.fail("Unexpected facet " + searchFacetLabel);
+			}
+		}
+	}
+
+	/**
+	 * Test le facettage par geo range d'une liste.
+	 */
+	@Test
+	public void testClusterByFacetGeoHashAndCriteria() {
+		index(true);
+		final GeoPoint origin = new GeoPoint(48.80f, 2.36f);
+		final Item criteria = new Item();
 		criteria.setDescription("etat");
 		criteria.setLocalisation(origin);
 		criteria.setPrecision(5);
@@ -1971,20 +2010,21 @@ public abstract class AbstractSearchManagerTest {
 		final FacetedQueryResult<Item, SearchQuery> result = doQuery(searchQuery, null);
 
 		//On vérifie qu'il existe une valeur pour chaque range et que le nombre d'occurrences est correct
+		//les filtres retournent : 1220, 10001, 1030 et 20000
+		Assertions.assertEquals(4, result.getCount());
 		for (final Entry<FacetValue, DtList<Item>> entry : result.getClusters().entrySet()) {
 			final String searchFacetLabel = entry.getKey().label().getDisplay().toLowerCase(Locale.FRENCH);
 			final int searchFacetCount = entry.getValue().size();
-
 			if ("u09t6".equals(searchFacetLabel)) {
-				Assertions.assertEquals(3, searchFacetCount);
+				Assertions.assertEquals(1, searchFacetCount); //10, 10201,20000
 			} else if ("u09te".equals(searchFacetLabel)) {
-				Assertions.assertEquals(2, searchFacetCount);
+				Assertions.assertEquals(2, searchFacetCount); //1220, 10001
 			} else if ("u09tt".equals(searchFacetLabel)) {
-				Assertions.assertEquals(1, searchFacetCount);
+				Assertions.assertEquals(1, searchFacetCount); //1030
 			} else if ("u09td".equals(searchFacetLabel)) {
-				Assertions.assertEquals(1, searchFacetCount);
+				Assertions.assertEquals(1, searchFacetCount); //11
 			} else if ("u09t7".equals(searchFacetLabel)) {
-				Assertions.assertEquals(1, searchFacetCount);
+				Assertions.assertEquals(1, searchFacetCount); //12
 			} else {
 				Assertions.fail("Unexpected facet " + searchFacetLabel);
 			}
