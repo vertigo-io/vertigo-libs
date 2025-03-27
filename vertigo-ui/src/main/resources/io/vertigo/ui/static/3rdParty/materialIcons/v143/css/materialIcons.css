@@ -3,7 +3,7 @@
   font-style: normal;
   font-weight: 400;
   /*from https://fonts.googleapis.com/icon?family=Material+Icons
-  src: url(https://fonts.gstatic.com/s/materialicons/v142/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2) format('woff2');*/
+  src: url(https://fonts.gstatic.com/s/materialicons/v143/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2) format('woff2');*/
   src: local('Material Icons'),
     local('MaterialIcons-Regular'),
     url(../webfonts/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2) format('woff2');
