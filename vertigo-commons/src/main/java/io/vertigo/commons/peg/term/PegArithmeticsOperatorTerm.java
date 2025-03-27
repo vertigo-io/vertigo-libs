@@ -77,6 +77,13 @@ public enum PegArithmeticsOperatorTerm implements PegOperatorTerm<Object> {
 				case MULTIPLY -> leftI * rightI;
 				case DIVIDE -> leftI / rightI;
 			};
+		} else if (left instanceof final Double leftD && right instanceof final Double rightD) {
+			return switch (operator) {
+				case PLUS -> leftD + rightD;
+				case MINUS -> leftD - rightD;
+				case MULTIPLY -> leftD * rightD;
+				case DIVIDE -> leftD / rightD;
+			};
 		} else if (left instanceof final BigDecimal leftD && right instanceof final BigDecimal rightD) {
 			return switch (operator) {
 				case PLUS -> leftD.add(rightD);
