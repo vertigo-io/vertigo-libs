@@ -222,6 +222,8 @@ public final class SpeedbKVStorePlugin implements KVStorePlugin, Activeable, Sim
 			speeDb.cancelAllBackgroundWork(true);
 			speeDb.close();
 		}
+		memOptions.close();
+		fsOptions.close();
 	}
 
 	/**
