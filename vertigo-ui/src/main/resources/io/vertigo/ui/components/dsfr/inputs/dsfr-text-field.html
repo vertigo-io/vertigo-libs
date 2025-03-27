@@ -1,0 +1,71 @@
+<th:block
+        th:fragment="dsfr-text-field-edit(object, field, rowIndex, label, label-visible, suffix, required, edit_content_slot, after_label_slot, input_attrs, label_attrs)"
+        vu:alias="dsfr-text-field" vu:selector="${viewMode=='edit' && (readonly==null || !readonly)}"
+        th:with="myLabel=${label?:model.util.label(object + '.' + field)},
+	             myLabelVisible=${labelVisible != null ? labelVisible : myLabel!=null},
+	             myRequired=${required != null ? required : model.util.required(object + '.' + field)}"
+        th:assert="${object} != null and ${field} != null">
+    <vu:include-data object="${object}" field="${field}" modifiable="true"/>
+
+    <dsfr-input-group th:label="${myLabel}"
+                      th::label-visible="${myLabelVisible}"
+                      th:required="${myRequired}"
+                      th::name="${model.util.contextKey(object, field, rowIndex)}"
+                      th::is-invalid="|hasFieldsError('${object}', '${field}', ${rowIndex})|"
+                      th::error-message="|getErrorMessage('${object}', '${field}', ${rowIndex})|"
+                      th:v-model="${model.util.vueDataKey(object, field, rowIndex)}"
+                      th:attr="__${label_attrs}__,__${input_attrs}__">
+        <template #label>
+            <th:block th:text="${myLabel}"/>
+            <span th:if="${myRequired}" class="required"> *</span>
+            <vu:content-slot name="after_label_slot"/>
+        </template>
+        <vu:content/>
+    </dsfr-input-group>
+</th:block>
+
+<th:block
+        th:fragment="dsfr-text-field-read(object, field, rowIndex, label, hint, suffix, required, emptyValue, edit_content_slot, after_label_slot, input_attrs, label_attrs)"
+        vu:alias="dsfr-text-field" vu:selector="${viewMode=='read' || (readonly!=null && readonly)}" th:if="${modifiableTable==null}"
+        th:assert="${object} != null and ${field} != null"
+        th:with="mySuffix=${model.util.smartTypeUnit(object, field, suffix)},
+		         value=${__${model.util.contextGet(object, null, rowIndex)}__.getTypedValue('__${field}__')},
+          		 myEmptyValue=${emptyValue?:'Non renseigné'},
+                 useSuffix=${__${model.util.contextGet(object, field, rowIndex)}__!='' && mySuffix!='' && mySuffix!=null}">
+    <vu:dsfr-label-read label="${label}" label_attrs="${label_attrs}" after_label_slot="after_label_slot">
+        <span th:if="${value != null}"
+              vu:text="${__${model.util.contextGet(object, field, rowIndex)}__}"
+              th:attr="__${input_attrs}__"></span>
+        <span class="no-value" th:if="${value==null}"
+              th:text="${myEmptyValue}"></span>
+        <span th:if="${useSuffix}" vu:text="${mySuffix}"></span>
+    </vu:dsfr-label-read>
+</th:block>
+
+<th:block
+        th:fragment="dsfr-text-field-read(object, field, rowIndex, label, suffix, required, edit_content_slot, after_label_slot, input_attrs, label_attrs)"
+        vu:alias="dsfr-text-field" vu:selector="${viewMode=='read' || (readonly!=null && readonly)}" th:if="${modifiableTable!=null}"
+        th:assert="${object} != null and ${field} != null"
+        th:with="mySuffix=${model.util.smartTypeUnit(object, field, suffix)},
+             useSuffix=${__${model.util.contextGet(object, field, rowIndex)}__!='' && mySuffix!='' && mySuffix!=null}">
+    <vu:include-data object="${object}" field="${field}"/>
+    <span th:attr="__${input_attrs}__">
+        {{ [[${model.util.vueDataKey(object, field, rowIndex)}]] }}
+    </span>
+    <span th:if="${useSuffix}" th:v-if="|${model.util.contextGet(object, field, rowIndex)}!=''|"
+          vu:text="${mySuffix}"></span>
+</th:block>
+
+<th:block
+        th:fragment="dsfr-text-field-read-reactive(object, field, rowIndex, label, suffix, required, input_attrs, label_attrs)"
+        th:assert="${object} != null and ${field} != null"
+        th:with="myDisplayField=${model.util.resolveDisplayField(object, field)},
+		         mySuffix=${model.util.smartTypeUnit(object, field, suffix)}">
+    <vu:include-data object="${object}" field="${myDisplayField}"/>
+    <vu:dsfr-label-read label=${label} label_attrs="${label_attrs}">
+        <span th:attr="__${input_attrs}__">{{[[${model.util.vueDataKey(object, myDisplayField, rowIndex)}]]}}</span>
+        <template th:if="${mySuffix!='' && mySuffix!=null}"
+                  th:v-if="|${model.util.vueDataKey(object, myDisplayField, rowIndex)} != null && ${model.util.vueDataKey(object, myDisplayField, rowIndex)} != ''|">
+            <span vu:text="${mySuffix}"></span></template>
+    </vu:dsfr-label-read>
+</th:block>

@@ -178,6 +178,10 @@ img.avatar {
 	color:var(--v-accent-invert) !important;
 }
 
+.q-table th .q-checkbox__inner {
+	color: currentColor;
+}
+
 .q-table-container th.sortable:hover,
 .q-table-container th.sorted {
   color: rgba(255,255,255,1);  
@@ -361,10 +365,24 @@ thead tr:hover:last-child th:last-child:not(:first-child), tr:hover td:nth-last-
   opacity: 0 !important;
 }
 
+.v-fileupload .files .file {
+	padding-bottom: 1rem;
+}
+
 .dropzone-area {
 	position: relative;
 }
 
+.dropzone-area__dnd {
+	position: absolute;
+	top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    outline: 1px dashed currentColor;
+    outline-offset: 5px;
+    background: rgba(255, 255, 255, 0.6);
+}
 .q-uploader {
 	width:auto !important;
 }
@@ -392,7 +410,7 @@ thead tr:hover:last-child th:last-child:not(:first-child), tr:hover td:nth-last-
     overflow:auto; 
 }
 .q-uploader__list.scroll .q-field--auto-height .q-field__control {
-	max-height: 300px;
+	max-height: 254px;
 }
 .q-uploader .q-field__label {
 	top: 10px;
@@ -431,16 +449,43 @@ table .q-uploader .q-btn {
     max-width:unset !important;
 }
 
+.v-modal .loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
 .q-dialog__inner--minimized .v-modal .q-card__section {
+	width: 560px;
+	height: 420px;
 	max-height: calc(100vh - 100px);
 	max-width: calc(100vw - 100px);
 	overflow: auto;
 }
 
-.v-modal .q-card__section iframe {
+.v-modal .v-modal__dsfr-content {
+	height: 420px;
+}
+
+.v-modal iframe {
 	display: block;
 	width: 100%;
 	height: 100%;
+}
+
+/* Le footer fait partie de l’iframe */
+.v-modal .fr-modal__content {
+	margin-bottom: 0;
+}
+
+.v-modal .fr-modal__footer {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+[v-cloak] {
+    visibility: hidden;
 }
 
 /******** dev mode of authorizations *******/
@@ -498,6 +543,21 @@ table .q-uploader .q-btn {
 
 
 /** v-map **/
+.map {
+	height: 400px;
+	width:100%;
+}
+
+.map .popup {
+	background: #fff;
+	box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2), 0 2px 2px rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12);
+	border-radius: 4px;
+	padding-left: 16px;
+	padding-right: 16px;
+	padding-top: 4px;
+	padding-bottom: 4px;
+}
+
 .ol-v-custom-buttons {
 	top: 4em;
 	left: .5em;
@@ -517,4 +577,23 @@ table .q-uploader .q-btn {
 .ol-geocoder .gcd-gl-input {
 	top: .125em !important;
 	height: 2.25em !important;
+}
+
+
+
+/********  conflit handling between dsfr and quasar *******/
+.q-separator {
+ 	padding: unset;
+ }
+ 
+.q-item[href], .q-btn[href] {
+    background-image: unset; 
+}
+
+a[href]:active.q-item {
+	background-color: inherit;
+}
+
+button:not(:disabled):hover.q-btn-item {
+	background-color: transparent;
 }

@@ -56,6 +56,7 @@ import io.vertigo.datastore.kvstore.KVCollection;
  * @author pchretien, npiedeloup
  */
 public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable, SimpleDefinitionProvider {
+
 	private static final String ANALYTICS_CATEGORY = "kvstore";
 	private static final boolean READONLY = false;
 	private static final Logger LOGGER = LogManager.getLogger(BerkeleyKVStorePlugin.class);
@@ -238,10 +239,10 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable, S
 
 	/** {@inheritDoc} */
 	@Override
-	public void remove(final KVCollection collection, final String id) {
-		analyticsManager.trace(ANALYTICS_CATEGORY, "remove", tracer -> {
+	public boolean remove(final KVCollection collection, final String id) {
+		return analyticsManager.traceWithReturn(ANALYTICS_CATEGORY, "remove", tracer -> {
 			tracer.setTag("collection", collection.name());
-			getDatabase(collection).delete(id);
+			return getDatabase(collection).delete(id);
 		});
 	}
 
@@ -259,7 +260,7 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable, S
 	public void put(final KVCollection collection, final String id, final Object element) {
 		analyticsManager.trace(ANALYTICS_CATEGORY, "put", tracer -> {
 			tracer.setTag("collection", collection.name());
-		getDatabase(collection).put(id, element);
+			getDatabase(collection).put(id, element);
 		});
 	}
 

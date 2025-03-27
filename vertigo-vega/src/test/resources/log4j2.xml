@@ -6,22 +6,22 @@
 		</Console>
 	</Appenders>
 	<Loggers>
-		<Logger name="webservices" level="info" >
+		<Logger name="webservices" level="warn" >
 	      <AppenderRef ref="Console"/>
 	    </Logger>
-		<Logger name="page" level="info" >
+		<Logger name="page" level="warn" >
 	      <AppenderRef ref="Console"/>
 	    </Logger>
-		<Logger name="tasks" level="info" >
+		<Logger name="tasks" level="warn" >
 		  <AppenderRef ref="Console"/>
 	    </Logger>
-	    <Logger name="job" level="info" >
+	    <Logger name="job" level="warn" >
 	      <AppenderRef ref="Console"/>
 	    </Logger>
-	    <Logger name="search" level="info" >
+	    <Logger name="search" level="warn" >
 	      <AppenderRef ref="Console"/>
 	    </Logger>
-	    <Root level="info">
+	    <Root level="fatal">
 	      <AppenderRef ref="Console"/>
 	    </Root>
 	</Loggers>

@@ -1,0 +1,56 @@
+<th:block th:fragment="dsfr-select-multiple-edit(object, field, list, rowIndex, label, description, valueField, labelField, filterFunction, required, input_attrs)" vu:alias="dsfr-select-multiple"
+          vu:selector="${viewMode=='edit' && (readonly==null || !readonly)}"
+          th:assert="${object} != null and ${field} != null and ${list} != null"
+          th:with="myComponentId='select_m_'+${object}+'_'+${field},
+	  			   myValueField=${valueField != null ? valueField : model.util.getIdField(list)},
+	  			   myLabelField=${labelField != null ? labelField : model.util.getDisplayField(list)},
+	  			   myLabel=${modifiableTable!=null?null:label?:model.util.label(object + '.' + field)},
+      			   myRequired=${required != null ? required : model.util.required(object + '.' + field)}">
+    <vu:include-data object="${object}" field="${field}" modifiable="true"/>
+    <vu:include-data object="${list}" field="${myValueField}"/>
+    <vu:include-data object="${list}" field="${myLabelField}"/>
+
+    <dsfr-select-multiple
+            th:required="${myRequired}"
+            th:label="${myLabel}"
+            th:description="${description}"
+            th::options="|dsfrTransformListForSelection('${list}', '${myValueField}', '${myLabelField}', ${filterFunction?:null})|"
+            th::name="${model.util.contextKey(object, field, rowIndex)}"
+            th:v-model="${model.util.vueDataKey(object, field, rowIndex)}"
+            th::error-message="|getErrorMessage('${object}', '${field}', ${rowIndex})|"
+            th:attr="__${input_attrs}__">
+        >
+        <vu:content/>
+    </dsfr-select-multiple>
+    <input th:v-for="|id in ${model.util.vueDataKey(object, field, rowIndex)}|" type="hidden" th::name="${model.util.contextKey(object, field, rowIndex)}" th:v-bind:value="id" />
+    <input th:v-if="|vueData.${object}.${field}.length == 0|" type="hidden" th::name="${model.util.contextKey(object, field, rowIndex)}" value="" />
+</th:block>
+
+<th:block th:fragment="dsfr-select-multiple-read(object,field, rowIndex, label, list, valueField, labelField, emtpyValue, filterFunction, required, edit_content_slot, after_label_slot, input_attrs, label_attrs)"
+          th:if="${modifiableTable==null}"
+          vu:alias="dsfr-select-multiple" vu:selector="${viewMode=='read' || (readonly!=null && readonly)}"
+          th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)},
+                   myLabelField=${labelField != null ? labelField : model.util.getDisplayField(list)},
+          		   myEmptyValue=${emptyValue?:'Non renseigné'},
+                   value=${__${model.util.contextGet(object, null, rowIndex)}__.getTypedValue('__${field}__')}">
+    <vu:dsfr-label-read object="${object}" field="${field}" label="${label}" label_attrs="${label_attrs}" after_label_slot="after_label_slot">
+        <th:block th:if="${value!=null}" th:each="singleValue, iterStat : ${value}">
+            <th:block th:attr="__${input_attrs}__"
+                      th:text="${singleValue!=null?(model.vContext[__${list}__].getById('__${myValueField}__', singleValue)['__${myLabelField}__'] + (!iterStat.last?', ':'')):'is null'}"/>
+        </th:block>
+        <span class="no-value" th:if="${value==null}" th:text="${myEmptyValue}"></span>
+    </vu:dsfr-label-read>
+</th:block>
+
+<th:block th:fragment="dsfr-select-multiple-read(object, field, rowIndex, label, list, valueField, labelField, filterFunction, required, edit_content_slot, after_label_slot, input_attrs, label_attrs)"
+          th:if="${modifiableTable!=null}"
+          vu:alias="dsfr-select-multiple" vu:selector="${viewMode=='read' || (readonly!=null && readonly)}"
+          th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)}, myLabelField=${labelField != null ? labelField : model.util.getDisplayField(list)}">
+    <vu:include-data object="${object}" field="${field}"/>
+    <vu:include-data object="${list}" field="${myValueField}"/>
+    <vu:include-data object="${list}" field="${myLabelField}"/>
+    <span th:remove="${label_attrs=='noOp=_'}?'tag':'none'" th:attr="__${label_attrs}__">
+	        <th:block th:attr="__${input_attrs}__" th:v-for="|(entry, idx) in ${model.util.vueDataKey(object, field, rowIndex)}|"
+                      th:text="|{{vueData.${list}.filter(o => o.${myValueField} === entry).map(o => o.${myLabelField}).join()}}|"/>
+    </span>
+</th:block>

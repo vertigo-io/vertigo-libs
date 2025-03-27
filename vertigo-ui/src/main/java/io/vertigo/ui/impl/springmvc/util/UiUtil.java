@@ -94,10 +94,12 @@ public final class UiUtil implements Serializable {
 	 * @return Name in context (use for input name)
 	 */
 	public static String generateComponentUID(final String component, final String object, final String field, final String row) {
-		final String prefix = component +
-				Long.toHexString(UUID.randomUUID().getLeastSignificantBits()) +
-				"_";
-		return contextGet(prefix, object, field, row, true);
+		return component
+				+ Long.toHexString(UUID.randomUUID().getLeastSignificantBits())
+				+ "_"
+				+ (object != null ? object : "") + "_"
+				+ (field != null ? field : "") + "_"
+				+ (row != null ? row : "");
 	}
 
 	/**
@@ -239,20 +241,7 @@ public final class UiUtil implements Serializable {
 			final var smartTypeDefinition = getDataField(object + '.' + fieldName).smartTypeDefinition();
 			if (smartTypeDefinition.getScope().isBasicType()) {
 				final var dataType = smartTypeDefinition.getBasicType();
-				switch (dataType) {
-					case Long:
-					case Integer:
-					case Double:
-					case BigDecimal:
-						return "right";
-					case Boolean:
-					case Instant:
-					case LocalDate:
-					case String:
-					case DataStream:
-					default:
-						return "left";
-				}
+				return dataType.isNumber() ? "right" : "left";
 			}
 		}
 		return "left";
@@ -313,7 +302,7 @@ public final class UiUtil implements Serializable {
 	public static boolean required(final String fieldPath) {
 		Assertion.check().isTrue(fieldPath.indexOf('.') != 0, "FieldPath shouldn't starts with . ({0})", fieldPath);
 		//-----
-		if (fieldPath.indexOf('.') > 0) { //Le champs est porté par un Object
+		if (fieldPath.contains(".")) { //Le champs est porté par un Object
 			return getDataField(fieldPath).cardinality().hasOne();
 		}
 		return false; //on ne sait pas dire, mais on ne force pas à obligatoire
@@ -351,7 +340,7 @@ public final class UiUtil implements Serializable {
 			throw new VSystemException("Id field (or key field) must be set on the definition for entity '{0}' (needed to display the list '{1}' from context).", dtDefinition, uiListKey);
 		}
 
-		return idFieldOpt.isPresent()?idFieldOpt.get().name():keyFieldOpt.get().name();
+		return idFieldOpt.isPresent() ? idFieldOpt.get().name() : keyFieldOpt.get().name();
 	}
 
 	/**
@@ -390,9 +379,9 @@ public final class UiUtil implements Serializable {
 	public static String compileVueJsTemplate(final String template) {
 		final var requestParameter = new JsonObject();
 		requestParameter.add("template", new JsonPrimitive(template));
-		final JsonObject compiledTemplate = callRestWS("http://localhost:8083/", GSON.toJson(requestParameter), JsonObject.class);
+		final var compiledTemplate = (JsonObject) callRestWS("http://localhost:8083/", GSON.toJson(requestParameter), JsonObject.class);
 		final var render = compiledTemplate.get("render").getAsString();
-		final List<String> staticRenderFns = StreamSupport.stream(compiledTemplate.get("staticRenderFns").getAsJsonArray().spliterator(), false)
+		final var staticRenderFns = StreamSupport.stream(compiledTemplate.get("staticRenderFns").getAsJsonArray().spliterator(), false)
 				.map(JsonElement::getAsString)
 				.toList();
 
@@ -449,8 +438,8 @@ public final class UiUtil implements Serializable {
 	}
 
 	private static DataField getDataField(final String fieldPath) {
-		Assertion.check().isTrue(fieldPath.indexOf('.') > 0, "Le champs n'est pas porté par un Object ({0})", fieldPath);
-		//Assertion.check().argument(fieldPath.indexOf('.') == fieldPath.lastIndexOf('.'), "Seul un point est autorisé ({0})", fieldPath);
+		Assertion.check().isTrue(fieldPath.contains("."), "Le champs n'est pas porté par un Object ({0})", fieldPath);
+
 		final var contextKey = fieldPath.substring(0, fieldPath.lastIndexOf('.'));
 		final var fieldName = removeUiModifier(fieldPath.substring(fieldPath.lastIndexOf('.') + 1));
 		final var viewContext = UiRequestUtil.getCurrentViewContext();
@@ -471,5 +460,28 @@ public final class UiUtil implements Serializable {
 				.isNotNull(dtDefinition, "{0}({1}) doit être un UiObject ou un UiList ", contextKey, contextObject.getClass().getSimpleName());
 		return dtDefinition.getField(fieldName);
 
+	}
+
+	/**
+	 * Resolve the field name to be displayed, numeric fields use the formatted version with _fmt suffix.
+	 *
+	 * @param object the object name in the context
+	 * @param field the field name of the object
+	 * @return the resolved field name
+	 */
+	public static String resolveDisplayField(final String object, final String field) {
+		Assertion.check()
+				.isNotBlank(object)
+				.isNotBlank(field);
+		// ---
+		if (field.contains("_")) {
+			return field; // we don't modify the field if it already contains a modifier
+		}
+		final var dataField = getDataField(object + "." + field);
+		final var smartTypeDefinition = dataField.smartTypeDefinition();
+		if (smartTypeDefinition.getScope().isBasicType()) {
+			return (smartTypeDefinition.getBasicType().isNumber() || smartTypeDefinition.getBasicType().isAboutDate()) ? field + "_fmt" : field;
+		}
+		return field;
 	}
 }

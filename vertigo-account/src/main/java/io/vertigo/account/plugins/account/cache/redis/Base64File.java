@@ -23,6 +23,7 @@ import java.time.Instant;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.util.FileUtil;
 import io.vertigo.datastore.filestore.model.VFile;
 
 /**
@@ -43,6 +44,7 @@ final class Base64File implements VFile {
 
 	/**
 	 * File read from a base64 content.
+	 *
 	 * @param fileName file name
 	 * @param mimeType type mime
 	 * @param length File length
@@ -59,7 +61,7 @@ final class Base64File implements VFile {
 		Assertion.check().isNotNull(codecManager);
 		//---
 		this.codecManager = codecManager;
-		this.fileName = fileName;
+		this.fileName = FileUtil.sanitizeFileName(fileName);
 		this.mimeType = mimeType;
 		this.length = length;
 		this.lastModified = lastModified;
@@ -91,7 +93,7 @@ final class Base64File implements VFile {
 	}
 
 	/**
-	 *@return lastModified.
+	 * @return lastModified.
 	 */
 	@Override
 	public Instant getLastModified() {

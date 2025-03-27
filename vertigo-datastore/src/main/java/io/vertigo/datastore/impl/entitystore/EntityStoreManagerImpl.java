@@ -56,9 +56,10 @@ import io.vertigo.datastore.impl.entitystore.logical.LogicalEntityStoreConfig;
 
 /**
  * Implementation of DataStore.
- * @author pchretien
+ * @author pchretien, mlaroche, npiedeloup
  */
 public final class EntityStoreManagerImpl implements EntityStoreManager, Activeable, SimpleDefinitionProvider {
+
 	private static final Criteria CRITERIA_ALWAYS_TRUE = Criterions.alwaysTrue();
 
 	/** Le store est le point d'accès unique à la base (sql, xml, fichier plat...). */
@@ -107,7 +108,8 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 		Node.getNode().getDefinitionSpace().getAll(DataDefinition.class).stream()
 				.filter(DataDefinition::isPersistent)
 				.filter(dtDefinition -> Node.getNode().getDefinitionSpace().contains(CacheData.getContext(dtDefinition)))
-				.forEach(dtDefinition -> dataStoreConfig.getCacheStoreConfig().registerCacheable(dtDefinition, Node.getNode().getDefinitionSpace().resolve(CacheData.getContext(dtDefinition), CacheDefinition.class).isReloadedByList()));
+				.forEach(dtDefinition -> dataStoreConfig.getCacheStoreConfig().registerCacheable(dtDefinition,
+						Node.getNode().getDefinitionSpace().resolve(CacheData.getContext(dtDefinition), CacheDefinition.class).isReloadedByList()));
 
 		Node.getNode().getDefinitionSpace().getAll(MasterDataDefinition.class)
 				.forEach(masterDataConfig::register);
@@ -247,12 +249,6 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 
 	/** {@inheritDoc} */
 	@Override
-	public int count(final DataDefinition dataDefinition) {
-		return getPhysicalStore(dataDefinition).count(dataDefinition);
-	}
-
-	/** {@inheritDoc} */
-	@Override
 	public <E extends Entity> DtList<E> find(final DataDefinition dataDefinition, final Criteria<E> criteria, final DtListState dtListState) {
 		Assertion.check()
 				.isNotNull(dataDefinition)
@@ -262,6 +258,25 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 		//-----
 		Assertion.check().isNotNull(list);
 		return list;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public int count(final DataDefinition dataDefinition) {
+		return getPhysicalStore(dataDefinition).countByCriteria(dataDefinition, CRITERIA_ALWAYS_TRUE);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public <E extends Entity> int count(final DataDefinition dataDefinition, final Criteria<E> criteria) {
+		Assertion.check()
+				.isNotNull(dataDefinition)
+				.isNotNull(criteria, "Criteria is mandator (you may use Criterions.alwaysTrue)");
+		//-----
+		final Integer result = getPhysicalStore(dataDefinition).countByCriteria(dataDefinition, criteria);
+		//-----
+		Assertion.check().isNotNull(result);
+		return result;
 
 	}
 

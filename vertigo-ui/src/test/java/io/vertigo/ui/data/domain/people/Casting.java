@@ -23,6 +23,7 @@ import io.vertigo.datamodel.data.model.UID;
 import io.vertigo.datamodel.data.stereotype.Field;
 import io.vertigo.datamodel.data.util.DataModelUtil;
 import io.vertigo.datastore.impl.entitystore.StoreVAccessor;
+import io.vertigo.ui.data.domain.geo.GeoPoint;
 
 /**
  * This class is automatically generated.
@@ -34,35 +35,12 @@ public final class Casting implements Entity {
 
 	private Long castId;
 	private String characterName;
+	private GeoPoint birthLocation;
 
-	@io.vertigo.datamodel.data.stereotype.Association(
-			name = "ACastPeo",
-			fkFieldName = "peoId",
-			primaryDtDefinitionName = "DtPeople",
-			primaryIsNavigable = true,
-			primaryRole = "People",
-			primaryLabel = "People",
-			primaryMultiplicity = "1..1",
-			foreignDtDefinitionName = "DtCasting",
-			foreignIsNavigable = false,
-			foreignRole = "Casting",
-			foreignLabel = "Casting",
-			foreignMultiplicity = "0..*")
+	@io.vertigo.datamodel.data.stereotype.Association(name = "ACastPeo", fkFieldName = "peoId", primaryDtDefinitionName = "DtPeople", primaryIsNavigable = true, primaryRole = "People", primaryLabel = "People", primaryMultiplicity = "1..1", foreignDtDefinitionName = "DtCasting", foreignIsNavigable = false, foreignRole = "Casting", foreignLabel = "Casting", foreignMultiplicity = "0..*")
 	private final StoreVAccessor<io.vertigo.ui.data.domain.people.People> peoIdAccessor = new StoreVAccessor<>(io.vertigo.ui.data.domain.people.People.class, "People");
 
-	@io.vertigo.datamodel.data.stereotype.Association(
-			name = "ACastMov",
-			fkFieldName = "movId",
-			primaryDtDefinitionName = "DtMovie",
-			primaryIsNavigable = true,
-			primaryRole = "Movie",
-			primaryLabel = "Movie",
-			primaryMultiplicity = "1..1",
-			foreignDtDefinitionName = "DtCasting",
-			foreignIsNavigable = false,
-			foreignRole = "Casting",
-			foreignLabel = "Casting",
-			foreignMultiplicity = "0..*")
+	@io.vertigo.datamodel.data.stereotype.Association(name = "ACastMov", fkFieldName = "movId", primaryDtDefinitionName = "DtMovie", primaryIsNavigable = true, primaryRole = "Movie", primaryLabel = "Movie", primaryMultiplicity = "1..1", foreignDtDefinitionName = "DtCasting", foreignIsNavigable = false, foreignRole = "Casting", foreignLabel = "Casting", foreignMultiplicity = "0..*")
 	private final StoreVAccessor<io.vertigo.ui.data.domain.movies.Movie> movIdAccessor = new StoreVAccessor<>(io.vertigo.ui.data.domain.movies.Movie.class, "Movie");
 
 	/** {@inheritDoc} */
@@ -74,6 +52,7 @@ public final class Casting implements Entity {
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'Cast_id'.
+	 *
 	 * @return Long castId <b>Obligatoire</b>
 	 */
 	@Field(smartType = "STyId", type = "ID", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Cast_id")
@@ -84,6 +63,7 @@ public final class Casting implements Entity {
 	/**
 	 * Champ : ID.
 	 * Définit la valeur de la propriété 'Cast_id'.
+	 *
 	 * @param castId Long <b>Obligatoire</b>
 	 */
 	public void setCastId(final Long castId) {
@@ -93,6 +73,7 @@ public final class Casting implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Character name'.
+	 *
 	 * @return String characterName
 	 */
 	@Field(smartType = "STyLabelLong", label = "Character name")
@@ -103,6 +84,7 @@ public final class Casting implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Character name'.
+	 *
 	 * @param characterName String
 	 */
 	public void setCharacterName(final String characterName) {
@@ -110,8 +92,30 @@ public final class Casting implements Entity {
 	}
 
 	/**
+	 * Champ : DATA.
+	 * Récupère la valeur de la propriété 'Birth location'.
+	 *
+	 * @return GeoPoint birthLocation
+	 */
+	@Field(smartType = "STyGeoPoint", label = "Birth location")
+	public GeoPoint getBirthLocation() {
+		return birthLocation;
+	}
+
+	/**
+	 * Champ : DATA.
+	 * Définit la valeur de la propriété 'Birth location'.
+	 *
+	 * @param birthLocation GeoPoint
+	 */
+	public void setBirthLocation(final GeoPoint birthLocation) {
+		this.birthLocation = birthLocation;
+	}
+
+	/**
 	 * Champ : FOREIGN_KEY.
 	 * Récupère la valeur de la propriété 'People'.
+	 *
 	 * @return Long peoId <b>Obligatoire</b>
 	 */
 	@io.vertigo.datamodel.data.stereotype.ForeignKey(smartType = "STyId", label = "People", fkDefinition = "DtPeople")
@@ -122,6 +126,7 @@ public final class Casting implements Entity {
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Définit la valeur de la propriété 'People'.
+	 *
 	 * @param peoId Long <b>Obligatoire</b>
 	 */
 	public void setPeoId(final Long peoId) {
@@ -131,6 +136,7 @@ public final class Casting implements Entity {
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Récupère la valeur de la propriété 'Movie'.
+	 *
 	 * @return Long movId <b>Obligatoire</b>
 	 */
 	@io.vertigo.datamodel.data.stereotype.ForeignKey(smartType = "STyId", label = "Movie", fkDefinition = "DtMovie")
@@ -141,6 +147,7 @@ public final class Casting implements Entity {
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Définit la valeur de la propriété 'Movie'.
+	 *
 	 * @param movId Long <b>Obligatoire</b>
 	 */
 	public void setMovId(final Long movId) {
@@ -149,6 +156,7 @@ public final class Casting implements Entity {
 
 	/**
 	 * Association : Movie.
+	 *
 	 * @return l'accesseur vers la propriété 'Movie'
 	 */
 	public StoreVAccessor<io.vertigo.ui.data.domain.movies.Movie> movie() {
@@ -157,6 +165,7 @@ public final class Casting implements Entity {
 
 	/**
 	 * Association : People.
+	 *
 	 * @return l'accesseur vers la propriété 'People'
 	 */
 	public StoreVAccessor<io.vertigo.ui.data.domain.people.People> people() {

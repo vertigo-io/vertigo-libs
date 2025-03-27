@@ -21,7 +21,6 @@ import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
-import io.vertigo.core.plugins.analytics.log.SocketLoggerAnalyticsConnectorPlugin;
 import io.vertigo.core.plugins.param.env.SystemPropertyParamPlugin;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.datastore.DataStoreFeatures;
@@ -34,19 +33,19 @@ public final class H2KVStoreManagerTest extends AbstractKVStoreManagerTest {
 
 	@Override
 	protected NodeConfig buildNodeConfig() {
-		System.setProperty("analyticsServer", "analytica.part.klee.lan.net");
+		//System.setProperty("analyticsServer", "analytica.part.klee.lan.net");
 		//System.setProperty("analyticsServer", "0.0.0.0");
-		final boolean json = true;
+		//final boolean json = true;
 		return NodeConfig.builder()
 				.withBoot(BootConfig.builder()
 						.addPlugin(SystemPropertyParamPlugin.class)
 						.addPlugin(ClassPathResourceResolverPlugin.class)
-						.addAnalyticsConnectorPlugin(SocketLoggerAnalyticsConnectorPlugin.class,
+						/*.addAnalyticsConnectorPlugin(SocketLoggerAnalyticsConnectorPlugin.class,
 								Param.of("hostNameParam", "analyticsServer"),
 								Param.of("port", json ? 4563 : 4562), //4562:serialiazed, 4563:json
 								Param.of("batchSize", "5"),
 								Param.of("jsonLayout", String.valueOf(json)),
-								Param.of("compressOutputStream", "true"))
+								Param.of("compressOutputStream", "true"))*/
 						.build())
 				.addModule(new CommonsFeatures()
 						.build())

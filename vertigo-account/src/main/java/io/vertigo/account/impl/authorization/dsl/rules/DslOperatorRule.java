@@ -23,10 +23,10 @@ import java.util.List;
 import java.util.Map;
 
 import io.vertigo.account.authorization.definitions.rulemodel.RuleOperator;
-import io.vertigo.commons.peg.AbstractRule;
 import io.vertigo.commons.peg.PegChoice;
-import io.vertigo.commons.peg.PegRule;
-import io.vertigo.commons.peg.PegRules;
+import io.vertigo.commons.peg.rule.PegAbstractRule;
+import io.vertigo.commons.peg.rule.PegRule;
+import io.vertigo.commons.peg.rule.PegRules;
 
 /**
  * Parsing rule for operators
@@ -35,7 +35,7 @@ import io.vertigo.commons.peg.PegRules;
  * <= >= > < = !=
  * @author npiedeloup
  */
-final class DslOperatorRule<O extends RuleOperator> extends AbstractRule<O, List<Object>> {
+final class DslOperatorRule<O extends RuleOperator> extends PegAbstractRule<O, List<Object>> {
 	private final Map<String, O> operatorIndex;
 
 	DslOperatorRule(final O[] operators, final String ruleName) {

@@ -53,6 +53,13 @@ public final class VUiStandardDialect extends AbstractProcessorDialect {
 		this.components = components;
 	}
 
+	public VUiStandardDialect(final String prefix, final Set<NamedComponentDefinition> components) {
+		super(NAME, prefix, PROCESSOR_PRECEDENCE);
+		Assertion.check().isNotNull(components);
+		//---
+		this.components = components;
+	}
+
 	@Override
 	public Set<IProcessor> getProcessors(final String dialectPrefix) {
 		return createVUiStandardProcessorsSet(dialectPrefix);

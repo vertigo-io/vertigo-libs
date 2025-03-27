@@ -22,17 +22,17 @@ import java.util.List;
 import io.vertigo.account.authorization.definitions.rulemodel.RuleExpression;
 import io.vertigo.account.authorization.definitions.rulemodel.RuleExpression.ValueOperator;
 import io.vertigo.account.authorization.definitions.rulemodel.RuleValue;
-import io.vertigo.commons.peg.AbstractRule;
 import io.vertigo.commons.peg.PegChoice;
-import io.vertigo.commons.peg.PegRule;
-import io.vertigo.commons.peg.PegRules;
+import io.vertigo.commons.peg.rule.PegAbstractRule;
+import io.vertigo.commons.peg.rule.PegRule;
+import io.vertigo.commons.peg.rule.PegRules;
 
 /**
  * Parsing rule for SecurityRuleBuidler's expression.
  * (field)(operator)(value)
  * @author npiedeloup
  */
-final class DslExpressionRule extends AbstractRule<RuleExpression, List<Object>> {
+final class DslExpressionRule extends PegAbstractRule<RuleExpression, List<Object>> {
 
 	DslExpressionRule() {
 		super(createMainRule(), "expression");

@@ -16,17 +16,17 @@
 			<dependency>
 				<groupId>org.glassfish.jersey.core</groupId>
 				<artifactId>jersey-client</artifactId>
-				<version>3.1.6</version> <!-- 3.1.6 for jdk17, 3.1.7 for jdk21 -->
+				<version>3.0.17</version> <!-- 3.1.6 for jdk17, 3.1.7 for jdk21, 3.0.17 most recent for jdk17 -->
 			</dependency>
 			<dependency>
 			    <groupId>org.glassfish.jersey.inject</groupId>
 			    <artifactId>jersey-hk2</artifactId>
-			    <version>3.1.6</version>
+			    <version>3.0.17</version>
 			</dependency>
 			<dependency>
 				<groupId>io.vertigo</groupId>
 				<artifactId>vertigo-vega</artifactId>
-				<version>${vertigo.version}</version>
+				<version>${project.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>

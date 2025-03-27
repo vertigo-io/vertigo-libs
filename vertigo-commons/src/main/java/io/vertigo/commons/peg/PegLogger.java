@@ -17,6 +17,8 @@
  */
 package io.vertigo.commons.peg;
 
+import io.vertigo.commons.peg.rule.PegRule;
+
 /**
  * Rule to named a sub rules set.
  *

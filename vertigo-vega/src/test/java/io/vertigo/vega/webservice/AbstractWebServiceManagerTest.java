@@ -34,6 +34,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.http.HttpStatus;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -51,6 +53,8 @@ import io.restassured.specification.ResponseSpecification;
 import io.vertigo.core.lang.MapBuilder;
 
 abstract class AbstractWebServiceManagerTest {
+	private static final Logger LOG = LogManager.getLogger(AbstractWebServiceManagerTest.class);
+
 	private static final String HEADER_ACCESS_TOKEN = "x-access-token";
 	private static final String HEADER_API_KEY = "x-api-key";
 	private static final String UTF8_TEST_STRING = "? TM™ éè'`àöêõù Euro€ R®@©∆∏∑∞⅓۲²³œβ";
@@ -2165,15 +2169,17 @@ abstract class AbstractWebServiceManagerTest {
 	}
 
 	protected ResponseSpecification loggedAndExpect() {
-		return RestAssured.given()
-				.filter(loggedSessionFilter)
-				.expect().log().ifValidationFails();
+		return loggedAndExpect(RestAssured.given());
 	}
 
 	protected ResponseSpecification loggedAndExpect(final RequestSpecification given) {
-		return given
+		final var expect = given
 				.filter(loggedSessionFilter)
-				.expect().log().ifValidationFails();
+				.expect();
+		if (LOG.isInfoEnabled()) {
+			return expect.log().ifValidationFails();
+		}
+		return expect;
 	}
 
 	private Map<String, Object> doGetServerSideObject() {

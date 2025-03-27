@@ -23,17 +23,17 @@ import java.util.List;
 import io.vertigo.account.authorization.definitions.rulemodel.RuleExpression;
 import io.vertigo.account.authorization.definitions.rulemodel.RuleMultiExpression;
 import io.vertigo.account.authorization.definitions.rulemodel.RuleMultiExpression.BoolOperator;
-import io.vertigo.commons.peg.AbstractRule;
 import io.vertigo.commons.peg.PegChoice;
-import io.vertigo.commons.peg.PegRule;
-import io.vertigo.commons.peg.PegRules;
+import io.vertigo.commons.peg.rule.PegAbstractRule;
+import io.vertigo.commons.peg.rule.PegRule;
+import io.vertigo.commons.peg.rule.PegRules;
 
 /**
  * Parsing rule for query.
  * \(?(expression1|multiExpression1) ((logicalOperator) (expression2|multiExpression2))*\)?
  * @author npiedeloup
  */
-final class DslMultiExpressionRule extends AbstractRule<RuleMultiExpression, PegChoice> {
+final class DslMultiExpressionRule extends PegAbstractRule<RuleMultiExpression, PegChoice> {
 	private static final int MAX_DEPTH = 3;
 
 	/**

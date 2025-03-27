@@ -1,6 +1,7 @@
 {
   "name": "@vertigo-io/vertigo-ui-vuejs",
-  "version": "4.2.0",
+  "version": "4.3.0",
+  "type": "module",
   "scripts": {
     "dev": "vite --port 3000",
     "build": "vite build",
@@ -10,21 +11,21 @@
   "dependencies": {
     "@mdi/font": "^7.4.47",
     "animate.css": "^4.1.1",
-    "axios": "^1.7.2",
-    "core-js": "^3.37.1",
-	"d3-color": "^3.1.0",
-	"d3-interpolate": "^3.0.1"
+    "core-js": "^3.41.0",
+    "d3-color": "^3.1.0",
+    "d3-interpolate": "^3.0.1",
+    "lodash.debounce": "^4.0.8"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^5.0.5",
-    "eslint": "^9.6.0",
-    "eslint-plugin-vue": "^9.27.0",
-    "ol": "^9.2.4",
-    "quasar": "^2.16.5",
-    "vite": "^5.3.3",
+    "@vitejs/plugin-vue": "^5.2.3",
+    "eslint": "^9.23.0",
+    "eslint-plugin-vue": "^10.0.0",
+    "ol": "^10.4.0",
+    "quasar": "^2.18.1",
+    "vite": "^6.2.3",
     "vite-plugin-externals": "^0.6.2",
-    "vite-plugin-mkcert": "^1.17.5",
-    "vue": "^3.4.31"
+    "vite-plugin-mkcert": "^1.17.8",
+    "vue": "^3.5.13"
   },
   "eslintConfig": {
     "root": true,

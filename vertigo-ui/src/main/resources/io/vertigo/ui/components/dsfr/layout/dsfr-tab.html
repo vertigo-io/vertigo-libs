@@ -1,0 +1,26 @@
+<!--/* Notion de faux onglets pour simplifier l’écriture */-->
+
+<th:block th:fragment="dsfr-tab-list(class, other_attrs)" >
+	<div class="fr-tabs">
+		<ul class="fr-tabs__list"
+		     th:classappend="${class}"
+		     th:attr="__${other_attrs}__">
+		    <vu:content/>
+		</ul>
+	</div>
+</th:block>
+
+<li th:fragment="dsfr-tab(label, url, class, active, other_attrs)">
+    <a class="fr-tabs__tab"
+       th::href="|${disabled}?null:'${url}'|"
+       th:aria-selected="${active==true?'true':null}"
+       th:classappend="|
+            ${class}
+            ${active == true ? 'fr-tabs__tab--active' : ''}
+       |"
+       th:attr="__${other_attrs}__">
+        <vu:content>
+			<span vu:text="${label}"></span>
+        </vu:content>
+    </a>
+</li>

@@ -1,8 +1,10 @@
 import * as Quasar from "quasar"
 import { sortDate } from "quasar/src/utils/private.sort/sort.js"
 import { isNumber, isDate } from "quasar/src/utils/is/is.js"
+import Debounce from "lodash.debounce"
 
 export default {
+	debounce: Debounce,
     onAjaxError: function (response) {
         //Quasar Notif Schema
         let notif = {
@@ -65,25 +67,25 @@ export default {
         var notifyMessages = [];
         if(Object.prototype.hasOwnProperty.call(uiMessageStack, 'globalErrors') && uiMessageStack.globalErrors && uiMessageStack.globalErrors.length > 0) {
            uiMessageStack.globalErrors.forEach(function(uiMessage) { notifyMessages.push( {
-            type: 'negative', message: uiMessage,
+            color: 'negative', textColor:'white', message: uiMessage,
             multiLine: true, timeout: 2500,
            })});
         }
         if(Object.prototype.hasOwnProperty.call(uiMessageStack, 'globalWarnings') && uiMessageStack.globalWarnings && uiMessageStack.globalWarnings.length > 0) {
            uiMessageStack.globalWarnings.forEach(function(uiMessage) { notifyMessages.push( {
-            type: 'warning', message: uiMessage,
+            color: 'warning', textColor:'black', message: uiMessage,
             multiLine: true, timeout: 2500,
            })});
         }
         if(Object.prototype.hasOwnProperty.call(uiMessageStack, 'globalInfos') && uiMessageStack.globalInfos && uiMessageStack.globalInfos.length > 0) {
            uiMessageStack.globalInfos.forEach(function(uiMessage) { notifyMessages.push( {
-            type: 'info', message: uiMessage,
+            color: 'info', textColor:'black', message: uiMessage,
             multiLine: true, timeout: 2500,
            })});
         }
         if(Object.prototype.hasOwnProperty.call(uiMessageStack, 'globalSuccess') && uiMessageStack.globalSuccess && uiMessageStack.globalSuccess.length > 0) {
            uiMessageStack.globalSuccess.forEach(function(uiMessage) { notifyMessages.push( {
-            type: 'positive', message: uiMessage,
+            color: 'positive', textColor:'black', message: uiMessage,
             multiLine: true, timeout: 2500,
            })});
         }
@@ -92,7 +94,11 @@ export default {
         return notifyMessages;
       }
     },
-
+    
+    i18n: function() {
+        return VertigoUi.lang[VertigoUi.vuiLang];
+    },
+    
     getSafeValue: function (objectkey, fieldKey, subFieldKey) {
         if (this.$data.vueData[objectkey] && this.$data.vueData[objectkey][fieldKey]) {
             return this.$data.vueData[objectkey][fieldKey][subFieldKey];
@@ -108,6 +114,13 @@ export default {
         if (searchValue != null && searchValue.trim() !== '') {
             const searchNormalized = this.unaccentLower(searchValue);
             rawList = rawList.filter(val => this.unaccentLower(val[labelField].toString()).indexOf(searchNormalized) > -1); // label contains
+			rawList.sort((a,b) => {
+				const startWithA = this.unaccentLower(a[labelField].toString()).startsWith(searchNormalized);
+				const startWithB = this.unaccentLower(b[labelField].toString()).startsWith(searchNormalized);
+				if (startWithA && !startWithB) return -1;
+				if (!startWithA && startWithB) return 1;
+				return 0;
+			});
         }
         return rawList.map(function (object) {
             return { value: object[valueField], label: object[labelField].toString() } // a label is always a string
@@ -272,8 +285,8 @@ export default {
             }.bind(this));
     },
     decodeDate: function (value, format) {
-        if (value === Quasar.date.formatDate(Quasar.date.extractDate(value, 'DD/MM/YYYY'), 'DD/MM/YYYY')) {
-            return Quasar.date.formatDate(Quasar.date.extractDate(value, 'DD/MM/YYYY'), format);
+        if (value === Quasar.date.formatDate(Quasar.date.extractDate(value, 'YYYY-MM-DD'), 'YYYY-MM-DD')) {
+            return Quasar.date.formatDate(Quasar.date.extractDate(value, 'YYYY-MM-DD'), format);
         } else {
             return value;
         }
@@ -281,15 +294,15 @@ export default {
 
     encodeDate: function (newValue, format) {
         if (newValue === Quasar.date.formatDate(Quasar.date.extractDate(newValue, format), format)) {
-            return Quasar.date.formatDate(Quasar.date.extractDate(newValue, format), 'DD/MM/YYYY');
+            return Quasar.date.formatDate(Quasar.date.extractDate(newValue, format), 'YYYY-MM-DD');
         } else {
             return newValue;
         }
     },
 
     decodeDatetime: function (value, format) {
-        if (value === Quasar.date.formatDate(Quasar.date.extractDate(value, 'DD/MM/YYYY HH:mm'), 'DD/MM/YYYY HH:mm')) {
-            return Quasar.date.formatDate(Quasar.date.extractDate(value, 'DD/MM/YYYY HH:mm'), format);
+        if (value === Quasar.date.formatDate(Quasar.date.extractDate(value, 'YYYY-MM-DD[T]HH:mm'), 'YYYY-MM-DD[T]HH:mm')) {
+            return Quasar.date.formatDate(Quasar.date.extractDate(value, 'YYYY-MM-DD[T]HH:mm'), format);
         } else {
             return value;
         }
@@ -297,7 +310,7 @@ export default {
 
     encodeDatetime: function (newValue, format) {
         if (newValue === Quasar.date.formatDate(Quasar.date.extractDate(newValue, format), format)) {
-            return Quasar.date.formatDate(Quasar.date.extractDate(newValue, format), 'DD/MM/YYYY HH:mm');
+            return Quasar.date.formatDate(Quasar.date.extractDate(newValue, format), 'YYYY-MM-DD[T]HH:mm');
         } else {
             return newValue;
         }
@@ -353,7 +366,7 @@ export default {
         this.search(contextKey);
     },
 
-    search: Quasar.debounce(function (contextKey) {
+    search: Debounce(function (contextKey, pageIndexReset = 1) {
         let componentStates = this.$data.componentStates;
         let vueData = this.$data.vueData;
         var selectedFacetsContextKey = contextKey + "_selectedFacets";
@@ -376,7 +389,7 @@ export default {
             onSuccess: function (response) {
                 if (componentStates[collectionComponentId].pagination) {
                     var collectionPagination = componentStates[collectionComponentId].pagination;
-                    collectionPagination.page = 1 // reset page
+                    collectionPagination.page = pageIndexReset // reset page (1 by default)
                     collectionPagination.rowsNumber = response.data.model[contextKey + '_list'].length
                 }
             }
@@ -447,9 +460,14 @@ export default {
             }
         }
     },
-    uploader_dragenter(componentId) {
+    uploader_dragenter(componentId, event) {
         let componentStates = this.$data.componentStates;
         componentStates[componentId].dragover = true;
+    },
+    uploader_dragover(event, componentId) {
+        if (!this.$refs[componentId]?.canAddFiles()) {
+            event.dataTransfer.dropEffect = 'none';
+        }
     },
     uploader_dragleave(componentId) {
         let componentStates = this.$data.componentStates;
@@ -458,6 +476,36 @@ export default {
     uploader_drop(event, componentId) {
         var component = this.$refs[componentId];
         component.addFiles(event.dataTransfer.files);
+    },
+    modal_iframeLoad(ifrm) {
+        let compId = ifrm.dataset.componentId;
+        let autoHeight = ifrm.dataset.autoHeight;
+
+        if (autoHeight === 'true') {
+            ifrm.style.opacity = '0'; // should be already hidden but otherwise we hide it to avoid flickering
+            //ifrm.style.height = "100px"; // set to 100px to get height without blank padding at bottom, but not less than 100px
+
+            this.modal_iframeAjustHeight(ifrm)
+        }
+        this.componentStates[compId].loading = false;
+        ifrm.style.opacity = '1'; // show the iframe
+    },
+    modal_iframeAjustHeight(ifrm) {
+        let compId = ifrm.dataset.componentId;
+        let doc = ifrm.contentDocument? ifrm.contentDocument: ifrm.contentWindow.document;
+        setTimeout(function() { // slight delay to allow the iframe to be fully loaded and rendered
+            let newHeight = this.getDocHeight(doc) + 4 + "px"; // IE opt. for bing/msn needs a bit added or scrollbar appears
+
+            ifrm.style.height = ""; // reset iframe height to extends again
+            this.componentStates[compId].height = newHeight; // set the height of the modal
+        }.bind(this), 1);
+    },
+    getDocHeight : function(doc) {
+        doc = doc || document;
+        let body = doc.body, html = doc.documentElement;
+        let height = Math.max( body.scrollHeight, body.offsetHeight, 
+                               html.scrollHeight, html.offsetHeight, html.clientHeight);
+        return height;
     },
     httpPostAjax: function (url, paramsIn, options) {
         var paramsInResolved = !paramsIn ? [] :  Array.isArray(paramsIn) ? this.vueDataParams(paramsIn) : paramsIn;
@@ -475,9 +523,14 @@ export default {
               vueData[key] = response.data.model[key];
             }
           });
-          Object.keys(response.data.uiMessageStack).forEach(function (key) {
-            uiMessageStack[key] = response.data.uiMessageStack[key];
-          });
+		  if (options && options.notifyUiMessageStack) {
+			var notifyMessages = this.uiMessageStackToNotify(response.data.uiMessageStack);
+			notifyMessages.forEach(function(notifyMessage) { this.$q.notify(notifyMessage)}.bind(this));
+		  } else {
+			Object.keys(response.data.uiMessageStack).forEach(function (key) {
+	          uiMessageStack[key] = response.data.uiMessageStack[key];
+	        });
+		  }
           if (options && options.onSuccess) {
             options.onSuccess.call(this, response, window);
           }
@@ -511,8 +564,7 @@ export default {
         const fieldName = field.split("_")[0]; // trim any qualifier like "_fmt"
         if (fieldsErrors) {
             var objectName = rowIndex != null ? object + '[' + rowIndex + ']' : object;
-            return Object.prototype.hasOwnProperty.call(fieldsErrors, objectName) &&
-                fieldsErrors[objectName] && Object.prototype.hasOwnProperty.call(fieldsErrors[objectName], fieldName) && fieldsErrors[objectName][fieldName].length > 0
+            return fieldsErrors?.[objectName]?.[fieldName]?.length > 0;
         }
         return false;
     },

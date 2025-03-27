@@ -48,7 +48,8 @@ public final class MyNodeConfig {
 						Param.of("home", "io/vertigo/datafactory/search/indexconfig"));
 		if (esHL) {
 			elasticSearchFeatures.withRestHL(
-					Param.of("servers.names", "localhost:9200"));
+					Param.of("servers.names", "localhost:9200"),
+					Param.of("ssl", "false"));
 
 			dataFactoryFeatures.withESHL(
 					Param.of("config.file", "io/vertigo/datafactory/search/indexconfig/elasticsearch.yml"),

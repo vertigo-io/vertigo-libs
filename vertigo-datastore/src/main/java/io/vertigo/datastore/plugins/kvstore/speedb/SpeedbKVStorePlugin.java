@@ -67,6 +67,7 @@ import io.vertigo.datastore.kvstore.KVCollection;
  * @author pchretien, npiedeloup
  */
 public final class SpeedbKVStorePlugin implements KVStorePlugin, Activeable, SimpleDefinitionProvider {
+
 	private static final String ANALYTICS_CATEGORY = "kvstore";
 	private static final boolean READONLY = false;
 	//private static final Logger LOGGER = LogManager.getLogger(SpeedbKVStorePlugin.class);
@@ -221,6 +222,8 @@ public final class SpeedbKVStorePlugin implements KVStorePlugin, Activeable, Sim
 			speeDb.cancelAllBackgroundWork(true);
 			speeDb.close();
 		}
+		memOptions.close();
+		fsOptions.close();
 	}
 
 	/**
@@ -323,11 +326,14 @@ public final class SpeedbKVStorePlugin implements KVStorePlugin, Activeable, Sim
 
 	/** {@inheritDoc} */
 	@Override
-	public void remove(final KVCollection collection, final String id) {
-		analyticsManager.trace(ANALYTICS_CATEGORY, "remove", tracer -> {
+	public boolean remove(final KVCollection collection, final String id) {
+		return analyticsManager.traceWithReturn(ANALYTICS_CATEGORY, "remove", tracer -> {
 			tracer.setTag("collection", collection.name());
 			try {
+				final var data = getDatabase(collection).get(toBytes(id));
 				getCurrentSpeedbWriteBatch(collection).delete(toBytes(id));
+				return data != null;
+
 			} catch (final RocksDBException e) {
 				throw WrappedException.wrap(e);
 			}

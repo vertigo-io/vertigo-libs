@@ -1,0 +1,24 @@
+{
+  "name": "vertigo-dsfr",
+  "version": "4.3.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port 3001",
+    "build": "vite build",
+    "build-lib": "vite build && cp dist/*.* ../vertigo-ui/src/main/resources/io/vertigo/ui/static/3rdParty/dsfr/"
+  },
+  "dependencies": {
+    "@gouvfr/dsfr": "^1.12.1",
+    "@gouvminint/vue-dsfr": "^8.3.0",
+    "@trevoreyre/autocomplete": "^3.0.3",
+    "@trevoreyre/autocomplete-vue": "^3.0.3",
+    "date-fns": "^4.1.0",
+    "vue": "^3.5.13"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.0.5",
+    "typescript": "^5.2.2",
+    "vite": "^6.2.3"
+  }
+}

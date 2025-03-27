@@ -1,0 +1,24 @@
+<th:block th:fragment="dsfr-label-edit(object, field, rowIndex, label, hint, required, label_attrs)" vu:alias="dsfr-label"
+          vu:selector="${viewMode=='edit'}"
+          th:with="myRequired=${required != null ? required : object == null ? false : model.util.required(object + '.' + field)},
+                   myLabel=${label?:model.util.label(object + '.' + field)}
+                   "
+          th:assert="(${object} != null and ${field} != null) or ${label} != null">
+    <label class="fr-label"
+           th:attr="__${label_attrs}__">
+        <span vu:text="${myLabel}"></span>
+        <span th:if="${myRequired}" class="required">&nbsp;*</span>
+        <span th:if="${hint != null}" class="fr-hint-text" vu:text="${hint}"></span>
+    </label>
+    <vu:content/>
+</th:block>
+
+<th:block th:fragment="dsfr-label-read(object, field, rowIndex, label, hint, required, label_attrs)" vu:alias="dsfr-label"
+          vu:selector="${viewMode=='read'}"
+          th:with="myLabel=${label?:model.util.label(object + '.' + field)}"
+          th:assert="${object} != null and ${field} != null">
+    <p class="readonly" th:attr="__${label_attrs}__">
+        <span class="fr-label" vu:text="${myLabel}"></span>
+        <vu:content/>
+    </p>
+</th:block>

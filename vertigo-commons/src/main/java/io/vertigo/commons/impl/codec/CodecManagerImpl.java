@@ -22,7 +22,8 @@ import java.io.Serializable;
 import io.vertigo.commons.codec.Codec;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.codec.Encoder;
-import io.vertigo.commons.impl.codec.base64.Base64Codec;
+import io.vertigo.commons.impl.codec.base64.Base64LegacyCodec;
+import io.vertigo.commons.impl.codec.base64.Base64UrlCodec;
 import io.vertigo.commons.impl.codec.compressedserialization.CompressedSerializationCodec;
 import io.vertigo.commons.impl.codec.compression.CompressionCodec;
 import io.vertigo.commons.impl.codec.crypto.CryptoCodec;
@@ -35,9 +36,10 @@ import io.vertigo.commons.impl.codec.serialization.SerializationCodec;
 /**
  * Implémentation standard de CodecManager.
  *
- * @author pchretien
+ * @author pchretien, xdurand
  */
 public final class CodecManagerImpl implements CodecManager {
+
 	/** Codage/décodage HTML de String > String. */
 	private final Codec<String, String> htmlCodec;
 
@@ -57,7 +59,10 @@ public final class CodecManagerImpl implements CodecManager {
 	private final Encoder<byte[], byte[]> sha256Encoder;
 
 	/** Sérialisation de byte[] > String. */
-	private final Codec<byte[], String> base64Codec;
+	private final Codec<byte[], String> base64UrlCodec;
+
+	/** Sérialisation de byte[] > String. */
+	private final Codec<byte[], String> base64LegacyCodec;
 
 	/** Sérialisation de byte[] > String. */
 	private final Encoder<byte[], String> hexEncoder;
@@ -91,7 +96,8 @@ public final class CodecManagerImpl implements CodecManager {
 		sha1Encoder = new HashEncoder(HashEncoder.Hash.SHA1);
 		sha256Encoder = new HashEncoder(HashEncoder.Hash.SHA256);
 
-		base64Codec = new NullCodec<>(new Base64Codec());
+		base64UrlCodec = new NullCodec<>(new Base64UrlCodec());
+		base64LegacyCodec = new NullCodec<>(new Base64LegacyCodec());
 		hexEncoder = new HexEncoder();
 		//---
 		final CompressionCodec tmpCompressionCodec = new CompressionCodec();
@@ -130,7 +136,13 @@ public final class CodecManagerImpl implements CodecManager {
 	/** {@inheritDoc} */
 	@Override
 	public Codec<byte[], String> getBase64Codec() {
-		return base64Codec;
+		return base64UrlCodec;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public Codec<byte[], String> getBase64LegacyCodec() {
+		return base64LegacyCodec;
 	}
 
 	/** {@inheritDoc} */

@@ -20,17 +20,17 @@ package io.vertigo.datafactory.impl.search.dsl.rules;
 import java.util.List;
 import java.util.Locale;
 
-import io.vertigo.commons.peg.AbstractRule;
 import io.vertigo.commons.peg.PegChoice;
-import io.vertigo.commons.peg.PegRule;
-import io.vertigo.commons.peg.PegRules;
+import io.vertigo.commons.peg.rule.PegAbstractRule;
+import io.vertigo.commons.peg.rule.PegRule;
+import io.vertigo.commons.peg.rule.PegRules;
 
 /**
  * Parsing rule for boolean operator.
  * || or OR && and AND
  * @author npiedeloup
  */
-final class DslBooleanOperatorRule extends AbstractRule<String, List<Object>> {
+final class DslBooleanOperatorRule extends PegAbstractRule<String, List<Object>> {
 
 	DslBooleanOperatorRule() {
 		super(createMainRule(), "boolOperator");

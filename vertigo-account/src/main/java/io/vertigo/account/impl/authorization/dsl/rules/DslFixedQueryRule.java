@@ -20,16 +20,16 @@ package io.vertigo.account.impl.authorization.dsl.rules;
 import java.util.List;
 
 import io.vertigo.account.authorization.definitions.rulemodel.RuleFixedValue;
-import io.vertigo.commons.peg.AbstractRule;
-import io.vertigo.commons.peg.PegRule;
-import io.vertigo.commons.peg.PegRules;
+import io.vertigo.commons.peg.rule.PegAbstractRule;
+import io.vertigo.commons.peg.rule.PegRule;
+import io.vertigo.commons.peg.rule.PegRules;
 
 /**
  * Parsing rule for fixedValue.
  * (fixedValue)
  * @author npiedeloup
  */
-final class DslFixedValueRule extends AbstractRule<RuleFixedValue, List<Object>> {
+final class DslFixedValueRule extends PegAbstractRule<RuleFixedValue, List<Object>> {
 
 	DslFixedValueRule() {
 		super(createMainRule(), "fixedValue");

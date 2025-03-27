@@ -19,11 +19,11 @@ package io.vertigo.datafactory.impl.search.dsl.rules;
 
 import java.util.List;
 
-import io.vertigo.commons.peg.AbstractRule;
 import io.vertigo.commons.peg.PegChoice;
-import io.vertigo.commons.peg.PegRule;
-import io.vertigo.commons.peg.PegRules;
-import io.vertigo.commons.peg.PegWordRule;
+import io.vertigo.commons.peg.rule.PegAbstractRule;
+import io.vertigo.commons.peg.rule.PegWordRuleMode;
+import io.vertigo.commons.peg.rule.PegRule;
+import io.vertigo.commons.peg.rule.PegRules;
 import io.vertigo.datafactory.impl.search.dsl.model.DslFixedQuery;
 import io.vertigo.datafactory.impl.search.dsl.model.DslQuery;
 import io.vertigo.datafactory.impl.search.dsl.model.DslRangeQuery;
@@ -33,7 +33,7 @@ import io.vertigo.datafactory.impl.search.dsl.model.DslRangeQuery;
  * (preRangeQuery)\[(termQuery|fixedQuery) to (termQuery|fixedQuery)\](postRangeQuery)
  * @author npiedeloup
  */
-final class DslRangeQueryRule extends AbstractRule<DslRangeQuery, List<Object>> {
+final class DslRangeQueryRule extends PegAbstractRule<DslRangeQuery, List<Object>> {
 
 	DslRangeQueryRule() {
 		super(createMainRule(), "rangeQuery");
@@ -51,7 +51,7 @@ final class DslRangeQueryRule extends AbstractRule<DslRangeQuery, List<Object>> 
 				PegRules.choice(PegRules.term("["), PegRules.term("{")), //1
 				queriesRule, //2
 				DslSyntaxRules.SPACES,
-				PegRules.word(false, "TOto", PegWordRule.Mode.ACCEPT, "to"),
+				PegRules.word(false, "TOto", PegWordRuleMode.ACCEPT, "to"),
 				DslSyntaxRules.SPACES,
 				queriesRule, //6
 				DslSyntaxRules.SPACES,

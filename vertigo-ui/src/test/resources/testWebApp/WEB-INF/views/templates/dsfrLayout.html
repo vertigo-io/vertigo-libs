@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:vu="https://vertigo.io/thymeleaf/vertigo-ui"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <vu:head-meta vuejsDevMode useDsfr onlyDsfrStyle/>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description"
+          content="Demo Application of Vertigo UI powered by SpringMvc, Thymeleaf and Quasar Framework"/>
+    <meta name="author" content="Klee Group"/>
+
+    <link rel="icon" th:href="@{/static/img/favicon.ico}"/>
+
+    <script type="text/javascript" th:src="@{/vertigo-ui/static/js/vertigo-ui-extensions.js}"></script>
+</head>
+
+<body class="mat desktop no-touch platform-mat">
+<vu:page> <!-- vuiSsr -->
+
+    <vu:dsfr-header
+            service-title="Vertigo DSFR"
+            service-description="Page de test des composants"
+            :logo-text="['Vertigo', 'DSFR']"
+    >
+        <vu:slot name="header_slot">
+            <template #header-menu-link>
+                <li>
+                    <vu:dsfr-header-menu logout-url="#"
+                                         icon="fr-icon-account-circle-fill"
+                                         nom="Joe Nathang"
+                                         email="joenathang@pm.me"
+                                         label="Mon espace">
+                        <vu:dsfr-menu-link icon="fr-icon-checkbox-circle-line" label="Mon profil utilisateur" url="#"/>
+                        <vu:dsfr-menu-link icon="fr-icon-mail-line" disabled label="Messagerie"/>
+                        <vu:dsfr-menu-link icon="fr-icon-notification-2-line" label="Notifications" url="#"/>
+                        <vu:dsfr-menu-link icon="fr-icon-circle-line" label="Mon périmètre"/>
+                    </vu:dsfr-header-menu>
+                </li>
+            </template>
+            <template #header-search>
+                <p class="fr-tag fr-tag--sm self-end">Exemple promotion - Voie générale</p>
+            </template>
+        </vu:slot>
+        <vu:dsfr-header-skip-link label="Aller au contenu" id="content"/>
+
+        <vu:dsfr-header-quick-link label="Notifications" url="'#'" icon="fr-icon-notification-3-line"/>
+        <vu:dsfr-header-quick-link label="Aide" url="'#'" icon="fr-icon-question-line"/>
+
+        <vu:dsfr-header-nav-item label="Accueil" th:url="@{/componentsDemoDsfr/}"/>
+        <vu:dsfr-header-nav-item label="Accueil" url="'/'"/>
+        <vu:dsfr-header-nav-item label="Accueil" url="'/tarte/'" active="true"/>
+        <vu:dsfr-header-nav-item-menu label="Menu">
+            <vu:dsfr-header-nav-item label="Accueil" th:url="@{/componentsDemoDsfr/}"/>
+            <vu:dsfr-header-nav-item label="Accueil" url="'#'"/>
+        </vu:dsfr-header-nav-item-menu>
+    </vu:dsfr-header>
+
+
+    <main class="fr-container fr-my-2w" id="content">
+        <th:block layout:fragment="content"></th:block>
+    </main>
+
+    <dsfr-footer home-link="/"
+                 a11yComplience="non conforme"
+                 :logo-text="['Vertigo', 'DSFR']"
+    >
+    </dsfr-footer>
+
+</vu:page>
+
+<div layout:fragment="javascript-footer">
+</div>
+</body>
+</html>

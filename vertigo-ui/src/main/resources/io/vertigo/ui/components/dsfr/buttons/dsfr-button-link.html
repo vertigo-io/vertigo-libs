@@ -1,0 +1,9 @@
+<th:block th:fragment="dsfr-button-link(label, icon, url, title, disabled, other_attrs)"
+	  th:assert="(${label} != null or (${icon} != null and ${title} != null)) and ${url} != null">
+	
+	<dsfr-link th::href="|${disabled}?null:'${url}'|" th:icon="${icon?:''}" th:label="${label?:''}" th:title="${title?:''}" as-button th:attr="__${other_attrs}__">
+		<vu:content>
+			<span class="fr-sr-only" th:if="${label==null}" vu:text="${title?:''}"></span>
+		</vu:content>
+	</dsfr-link>
+</th:block>

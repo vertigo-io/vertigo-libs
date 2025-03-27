@@ -28,7 +28,8 @@ export default {
             days : "days",
             hours : "hours",
             minutes : "min",
-            seconds : "s"
+            seconds : "s",
+			serverLost : "Reconnecting to server..."
         },
         commands : {
             globalPlaceholder : "Type / to show all available commands",
@@ -37,13 +38,18 @@ export default {
         },
 		uploader : {
 			clear_all : "Clear All",
-			removeUploaded : "Remove Uploaded Files",
 			remove : "Remove",
 			add : "Pick Files",
-			upload : "Upload Files",
-			clear : "Abort Upload",
+			abort : "Abort Upload",
+			download : "Download",
 			fileErrorTooBig : "Error : This file is too large",
 			fileErrorUnknown : "Unknown error : This file cannot be uploaded",
+			progress : "Progress",
+			estimated : "Time remaining",
+			unit_b : "B",
+			unit_kb : "KB",
+			unit_mb : "MB",
+			unit_gb : "GB"
 		},
         handles : {
             placeholder : "Enter a handle : format is type/code"

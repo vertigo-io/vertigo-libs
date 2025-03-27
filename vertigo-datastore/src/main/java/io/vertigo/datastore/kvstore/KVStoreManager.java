@@ -23,25 +23,25 @@ import java.util.Optional;
 import io.vertigo.core.node.component.Manager;
 
 /**
-* Key Value Store.
-*
-* A store is composed of multiple collections (KVCollection).
-* A collection is managed by a plugin.
-*
-* Each plugin (KVStorePlugin) can manage several collections.
-* A plugin defines the strategy used to store the collections.
-*
-* Example :
-* +---store
-*     +---KVStorePlugin : {name:plants  type:BerkeleyDB}
-*         +---collection : flowers
-*         +---collection : trees
-*         +---collection : fungi
-*     +---KVStorePlugin : {name:UISecurityStore  type:DelayedBerkeleyDB}
-*         +---collection : sessions
-*
-* @author pchretien
-*/
+ * Key Value Store.
+ *
+ * A store is composed of multiple collections (KVCollection).
+ * A collection is managed by a plugin.
+ *
+ * Each plugin (KVStorePlugin) can manage several collections.
+ * A plugin defines the strategy used to store the collections.
+ *
+ * Example :
+ * +---store
+ * +---KVStorePlugin : {name:plants type:BerkeleyDB}
+ * +---collection : flowers
+ * +---collection : trees
+ * +---collection : fungi
+ * +---KVStorePlugin : {name:UISecurityStore type:DelayedBerkeleyDB}
+ * +---collection : sessions
+ *
+ * @author pchretien
+ */
 public interface KVStoreManager extends Manager {
 
 	/**
@@ -69,6 +69,15 @@ public interface KVStoreManager extends Manager {
 	void remove(KVCollection collection, String id);
 
 	/**
+	 * Removes an element defined by an id from a collection.
+	 *
+	 * @param collection the collection
+	 * @param id the id
+	 * @return if remove has been applied
+	 */
+	boolean removeIfExists(KVCollection collection, String id);
+
+	/**
 	 * Removes all elements from a collection.
 	 * @param collection the collection
 	 */
@@ -86,7 +95,7 @@ public interface KVStoreManager extends Manager {
 	<C> Optional<C> find(KVCollection collection, String id, Class<C> clazz);
 
 	/**
-	 * Finds all elements contained inside the specified collection.	 *
+	 * Finds all elements contained inside the specified collection. *
 	 * @param <C> Element type
 	 * @param collection the collection
 	 * @param skip the position from which the elements are returned

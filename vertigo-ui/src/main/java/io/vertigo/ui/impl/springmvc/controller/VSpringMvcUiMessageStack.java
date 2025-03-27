@@ -22,12 +22,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.ui.impl.springmvc.util.UiRequestUtil;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
 
 /**
  * Class d'enregistrement des messages.
+ *
  * @author npiedeloup
  */
 public final class VSpringMvcUiMessageStack implements UiMessageStack {
@@ -45,6 +47,7 @@ public final class VSpringMvcUiMessageStack implements UiMessageStack {
 
 	/**
 	 * Ajoute un message.
+	 *
 	 * @param level Niveau de message
 	 * @param message Message
 	 */
@@ -135,8 +138,12 @@ public final class VSpringMvcUiMessageStack implements UiMessageStack {
 	 */
 	@Override
 	public void addFieldMessage(final Level level, final String message, final DataObject dto, final String fieldName) {
-		addFieldMessage(level, message, UiRequestUtil.getCurrentViewContext().findKey(dto), fieldName);
+		final var dtoKey = UiRequestUtil.getCurrentViewContext().findKey(dto);
 
+		Assertion.check()
+				.isNotNull(dtoKey, "The provided dataObject is not in the current context");
+
+		addFieldMessage(level, message, dtoKey, fieldName);
 	}
 
 	/**

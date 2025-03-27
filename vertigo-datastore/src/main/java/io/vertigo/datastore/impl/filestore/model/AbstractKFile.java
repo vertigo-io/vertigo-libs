@@ -20,10 +20,12 @@ package io.vertigo.datastore.impl.filestore.model;
 import java.time.Instant;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.util.FileUtil;
 import io.vertigo.datastore.filestore.model.VFile;
 
 /**
  * Class générique de définition d'un fichier.
+ *
  * @author npiedeloup
  */
 abstract class AbstractVFile implements VFile {
@@ -36,6 +38,7 @@ abstract class AbstractVFile implements VFile {
 	/**
 	 * Constructor.
 	 * Associe un fichier à des méta-données
+	 *
 	 * @param fileName Nom d'origine du fichier
 	 * @param mimeType Type mime du fichier
 	 * @param lastModified Date de derniére modification du fichier
@@ -48,7 +51,7 @@ abstract class AbstractVFile implements VFile {
 				.isNotNull(lastModified)
 				.isNotNull(length);
 		//-----
-		this.fileName = fileName;
+		this.fileName = FileUtil.sanitizeFileName(fileName);
 		this.mimeType = mimeType;
 		this.lastModified = lastModified;
 		this.length = length;

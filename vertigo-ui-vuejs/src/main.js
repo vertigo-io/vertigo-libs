@@ -13,6 +13,7 @@ import VMap from './components/VMap.vue'
 import VMapLayer from './components/VMapLayer.vue'
 import VTree from './components/VTree.vue'
 import VFileUpload from './components/VFileUpload.vue'
+import VFileUploadQuasar from './components/VFileUploadQuasar.vue'
 
 import VDashboardChart from './components/dashboard/VDashboardChart.vue'
 
@@ -29,88 +30,87 @@ import Fr from './lang/vertigo-ui-lang-fr'
 
 var VertigoUi = {
 
-  getBoundMethods : function(obj, methods) {
-    let boundMethods = {};
-    Object.keys(methods)
-        .forEach(methodName => boundMethods[methodName] = methods[methodName].bind(obj));
-    return boundMethods;
-  },
+    getBoundMethods: function (obj, methods) {
+        let boundMethods = {};
+        Object.keys(methods)
+            .forEach(methodName => boundMethods[methodName] = methods[methodName].bind(obj));
+        return boundMethods;
+    },
 
-   install : function (vueApp , options) {
-      
-    // components
-    vueApp.component("v-chatbot", VChatbot);
-    vueApp.component("v-commands", VCommands);
-    vueApp.component("v-comments", VComments);
-    vueApp.component("v-extensions-store", VExtensionsStore);
-    vueApp.component("v-facets", VFacets);
-    vueApp.component("v-geopoint-input", VGeopointInput);
-    vueApp.component("v-handles", VHandles);
-    vueApp.component("v-json-editor", VJsonEditor);
-    vueApp.component("v-notifications", VNotifications);
-    vueApp.component("v-map", VMap);
-    vueApp.component("v-map-layer", VMapLayer);
-    vueApp.component("v-tree", VTree)
-    vueApp.component("v-file-upload", VFileUpload);
-    vueApp.component("v-dashboard-chart", VDashboardChart);
+    install: function (vueApp, options) {
 
-    // directives
-    vueApp.directive("alert-unsaved-updates", VAlertUnsavedUpdates);
-    vueApp.directive("autofocus", VAutofocus);
-    vueApp.directive("if-unsaved-updates", VIfUnsavedUpdates);
-    vueApp.directive("minify", VMinify);
-    vueApp.directive("scroll-spy", VScrollSpy);
-    
-    if (!options.axios) {
-        console.error('You have to install axios')
-        return
-    }
+        // components
+        vueApp.component("v-chatbot", VChatbot);
+        vueApp.component("v-commands", VCommands);
+        vueApp.component("v-comments", VComments);
+        vueApp.component("v-extensions-store", VExtensionsStore);
+        vueApp.component("v-facets", VFacets);
+        vueApp.component("v-geopoint-input", VGeopointInput);
+        vueApp.component("v-handles", VHandles);
+        vueApp.component("v-json-editor", VJsonEditor);
+        vueApp.component("v-notifications", VNotifications);
+        vueApp.component("v-map", VMap);
+        vueApp.component("v-map-layer", VMapLayer);
+        vueApp.component("v-tree", VTree)
+        vueApp.component("v-file-upload", VFileUpload);
+        vueApp.component("v-file-upload-quasar", VFileUploadQuasar);
+        vueApp.component("v-dashboard-chart", VDashboardChart);
 
-    vueApp.axios = options.axios;
-    vueApp.$http = options.axios;
+        // directives
+        vueApp.directive("alert-unsaved-updates", VAlertUnsavedUpdates);
+        vueApp.directive("autofocus", VAutofocus);
+        vueApp.directive("if-unsaved-updates", VIfUnsavedUpdates);
+        vueApp.directive("minify", VMinify);
+        vueApp.directive("scroll-spy", VScrollSpy);
 
-    Object.defineProperties(vueApp.config.globalProperties, {
-        axios: {
-            get() {
-            return options.axios
-            }
-        },
-    
-        $http: {
-            get() {
-            return options.axios
-            }
-        },
-
-        $vui: {
-            get() {
-                return VertigoUi.getBoundMethods(this, VMethods);
-            }
+        if (!options.axios) {
+            console.error('You have to install axios')
+            return
         }
-    });
-   
-   
- },
 
- methods: VMethods,
+        vueApp.axios = options.axios;
+        vueApp.$http = options.axios;
 
- initData : function(instance, json) {
-    instance.vueData = json.vueData;
-	instance.componentStates = json.componentStates;
-    instance.uiMessageStack = json.uiMessageStack;
-    instance.vuiLang = json.vuiLang;
- },
+        Object.defineProperties(vueApp.config.globalProperties, {
+            axios: {
+                get() {
+                    return options.axios
+                }
+            },
 
- lang : {
-     enUS: EnUs,
-     fr: Fr
- }
+            $http: {
+                get() {
+                    return options.axios
+                }
+            },
+
+            $vui: {
+                get() {
+                    return VertigoUi.getBoundMethods(VMethods, VMethods);
+                }
+            }
+        });
+
+
+    },
+
+    methods: VMethods,
+
+    initData: function (instance, json) {
+        instance.vueData = json.vueData;
+        instance.componentStates = json.componentStates;
+        instance.uiMessageStack = json.uiMessageStack;
+        instance.vuiLang = json.vuiLang;
+    },
+
+    lang: {
+        enUS: EnUs,
+        fr: Fr
+    }
 }
 
 if (window) {
     window.VertigoUi = VertigoUi
 }
-
-
 
 export default VertigoUi;

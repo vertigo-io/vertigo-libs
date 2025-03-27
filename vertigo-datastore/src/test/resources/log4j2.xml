@@ -14,7 +14,7 @@
 
 
 	<Loggers>
-	   <Root level="warn">
+	   <Root level="fatal">
 			<AppenderRef ref="Console" />
 		</Root>
 	</Loggers>

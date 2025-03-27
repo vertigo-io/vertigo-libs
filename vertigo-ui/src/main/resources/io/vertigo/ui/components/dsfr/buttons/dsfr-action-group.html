@@ -1,0 +1,13 @@
+<th:block th:fragment="dsfr-action-group(contentTags, class, other_attrs)">
+    <ul class="fr-btns-group fr-btns-group--inline-sm fr-btns-group--right" th:classappend="${class}" th:attr="__${other_attrs}__">
+        <th:block th:each="contentItem:${contentTags}">
+            <li>
+                <vu:content-item th:with="class=null"/>
+            </li>
+        </th:block>
+    </ul>
+</th:block>
+
+<th:block th:fragment="dsfr-list-actions-item(class, other_attrs)">
+    <vu:content/>
+</th:block>

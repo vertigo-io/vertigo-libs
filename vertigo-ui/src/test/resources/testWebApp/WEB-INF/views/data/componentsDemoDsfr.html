@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:vu="https://vertigo.io/thymeleaf/vertigo-ui"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{templates/dsfrLayout}"
+>
+
+<head>
+    <title>Component Details</title>
+    
+    <!-- maps -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@8.2.0/ol.min.css" type="text/css"/>
+	<link rel="stylesheet" href="https://unpkg.com/ol-geocoder@4.3.1/dist/ol-geocoder.min.css" type="text/css"/>
+	<script src="https://cdn.jsdelivr.net/npm/ol@v10.4.0/dist/ol.js"></script>
+	<script src="https://unpkg.com/ol-geocoder@4.3.3/dist/ol-geocoder.js"></script>
+</head>
+
+<body>
+<th:block layout:fragment="content">
+    <vu:form id="myFormId">
+
+        <vu:dsfr-breadcrumb>
+            <vu:dsfr-breadcrumb-el label="Accueil" url="'#'"/>
+            <vu:dsfr-breadcrumb-el label="Page de démo"/>
+        </vu:dsfr-breadcrumb>
+
+        <vu:dsfr-messages small></vu:dsfr-messages>
+
+        <vu:block id="movie" title="#{movie.title.information}">
+            <vu:include-data object="movies" field="*"/>
+            <vu:include-data-primitive key='timeZoneList'/>
+            <vu:include-data-primitive key='selectedTimeZoneList' modifiable/>
+
+            <vu:dsfr-menu secondary label="Menu" ref="menutest">
+                <vu:dsfr-menu-link icon="ri-checkbox-circle-line" label="Coucou n°3" th:url="@{/}"/>
+                <vu:dsfr-menu-link label="Coucou n°2"/>
+                <vu:dsfr-menu-link disabled label="Coucou n°1"/>
+                <vu:dsfr-menu-link disabled label="Coucou n°1 bis"/>
+                <vu:dsfr-menu-link label="Coucou n°3 bis"/>
+                <vu:dsfr-menu-link label="Coucou n°4"/>
+            </vu:dsfr-menu>
+
+            <vu:dsfr-header-menu logout-url="#"
+                                 icon="ri-account-circle-fill"
+                                 nom="Joe Nathang"
+                                 email="joenathang@pm.me"
+                                 label="Mon espace">
+                <vu:dsfr-menu-link icon="fr-icon-mail-line" label="Mon profil utilisateur"/>
+                <vu:dsfr-menu-link icon="ri-mail-line" disabled th:url="@{/notifications}" label="Messagerie"/>
+                <vu:dsfr-menu-link icon="fr-icon-mail-line" disabled th:url="@{/notifications}" label="Messagerie"/>
+                <vu:dsfr-menu-link icon="ri-notification-2-line" th:url="@{/notifications}" label="Notifications"/>
+                <vu:dsfr-menu-link icon="ri-circle-line" label="Mon périmètre"/>
+            </vu:dsfr-header-menu>
+
+            <h6>Test grid</h6>
+            <vu:dsfr-grid cols="3" class="fr-grid-row--gutters">
+                <template v-if="true">
+                    <vu:dsfr-text-field object="movie" label-visible="false" field="title"/>
+                </template>
+                <template v-if="false">
+                    <vu:dsfr-text-field object="movie" field="title"/>
+                </template>
+                <vu:dsfr-grid-break/>
+                <template v-if="true">
+                    <vu:dsfr-text-field object="movie" field="title"/>
+                </template>
+            </vu:dsfr-grid>
+
+            <h6>Global</h6>
+            <vu:dsfr-grid cols="3" class="fr-grid-row--gutters">
+
+                <vu:dsfr-text-field :class="{ disabled: true && false || false }"
+                                    readonly
+                                    object="movie"
+                                    field="movId"/>
+                <th:block th:with="readonly=true">
+                    <vu:dsfr-text-field object="movie" field="title" emptyValue="Non renseignée"/>
+                </th:block>
+                <vu:dsfr-text-field object="movie" field="title" th:with="readonly=true" emptyValue="Non renseignée"/>
+
+                <vu:dsfr-text-field object="movie" field="year" debounce="500" hint="Debouncing 500ms" required>
+                    <vu:slot name="after_label_slot">
+                        <v-icon name="ri:question-fill"
+                                color="var(--blue-france-sun-113-625)"
+                                title="Year of publishing">
+                        </v-icon>
+                    </vu:slot>
+                </vu:dsfr-text-field>
+
+                <div>
+                    <vu:dsfr-autocomplete object="movie" field="movId"
+                                          hint="Autocompletion"
+                                          componentId="movieCompletion"
+                                          noResultLabel="Aucun résultat"
+                                          list="moviesMdl" labelField="title" valueField="movId"
+                                          minQueryLength="2"/>
+                </div>
+
+                <th:block>
+                    <!--
+                    <vu:dsfr-slider object="movie" field="year"/>
+                    -->
+                </th:block>
+                <vu:dsfr-select object="movie" field="movId" list="movies" label="on-update"
+                                noneLabel="Aucun"
+                                @update:model-value="console.log('coucou')"/>
+                <vu:dsfr-text-field-read-reactive object="movie" field="movId" label="Séléction choisie"/>
+                <vu:dsfr-select object="movie" field="movId" list="moviesDisplay" otherInput otherLabel="Autre film" labelField="title"/>
+
+                <vu:dsfr-grid-cell col="lg-8">
+                    <vu:dsfr-text-area object="movie" field="title"/>
+                </vu:dsfr-grid-cell>
+
+                <vu:dsfr-date object="movie" field="released"/>
+                <input type="datetime-local" value="" id="toto">
+                <vu:dsfr-datetime object="movie" field="lastModified"/>
+
+                <vu:autocomplete object="movie" field="movId" list="moviesMdl" minQueryLength="2"/>
+                <vu:dsfr-radio object="movie" field="movId" list="movies" layout="horizontal" valueField="movId"
+                               labelField="movId"/>
+                <vu:dsfr-radio object="movie" field="movId" list="movies" valueField="movId" labelField="title"/>
+                <vu:dsfr-text-field object="movie" field="movId"/>
+                <vu:dsfr-text-area object="movie" field="title"/>
+                <vu:dsfr-grid-cell/>
+                <vu:dsfr-select-multiple object="movieDisplayInput" field="movIds"
+                                         combo-label="Label"
+                                         combo-description="Ceci est une description plus complète"
+                                         description="DEBUG :"
+                                         has-filter="true" has-button="true"
+                                         list="moviesMdl" valueField="movId" labelField="title"/>
+
+                <vu:dsfr-checkbox object="movie" field="testBoolean" label="Boolean" required value="true"></vu:dsfr-checkbox>
+
+                <vu:dsfr-checkbox-multiple object="movieDisplayInput" field="movIds" list="moviesMdl"
+                                           valueField="movId" hintField="description" labelField="title"/>
+
+                <q-btn th:@click="|httpPostAjax('@{_ajaxArray}', vueDataParams(['selectedTimeZoneList']))|"
+                       color="primary" label="Ajax save"></q-btn>
+
+                <vu:dsfr-grid-cell>
+                    <vu:dsfr-link url="@{/componentsDemo/myFiles}" label="insee.csv" download
+                                  detailLabel="Fichier CSV"></vu:dsfr-link>
+                    <vu:dsfr-link url="@{/componentsDemo/myFiles}" label="insee.csv"/>
+                </vu:dsfr-grid-cell>
+
+                <vu:dsfr-v-fileupload label="Movie pictures"
+                                      hint="Taille maximale : 500 Mo. Formats supportés : jpg, png, pdf. Plusieurs fichiers possibles. Lorem ipsum dolor sit amet, consectetur adipiscing."
+                                      @download-file="(uri) => console.log('Downloading ', uri)"
+                                      th:url="'@{/commons/upload}'" required object="movie" field="pictures"/>
+
+                <vu:dsfr-dialog v-title="vueData.movie.title" componentId="dialog">
+                    <vu:slot name="actions_slot">
+                        <vu:dsfr-action-group>
+                            <vu:dsfr-button label="Ok super" secondary/>
+                            <vu:dsfr-button label="Ah oui ?" primary @click="componentStates.dialog.opened = false"/>
+                        </vu:dsfr-action-group>
+                    </vu:slot>
+                    <p>
+                        C’est une super modale
+                    </p>
+                </vu:dsfr-dialog>
+
+                <dsfr-button @click="componentStates.dialog.opened = true" label="Ouvre-moi" secondary
+                             type="button"></dsfr-button>
+
+                <h2>Tooltip</h2>
+
+                <vu:dsfr-grid-cell class="q-gutter-md">
+                    <dsfr-button-tooltip @click="componentStates.dialog.opened = true" label="Ouvre-moi" secondary
+                                         type="button">Ouvre la modale juste normal tqt
+                    </dsfr-button-tooltip>
+
+                    <dsfr-button icon="fr-icon-arrow-right-line" icon-only></dsfr-button>
+                    <dsfr-button-tooltip icon="fr-icon-arrow-right-line" icon-only>Icône seulement</dsfr-button-tooltip>
+                    <dsfr-button icon="fr-icon-arrow-right-line" label="Avec texte"></dsfr-button>
+                    <dsfr-button-tooltip icon="fr-icon-arrow-right-line" label="Avec texte">
+                        Le fameux tooltip
+                    </dsfr-button-tooltip>
+
+                    <dsfr-link th:href="@{/}" size="sm">Petit lien</dsfr-link>
+                    <dsfr-link th:href="@{/}" as-button size="sm">Petit lien</dsfr-link>
+                    <dsfr-link-tooltip th:href="@{/}" label="Ceci est un lien">Lien</dsfr-link-tooltip>
+                    <dsfr-link-tooltip as-button tertiary th:href="@{/}" label="Ceci est un lien">Bouton (lien)
+                    </dsfr-link-tooltip>
+
+                    <dsfr-link-tooltip as-button tertiary th:href="@{/}" label="Ceci est un lien tooltip vide">
+                    </dsfr-link-tooltip>
+
+                    <p>
+                        Lorem ipsum doleret
+                        <dsfr-link-tooltip inline th:href="@{/}" label="ispum demso">ipsum demso</dsfr-link-tooltip>
+                    </p>
+
+                    <dsfr-link th:href="@{/dossier/eleve/candidatures/}" as-button secondary disabled>
+                        Coucou n°3
+                    </dsfr-link>
+                </vu:dsfr-grid-cell>
+
+
+                <vu:dsfr-grid-cell class="q-gutter-md">
+                    <vu:dsfr-button-submit th:if="${!model.modeReadOnly}" label="Read" action="@{_read}"
+                                           color="primary"/>
+                    <vu:dsfr-button-submit th:if="${model.modeReadOnly}" label="Edit" action="@{_edit}"
+                                           color="primary"/>
+                    <vu:dsfr-button-submit th:if="${!model.modeReadOnly}" id="saveAction" label="Save (Default)"
+                                           action="@{_save}" color="primary"/>
+                    <vu:dsfr-button-submit th:if="${!model.modeReadOnly}" id="saveAction" label="Save Files Only"
+                                           action="@{_saveFilesOnly}" color="primary"/>
+
+                    <vu:button-link th:if="${model.modeEdit}" label="Movies" url="@{/movies/}" color="primary"/>
+
+                    <dsfr-button label="OpenModal" th:@click="|openModal('myModal', '@{/movies/}')|" type="button"></dsfr-button>
+
+                </vu:dsfr-grid-cell>
+                <vu:dsfr-grid-cell class="q-gutter-md">
+                    <vu:dsfr-button-submit th:if="${!model.modeReadOnly}" id="saveActionDtCheck"
+                                           label="Save (with DtObj Check)" action="@{_saveDtCheck}" color="primary"/>
+                    <vu:dsfr-button-submit th:if="${!model.modeReadOnly}" id="saveActionUiCheck"
+                                           label="Save (with UiObj Check)" action="@{_saveUiCheck}" color="primary"/>
+                </vu:dsfr-grid-cell>
+
+            </vu:dsfr-grid>
+
+            <vu:dsfr-modal componentId="myModal"
+                           iframeTitle="Coucou"
+                           autoHeight
+                           closeLabel="Close"/>
+        </vu:block>
+        <br/>
+        <vu:block id="movieManual" title="Test manual grid">
+            <div class="row">
+                <vu:dsfr-text-field class="col-6" object="movie" field="title"/>
+                <vu:dsfr-text-field class="q-mx-md col-1" object="movie" field="movId"/>
+                <div class="col-grow"></div>
+            </div>
+        </vu:block>
+
+        <vu:dsfr-accordion componentId="acc1" opened="false"
+                           title="Accordéon n°1"/>
+        <vu:dsfr-accordion componentId="acc2"
+                           title="Accordéon n°2"/>
+        <vu:dsfr-accordion componentId="acc3"
+                           title="Accordéon n°3"/>
+
+        <vu:dsfr-accordions-group componentId="accs">
+            <vu:dsfr-accordion title="Accordéon n°1"/>
+            <vu:dsfr-accordion title="Accordéon n°2"/>
+            <vu:dsfr-accordion title="Accordéon n°3"/>
+        </vu:dsfr-accordions-group>
+
+        <div class="fr-tabs fr-mt-4w">
+            <vu:dsfr-tab-list aria-label="#{eleve.dossier.onglets.titre}">
+                <vu:dsfr-tab th:href="@{/dossier/eleve/projet/}" active
+                             class="fr-icon-arrow-right-line fr-tabs__tab--icon-left">Coucou
+                </vu:dsfr-tab>
+                <vu:dsfr-tab th:href="@{/dossier/eleve/auto-evaluation/}"
+                             class="fr-icon-arrow-right-line fr-tabs__tab--icon-left">Coucou
+                </vu:dsfr-tab>
+                <vu:dsfr-tab th:href="@{/dossier/eleve/candidatures/}"
+                             class="fr-icon-arrow-right-line fr-tabs__tab--icon-left">Coucou
+                </vu:dsfr-tab>
+            </vu:dsfr-tab-list>
+            <div class="fr-tabs__panel fr-tabs__panel--selected">
+                <vu:dsfr-text-field class="" object="movie" field="title"/>
+                <vu:dsfr-text-field class="" object="movie" field="movId"/>
+            </div>
+        </div>
+
+    <ul class="fr-tabs__list">
+        <li>
+            <a class="fr-tabs__tab fr-icon-arrow-right-line fr-tabs__tab--icon-left fr-tabs__tab--active"
+               href="/test/dossier/eleve/projet/">Coucou n°1</a>
+        </li>
+        <li>
+            <a class="fr-tabs__tab fr-icon-arrow-right-line fr-tabs__tab--icon-left"
+               href="/test/dossier/eleve/auto-evaluation/">Coucou</a>
+        </li>
+        <li>
+            <a class="fr-tabs__tab fr-icon-arrow-right-line fr-tabs__tab--icon-left"
+               href="/test/dossier/eleve/candidatures/">Coucou</a>
+        </li>
+    </ul>
+        <vu:dsfr-button-submit-confirm componentId="com"
+                                       confirmMessage="Coucou la confirmation"
+                                       action="@{/}"
+                                       label="Bouton de confirmation"/>
+
+
+	    <br/>
+	
+	    <vu:include-data object="movies" field="movId"/>
+	    selection : {{ componentStates.movieTable2.selected }}
+	    <vu:dsfr-table list="movies"
+	                   componentId="movieTable2"
+					   sortUrl="@{/movies/_sort}"
+	                   pagination="true"
+	                   row-key="movId"
+	                   title="My Movies Table"
+					   subtitle="My movie subtitle"
+	                   footer-size="sm"
+	                   selectable
+	    >
+	        <vu:slot name="actions_slot">
+	            <dsfr-button-tooltip icon="ri-information-2-line"
+	                                 icon-only tertiary
+	                                 :content="`Ouvrir la modale de la ligne n°${idx}`"
+	            ></dsfr-button-tooltip>
+	            <dsfr-button-tooltip icon="fr-icon-delete-bin-line"
+	                                 icon-only tertiary
+	                                 :content="`Ouvrir la modale de la ligne n°${idx}`"
+	            ></dsfr-button-tooltip>
+	            <dsfr-button-tooltip icon="fr-icon-eye-line"
+	                                 icon-only tertiary
+	                                 :content="`Ouvrir la modale de la ligne n°${idx}`"
+	            ></dsfr-button-tooltip>
+	        </vu:slot>
+	        <vu:slot name="header_slot">
+	            <vu:dsfr-column-header field="movId">
+	                {{ label }}
+	                <dsfr-tooltip on-hover content="Explication du bail">
+	                    <v-icon icon="ri:information-2-line"></v-icon>
+	                </dsfr-tooltip>
+	            </vu:dsfr-column-header>
+	        </vu:slot>
+	        <vu:dsfr-column field="movId">
+	            <a th::href="|'@{/movie/}' + cell.movId|">{{ cell.movId }}</a>
+	        </vu:dsfr-column>
+	        <vu:dsfr-column field="title" align="right">
+	            <vu:dsfr-text-field-edit object="movies" field="title"></vu:dsfr-text-field-edit>
+	        </vu:dsfr-column>
+	        <vu:dsfr-column name="toto" label="Autre colonne">
+	            another column : {{ cell.movId }} : {{ cell.title }}
+	        </vu:dsfr-column>
+	    </vu:dsfr-table>
+    
+	    <br/>
+	        
+        <vu:block id="location" title="Location">
+			<vu:dsfr-geolocation object="casting" field="birthLocation" nameField="characterName" map_style="height: 50vh; width:100%;" map_overview></vu:dsfr-geolocation>
+		</vu:block>
+    </vu:form>
+
+</th:block>
+
+</body>
+</html>

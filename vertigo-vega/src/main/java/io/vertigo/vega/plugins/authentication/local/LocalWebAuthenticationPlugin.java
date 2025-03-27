@@ -29,6 +29,7 @@ import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.vega.impl.authentication.AuthenticationResult;
+import io.vertigo.vega.impl.authentication.WebAuthenticationManagerImpl;
 import io.vertigo.vega.impl.authentication.WebAuthenticationPlugin;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -96,7 +97,12 @@ public class LocalWebAuthenticationPlugin implements WebAuthenticationPlugin<Aut
 	public void doRedirectToSso(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse) {
 		try {
 			final var loginCompleteUrl = resolveExternalUrl(httpRequest) + loginUrl;
-			httpResponse.sendRedirect(loginCompleteUrl);
+			if (!WebAuthenticationManagerImpl.isJsonRequest(httpRequest)) {//If WebService call the 302 redirection is not possible, we return a 401
+				httpResponse.sendRedirect(loginCompleteUrl);
+			} else {
+				httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+				httpResponse.setHeader("Location", loginCompleteUrl);
+			}
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e);
 		}

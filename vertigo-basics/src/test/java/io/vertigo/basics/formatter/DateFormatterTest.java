@@ -40,7 +40,9 @@ import io.vertigo.datamodel.smarttype.definitions.FormatterException;
  * @author pchretien
  */
 public class DateFormatterTest {
+
 	private final FormatterDate formatterDate = new FormatterDate("yyyy-MM-dd");
+	private final FormatterDate formatterDateLong = new FormatterDate("dd MMMM yyyy");
 	private final FormatterDate formatterDateTime = new FormatterDate("yyyy-MM-dd' 'HH:mm:ss");
 
 	private AutoCloseableNode node;
@@ -71,6 +73,14 @@ public class DateFormatterTest {
 		final LocalDate localDate = LocalDate.of(2000, 12, 25);
 		Assertions.assertEquals("2000-12-25", formatterDate.valueToString(localDate, BasicType.LocalDate));
 		Assertions.assertEquals(localDate, formatterDate.stringToValue("2000-12-25", BasicType.LocalDate));
+	}
+
+	@Test
+	public void testLocalDateFormatterLong() throws FormatterException {
+		final LocalDate localDate = LocalDate.of(2000, 12, 25);
+		Assertions.assertEquals("25 décembre 2000", formatterDateLong.valueToString(localDate, BasicType.LocalDate));
+		Assertions.assertEquals(localDate, formatterDateLong.stringToValue("25 décembre 2000", BasicType.LocalDate));
+
 	}
 
 	@Test

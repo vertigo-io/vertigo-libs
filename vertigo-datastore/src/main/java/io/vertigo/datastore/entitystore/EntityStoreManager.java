@@ -34,7 +34,7 @@ import io.vertigo.datamodel.data.model.UID;
  * Les méthodes de mises à jour lacent des erreurs utilisateurs et techniques.
  * Les méthodes d'accès aux données ne lancent que des erreurs techniques.
  *
- * @author  pchretien
+ * @author pchretien
  */
 public interface EntityStoreManager extends Manager {
 
@@ -78,47 +78,47 @@ public interface EntityStoreManager extends Manager {
 	<E extends Entity> E readOneForUpdate(UID<E> uid);
 
 	/**
-	* Create an object.
-	* No object with the same id must have been created previously.
-	*
-	* @param entity the entity to create
-	* @return the created object
-	*/
+	 * Create an object.
+	 * No object with the same id must have been created previously.
+	 *
+	 * @param entity the entity to create
+	 * @return the created object
+	 */
 	<E extends Entity> E create(E entity);
 
 	/**
-	* Create a list of object.
-	* The underlying implementation is performance optimized (like batch mode in SQL)
-	* No object with the same id must have been created previously.
-	*
-	* @param entities the entity to create
-	* @return the created objects
-	*/
+	 * Create a list of object.
+	 * The underlying implementation is performance optimized (like batch mode in SQL)
+	 * No object with the same id must have been created previously.
+	 *
+	 * @param entities the entity to create
+	 * @return the created objects
+	 */
 	<E extends Entity> DtList<E> createList(DtList<E> entities);
 
 	/**
-	* Update an object.
-	* This object must have an id.
-	* @param entity the entity to update
-	*/
+	 * Update an object.
+	 * This object must have an id.
+	 * @param entity the entity to update
+	 */
 	void update(Entity entity);
 
 	/**
-	* Update a list of object.
-	* The underlying implementation is performance optimized (like batch mode in SQL)
-	* All objects in the list must have an id
-	*
-	* @param entities the entity to create
-	* @return the updated objects
-	*/
+	 * Update a list of object.
+	 * The underlying implementation is performance optimized (like batch mode in SQL)
+	 * All objects in the list must have an id
+	 *
+	 * @param entities the entity to create
+	 * @return the updated objects
+	 */
 	<E extends Entity> void updateList(DtList<E> entities);
 
 	/**
-	* Delete a list of object uids.
-	* The underlying implementation is performance optimized (like batch mode in SQL)
-	*
-	* @param uids the uids to delete
-	*/
+	 * Delete a list of object uids.
+	 * The underlying implementation is performance optimized (like batch mode in SQL)
+	 *
+	 * @param uids the uids to delete
+	 */
 	<E extends Entity> void deleteList(List<UID<E>> uids);
 
 	/**
@@ -136,6 +136,14 @@ public interface EntityStoreManager extends Manager {
 	 * @return list
 	 */
 	<E extends Entity> DtList<E> find(final DataDefinition dataDefinition, Criteria<E> criteria, final DtListState dtListState);
+
+	/**
+	 * Count elements identified by criteria
+	 * @param dataDefinition the list definition
+	 * @param criteria criteria
+	 * @return count of elements
+	 */
+	<E extends Entity> int count(final DataDefinition dataDefinition, Criteria<E> criteria);
 
 	/**
 	 * Sorts a list from a column.

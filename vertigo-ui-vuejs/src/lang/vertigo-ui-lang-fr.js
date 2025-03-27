@@ -28,7 +28,8 @@ export default {
             days : "jours",
             hours : "heures",
             minutes : "min",
-            seconds : "s"
+            seconds : "s",
+			serverLost : "Reconnexion au serveur en cours...",
         },
         commands : {
             globalPlaceholder : "Taper / pour afficher les commandes disponibles",
@@ -37,13 +38,18 @@ export default {
         },
 		uploader : {
 			clear_all : "Annuler tous",
-			removeUploaded : "Supprimer tous",
 			remove : "Supprimer",
 			add : "Ajouter un fichier",
-			upload : "Envoyer",
-			clear : "Annuler",
+			abort : "Annuler",
+			download : "Télécharger",
 			fileErrorTooBig : "Erreur : Le fichier est trop volumineux",
 			fileErrorUnknown : "Erreur inconnue : Ce fichier ne peut pas être envoyé",
+			progress : "Progression",
+			estimated : "Temps restant",
+			unit_b : "o",
+			unit_kb : "Ko",
+			unit_mb : "Mo",
+			unit_gb : "Go"
 		},
         handles : {
             placeholder : "Entrer un handle de la forme type/code"

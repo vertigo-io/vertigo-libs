@@ -19,9 +19,9 @@ package io.vertigo.datafactory.impl.search.dsl.rules;
 
 import io.vertigo.commons.peg.PegNoMatchFoundException;
 import io.vertigo.commons.peg.PegResult;
-import io.vertigo.commons.peg.PegRule;
-import io.vertigo.commons.peg.PegRules;
-import io.vertigo.commons.peg.PegWordRule;
+import io.vertigo.commons.peg.rule.PegWordRuleMode;
+import io.vertigo.commons.peg.rule.PegRule;
+import io.vertigo.commons.peg.rule.PegRules;
 
 /**
  *
@@ -43,7 +43,7 @@ final class DslSyntaxRules {
 	private static final String DELIMITERS = RESERVED + WHITE_SPACE;
 
 	/** règle de lectures des blancs. */
-	static final PegRule<?> SPACES = PegRules.word(true, WHITE_SPACE, PegWordRule.Mode.ACCEPT, "_");
+	static final PegRule<?> SPACES = PegRules.word(true, WHITE_SPACE, PegWordRuleMode.ACCEPT, "_");
 
 	/** array start. */
 	static final PegRule<String> ARRAY_START = PegRules.term("["); //like arrays in json syntax
@@ -63,20 +63,20 @@ final class DslSyntaxRules {
 	static final PegRule<String> FIELD_END = PegRules.term(":");
 
 	/** premodifier. */
-	static final PegRule<String> PRE_MODIFIER_VALUE = PegRules.word(true, PRE_MODIFIER + WHITE_SPACE, PegWordRule.Mode.ACCEPT, "[~+-*?\" \\t\\n\\r]*");
+	static final PegRule<String> PRE_MODIFIER_VALUE = PegRules.word(true, PRE_MODIFIER + WHITE_SPACE, PegWordRuleMode.ACCEPT, "[~+-*?\" \\t\\n\\r]*");
 	/** postmodifier. */
-	static final PegRule<String> POST_MODIFIER_VALUE = PegRules.word(true, POST_MODIFIER, PegWordRule.Mode.ACCEPT, "[~+-*?^0123456789\"]*");
+	static final PegRule<String> POST_MODIFIER_VALUE = PegRules.word(true, POST_MODIFIER, PegWordRuleMode.ACCEPT, "[~+-*?^0123456789\"]*");
 
 	//Il faut gérer le caractère d'évitement.
 
 	/** fieldname : like word but accept . (dot)*/
-	static final PegRule<String> FIELD_NAME = PegRules.word(false, "()[]\"!#$%&'*+,-/:;<=>?@\\^`|~" + WHITE_SPACE, PegWordRule.Mode.REJECT, "WORD");
+	static final PegRule<String> FIELD_NAME = PegRules.word(false, "()[]\"!#$%&'*+,-/:;<=>?@\\^`|~" + WHITE_SPACE, PegWordRuleMode.REJECT, "WORD");
 
 	/** word. */
-	static final PegRule<String> WORD = PegRules.word(false, DELIMITERS, PegWordRule.Mode.REJECT, "WORD");
+	static final PegRule<String> WORD = PegRules.word(false, DELIMITERS, PegWordRuleMode.REJECT, "WORD");
 
 	/** fixed word. */
-	static final PegRule<String> FIXED_WORD = PegRules.word(false, WHITE_SPACE + "]),", PegWordRule.Mode.REJECT, "!_");
+	static final PegRule<String> FIXED_WORD = PegRules.word(false, WHITE_SPACE + "]),", PegWordRuleMode.REJECT, "!_");
 
 	/** depth overflow. */
 	static final PegRule<?> DEPTH_OVERFLOW = new DepthOverflowRule();

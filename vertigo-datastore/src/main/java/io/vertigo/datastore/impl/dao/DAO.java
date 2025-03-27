@@ -137,7 +137,7 @@ public class DAO<E extends Entity, P> {
 	/**
 	 * Reloads entity from fragment, and keep fragment modifications.
 	 *
-	 * @param fragment  merged from datastore and input
+	 * @param fragment merged from datastore and input
 	 * @return merged root entity merged with the fragment
 	 */
 	public final E reloadAndMerge(final Fragment<E> fragment) {
@@ -276,7 +276,7 @@ public class DAO<E extends Entity, P> {
 	 * Find one and only one object matching the criteria.
 	 * If there are many results or no result an exception is thrown
 	 * @param criteria the filter criteria
-	 * @return  the result
+	 * @return the result
 	 */
 	public final E find(final Criteria<E> criteria) {
 		return findOptional(criteria)
@@ -287,7 +287,7 @@ public class DAO<E extends Entity, P> {
 	 * Find one or zero object matching the criteria.
 	 * If there are many results an exception is thrown
 	 * @param criteria the filter criteria
-	 * @return  the optional result
+	 * @return the optional result
 	 */
 	public final Optional<E> findOptional(final Criteria<E> criteria) {
 		final DtList<E> list = entityStoreManager.find(getDtDefinition(), criteria, DtListState.of(2));
@@ -302,6 +302,14 @@ public class DAO<E extends Entity, P> {
 	 */
 	public final DtList<E> findAll(final Criteria<E> criteria, final DtListState dtListState) {
 		return entityStoreManager.find(getDtDefinition(), criteria, dtListState);
+	}
+
+	/**
+	 * @param criteria The criteria
+	 * @return count rows matching criteria
+	 */
+	public final int count(final Criteria<E> criteria) {
+		return entityStoreManager.count(getDtDefinition(), criteria);
 	}
 
 	private DataDefinition getDtDefinition() {

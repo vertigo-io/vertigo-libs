@@ -1,0 +1,163 @@
+/* Corrige la taille de la selection du nombre d’éléments par page  */
+.fr-table .fr-select {
+    max-width: 5rem;
+}
+
+/* Corrige l’alignement des colonnes lorsqu’on ajoute quelque chose dans le header */
+.sortable-header {
+    align-items: center;
+}
+
+/* Color de l’étoile required */
+span.required {
+    color: var(--text-default-error)
+}
+
+/* Gère l’affichage des champs en lecture */
+.readonly > .fr-label {
+    color: var(--text-action-high-grey);
+    font-weight: 500;
+    padding-bottom: .5rem;
+}
+
+p.readonly {
+    margin-bottom: .5rem;
+}
+
+.readonly .no-value {
+    font-style: italic;
+    color: var(--text-mention-grey);
+}
+
+/* Permet des retours à la ligne en flex */
+.fr-col-break {
+    width: 100%;
+    padding: 0 !important;
+}
+
+/* Corrige l’affichage de certains textes dans les tableaux */
+td p {
+    font-size: inherit;
+}
+
+/* Search-bar avec texte visible */
+.fr-search-bar--visible-button-text .fr-btn {
+    max-width: unset;
+}
+
+/* Onglets */
+.fr-tabs__panel {
+    box-shadow: inset 0 1px 0 0 var(--border-default-grey), inset 1px 0 0 0 var(--border-default-grey), inset -1px 0 0 0 var(--border-default-grey);
+    content: "";
+    display: block;
+    height: max-content;
+    margin-top: -1px;
+    order: 2;
+    width: 100%;
+}
+
+.fr-tabs__tab--active:not(:disabled) {
+    --idle: transparent;
+    --hover: var(--background-default-grey-hover);
+    --active: var(--background-default-grey-active);
+    background-color: var(--background-default-grey);
+    background-image: linear-gradient(0deg, var(--border-active-blue-france), var(--border-active-blue-france)), linear-gradient(0deg, var(--border-default-grey), var(--border-default-grey)), linear-gradient(0deg, var(--border-default-grey), var(--border-default-grey)), linear-gradient(0deg, var(--border-default-grey), var(--border-default-grey));
+    color: var(--text-active-blue-france);
+}
+
+.fr-tabs__tab--active {
+    background-size: 100% 2px, 1px calc(100% - 1px), 1px calc(100% - 1px), 0 1px;
+}
+
+/* DSFR Autocomplete */
+
+.autocomplete-result-list {
+    z-index: 2;
+    background: #EEEEEE;
+    border: 1px solid #A0A0A0;
+    border-radius: 3px;
+    list-style: none;
+    padding: 0.2rem;
+    box-shadow: 2px 2px 10px #F0F0F0;
+    margin-top: 1px;
+}
+
+.autocomplete-result-list li {
+    padding: .2rem .4rem;
+    border-radius: 3px;
+    font-size: 1rem;
+    font-family: sans-serif;
+}
+
+.autocomplete-result:hover, .autocomplete-result[aria-selected=true] {
+    background: #E0E0E6;
+}
+
+[data-position=below] .autocomplete-input[aria-expanded=true] {
+    border-bottom-color: transparent;
+}
+
+[data-position=above] .autocomplete-input[aria-expanded=true] {
+    border-top-color: transparent;
+}
+
+.autocomplete-empty-list {
+    position: absolute;
+    z-index: 1;
+    width: 100%;
+    top: 100%;
+}
+
+/**/
+
+/* Inputs in tables */
+.fr-table td .fr-label + .fr-input {
+    margin-top: 0;
+}
+
+.fr-table:not(.force-visible-label) td .fr-label {
+    visibility: collapse;
+    height: 0;
+}
+
+.fr-table caption.fr-sr-only {
+    margin: -1px;
+    position: absolute;
+}
+
+/* */
+div.fr-menu {
+    width: fit-content;
+    max-width: 15rem;
+}
+
+@media (min-width: 78em) {
+    div.fr-menu {
+        max-width: 18rem;
+    }
+
+    div.fr-select__menu {
+        max-width: 25rem;
+    }
+}
+
+/* disabled buttons using aria */
+button[aria-disabled="true"] {
+    --idle: transparent;
+    --hover: var(--background-disabled-grey-hover);
+    --active: var(--background-disabled-grey-active);
+    background-color: var(--background-disabled-grey);
+    color: var(--text-disabled-grey);
+    opacity: 1;
+    cursor: not-allowed;
+}
+
+button[aria-disabled="true"]:hover {
+    background-color: var(--background-disabled-grey);
+}
+
+/* textarea in readonly pre */
+.readonly pre {
+    all: unset;
+    white-space: pre-wrap;
+}

@@ -1,0 +1,14 @@
+<th:block th:fragment="page(content, vuiSsr)"
+	th:with="isVuiSsr=${vuiSsr != null ? vuiSsr : false},
+	    pendingAction=${model.vContext['componentStates'].addComponentState('pendingAction').addList('actionNames')}">
+	<div th:if="${!isVuiSsr}" id="page">
+		<vu:content/>
+	</div>
+	<div th:if="${isVuiSsr}" id="page"></div>
+    <vertigo-ssr th:if="${isVuiSsr}">
+		<vu:content/>
+	</vertigo-ssr>
+
+	<vu:vue-data/>
+	
+</th:block>

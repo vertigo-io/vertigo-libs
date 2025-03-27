@@ -41,11 +41,14 @@ import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.eclipse.jetty.server.handler.ErrorHandler;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.session.DefaultSessionIdManager;
+import org.eclipse.jetty.server.session.NullSessionCacheFactory;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.webapp.WebAppClassLoader;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.springframework.web.WebApplicationInitializer;
 
+import io.vertigo.ui.impl.jetty.session.KVSessionDataStoreFactory;
+import jakarta.servlet.DispatcherType;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -62,6 +65,9 @@ public class JettyBoot {
 	public static void startServer(
 			final JettyBootParams jettyBootParams,
 			final Function<WebAppContext, List<Handler>> additionalHandlersProvider) throws Exception {
+
+		final var start = System.currentTimeMillis();
+
 		server = new Server(jettyBootParams.getPort());
 
 		//set workerName if present
@@ -70,6 +76,14 @@ public class JettyBoot {
 			final var sessionIdManager = new DefaultSessionIdManager(server);
 			sessionIdManager.setWorkerName(jettyNodeNameOpt.get());
 			server.setSessionIdManager(sessionIdManager);
+		}
+
+		final var jettySessionStoreCollectionNameOpt = jettyBootParams.getJettySessionStoreCollectionName();
+		if (jettySessionStoreCollectionNameOpt.isPresent()) {
+			server.addBean(new KVSessionDataStoreFactory(jettySessionStoreCollectionNameOpt.get())); //we set kvStore sessionStore
+			if (jettyBootParams.isNoJettySessionCache()) {
+				server.addBean(new NullSessionCacheFactory()); //we inactive sessionCache : to use SessionStore every times
+			}
 		}
 
 		// Create HTTP Config
@@ -159,6 +173,7 @@ public class JettyBoot {
 			}
 			System.exit(1);
 		}
+		LOG.info("Server started in {} seconds", (System.currentTimeMillis() - start) / 1000);
 		if (jettyBootParams.isJoin()) {
 			try {
 				server.join();
@@ -198,8 +213,12 @@ public class JettyBoot {
 	private static class NotFoundErrorHandler extends ErrorHandler {
 
 		@Override
-		public void handle(final String target, final Request baseRequest, final HttpServletRequest request, final HttpServletResponse response) throws IOException, ServletException {
-			if (response.isCommitted() || baseRequest.isHandled()) {
+		public void handle(final String target, final Request baseRequest, final HttpServletRequest request,
+				final HttpServletResponse response) throws IOException, ServletException {
+			if (response.isCommitted() || baseRequest.isHandled()
+			//Check if we are in an error dispatch : Jetty HttpChannel.dispatch reopen the request and remove the isHandled flag
+					|| DispatcherType.ERROR.equals(baseRequest.getDispatcherType())) {
+
 				return;
 			}
 

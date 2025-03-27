@@ -1,0 +1,48 @@
+<th:block th:fragment="dsfr-header(class, header_slot, header_attrs)"
+          th:attr="o=${model.vContext['componentStates'].addComponentState('dsfrHeader').addList('quickLinks')},
+                   o=${model.vContext['componentStates']['dsfrHeader'].addList('skipLinks')},
+                   o=${model.vContext['componentStates']['dsfrHeader'].addList('navItems')}">
+
+    <dsfr-skip-links
+            :links="componentStates.dsfrHeader.skipLinks"
+    ></dsfr-skip-links>
+
+    <dsfr-custom-header :quick-links="componentStates.dsfrHeader.quickLinks"
+                        @on-mounted="dsfrUpdateMenuNavigationActiveState"
+                 th:attr="__${header_attrs}__">
+        <template #mainnav>
+            <dsfr-navigation :nav-items="componentStates.dsfrHeader.navItems">
+            </dsfr-navigation>
+        </template>
+        <vu:content-slot name="header_slot"/>
+    </dsfr-custom-header>
+
+    <vu:content/>
+</th:block>
+
+<th:block th:fragment="dsfr-header-skip-link(label, id)">
+    <th:block
+            th:attr="o=${model.vContext['componentStates']['dsfrHeader'].addObjectToList('skipLinks', {'text': label, 'id': id})}"/>
+</th:block>
+
+<th:block th:fragment="dsfr-header-quick-link(label, url, icon, class)">
+    <th:block
+            th:attr="o=${model.vContext['componentStates']['dsfrHeader'].addObjectToList('quickLinks', {'label': label, 'to': url, 'icon': icon, 'class': class})}"/>
+</th:block>
+
+<th:block th:fragment="dsfr-header-nav-item(label, url, active)">
+    <th:block th:unless="${menu}">
+        <th:block th:attr="o=${model.vContext['componentStates']['dsfrHeader'].addObjectToList('navItems', {'text': label, 'to': url, 'setActive': active})}"/>
+    </th:block>
+    <th:block th:if="${menu}">
+        <th:block
+                th:attr="o=${model.vContext['componentStates']['dsfrHeader'].getLastObjectFromList('navItems').addObjectToList('links', {'text': label, 'to': url, 'setActive': active})}"/>
+    </th:block>
+</th:block>
+
+
+<th:block th:fragment="dsfr-header-nav-item-menu(label)" th:with="menu=true">
+    <th:block
+            th:attr="o=${model.vContext['componentStates']['dsfrHeader'].addObjectToList('navItems', {'title': label}).addList('links')}"/>
+    <vu:content/>
+</th:block>

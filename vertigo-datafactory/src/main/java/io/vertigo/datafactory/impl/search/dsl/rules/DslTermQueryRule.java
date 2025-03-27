@@ -20,11 +20,11 @@ package io.vertigo.datafactory.impl.search.dsl.rules;
 import java.util.List;
 import java.util.Optional;
 
-import io.vertigo.commons.peg.AbstractRule;
 import io.vertigo.commons.peg.PegChoice;
-import io.vertigo.commons.peg.PegRule;
-import io.vertigo.commons.peg.PegRules;
-import io.vertigo.commons.peg.PegWordRule;
+import io.vertigo.commons.peg.rule.PegAbstractRule;
+import io.vertigo.commons.peg.rule.PegWordRuleMode;
+import io.vertigo.commons.peg.rule.PegRule;
+import io.vertigo.commons.peg.rule.PegRules;
 import io.vertigo.datafactory.impl.search.dsl.model.DslTermQuery;
 import io.vertigo.datafactory.impl.search.dsl.model.DslTermQuery.EscapeMode;
 
@@ -33,7 +33,7 @@ import io.vertigo.datafactory.impl.search.dsl.model.DslTermQuery.EscapeMode;
  * (preQuery)(term)(postQuery)
  * @author npiedeloup
  */
-final class DslTermQueryRule extends AbstractRule<DslTermQuery, List<Object>> {
+final class DslTermQueryRule extends PegAbstractRule<DslTermQuery, List<Object>> {
 
 	DslTermQueryRule() {
 		super(createMainRule(), "termQuery");
@@ -46,7 +46,7 @@ final class DslTermQueryRule extends AbstractRule<DslTermQuery, List<Object>> {
 
 		final PegRule<List<Object>> defaultValueRule = PegRules.sequence(
 				PegRules.term("!("),
-				PegRules.word(false, ")", PegWordRule.Mode.REJECT, "[^)]"), //1
+				PegRules.word(false, ")", PegWordRuleMode.REJECT, "[^)]"), //1
 				PegRules.term(")"));
 
 		final PegRule<List<Object>> termRule = PegRules.sequence(

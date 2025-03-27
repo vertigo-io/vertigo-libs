@@ -24,6 +24,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
 import io.vertigo.ui.core.ViewContext;
 import io.vertigo.ui.core.ViewContextMap;
@@ -37,10 +38,9 @@ import jakarta.servlet.http.HttpServletRequest;
 public final class VSpringMvcControllerAdvice {
 
 	@ModelAttribute
-	public static void storeContext(final Model model) {
+	public static void storeContext(final Model model, final HttpServletRequest request) {
+		// handle viewContext
 		final ViewContext viewContext = UiRequestUtil.getCurrentViewContext();
-		final UiMessageStack uiMessageStack = UiRequestUtil.obtainCurrentUiMessageStack();
-		//---
 		viewContext.asMap().viewContextUpdateSecurity().setCheckUpdates(true);
 		model.addAttribute("model", viewContext.asMap());
 		model.addAttribute("viewContextAsJson", new Supplier<String>() {
@@ -49,7 +49,24 @@ public final class VSpringMvcControllerAdvice {
 				return viewContext.getFilteredViewContextAsJson();
 			}
 		});
-		model.addAttribute("uiMessageStack", uiMessageStack);
+
+		// handle uiMessageStack
+		final UiMessageStack uiMessageStack;
+		if (model.containsAttribute(UiRequestUtil.UI_MESSAGE_STACK_ATTRIBUTE_NAME)) {
+			// model from previous flashMap (already in the model)
+			uiMessageStack = (UiMessageStack) model.getAttribute(UiRequestUtil.UI_MESSAGE_STACK_ATTRIBUTE_NAME);
+			UiRequestUtil.setCurrentUiMessageStack(uiMessageStack);
+		} else {
+			// nominal case
+			uiMessageStack = UiRequestUtil.obtainCurrentUiMessageStack();
+			model.addAttribute(UiRequestUtil.UI_MESSAGE_STACK_ATTRIBUTE_NAME, uiMessageStack);
+		}
+		// store uiMessageStack in the spring 'flashMap'. In case of redirect, it will be automatically included in the incoming model.
+		// Spring keeps it a maximum of 3 minutes and is linked to the redirected URL
+		RequestContextUtils.getOutputFlashMap(request).put(UiRequestUtil.UI_MESSAGE_STACK_ATTRIBUTE_NAME, uiMessageStack);
+
+		//---
+
 		model.addAttribute("authz", new UiAuthorizationUtil());
 		// here we can retrieve anything and put it into the model or in our context
 		// we can also use argument resolvers to retrieve attributes in our context for convenience (a DtObject or an UiObject can be retrieved as parameters

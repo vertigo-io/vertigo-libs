@@ -50,7 +50,7 @@ public final class AuthorizationUtil {
 			final String names = Stream.of(authorizationName)
 					.map(AuthorizationName::name)
 					.collect(Collectors.joining(", "));
-			LOG.warn("Not enought authorizations : {}", names);
+			LOG.warn("Not enough authorizations : {}", names);
 			throw new VSecurityException(message);
 		}
 	}
@@ -62,7 +62,7 @@ public final class AuthorizationUtil {
 	public static <E extends Entity> void assertOperations(final E entity, final OperationName<E> operation, final LocaleMessageText message) {
 		final AuthorizationManager authorizationManager = Node.getNode().getComponentSpace().resolve(AuthorizationManager.class);
 		if (!authorizationManager.isAuthorized(entity, operation)) {
-			LOG.warn("Not enought authorizations : operation {} on {}", operation, entity.getClass().getSimpleName());
+			LOG.warn("Not enough authorizations : operation {} on {}", operation, entity.getClass().getSimpleName());
 			throw new VSecurityException(message);
 		}
 	}

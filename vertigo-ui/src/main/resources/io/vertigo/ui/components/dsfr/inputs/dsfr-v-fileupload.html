@@ -1,0 +1,109 @@
+<th:block
+        th:fragment="dsfr-v-fileupload-edit(url, downloadUrl, key, object, field, label, hint, required, accept, multiple, maxFiles, callbackOnDelete, label_attrs, uploader_attrs)"
+        vu:alias="dsfr-v-fileupload"
+        vu:selector="${viewMode=='edit' && (readonly==null || !readonly)}"
+        th:assert="((${key} != null and ${label} != null) or (${object} != null and ${field} != null)) and ${url} != null"
+        th:with="object=${object?:key},
+	         myComponentId=${model.util.generateComponentUID('uploader', object, field, rowIndex)},
+	         downloadUrl=${downloadUrl?:(url + '/download/')},
+	         myMultiple=${multiple?:false},
+	         myRequired=${required != null ? required : model.util.required(object + '.' + field)}">
+
+    <vu:include-data-primitive key="${object}" th:if="${field==null}" modifiable="true"/>
+    <vu:include-data object="${object}" field="${field}" th:if="${field!=null}" modifiable="true"/>
+
+    <th:block th:unless="${readonly == true}">
+        <input type="hidden" th:v-if="|vueDataToArray(${model.util.vueDataKey(object, field, rowIndex)}).length == 0|"
+               th::name="${model.util.contextKey(object, field, rowIndex)}" value=""/>
+        <input type="hidden" th:v-for="|fileUri in vueDataToArray(${model.util.vueDataKey(object, field, rowIndex)})|"
+               th::name="${model.util.contextKey(object, field, rowIndex)}" v-bind:value="fileUri"/>
+    </th:block>
+
+    <div class="fr-upload-group">
+        <vu:dsfr-label-edit key="${key}" object="${object}" field="${field}" label="${label}" hint="${hint}"
+                            required="${readonly == true ? false : myRequired}" th:for="|${myComponentId}__input|" label_attrs="${label_attrs}"/>
+        <v-file-upload
+                th:input-id="|${myComponentId}__input|"
+                th::readonly="${readonly?:false}"
+                th:required="${myRequired}"
+                th::aria-describedby="|hasFieldsError('${object}', '${field}', ${rowIndex}) ? '${myComponentId}__desc' : undefined|"
+                th:url="${url}"
+                field-name="file"
+                th:accept="${accept}"
+                th::multiple="${myMultiple}"
+                th::max-files="${maxFiles}"
+                class="fr-upload"
+                th:callback-on-delete="${callbackOnDelete}"
+                th:v-bind:file-info-uris="|vueDataToArray(${model.util.vueDataKey(object, field, rowIndex)})|"
+                th:@update:file-info-uris="|(newFileInfoUris) => ${model.util.vueDataKey(object, field, rowIndex)} = vueDataToObject(newFileInfoUris)|"
+                th:download-url="${downloadUrl}"
+                th:attr="__${uploader_attrs}__">
+
+            <template #files="slotProps">
+                <div v-for="file in slotProps.files" class="file">
+                    <div :class="{'fr-message--error' : file.status === 'ERROR'}">
+                        <a v-if="file.status === 'OK'" th::href="|'${downloadUrl}' + file.fileUri|" @click="slotProps.downloadFile(file)">
+                            {{ file.name }}</a>
+                        <span v-if="file.status !== 'OK'">{{ file.name }}<template v-if="file.errorMessage"> ({{ file.errorMessage }})</template></span>
+                    </div>
+                    <div class="fr-hint-text">
+                        {{ file.name.split('.').pop().toUpperCase() }} – {{ slotProps.humanStorageSize(file.size) }}
+                        <template v-if="file.status === 'IN_PROGRESS'">
+                            -
+                            <v-icon name="ri-loader-4-line" scale="0.8" animation="spin"></v-icon>
+                            {{ (file.progress * 100).toFixed() }} % -
+                            <button @click.prevent="slotProps.abortUpload(file)">
+                                <v-icon name="ri-close-line" scale="0.8"></v-icon>
+                                {{ $vui.i18n().uploader.abort }}
+                            </button>
+                        </template>
+                        <template v-if="!slotProps.readonly && file.status != 'IN_PROGRESS'">
+                            -
+                            <button @click.prevent="slotProps.removeFile(file)">
+                                <v-icon name="ri-delete-bin-7-line"></v-icon>
+                                {{ $vui.i18n().uploader.remove }}
+                            </button>
+                        </template>
+                    </div>
+                </div>
+            </template>
+        </v-file-upload>
+        <div th:v-if="|hasFieldsError('${object}', '${field}', ${rowIndex})|"
+             class="fr-messages-group"
+             role="alert"
+        >
+            <p th:id="|${myComponentId}__desc|" class="fr-error-text fr-mt-3v">
+                {{ getErrorMessage('[[${object}]]', '[[${field}]]', [[${rowIndex}]]) }}
+            </p>
+        </div>
+    </div>
+</th:block>
+
+<th:block
+        th:fragment="dsfr-v-fileupload-read(url, downloadUrl, key, object, field, label, hint, required, accept, multiple, maxFiles, callbackOnDelete, label_attrs, uploader_attrs)"
+        vu:alias="dsfr-v-fileupload" vu:selector="${viewMode=='read' || (readonly!=null && readonly)}"
+        th:assert="(${key} != null or (${object} != null and ${field} != null)) and ${url} != null">
+    <vu:dsfr-v-fileupload-edit th:with="readonly=true"/>
+</th:block>
+
+<th:block th:fragment="dsfr-v-fileupload-dropzone-edit(uploaderRef, dropzone_attrs)"
+          vu:alias="dsfr-v-fileupload-dropzone" vu:selector="${viewMode=='edit'}"
+          th:assert="${uploaderRef} != null"
+          th:with="myComponentId=${model.util.generateComponentUID('dropzone', uploaderRef, null, null)}"
+          th:attr="objectKey=${model.vContext['componentStates'].addComponentState(myComponentId).addPrimitive('dragover',false)}">
+    <div class="dropzone-area"
+         th:@dragenter.prevent="|uploader_dragenter('${myComponentId}')|"
+         th:@dragover.prevent="|uploader_dragover($event, '${uploaderRef}')|"
+         th:attr="__${dropzone_attrs}__">
+        <vu:content/>
+        <div th:v-if="|componentStates['${myComponentId}'].dragover|"
+             class="dropzone-area__dnd"
+             th:@dragleave.prevent="|uploader_dragleave('${myComponentId}')|"
+             th:@drop.prevent="|uploader_dragleave('${myComponentId}'); uploader_drop($event, '${uploaderRef}')|"
+        ></div>
+    </div>
+</th:block>
+<th:block th:fragment="dsfr-v-fileupload-dropzone-read(uploaderRef, dropzone_attrs)"
+          vu:alias="dsfr-v-fileupload-dropzone" vu:selector="${viewMode=='read' || (readonly!=null && readonly)}">
+    <vu:content/>
+</th:block>

@@ -38,7 +38,6 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.datafactory.collections.definitions.FacetDefinition;
 import io.vertigo.datafactory.collections.model.Facet;
 import io.vertigo.datafactory.collections.model.FacetValue;
-import io.vertigo.datafactory.collections.model.FacetedQuery;
 import io.vertigo.datafactory.collections.model.FacetedQueryResult;
 import io.vertigo.datafactory.collections.model.SelectedFacetValues;
 import io.vertigo.datafactory.search.model.SearchQuery;
@@ -424,7 +423,7 @@ public final class ViewContext implements Serializable {
 	public <O extends DataObject> DtList<O> readDtListModifiable(final ViewContextKey<O> contextKey, final DtObjectValidator<O> validator, final UiMessageStack uiMessageStack) {
 		checkDtListErrors(contextKey, uiMessageStack);
 		// ---
-		final DtList<O> validatedList = ((BasicUiListModifiable) getUiListModifiable(contextKey)).mergeAndCheckInput(Collections.singletonList(validator), uiMessageStack);
+		final DtList<O> validatedList = getUiListModifiable(contextKey).mergeAndCheckInput(Collections.singletonList(validator), uiMessageStack);
 		if (uiMessageStack.hasErrors()) {
 			throw new ValidationUserException();
 		}
@@ -453,7 +452,7 @@ public final class ViewContext implements Serializable {
 	 * @param code Code
 	 */
 	public <E extends Entity> ViewContext publishMdl(final ViewContextKey<E> contextKey, final DataDefinition entityDefinition, final String code) {
-		put(contextKey, new UiMdList<E>(new DtListURIForMasterData(entityDefinition, code)));
+		put(contextKey, new UiMdList<>(new DtListURIForMasterData(entityDefinition, code)));
 		return this;
 	}
 
@@ -610,7 +609,7 @@ public final class ViewContext implements Serializable {
 	 * @param contextKey Context key
 	 * @return selectedFacetValues
 	 */
-	public <O extends DataObject> SelectedFacetValues getSelectedFacetValues(final ViewContextKey<FacetedQueryResult<O, FacetedQuery>> contextKey) {
+	public <O extends DataObject> SelectedFacetValues getSelectedFacetValues(final ViewContextKey<FacetedQueryResult<O, SearchQuery>> contextKey) {
 		return ((UiSelectedFacetValues) get(contextKey.get() + "_selectedFacets")).toSelectedFacetValues();
 	}
 

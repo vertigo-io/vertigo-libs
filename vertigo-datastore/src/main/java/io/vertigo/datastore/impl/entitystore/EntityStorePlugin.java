@@ -36,7 +36,7 @@ import io.vertigo.datamodel.data.model.UID;
  * this datatore is linked to a dataSpace.
  * Several dtDefinition can be included in a dataSpace.
  *
- * @author  pchretien
+ * @author pchretien
  */
 public interface EntityStorePlugin extends Plugin {
 
@@ -53,13 +53,6 @@ public interface EntityStorePlugin extends Plugin {
 	//==========================================================================
 	//=============================== READ =====================================
 	//==========================================================================
-
-	/**
-	 * Returns the number of elements contained in the definition.
-	 * @param dataDefinition Définition de DT
-	 * @return the number of elements
-	 */
-	int count(final DataDefinition dataDefinition);
 
 	/**
 	 * Récupération de l'objet correspondant à l'URI fournie.
@@ -92,6 +85,23 @@ public interface EntityStorePlugin extends Plugin {
 	 * @param <E> the type of entity
 	 */
 	<E extends Entity> DtList<E> findAll(final DataDefinition dataDefinition, final DtListURIForSimpleAssociation uid);
+
+	/**
+	 * Finds a list of entities matching a criteria.
+	 * @param dataDefinition the definition of entities to find
+	 * @param criteria the criteria to match
+	 * @param dtListState listState of rows to retrieve
+	 * @return the list
+	 */
+	<E extends Entity> DtList<E> findByCriteria(final DataDefinition dataDefinition, final Criteria<E> criteria, final DtListState dtListState);
+
+	/**
+	 * Returns the number of elements contained in the definition and matching a criteria.
+	 * @param dataDefinition the definition of entities to count
+	 * @param criteria the criteria to match
+	 * @return the number of elements
+	 */
+	<E extends Entity> Integer countByCriteria(final DataDefinition dataDefinition, final Criteria<E> criteria);
 
 	//==========================================================================
 	//=============================== WRITE ====================================
@@ -144,14 +154,5 @@ public interface EntityStorePlugin extends Plugin {
 	 * @return D Object value.
 	 */
 	<E extends Entity> E readNullableForUpdate(DataDefinition dataDefinition, UID<?> uid);
-
-	/**
-	 * Finds a lists of entities matching a criteria.
-	 * @param dataDefinition the definition of entities to find
-	 * @param criteria the criteria to match
-	 * @param dtListState listState of rows to retrieve
-	 * @return the list
-	 */
-	<E extends Entity> DtList<E> findByCriteria(final DataDefinition dataDefinition, final Criteria<E> criteria, final DtListState dtListState);
 
 }

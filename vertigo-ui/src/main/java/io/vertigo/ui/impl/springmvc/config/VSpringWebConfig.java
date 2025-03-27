@@ -41,6 +41,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.DispatcherServlet;
+import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.RequestToViewNameTranslator;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -68,6 +69,7 @@ import io.vertigo.ui.impl.springmvc.argumentresolvers.ViewContextReturnValueAndA
 import io.vertigo.ui.impl.springmvc.authorization.VSpringMvcAuthorizationInterceptor;
 import io.vertigo.ui.impl.springmvc.config.interceptors.VAnnotationHandlerInterceptorImpl;
 import io.vertigo.ui.impl.springmvc.config.interceptors.VControllerInterceptorEngine;
+import io.vertigo.ui.impl.springmvc.config.interceptors.VSpringMvcErrorInterceptor;
 import io.vertigo.ui.impl.springmvc.config.interceptors.VSpringMvcViewContextInterceptor;
 import io.vertigo.ui.impl.springmvc.controller.VSpringMvcControllerAdvice;
 import io.vertigo.ui.impl.springmvc.controller.VSpringMvcExceptionHandler;
@@ -88,8 +90,8 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 	private static final String COMPONENT_PATH_PREFIX = "io/vertigo/ui/components/";
 
 	/*
-	* STEP 1 - Create SpringResourceTemplateResolver
-	* */
+	 * STEP 1 - Create SpringResourceTemplateResolver
+	 * */
 	@Bean
 	public SpringResourceTemplateResolver templateResolver() {
 		final SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
@@ -103,8 +105,8 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 	}
 
 	/*
-	* STEP 2 - Create SpringTemplateEngine
-	* */
+	 * STEP 2 - Create SpringTemplateEngine
+	 * */
 	@Bean
 	public SpringTemplateEngine templateEngine() {
 		final List<VModuleUiComponent> moduleUiComponents = getModuleUiComponents();
@@ -322,6 +324,7 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 	@Override
 	public void addInterceptors(final InterceptorRegistry registry) {
 		registry.addInterceptor(new VSpringMvcAuthorizationInterceptor());
+		registry.addInterceptor(new VSpringMvcErrorInterceptor());
 		registry.addInterceptor(new VSpringMvcViewContextInterceptor());
 		registry.addInterceptor(new VAnnotationHandlerInterceptorImpl(getVControllerInterceptorEngines()));
 	}
@@ -335,7 +338,12 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 		registry.addResourceHandler("/vertigo-ui/static/**")
 				.addResourceLocations("classpath:/io/vertigo/ui/static/")
 				.setCacheControl(CacheControl.maxAge(2, TimeUnit.HOURS).cachePublic());
+	}
 
+	@Bean
+	public LocaleResolver localeResolver() {
+		// project can override this method or provide a LocaleResolver bean marked with @Primary
+		return new VertigoLocaleResolver();
 	}
 
 	protected boolean isDevMode() {

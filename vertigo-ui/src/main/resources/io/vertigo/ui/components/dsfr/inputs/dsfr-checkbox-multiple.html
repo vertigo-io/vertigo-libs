@@ -1,0 +1,57 @@
+<th:block
+        th:fragment="dsfr-checkbox-multiple-edit(object, field, label, componentId, list, valueField, labelField, disableField, hintField, filterFunction, layout, required, input_attrs)"
+        vu:alias="dsfr-checkbox-multiple"
+        vu:selector="${viewMode=='edit' && (readonly==null || !readonly)}"
+        th:assert="${object} != null and ${field} != null and ${list} != null"
+        th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)},
+	   		   myLabelField=${labelField != null ? labelField : model.util.getDisplayField(list)},
+		  	   myLabel=${modifiableTable!=null ? null : (label?:model.util.label(object + '.' + field)) },
+	   		   inline=${(layout != null && layout == 'horizontal') ? true : false },
+	   		   myRequired=${required != null ? required : model.util.required(object + '.' + field)}"
+>
+
+    <vu:include-data object="${object}" field="${field}" modifiable="true"/>
+    <vu:include-data object="${list}" field="${myValueField}"/>
+    <vu:include-data object="${list}" field="${myLabelField}"/>
+    <vu:include-data th:unless="${disableField == null}" object="${list}" field="${disableField}"/>
+    <vu:include-data th:unless="${hintField == null}" object="${list}" field="${hintField}"/>
+
+    <dsfr-checkbox-set th:legend="${myLabel}"
+                       th:required="${myRequired}"
+                       th::inline="${inline}"
+                       th::error-message="|getErrorMessage('${object}', '${field}', ${rowIndex})|"
+                       th::options="|dsfrTransformListForCheckbox('${list}', '${myValueField}', '${myLabelField}', '${disabledField}', '${hintField}', ${model.util.contextKey(object, field, rowIndex)}, ${filterFunction?:null})|"
+                       th:v-model="|vueData.${object}.${field}|"
+                       th:name="|vContext[${object}][${field}]|"
+                       th:attr="__${input_attrs}__"
+    >
+        <vu:content/>
+    </dsfr-checkbox-set>
+</th:block>
+
+<th:block
+        th:fragment="dsfr-checkbox-multiple-read(object, field, label, list, valueField, labelField, disableField, hintField, filterFunction, layout, input_attrs)"
+        vu:alias="dsfr-checkbox-multiple" vu:selector="${viewMode=='read' || (readonly!=null && readonly)}"
+        th:assert="${object} != null and ${field} != null and ${list} != null"
+        th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)},
+	         myLabelField=${labelField != null ? labelField : model.util.getDisplayField(list)},
+		  	 myLabel=${modifiableTable!=null ? null : (label?:model.util.label(object + '.' + field)) },
+	         inline=${(layout != null && layout == 'horizontal') ? true : false }">
+
+    <vu:include-data object="${object}" field="${field}"/>
+    <vu:include-data object="${list}" field="${myValueField}"/>
+    <vu:include-data object="${list}" field="${myLabelField}"/>
+    <vu:include-data th:unless="${disableField == null}" object="${list}" field="${disableField}"/>
+    <vu:include-data th:unless="${hintField == null}" object="${list}" field="${hintField}"/>
+
+    <dsfr-checkbox-set th:legend="${myLabel}"
+                       th::inline="${inline}"
+                       th::error-message="|getErrorMessage('${object}', '${field}', ${rowIndex})|"
+                       th::options="|dsfrTransformListForCheckbox('${list}', '${myValueField}', '${myLabelField}', '${disabledField}', '${hintField}', ${model.util.contextKey(object, field, rowIndex)}, ${filterFunction?:null})|"
+                       th:v-model="${model.util.vueDataKey(object, field, rowIndex)}"
+                       disabled
+                       th:attr="__${input_attrs}__"
+    >
+        <vu:content/>
+    </dsfr-checkbox-set>
+</th:block>

@@ -1,0 +1,139 @@
+<th:block
+        th:fragment="dsfr-autocomplete-edit(object, field, label, hint, componentId, required, list, valueField, labelField, minQueryLength, noResultLabel, inputUrl, filterUrl, label_attrs, input_attrs)"
+        vu:alias="dsfr-autocomplete"
+        vu:selector="${viewMode=='edit' && (readonly==null || !readonly)}"
+        th:assert="${object} != null and ${field} != null"
+        th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)},
+                 myLabel=${label?:model.util.label(object + '.' + field)},
+	             myLabelField=${labelField != null ? labelField : model.util.getDisplayField(list)},
+                 myRequired=${required != null ? required : model.util.required(object + '.' + field)},
+                 myComponentId=${componentId?:model.util.generateComponentUID('autocomplete', object, field, rowIndex)},
+                 myNoResultLabel=${noResultLabel != null ? noResultLabel : 'Aucun résultat trouvé' },
+                 myInputUrl=${inputUrl != null ? inputUrl : '__@{/autocomplete/_searchByValue}__'},
+                 myFilterUrl=${filterUrl != null ? filterUrl : '__@{/autocomplete/_searchFullText}__'}">
+
+    <vu:include-data object="${object}" field="${field}" modifiable/>
+    <vu:include-data object="${list}" field="${myValueField}"/>
+    <vu:include-data object="${list}" field="${myLabelField}"/>
+
+    <th:block th:attr="objectKey=${model.vContext['componentStates'].addComponentState(myComponentId).addList('options')},
+                       objectKey1=${model.vContext['componentStates'].get(myComponentId).addPrimitive('loading', false)
+                                                                                        .addPrimitive('noResult', false)
+                                                                                        .addPrimitive('focused', false)
+                                                                                        .addPrimitive('field', '')}"/>
+    <th:block th:if="${rowIndex == null}"
+              th:with="value=${model.vContext[__${object}__].getTypedValue('__${field}__')},
+				valueLabel=${value != null ? model.vContext[__${list}__].getById('__${myValueField}__', value)['__${myLabelField}__'] : ''}"
+              th:attr="objectKey=${model.vContext['componentStates']['__${myComponentId}__']['options'].add( { 'value' : value, 'label': valueLabel})}">
+    </th:block>
+    <th:block th:if="${rowIndex != null}" th:each="obj : ${model.vContext[__${object}__]}">
+        <th:block
+                th:with="value=${obj.getTypedValue('__${field}__')},
+				         valueLabel=${value != null ? model.vContext[__${list}__].getById('__${myValueField}__', value)['__${myLabelField}__'] : ''}"
+                th:attr="objectKey=${model.vContext['componentStates']['__${myComponentId}__']['options'].add( { 'value' : value, 'label': valueLabel})}">
+        </th:block>
+    </th:block>
+
+    <autocomplete th:@vue:mounted="|() => {
+			                   $watch(function() {return ${model.util.vueDataKey(object, field, rowIndex)} }, (newValue, oldValue) => {
+			                        dsfrLoadAutocompleteById('${list}', '${myValueField}', '${myLabelField}', '${myComponentId}', '${myInputUrl}','${object}','${field}', ${rowIndex});
+			                   })
+			                   if (${model.util.vueDataKey(object, field, rowIndex)} !== null) { dsfrLoadAutocompleteById('${list}', '${myValueField}', '${myLabelField}', '${myComponentId}', '${myInputUrl}','${object}','${field}', ${rowIndex}) }
+			               }|"
+                  th::search="|(val) => { return dsfrSearchAutocomplete('${list}', '${myValueField}', '${myLabelField}', '${myComponentId}', '${myFilterUrl}', ${myMinQueryLength}, val)
+                                                    .then((res) => { componentStates.__${myComponentId}__.noResult = res.length === 0; componentStates.__${myComponentId}__.options = res; return res })
+                                        }|"
+                  th::get-result-value="|(res) => { __${model.util.vueDataKey(object, field, rowIndex)}__ = res.value; return res.label } |"
+                  :debounce-time="200"
+                  th:ref="${myComponentId}"
+                  th:attr="__${input_attrs}__"
+    >
+        <template
+                #default="{
+                        rootProps,
+                        inputProps,
+                        inputListeners,
+                        resultListProps,
+                        resultListListeners,
+                        results,
+                        resultProps
+                      }"
+        >
+            <div v-bind="rootProps">
+                <div class="fr-input-group"
+                     th::class="|{ 'fr-input-group--error': hasFieldsError('${object}', '${field}', ${rowIndex}) }|"
+                >
+                    <label class="fr-label" th:for="${myComponentId}">
+                        <th:block th:text="${myLabel}"></th:block>
+                        <span th:if="${myRequired}" class="required"> *</span>
+                        <span class="fr-hint-text" th:if="${hint ne null}" th:text="${hint}"></span>
+                    </label>
+
+                    <input class="fr-input"
+                           type="text"
+                           th::class="|{ 'fr-input--error': hasFieldsError('${object}', '${field}', ${rowIndex}) }|"
+                           th:id="${myComponentId}"
+                           th::aria-describedby="| hasFieldsError('${object}', '${field}', ${rowIndex}) ? ${myComponentId} + '-error' : undefined |"
+                           th:required="${myRequired}"
+
+                           :class="inputProps.class"
+                           :role="inputProps.role"
+                           :autocomplete="inputProps.autocomplete"
+                           :autocapitalize="inputProps.autocapitalize"
+                           :autocorrect="inputProps.autocorrect"
+                           :spellcheck="inputProps.spellcheck"
+                           :aria-autocomplete="inputProps['aria-autocomplete']"
+                           :aria-haspopup="inputProps['aria-haspopup']"
+                           :aria-owns="inputProps['aria-owns']"
+                           :aria-expanded="inputProps['aria-expanded']"
+                           :aria-activedescendant="inputProps['aria-activedescendant']"
+
+                           th:v-model="|componentStates.${myComponentId}.field|"
+                           @input="(e) => { inputListeners.input(e);  }"
+                           th:@blur="|(e) => { dsfrResetAutocomplete('${myComponentId}', '${object}', '${field}', '${rowIndex}'); inputListeners.blur(e); componentStates.__${myComponentId}__.focused = false; }|"
+                           th:@focus="|(e) => { inputListeners.focus(e); componentStates.__${myComponentId}__.focused = true }|"
+                           @keydown="(e) => { inputListeners.keydown(e) }"
+                    >
+
+                    <ul th:v-if="| componentStates.__${myComponentId}__.noResult && componentStates.__${myComponentId}__.focused && results.length === 0 |"
+                        class="autocomplete-result-list autocomplete-empty-list">
+                        <li class="autocomplete-result" th:text="${noResultLabel}">
+
+                        </li>
+                    </ul>
+
+                    <div th:v-if="|hasFieldsError('${object}', '${field}', ${rowIndex})|"
+                         class="fr-messages-group"
+                         role="alert"
+                         aria-live="polite"
+                    >
+                        <p th:id="${myComponentId} + '-error'"
+                           th:v-text="|getErrorMessage('${object}', '${field}', ${rowIndex})|"></p>
+                    </div>
+                </div>
+                <input type="hidden"
+                       th::name="${model.util.contextKey(object, field, rowIndex)}"
+                       th:v-bind:value="${model.util.vueDataKey(object, field, rowIndex)}">
+                <ul v-bind="resultListProps" v-on="resultListListeners">
+                    <li
+                            th:v-for="|(result, index) in componentStates.__${myComponentId}__.options|"
+                            :key="`autocomplete-result-${index}`"
+                            :id="`autocomplete-result-${index}`"
+                            role="option"
+                            class="autocomplete-result"
+                            v-bind="resultProps[index]"
+                            :data-result-index="index"
+                    >
+                        {{ result.label }}
+                    </li>
+                </ul>
+            </div>
+        </template>
+    </autocomplete>
+</th:block>
+<th:block
+        th:fragment="dsfr-autocomplete-read(object, field, label, hint, componentId, required, list, valueField, labelField, minQueryLength, noResultLabel, inputUrl, filterUrl, label_attrs, input_attrs)"
+        vu:alias="dsfr-autocomplete"
+		vu:selector="${viewMode=='read'}">
+		<vu:dsfr-select-read object="${object}" field="${field}" label="${label}" list="${list}" valueField="${valueField}" labelField="${labelField}" label_attrs="${label_attrs}" />
+</th:block>

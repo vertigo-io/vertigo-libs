@@ -36,8 +36,8 @@ import io.vertigo.datamodel.smarttype.definitions.FormatterException;
  */
 public final class EncoderDate {
 
-	private static final String pattern = "dd/MM/yyyy HH:mm";
-	private static final String localDatePattern = "dd/MM/yyyy";
+	private static final String pattern = "yyyy-MM-dd'T'HH:mm";
+	private static final String localDatePattern = "yyyy-MM-dd";
 
 	/**
 	 * Constructor.
@@ -51,14 +51,11 @@ public final class EncoderDate {
 		if (objValue == null) {
 			return ""; //Affichage d'une date non renseignée;
 		}
-		switch (dataType) {
-			case LocalDate:
-				return localDateToString((LocalDate) objValue);
-			case Instant:
-				return instantToString((Instant) objValue);
-			default:
-				throw new IllegalStateException();
-		}
+		return switch (dataType) {
+			case LocalDate -> localDateToString((LocalDate) objValue);
+			case Instant -> instantToString((Instant) objValue);
+			default -> throw new IllegalStateException();
+		};
 	}
 
 	public static Object stringToValue(final String strValue, final BasicType dataType) throws FormatterException {
@@ -67,19 +64,16 @@ public final class EncoderDate {
 		if (StringUtil.isBlank(strValue)) {
 			return null;
 		}
-		final String sValue = strValue.trim();
-		switch (dataType) {
-			case LocalDate:
-				return applyStringToObject(sValue, EncoderDate::doStringToLocalDate);
-			case Instant:
-				return applyStringToObject(sValue, EncoderDate::doStringToInstant);
-			default:
-				throw new IllegalStateException();
-		}
+		final var sValue = strValue.trim();
+		return switch (dataType) {
+			case LocalDate -> applyStringToObject(sValue, EncoderDate::doStringToLocalDate);
+			case Instant -> applyStringToObject(sValue, EncoderDate::doStringToInstant);
+			default -> throw new IllegalStateException();
+		};
 	}
 
 	/**
-	 *  Cycles through patterns to try and parse given String into a Date | LocalDate | Instant
+	 * Cycles through patterns to try and parse given String into a Date | LocalDate | Instant
 	 */
 	private static <T> T applyStringToObject(final String dateString, final Function<String, T> fun) throws FormatterException {
 		//StringToDate renvoit null si elle n'a pas réussi à convertir la date
@@ -100,7 +94,7 @@ public final class EncoderDate {
 	 * Converts a String to a LocalDate according to a given pattern
 	 */
 	private static LocalDate doStringToLocalDate(final String dateString) {
-		final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(localDatePattern);
+		final var dateTimeFormatter = DateTimeFormatter.ofPattern(localDatePattern);
 		return LocalDate.parse(dateString, dateTimeFormatter);
 	}
 

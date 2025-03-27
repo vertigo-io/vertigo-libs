@@ -1,0 +1,92 @@
+<th:block
+        th:fragment="dsfr-table(list, componentId, title, v-title, subtitle, v-subtitle, dontUseHeading, selectable, pagination, rowKey, rowsPerPage, sortUrl, sortBy, descending, noResultLabel, title_slot, top_left_slot, top_right_slot, actions_slot, header_slot, table_slot, table_attrs)"
+        th:assert="${componentId} != null and (${title} != null or ${vTitle} != null) and !(${sortUrl} != null and ${sortBy} != null) and !(${descending} != null and ${sortBy} == null)"
+        th:with="dsfrTableKey=${list},
+                 listSize=${model.vContext[__${list}__].size()},
+                 mySelectable=${selectable?:false},
+                 myPagination=${pagination?:true},
+                 myRowKey=${rowKey?:model.util.getIdField(list)},
+	             myRowsPerPage=${rowsPerPage?:10},
+	             myAutoColClass=${autoColClass?:false},
+				 currentBlockLevel=${dontUseHeading==true?-1:(currentBlockLevel != null ? currentBlockLevel+1 : 1)}">
+
+    <th:block th:attr="objectKey=${model.vContext['componentStates'].addComponentState(componentId).addList('columns')},
+                       objectKey=${model.vContext['componentStates'][__${componentId}__].addList('sortableRows')},
+                       objectKey=${model.vContext['componentStates'][__${componentId}__].addList('selected')},
+                       objectKey=${model.vContext['componentStates'][__${componentId}__][loading] = false },
+                       objectKey=${model.vContext['componentStates'][__${componentId}__].addObject('pagination', {'page': 0 , 'rowsPerPage' : myRowsPerPage, 'componentId' : componentId, 'listKey' : list})}"
+              th:remove="all"/>
+    <th:block th:if="${sortUrl != null}"
+              th:attr="objectKey=${model.vContext['componentStates'][__${componentId}__]['pagination'].put('sortUrl', sortUrl)}"
+              th:remove="all"/>
+    <th:block th:if="${sortUrl != null}"
+              th:attr="objectKey=${model.vContext['componentStates'][__${componentId}__]['pagination'].put('rowsNumber', listSize)}"
+              th:remove="all"/>
+    <th:block th:if="${sortBy != null}"
+              th:attr="objectKey=${model.vContext['componentStates'][__${componentId}__]['pagination'].put('sortBy', sortBy)}"
+              th:remove="all"/>
+    <th:block th:if="${descending != null}"
+              th:attr="objectKey=${model.vContext['componentStates'][__${componentId}__]['pagination'].put('descending', descending)}"
+              th:remove="all"/>
+	<div class="fr-col-12">
+		<div class="fr-px-0">
+		    <th:block th:if="${vTitle!=null || title!=null}" th:with="headerTitle=${vTitle!=null?'{{'+vTitle+'}}' : title?:''}" >
+				<div class="fr-grid-row fr-col fr-grid-row--middle">
+		           <h1  th:if="${currentBlockLevel == 1}"><span th:if="${vTitle!=null}" th:text="${'{{'+vTitle+'}}'}"/><span th:unless="${vTitle!=null}" vu:text="${title?:''}"/></h1>
+		           <h2  th:if="${currentBlockLevel == 2}"><span th:if="${vTitle!=null}" th:text="${'{{'+vTitle+'}}'}"/><span th:unless="${vTitle!=null}" vu:text="${title?:''}"/></h2>
+		           <h3  th:if="${currentBlockLevel == 3}"><span th:if="${vTitle!=null}" th:text="${'{{'+vTitle+'}}'}"/><span th:unless="${vTitle!=null}" vu:text="${title?:''}"/></h3>
+		           <h4  th:if="${currentBlockLevel == 4}"><span th:if="${vTitle!=null}" th:text="${'{{'+vTitle+'}}'}"/><span th:unless="${vTitle!=null}" vu:text="${title?:''}"/></h4>
+		           <h5  th:if="${currentBlockLevel == 5}"><span th:if="${vTitle!=null}" th:text="${'{{'+vTitle+'}}'}"/><span th:unless="${vTitle!=null}" vu:text="${title?:''}"/></h5>
+		           <h6  th:if="${currentBlockLevel == 6}"><span th:if="${vTitle!=null}" th:text="${'{{'+vTitle+'}}'}"/><span th:unless="${vTitle!=null}" vu:text="${title?:''}"/></h6>
+		           <div th:if="${dontUseHeading == true}"><span th:if="${vTitle!=null}" th:text="${'{{'+vTitle+'}}'}"/><span th:unless="${vTitle!=null}" vu:text="${title?:''}"/></div>
+				</div>
+				<div class="fr-grid-row fr-col fr-grid-row--middle">
+		           <div class="text-subtitle2" vu:text="${subtitle?:''}" th:if="${subtitle!=null}"/>
+		           <div class="text-subtitle2" th:text="${'{{'+vSubtitle+'}}'?:''}" th:if="${vSubtitle!=null}"/>
+				</div>
+		    </th:block>
+		</div>
+	    <div class="fr-grid-row fr-grid-row--middle">
+	        <div vu:slot="top_left_slot" th:with="label=null,title=null,vTitle=null,rowIndex=null"></div>
+	        <div class="fr-col"></div>
+	        <div vu:slot="top_right_slot" th:with="label=null,title=null,vTitle=null,rowIndex=null"></div>
+	    </div>
+	    <dsfr-custom-data-table th:title="${vTitle==null?title?:'':''}" th::title="${vTitle?:''}"
+	                            no-caption
+	                            th::headers-row="|componentStates.${componentId}.columns|"
+	                            th::rows="|dsfrTableRows('${componentId}')|"
+	                            th:row-key="${myRowKey}"
+	                            th::pagination="${myPagination}"
+	                            th:v-model:rows-per-page="|componentStates.${componentId}.pagination.rowsPerPage|"
+	                            th::sortable-rows="|componentStates.${componentId}.columns.filter(o => o.sortable).map(o => o.key)|"
+	                            th:v-model:selection="|componentStates.${componentId}.selected|"
+	                            th::selectable-rows="${mySelectable ? 'true' : 'false'}"
+	                            th:v-model:current-page="|componentStates.${componentId}.pagination.page|"
+	                            th:no-result-label="${noResultLabel?:'Aucun résultat'}"
+	                            th:v-model:sorted-by="|componentStates.${componentId}.pagination.sortBy|"
+	                            th:v-model:sorted-desc="|componentStates.${componentId}.pagination.descending|"
+	                            th:@update:sorted-by="${sortUrl != null ? 'sortedBy => dsfrServerSideSort(''__${componentId}__'')' : null}"
+	                            th:@update:sorted-desc="${sortUrl != null ? 'sortedDesc => dsfrServerSideSort(''__${componentId}__'')' : null}"
+	                            th::sort-fn="${sortUrl != null ? '(a,b) => 0' : null}"
+	                            th:sorted="${sortUrl == null && sortBy != null ? '__${sortBy}__' : null}"
+	                            th:attr="__${table_attrs}__">
+	        <vu:content-slot name="table_slot" th:with="label=null, title=null, vTitle=null"/>
+	        <template #header="{ key, label }">
+	            <vu:content-slot name="header_slot" th:with="label=null, title=null, vTitle=null"/>
+	        </template>
+			<th:block th:with="rowIndex='(idx - 1)'" >
+		        <template #cell="{ colKey, cell, idx }">
+		            <vu:content></vu:content>
+		            <vu:dsfr-column name="action" label="Actions"
+		                            sortable="false" align="right"
+		                            hideLabel="true"
+		                            th:if="${actions_slot != null}">
+		                <div class="flex gap--sm">
+		                    <vu:content-slot name="actions_slot" th:with="label=null, title=null, vTitle=null"/>
+		                </div>
+		            </vu:dsfr-column>
+		        </template>
+			</th:block>
+	    </dsfr-custom-data-table>
+	</div>
+</th:block>

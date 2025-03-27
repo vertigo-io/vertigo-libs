@@ -1,10 +1,9 @@
 <template>
-    <div :id="id">
+    <div :id="id" class="map">
         <slot v-bind="$attrs"></slot>
     </div>
 </template>
 <script>
-import * as Quasar from "quasar"
 import * as ol from "ol"
 
 
@@ -31,9 +30,12 @@ export default {
             checkForMap();
           },
           postInit() {
-              if (this.$props.initialZoomLevel) {
-                    this.olMap.getView().setZoom(this.$props.initialZoomLevel);
-               }
+            if (this.$props.initialZoomLevel) {
+                this.olMap.getView().setZoom(this.$props.initialZoomLevel);
+            }
+            if (this.olMap.vInitialZoomOverride) {
+                this.olMap.getView().setZoom(this.olMap.vInitialZoomOverride);
+            }
           }
     },
     mounted : function() {        
@@ -54,7 +56,7 @@ export default {
             // see https://github.com/Dominique92/ol-geocoder
         	mapControls.push(new Geocoder('nominatim', {
                 provider: 'osm',
-                lang: this.$q.lang.isoName,
+                lang: 'fr',
                 placeholder: 'Search for ...',
                 limit: 5,
                 debug: false,
@@ -87,13 +89,16 @@ export default {
             let wgs84Extent = ol.proj.transformExtent(mapExtent, 'EPSG:3857', 'EPSG:4326');
             let topLeft = ol.extent.getTopLeft(wgs84Extent);
             let bottomRight = ol.extent.getBottomRight(wgs84Extent);
-            Quasar.debounce(this.$emit('moveend',topLeft, bottomRight) , 300);        
+            VUiPage.debounce(() => this.$emit('moveend',topLeft, bottomRight) , 300);        
         }.bind(this));
         
         setTimeout(function () {
             this.olMap.on('click', function(evt) {
-                evt.stopPropagation();
-                Quasar.debounce(this.$emit('click',ol.proj.transform(evt.coordinate, 'EPSG:3857', 'EPSG:4326')) , 300);
+                if (evt.originalEvent.target instanceof HTMLCanvasElement ) {
+                    // only when click on the map
+                    evt.stopPropagation();
+                    VUiPage.debounce(() => this.$emit('click',ol.proj.transform(evt.coordinate, 'EPSG:3857', 'EPSG:4326')) , 300);
+                }
             }.bind(this)); 
         }.bind(this), 300); 
     }

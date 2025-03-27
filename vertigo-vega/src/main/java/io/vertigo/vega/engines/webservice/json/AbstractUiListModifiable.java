@@ -50,6 +50,7 @@ import io.vertigo.vega.webservice.validation.UiMessageStack;
 public abstract class AbstractUiListModifiable<D extends DataObject> extends AbstractList<UiObject<D>> implements UiList<D>, Serializable {
 
 	private static final long serialVersionUID = 1L;
+	private static final int DEFAULT_MAX_ROWS = DtListState.DEFAULT_MAX_ROWS; //could be overrided here
 	private final DefinitionId<DataDefinition> dataDefinitionId;
 	private final Class<D> objectType;
 
@@ -83,7 +84,7 @@ public abstract class AbstractUiListModifiable<D extends DataObject> extends Abs
 		this.inputKey = inputKey;
 		final DataDefinition dataDefinition = dtList.getDefinition();
 		dataDefinitionId = dataDefinition.id();
-		this.objectType = (Class<D>) ClassUtil.classForName(dataDefinition.getClassCanonicalName());
+		objectType = (Class<D>) ClassUtil.classForName(dataDefinition.getClassCanonicalName());
 		// ---
 		uiListDelta = new UiListDelta<>(objectType, new HashMap<>(), new HashMap<>(), new HashMap<>());
 		dtListDelta = new DtListDelta<>(new DtList<>(dataDefinition), new DtList<>(dataDefinition), new DtList<>(dataDefinition));
@@ -229,8 +230,8 @@ public abstract class AbstractUiListModifiable<D extends DataObject> extends Abs
 	public UiObject<D> get(final int row) {
 		//id>=0 : par index dans la UiList (pour boucle, uniquement dans la même request)
 		Assertion.check()
-				.isTrue(row >= 0, "Le getteur utilisé n'est pas le bon")
-				.isTrue(row <= DtListState.DEFAULT_MAX_ROWS, "UiListModifiable is limited to " + DtListState.DEFAULT_MAX_ROWS + " elements");
+				.isTrue(row >= 0, "Used getter isn't the good one")
+				.isTrue(row <= DEFAULT_MAX_ROWS, "UiListModifiable is limited to " + DEFAULT_MAX_ROWS + " elements");
 
 		//SKE MLA : lazy initialisation of buffer uiObjects for size changing uiListModifiable
 		final DataDefinition dataDefinition = dataDefinitionId.get();
@@ -378,6 +379,7 @@ public abstract class AbstractUiListModifiable<D extends DataObject> extends Abs
 
 	/** innerclass, volontairement non static */
 	class UiListModifiableIterator implements Iterator<UiObject<D>> {
+
 		private int expectedSize; //count removed elements
 		private int currentIndex; //init a 0
 

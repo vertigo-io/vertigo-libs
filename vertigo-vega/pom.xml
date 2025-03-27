@@ -22,7 +22,7 @@
 			<dependency>
 				<groupId>io.vertigo</groupId>
 				<artifactId>vertigo-datafactory</artifactId>
-				<version>${vertigo.version}</version>
+				<version>${project.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -140,7 +140,7 @@
 		<dependency>
 			<groupId>io.rest-assured</groupId>
 			<artifactId>rest-assured</artifactId>
-			<version>5.4.0</version>
+			<version>5.5.1</version>
 			<scope>test</scope>
 		</dependency>
 

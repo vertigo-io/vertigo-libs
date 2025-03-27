@@ -37,6 +37,7 @@ import io.vertigo.vega.webservice.validation.UiMessageStack;
 
 /**
  * Wrapper d'affichage des listes d'objets métier.
+ *
  * @author npiedeloup
  * @param <E> the type of entity
  */
@@ -54,7 +55,8 @@ final class UiMdList<E extends Entity> extends AbstractUiListUnmodifiable<E> {
 	 */
 	public UiMdList(final DtListURIForMasterData dtListURIForMasterData) {
 		super(dtListURIForMasterData.getDataDefinition(), Optional.empty());
-		Assertion.check().isTrue(entityStoreManager.get().getMasterDataConfig().containsMasterData(dtListURIForMasterData.getDataDefinition()), "UiMdList can't be use with {0}, it's not a MasterDataList.",
+		Assertion.check().isTrue(entityStoreManager.get().getMasterDataConfig().containsMasterData(dtListURIForMasterData.getDataDefinition()),
+				"UiMdList can't be use with {0}, it's not a MasterDataList.",
 				dtListURIForMasterData.getDataDefinition().getName());
 		// -------------------------------------------------------------------------
 		this.dtListURIForMasterData = dtListURIForMasterData;
@@ -69,8 +71,12 @@ final class UiMdList<E extends Entity> extends AbstractUiListUnmodifiable<E> {
 	@Override
 	public DtList<E> obtainDtList() {
 		if (lazyDtList == null) {
-			try (final VTransactionWritable transaction = transactionManager.get().createCurrentTransaction()) {
-				lazyDtList = entityStoreManager.get().<E> findAll(dtListURIForMasterData);
+			if (transactionManager.get().hasCurrentTransaction()) {
+				lazyDtList = entityStoreManager.get().<E>findAll(dtListURIForMasterData);
+			} else {
+				try (final VTransactionWritable transaction = transactionManager.get().createCurrentTransaction()) {
+					lazyDtList = entityStoreManager.get().<E>findAll(dtListURIForMasterData);
+				}
 			}
 
 			//load UiObjects
@@ -118,6 +124,7 @@ final class UiMdList<E extends Entity> extends AbstractUiListUnmodifiable<E> {
 
 	/**
 	 * Return a Serializable List for client.
+	 *
 	 * @param fieldsForClient List of fields
 	 * @param valueTransformers Map of transformers
 	 * @return ArrayList of HashMap (needed for Serializable)

@@ -45,6 +45,8 @@ import io.vertigo.datastore.filestore.data.TestSmartTypes;
 import io.vertigo.datastore.filestore.data.domain.fileinfo.FileInfoFs;
 import io.vertigo.datastore.filestore.data.domain.fileinfo.FileInfoStd;
 import io.vertigo.datastore.filestore.data.domain.fileinfo.FileInfoTemp;
+import io.vertigo.datastore.filestore.model.FileInfo;
+import io.vertigo.datastore.filestore.model.VFile;
 
 public class DbFileStoreManagerTest extends AbstractFileStoreManagerTest {
 
@@ -124,6 +126,11 @@ public class DbFileStoreManagerTest extends AbstractFileStoreManagerTest {
 						.build())
 				.build();
 
+	}
+
+	@Override
+	protected FileInfo createFileInfo(final VFile vFile) {
+		return new FileInfoFs(vFile);
 	}
 
 }

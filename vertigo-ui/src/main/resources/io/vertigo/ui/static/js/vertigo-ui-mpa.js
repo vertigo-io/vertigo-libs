@@ -11,22 +11,31 @@ const VUiApp = Vue.createApp({
 		  vuiLang : VertigoUi.vuiLang
 	  }
   },
-  methods: { ...VertigoUi.methods, ...VUiExtensions.methods }
+  methods: { ...VertigoUi.methods, ...(typeof DSFR === 'undefined' || DSFR?.methods), ...VUiExtensions.methods }
 }, {...VUiExtensions.rootOptions });
-if (Quasar.lang.enUS) {
-  Quasar.lang.enUS.vui = VertigoUi.lang.enUS;
-}
-if (Quasar.lang.fr) {
-  Quasar.lang.fr.vui = VertigoUi.lang.fr;
+
+if (typeof Quasar !== 'undefined') {
+	if (Quasar.lang.enUS) {
+	  Quasar.lang.enUS.vui = {...Quasar.lang.enUS.vui, ...VertigoUi.lang.enUS};
+	}
+	if (Quasar.lang.fr) {
+	  Quasar.lang.fr.vui = {...Quasar.lang.fr.vui, ...VertigoUi.lang.fr};
+	}
 }
 
 window.dispatchEvent(new CustomEvent('vui-before-plugins', { detail : {vuiAppInstance : VUiApp}}));
 
-VUiApp.use(Quasar, {
-	config: window?.quasarConfig || {},
-	lang : Quasar.lang[VertigoUi.vuiLang]
-})
-VUiApp.config.globalProperties.Quasar = Quasar
+if (typeof DSFR !== 'undefined') VUiApp.use(DSFR);
+
+if (typeof WYSIWYG !== 'undefined') VUiApp.use(WYSIWYG)
+
+if (typeof Quasar !== 'undefined') {
+	VUiApp.use(Quasar, {
+		config: window?.quasarConfig || {},
+		lang : Quasar.lang[VertigoUi.vuiLang]
+	})
+	VUiApp.config.globalProperties.Quasar = Quasar
+}
 VUiApp.config.globalProperties.VUiExtensions = VUiExtensions
 VUiApp.use(VertigoUi, {axios : axios});
 
@@ -39,7 +48,11 @@ window.dispatchEvent(new CustomEvent('vui-after-page-mounted', { detail : {vuiAp
 axios.interceptors.response.use(function(response) {
     return response;
 }, function(error) {
-    VUiPage.onAjaxError(error.response);
+    if (error.code !== "ERR_CANCELED" && // silent error for canceled requests
+		!error.config.vNoDefaultErrorHandler // custom config added to axios request config to make the error silent (from VertigoUi)
+	    ) {
+        VUiPage.onAjaxError(error.response);
+    }
     return Promise.reject(error);
 })
 

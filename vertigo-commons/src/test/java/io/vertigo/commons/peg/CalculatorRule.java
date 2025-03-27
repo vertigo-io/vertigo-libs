@@ -19,7 +19,12 @@ package io.vertigo.commons.peg;
 
 import java.util.List;
 
-final class CalculatorRule extends AbstractRule<Integer, List<Object>> {
+import io.vertigo.commons.peg.rule.PegAbstractRule;
+import io.vertigo.commons.peg.rule.PegWordRuleMode;
+import io.vertigo.commons.peg.rule.PegRule;
+import io.vertigo.commons.peg.rule.PegRules;
+
+final class CalculatorRule extends PegAbstractRule<Integer, List<Object>> {
 
 	private static final PegRule<?> SPACES = PegRules.skipBlanks(" ");
 
@@ -31,7 +36,7 @@ final class CalculatorRule extends AbstractRule<Integer, List<Object>> {
 	private static final PegRule<PegChoice> OPERATOR = PegRules.choice(MULTI, DIV, ADD, MINUS);
 
 	//---Par simplicité un nombre est une suite de chiffres
-	private static final PegRule<String> DIGITS = PegRules.word(false, "0123456789", PegWordRule.Mode.ACCEPT, "digits");
+	private static final PegRule<String> DIGITS = PegRules.word(false, "0123456789", PegWordRuleMode.ACCEPT, "digits");
 
 	private static final PegRule<List<Object>> EXPRESSION = PegRules.sequence(
 			DIGITS, //0

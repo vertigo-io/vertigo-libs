@@ -23,6 +23,10 @@ import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import io.vertigo.commons.peg.rule.PegRule;
+import io.vertigo.commons.peg.rule.PegRules;
+import io.vertigo.commons.peg.rule.PegRulesHtmlRenderer;
+
 public class PegRulesTest {
 	/**
 	 * hi -> 0

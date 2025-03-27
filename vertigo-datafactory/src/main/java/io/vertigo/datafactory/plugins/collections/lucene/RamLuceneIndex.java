@@ -88,7 +88,7 @@ final class RamLuceneIndex<D extends DataObject> {
 	private final SmartTypeManager smartTypeManager;
 
 	/**
-	 * @param dataDefinition DtDefinition des objets indexés
+	 * @param dataDefinition DataDefinition des objets indexés
 	 * @throws IOException Exception I/O
 	 */
 	RamLuceneIndex(
@@ -218,7 +218,7 @@ final class RamLuceneIndex<D extends DataObject> {
 	private String obtainIndexedIdValue(final D dto) {
 		if (idFieldOpt.isPresent()) {
 			final Object pkValue = idFieldOpt.get().getDataAccessor().getValue(dto);
-			Assertion.check().isNotNull(pkValue, "Indexed DtObject must have a not null primary key. {0}.{1} was null.", dataDefinition.getName(), idFieldOpt.get().name());
+			Assertion.check().isNotNull(pkValue, "Indexed DataObject must have a not null primary key. {0}.{1} was null.", dataDefinition.getName(), idFieldOpt.get().name());
 			return String.valueOf(pkValue);
 		} else {
 			return String.valueOf(dto.hashCode());

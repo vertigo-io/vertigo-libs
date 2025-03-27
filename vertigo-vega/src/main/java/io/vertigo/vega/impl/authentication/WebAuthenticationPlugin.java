@@ -108,6 +108,12 @@ public interface WebAuthenticationPlugin<T> extends Plugin {
 	 */
 	void doLogout(HttpServletRequest httpRequest, HttpServletResponse httpResponse, Optional<String> redirectUrlOpt);
 
+	/**
+	 * Resolve the external url of the application
+	 *
+	 * @param httpRequest the request
+	 * @return the external url
+	 */
 	default String resolveExternalUrl(final HttpServletRequest httpRequest) {
 		return WebAuthenticationUtil.resolveExternalUrl(httpRequest, getExternalUrlOptional());
 	}

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+  xmlns:vu="https://vertigo.io/thymeleaf/vertigo-ui"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{templates/mmcLayout}"
+>
+
+<head>
+    <title>Movie Detail</title>
+    <script th:nonce="${nonce}">
+        VUiExtensions.methods.closePopup = function(a,b,c,d,e,f) {
+                    console.log(a,b,c,d,e,f);
+           }
+    </script>                     
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <vu:messages />
+        <br/>
+        <vu:form id="myFormId">
+            <vu:block title="Notifs">
+                <div class="q-gutter-md">
+                <!-- actions are '_testNotifAction', '_testNotifAjax', '_testNotifRedirect', '_testNotifDelayed' , '_testNotifCrash', '_testNotifCrashAjax' -->
+                    <vu:button-submit action="_testNotifAction" label="Notif action"></vu:button-submit>
+                    <q-btn th:@click="|httpPostAjax('_testNotifAjax', null, {})|" color="primary" label="Notif ajax" ></q-btn>
+                    <vu:button-submit action="_testNotifRedirect" label="Notif redirect"></vu:button-submit>
+                    <vu:button-submit action="_testNotifDelayed" label="Notif delayed"></vu:button-submit>
+                    <vu:button-submit action="_testNotifCrash" label="Notif crash"></vu:button-submit>
+                    <q-btn th:@click="|httpPostAjax('_testNotifCrashAjax', null, {})|" color="primary" label="Notif crash ajax" ></q-btn>
+                </div>
+            </vu:block>
+        </vu:form>
+    </div>
+    
+</body>
+</html>

@@ -1,0 +1,40 @@
+<th:block
+        th:fragment="dsfr-text-area-edit(object, field, rowIndex, labelVisible, label, required, input_attrs)"
+        vu:alias="dsfr-text-area"
+        vu:selector="${viewMode=='edit' && (readonly==null || !readonly)}"
+        th:with="myLabel=${label?:model.util.label(object + '.' + field)},
+	             myLabelVisible=${labelVisible != null ? labelVisible : myLabel!=null},
+                 myRequired=${required != null ? required : model.util.required(object + '.' + field)}"
+        th:assert="${object} != null and ${field} != null">
+    <vu:include-data object="${object}" field="${field}" modifiable="true"/>
+
+    <dsfr-input-group th:label="${myLabel}"
+                      th::label-visible="${myLabelVisible}"
+                      th:required="${myRequired}"
+                      th::name="${model.util.contextKey(object, field, rowIndex)}"
+                      th::is-invalid="|hasFieldsError('${object}', '${field}', ${rowIndex})|"
+                      :is-textarea="true"
+                      th::error-message="|getErrorMessage('${object}', '${field}', ${rowIndex})|"
+                      th:v-model="${model.util.vueDataKey(object, field, rowIndex)}"
+                      th:attr="__${input_attrs}__">
+        <vu:content/>
+    </dsfr-input-group>
+</th:block>
+<th:block
+        th:fragment="dsfr-text-area-read(object, field, label, required, emptyValue, input_attrs, label_attrs)"
+        vu:alias="dsfr-text-area" vu:selector="${viewMode=='read' || (readonly!=null && readonly)}"
+        th:assert="${object} != null and ${field} != null"
+        th:with="myLabel=${label?:model.util.label(object + '.' + field)},
+		         value=${__${model.util.contextGet(object, null, rowIndex)}__.getTypedValue('__${field}__')},
+                 myEmptyValue=${emptyValue?:'Non renseigné'}">
+
+    <vu:include-data object="${object}" field="${field}"/>
+    <div class="readonly" th:attr="__${label_attrs}__">
+        <span class="fr-label" vu:text="${myLabel}"></span>
+        <pre th:if="${value != null}"
+             th:text="${__${model.util.contextGet(object, field, rowIndex)}__}"
+             th:attr="__${input_attrs}__"></pre>
+        <span class="no-value" th:if="${value==null}"
+              th:text="${myEmptyValue}"></span>
+    </div>
+</th:block>

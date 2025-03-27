@@ -32,6 +32,7 @@ import io.vertigo.vega.webservice.model.UiObject;
 
 /**
  * Class utilitaire pour les droits dans les pages en thymeleaf/jsp/ftl.
+ * With VertigoUi, its put in context with key 'authz'.
  * @author npiedeloup
  */
 public final class UiAuthorizationUtil extends HashSet<String> {

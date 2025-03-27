@@ -43,16 +43,19 @@ import io.vertigo.datamodel.smarttype.definitions.FormatterException;
  * En effet, pour des raisons ergonomiques il est toujours préférable de pouvoir saisir ce qui est affiché.
  *
  * Exemple 1 d'argument : "dd/MM/yyyy "
- *  On affiche la date au format dd/MM/yyyy
- *  En saisie on autorise dd/MM/yyyy
-
- * Exemple 2 d'argument : "dd/MM/yyyy ; dd/MM/yy"
- *  On affiche la date au format dd/MM/yyyy
- *  En saisie on autorise dd/MM/yyyy et dd/MM/yy
+ * On affiche la date au format dd/MM/yyyy
+ * En saisie on autorise dd/MM/yyyy
  *
- * @author pchretien
+ * Exemple 2 d'argument : "dd/MM/yyyy ; dd/MM/yy"
+ * On affiche la date au format dd/MM/yyyy
+ * En saisie on autorise dd/MM/yyyy et dd/MM/yy
+ *
+ * Pour les patterns de mois long, la langue est celle du localeManager : session et serveur sinon.
+ *
+ * @author pchretien, npiedeloup
  */
 public final class FormatterDate implements Formatter {
+
 	/**
 	 * Format(s) étendu(s) de la date en saisie.
 	 * Cette variable n'est créée qu'au besoin.
@@ -144,7 +147,7 @@ public final class FormatterDate implements Formatter {
 	 * Converts a String to a LocalDate according to a given pattern
 	 */
 	private static LocalDate doStringToLocalDate(final String dateString, final String pattern) {
-		final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(pattern);
+		final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(pattern, getLocaleManager().getCurrentLocale());
 		return LocalDate.parse(dateString, dateTimeFormatter);
 	}
 
@@ -152,18 +155,18 @@ public final class FormatterDate implements Formatter {
 	 * Converts a String to a Instant according to a given pattern
 	 */
 	private static Instant doStringToInstant(final String dateString, final String pattern) {
-		return DateTimeFormatter.ofPattern(pattern)
+		return DateTimeFormatter.ofPattern(pattern, getLocaleManager().getCurrentLocale())
 				.withZone(getLocaleManager().getCurrentZoneId())
 				.parse(dateString, Instant::from);
 	}
 
 	private static String localDateToString(final LocalDate localDate, final String pattern) {
-		return DateTimeFormatter.ofPattern(pattern)
+		return DateTimeFormatter.ofPattern(pattern, getLocaleManager().getCurrentLocale())
 				.format(localDate);
 	}
 
 	private static String instantToString(final Instant instant, final String pattern) {
-		return DateTimeFormatter.ofPattern(pattern)
+		return DateTimeFormatter.ofPattern(pattern, getLocaleManager().getCurrentLocale())
 				.withZone(getLocaleManager().getCurrentZoneId())
 				.format(instant);
 	}

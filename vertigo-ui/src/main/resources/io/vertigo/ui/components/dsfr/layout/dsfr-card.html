@@ -1,0 +1,9 @@
+<div th:fragment="dsfr-card(class, other_attrs)" class="fr-card"
+     th:classappend="${class}"
+     th:attr="__${other_attrs}__">
+    <div class="fr-card__body">
+        <div class="fr-card__content">
+            <vu:content/>
+        </div>
+    </div>
+</div>

@@ -29,23 +29,23 @@
 		<dependencies>
 			<dependency>
 				<groupId>org.apache.lucene</groupId>
-				<artifactId>lucene-core</artifactId> <!-- 8.11.3 compatible with ElasticSearch 7.17.22 -->
+				<artifactId>lucene-core</artifactId> <!-- 8.11.3 compatible with ElasticSearch 7.17.28 -->
 				<version>8.11.3</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.lucene</groupId>
-				<artifactId>lucene-analyzers-common</artifactId> <!-- 8.11.3 compatible with ElasticSearch 7.17.22 -->
+				<artifactId>lucene-analyzers-common</artifactId> <!-- 8.11.3 compatible with ElasticSearch 7.17.28 -->
 				<version>8.11.3</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.lucene</groupId>
-				<artifactId>lucene-queryparser</artifactId> <!-- 8.11.3 compatible with ElasticSearch 7.17.22 -->
+				<artifactId>lucene-queryparser</artifactId> <!-- 8.11.3 compatible with ElasticSearch 7.17.28 -->
 				<version>8.11.3</version>
 			</dependency>
 			<dependency>
 				<groupId>io.vertigo</groupId>
 				<artifactId>vertigo-datastore</artifactId>
-				<version>${vertigo.version}</version>
+				<version>${project.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -98,7 +98,7 @@
 		<!-- Dépendances à des librairies spécifiques au module -->
 		<dependency>
 		    <groupId>org.elasticsearch.client</groupId>
-		    <artifactId>transport</artifactId>
+		    <artifactId>x-pack-transport</artifactId>
 		    <scope>test</scope> <!-- TransportSearchServicesPlugin -->
 		</dependency>
 		<dependency>

@@ -249,7 +249,7 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 				.setSignatureSigningParameters(signatureSigningParameters);
 
 		try {
-			SAML2HTTPRedirectDeflateEncoder.encode(response, context); // send redirect in httpServletResponse
+			SAML2HTTPRedirectDeflateEncoder.encode(request, response, context); // send redirect in httpServletResponse
 		} catch (final MessageEncodingException e) {
 			throw WrappedException.wrap(e);
 		}

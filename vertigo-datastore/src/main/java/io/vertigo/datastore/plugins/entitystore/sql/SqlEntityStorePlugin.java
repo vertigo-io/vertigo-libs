@@ -65,6 +65,7 @@ import io.vertigo.datastore.impl.entitystore.EntityStorePlugin;
  * @author pchretien
  */
 public final class SqlEntityStorePlugin implements EntityStorePlugin {
+
 	private static final int MAX_TASK_SPECIFIC_NAME_LENGTH = 40;
 	private static final String SMART_TYPE_PREFIX = SmartTypeDefinition.PREFIX;
 
@@ -78,23 +79,23 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 	private final SmartTypeDefinition integerSmartType;
 
 	private enum TASK {
-		/** Prefix of the SELECT.*/
+		/** Prefix of the SELECT. */
 		TkSelect,
-		/** Prefix of the INSERT.*/
+		/** Prefix of the INSERT. */
 		TkInsert,
-		/** Prefix of the INSERT BATCH.*/
+		/** Prefix of the INSERT BATCH. */
 		TkInsertBatch,
-		/** Prefix of the UPDATE.*/
+		/** Prefix of the UPDATE. */
 		TkUpdate,
-		/** Prefix of the UPDATE BATCH.*/
+		/** Prefix of the UPDATE BATCH. */
 		TkUpdateBatch,
-		/** Prefix of the DELETE BATCH.*/
+		/** Prefix of the DELETE BATCH. */
 		TkDeleteBatch,
-		/** Prefix of the DELETE.*/
+		/** Prefix of the DELETE. */
 		TkDelete,
-		/** Prefix of the COUNT.*/
+		/** Prefix of the COUNT. */
 		TkCount,
-		/** Prefix of the LOCK.*/
+		/** Prefix of the LOCK. */
 		TkLock
 	}
 
@@ -311,6 +312,49 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 				.getResult();
 	}
 
+	/** {@inheritDoc} */
+	@Override
+	public <E extends Entity> Integer countByCriteria(final DataDefinition dataDefinition, final Criteria<E> criteria) {
+		Assertion.check()
+				.isNotNull(dataDefinition)
+				.isTrue(dataDefinition.isPersistent(), "DtDefinition must be persistent")
+				.isNotNull(criteria);
+		//---
+		final var entityName = getEntityName(dataDefinition);
+		final var tableName = StringUtil.camelToConstCase(entityName);
+		final var taskName = TASK.TkCount + entityName + (Criterions.alwaysTrue().equals(criteria) ? "ByCriteria" : "");
+		final var tuple = criteria.toStringAnCtx(criteriaEncoder);
+		final var where = tuple.val1();
+		final var request = new StringBuilder("select count(1) as totalCount")
+				.append(" from ").append(tableName)
+				.append(" where ").append(where)
+				.toString();
+		final var taskDefinitionBuilder = TaskDefinition.builder(taskName)
+				.withEngine(TaskEngineSelect.class)
+				.withDataSpace(dataSpace)
+				.withRequest(request);
+
+		//IN, Optional
+		final var ctx = tuple.val2();
+		for (final String attributeName : ctx.getAttributeNames()) {
+			taskDefinitionBuilder.addInAttribute(attributeName, dataDefinition.getField(ctx.getDataFieldName(attributeName)).smartTypeDefinition(), Cardinality.OPTIONAL_OR_NULLABLE);
+		}
+		//OUT, obligatoire
+		final var taskDefinition = taskDefinitionBuilder
+				.withOutAttribute("totalCount", integerSmartType, Cardinality.ONE)
+				.build();
+		final var taskBuilder = Task.builder(taskDefinition);
+		for (final String attributeName : ctx.getAttributeNames()) {
+			taskBuilder.addValue(attributeName, ctx.getAttributeValue(attributeName));
+		}
+
+		return taskManager
+				.execute(taskBuilder
+						.addContextProperty("connectionName", getConnectionName())
+						.build())
+				.getResult();
+	}
+
 	private static String getListTaskName(final String entityName) {
 		final var fullName = TASK.TkSelect.name() +
 				"List" +
@@ -445,7 +489,9 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 		final var tableName = StringUtil.camelToConstCase(entityName);
 		final var taskName = (insert ? TASK.TkInsert : TASK.TkUpdate) + entityName;
 
-		final var request = insert ? sqlDialect.createInsertQuery(dataDefinition.getIdField().get().name(), getDataFields(dataDefinition), sequencePrefix, tableName, "dto") : createUpdateQuery(dataDefinition, "dto");
+		final var request = insert
+				? sqlDialect.createInsertQuery(dataDefinition.getIdField().get().name(), getDataFields(dataDefinition), sequencePrefix, tableName, "dto")
+				: createUpdateQuery(dataDefinition, "dto");
 
 		final var taskDefinition = TaskDefinition.builder(taskName)
 				.withEngine(getTaskEngineClass(insert))
@@ -558,38 +604,6 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 			throw new VSystemException("Deleted row count mismatch the size of elements in delete by list");
 		}
 
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public int count(final DataDefinition dataDefinition) {
-		Assertion.check()
-				.isNotNull(dataDefinition)
-				.isTrue(dataDefinition.isPersistent(), "DtDefinition is not  persistent");
-		//-----
-		final var entityName = getEntityName(dataDefinition);
-		final var tableName = StringUtil.camelToConstCase(entityName);
-		final var taskName = TASK.TkCount + entityName;
-		final var countSmartType = SmartTypeDefinition.builder("STyCount", BasicType.Long).build();
-
-		final var request = "select count(*) from " + tableName;
-
-		final var taskDefinition = TaskDefinition.builder(taskName)
-				.withEngine(TaskEngineSelect.class)
-				.withDataSpace(dataSpace)
-				.withRequest(request)
-				.withOutAttribute("count", countSmartType, Cardinality.ONE)
-				.build();
-
-		final var task = Task.builder(taskDefinition)
-				.addContextProperty("connectionName", getConnectionName())
-				.build();
-
-		final var count = (Long) taskManager
-				.execute(task)
-				.getResult();
-
-		return count.intValue();
 	}
 
 	/** {@inheritDoc} */

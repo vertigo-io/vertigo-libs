@@ -20,6 +20,7 @@ package io.vertigo.datafactory.collections.definitions;
 import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.DefinitionSupplier;
+import io.vertigo.core.util.StringUtil;
 import io.vertigo.datafactory.collections.definitions.FacetDefinition.FacetOrder;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 
@@ -63,11 +64,11 @@ public final class FacetTermDefinitionSupplier implements DefinitionSupplier {
 
 	@Override
 	public FacetDefinition get(final DefinitionSpace definitionSpace) {
-		final DataDefinition indexDtDefinition = definitionSpace.resolve(myDtDefinitionName, DataDefinition.class);
+		final var indexDtDefinition = definitionSpace.resolve(myDtDefinitionName, DataDefinition.class);
 		return FacetDefinition.createFacetDefinitionByTerm(
 				myName,
 				indexDtDefinition.getField(myFieldName),
-				LocaleMessageText.of(myLabel),
+				LocaleMessageText.ofDefaultMsg(myLabel, () -> StringUtil.first2LowerCase(myName) + "$label"),
 				myMultiSelectable,
 				myOrder);
 	}

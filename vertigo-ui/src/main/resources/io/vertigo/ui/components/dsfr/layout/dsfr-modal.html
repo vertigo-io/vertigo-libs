@@ -1,0 +1,37 @@
+<th:block th:fragment="dsfr-modal(componentId, title, closeLabel, srcUrl, width, height, autoHeight, iframeTitle, iframe_attrs, section_attrs, modal_attrs)"
+      th:assert="${componentId} != null or ${iframeTitle} != null"
+      th:attr=" objectKey=${model.vContext['componentStates'].addComponentState(componentId)
+	                                                         .addPrimitive('opened', false)
+	                                                         .addPrimitive('loading', true)
+	                                                         .addPrimitive('title', title?:'')
+                                                             .addPrimitive('srcUrl', srcUrl?:'')
+                                                             .addPrimitive('width', width?:'')
+                                                             .addPrimitive('height', height?:'')}" >
+       
+    <dsfr-modal th:v-model:opened="|componentStates.${componentId}.opened|"
+                th:@close="|componentStates.${componentId}.opened = false|"
+                th::title="|componentStates.${componentId}.title|"
+                class="v-modal"
+                th:attr="__${modal_attrs}__">
+        <vu:content>
+            <template #default>
+                <div class="v-modal__dsfr-content" th::style="|{width:componentStates.${componentId}.width, height:componentStates.${componentId}.height}|" th:attr="__${section_attrs}__">
+					<div class="loading" th:v-if="|componentStates.${componentId}.loading|">
+                        <v-icon name="ri-loader-4-line" scale="2.4" animation="spin"></v-icon>
+					</div>
+                    <iframe th:v-bind:src="|componentStates.${componentId}.srcUrl|"
+                    	    th:style="${autoHeight == true ? 'height:100px; opacity:0':''}"
+                            th:@vue:before-mount="|componentStates.${componentId}.loading=true; componentStates.${componentId}.height='${height?:''}';|"
+                            @load="(e) => modal_iframeLoad(e.target)"
+					        th:data-auto-height="${autoHeight}"
+					        th:data-component-id="${componentId}"
+                            th:title="${iframeTitle}"
+                            th:attr="__${iframe_attrs}__" ></iframe>
+                </div>
+            </template>
+            <template #footer th:if="${closeLabel} != null">
+                <vu:dsfr-button label="${closeLabel}" title="${closeLabel}" type="button" th:@click="|() => componentStates.${componentId}.opened = false|" />
+            </template>
+        </vu:content>
+    </dsfr-modal>
+</th:block>

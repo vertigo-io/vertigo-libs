@@ -31,6 +31,7 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -46,10 +47,14 @@ import org.apache.logging.log4j.Logger;
 
 import io.vertigo.commons.transaction.VTransaction;
 import io.vertigo.commons.transaction.VTransactionManager;
-import io.vertigo.core.daemon.DaemonScheduled;
+import io.vertigo.core.daemon.Daemon;
+import io.vertigo.core.daemon.definitions.DaemonDefinition;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.DataStream;
 import io.vertigo.core.lang.WrappedException;
+import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.DefinitionSpace;
+import io.vertigo.core.node.definition.SimpleDefinitionProvider;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.core.util.FileUtil;
@@ -67,7 +72,7 @@ import io.vertigo.datastore.impl.filestore.model.StreamFile;
  *
  * @author pchretien, npiedeloup, skerdudou
  */
-public final class FsFullFileStorePlugin implements FileStorePlugin {
+public final class FsFullFileStorePlugin implements FileStorePlugin, SimpleDefinitionProvider {
 
 	private static final Logger LOG = LogManager.getLogger(FsFullFileStorePlugin.class);
 
@@ -77,6 +82,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 	private static final String DEFAULT_STORE_NAME = "temp";
 	private static final String INFOS_DATE_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
+	private final String dmnUniqueName;
 	private final String name;
 	private final Path documentRoot;
 	private final VTransactionManager transactionManager;
@@ -118,16 +124,42 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 		}
 		this.purgeDelayMinutesOpt = purgeDelayMinutesOpt;
 		this.fileInfoClassName = fileInfoClassName;
+		dmnUniqueName = "DmnPurgeFileStoreDaemon$c" + Long.toHexString(name.hashCode());
 	}
 
-	/**
-	 * Daemon to purge old files
-	 */
-	@DaemonScheduled(name = "DmnPurgeFileStoreDaemon", periodInSeconds = 5 * 60)
+	@Override
+	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
+		return Collections.singletonList(new DaemonDefinition(dmnUniqueName, () -> new PurgeFileStoreDaemon(this), 5 * 60));
+	}
+
 	public void deleteOldFiles() {
 		if (purgeDelayMinutesOpt.isPresent()) {
 			final long maxTime = System.currentTimeMillis() - purgeDelayMinutesOpt.get() * 60L * 1000L;
 			doDeleteOldFiles(documentRoot, maxTime);
+		}
+	}
+
+	/**
+	 * Daemon to purge old files.
+	 * @author npiedeloup
+	 */
+	public static final class PurgeFileStoreDaemon implements Daemon {
+
+		private final FsFullFileStorePlugin fsFullFileStorePlugin;
+
+		/**
+		 * @param fsFullFileStorePlugin This plugin
+		 */
+		public PurgeFileStoreDaemon(final FsFullFileStorePlugin fsFullFileStorePlugin) {
+			Assertion.check().isNotNull(fsFullFileStorePlugin);
+			//------
+			this.fsFullFileStorePlugin = fsFullFileStorePlugin;
+		}
+
+		/** {@inheritDoc} */
+		@Override
+		public void run() {
+			fsFullFileStorePlugin.deleteOldFiles();
 		}
 	}
 
@@ -166,6 +198,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 	}
 
 	private static class FsFileInfo extends AbstractFileInfo {
+
 		private static final long serialVersionUID = -1610176974946554828L;
 
 		protected FsFileInfo(final FileInfoDefinition fileInfoDefinition, final VFile vFile) {
@@ -257,6 +290,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 	}
 
 	private static final class PathInputStreamBuilder implements DataStream {
+
 		private final Path path;
 
 		PathInputStreamBuilder(final Path path) {
