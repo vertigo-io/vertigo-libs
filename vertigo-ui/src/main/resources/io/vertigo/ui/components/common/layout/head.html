@@ -1,4 +1,4 @@
-<th:block th:fragment="head(title, vueJsVersion, axiosVersion, vuejsDevMode, vuiDevMode, vuiSsr, vertigoUiVersion, useQuasar, quasarVersion, useDsfr, useWysiwyg)" >
+<th:block th:fragment="head(title, vueJsVersion, axiosVersion, vuejsDevMode, vuiDevMode, vuiSsr, vertigoUiVersion, useQuasar, quasarVersion, robotoVersion, useDsfr, useWysiwyg)" >
 		<meta charset="utf8">
 		<vu:head-meta
 		    vueJsVersion="${vueJsVersion}"
@@ -9,6 +9,7 @@
 		    vertigoUiVersion="${vertigoUiVersion}"
 		    useQuasar="${useQuasar}"
 		    quasarVersion="${quasarVersion}"
+		    robotoVersion="${robotoVersion}"
 		    useDsfr="${useDsfr}"
 		    useWysiwyg="${useWysiwyg}"/>
 		<vu:content/>
@@ -16,18 +17,19 @@
 	</head>
 </th:block>
 
-<th:block th:fragment="head-meta(vueJsVersion, axiosVersion, vuejsDevMode, vuiDevMode, vuiSsr, vertigoUiVersion, useQuasar, quasarVersion, onlyDsfrStyle, useDsfr, useWysiwyg)"
+<th:block th:fragment="head-meta(vueJsVersion, axiosVersion, vuejsDevMode, vuiDevMode, vuiSsr, vertigoUiVersion, useQuasar, quasarVersion, onlyDsfrStyle, robotoVersion, useDsfr, useWysiwyg)"
         th:with="isVuiDevMode=${vuiDevMode != null ? vuiDevMode : false}, 
                  isVuejsDevMode=${vuejsDevMode != null ? vuejsDevMode : false},
                  isVuiSsr=${vuiSsr != null ? vuiSsr : false},
                  myVueJsVersion=${vueJsVersion?:'3.5.13'}, myVertigoUiVersion=${vertigoUiVersion?:'4.2.0'},
                  myAxiosVersion=${axiosVersion?:'1.8.4'},
                  myUseQuasar=${useQuasar ?: true}, myQuasarVersion=${quasarVersion?:'2.18.1'}, myOnlyDsfrStyle=${onlyDsfrStyle?:false},
+                 myRobotoVersion=${robotoVersion?:'47'},
                  myUseDsfr=${useDsfr ?: false}, myDsfrDevMode=${dsfrDevMode ?: false}"
 		>
 
 	<th:block th:if="${!myOnlyDsfrStyle}">
-		<link th:href="@{/vertigo-ui/static/3rdParty/roboto/v20/css/roboto.css}" rel="stylesheet" type="text/css"/>
+		<link th:if="${myRobotoVersion} != 'null'" th:href="@{/vertigo-ui/static/3rdParty/roboto/v__${myRobotoVersion}__/css/roboto.css}" rel="stylesheet" type="text/css"/>
 		<link th:href="@{/vertigo-ui/static/3rdParty/materialIcons/v142/css/materialIconsOutlined.css}" rel="stylesheet" type="text/css"/>
 		<link th:href="@{/vertigo-ui/static/3rdParty/materialIcons/v142/css/materialIcons.css}" rel="stylesheet" type="text/css"/>
 		<link th:href="@{/vertigo-ui/static/3rdParty/use.fontawesome.com/releases/v6.5.2/css/all.min.css}" rel="stylesheet" type="text/css"/>
