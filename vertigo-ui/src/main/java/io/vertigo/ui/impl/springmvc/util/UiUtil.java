@@ -302,7 +302,7 @@ public final class UiUtil implements Serializable {
 	public static boolean required(final String fieldPath) {
 		Assertion.check().isTrue(fieldPath.indexOf('.') != 0, "FieldPath shouldn't starts with . ({0})", fieldPath);
 		//-----
-		if (fieldPath.indexOf('.') > 0) { //Le champs est porté par un Object
+		if (fieldPath.contains(".")) { //Le champs est porté par un Object
 			return getDataField(fieldPath).cardinality().hasOne();
 		}
 		return false; //on ne sait pas dire, mais on ne force pas à obligatoire
@@ -438,8 +438,8 @@ public final class UiUtil implements Serializable {
 	}
 
 	private static DataField getDataField(final String fieldPath) {
-		Assertion.check().isTrue(fieldPath.indexOf('.') > 0, "Le champs n'est pas porté par un Object ({0})", fieldPath);
-		//Assertion.check().argument(fieldPath.indexOf('.') == fieldPath.lastIndexOf('.'), "Seul un point est autorisé ({0})", fieldPath);
+		Assertion.check().isTrue(fieldPath.contains("."), "Le champs n'est pas porté par un Object ({0})", fieldPath);
+
 		final var contextKey = fieldPath.substring(0, fieldPath.lastIndexOf('.'));
 		final var fieldName = removeUiModifier(fieldPath.substring(fieldPath.lastIndexOf('.') + 1));
 		final var viewContext = UiRequestUtil.getCurrentViewContext();

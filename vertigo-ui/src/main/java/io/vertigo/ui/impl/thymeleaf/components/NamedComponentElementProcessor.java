@@ -131,7 +131,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 				final String camelName = kebabToCamelCase(parameterName);
 				camelCaseParameterNames.add(camelName);
 				camelCaseParameterNames.add(":" + parameterName.substring("v-".length()));
-			} else if (parameterName.indexOf('-') > 0) {
+			} else if (parameterName.contains("-")) {
 				camelCaseParameterNames.add(kebabToCamelCase(parameterName));
 			}
 		}
@@ -472,7 +472,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 	}
 
 	private void putAttributeSupportKebabCase(final String variableName, final String variableValue, final Map<String, String> attributes) {
-		if (variableName.indexOf('-') > 0 && parameterNames.contains(variableName)) {
+		if (variableName.contains("-") && parameterNames.contains(variableName)) {
 			attributes.put(kebabToCamelCase(variableName), variableValue);
 		} else if (variableName.charAt(0) == ':' && parameterNames.contains(variableName)) {
 			attributes.put(kebabToCamelCase("v-" + variableName.substring(1)), variableValue);
@@ -634,6 +634,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 
 	/**
 	 * xxx-Yyy-zzzAaa -> xxxYyyZzzAaa
+	 *
 	 * @param str la chaine de caratéres sur laquelle s'appliquent les transformation
 	 * @return Renvoie une chaine de caractére correspondant à la chaine entrante sans - avec le caractère suivant un - en majuscule
 	 */

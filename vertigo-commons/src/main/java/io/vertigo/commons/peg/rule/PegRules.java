@@ -34,7 +34,7 @@ import io.vertigo.core.locale.LocaleMessageKey;
  */
 public final class PegRules {
 
-	public static final String BLANKS = " \t\n\r";
+	private static final String BLANKS = " \t\n\r";
 
 	private PegRules() {
 		//no constructor for factory class

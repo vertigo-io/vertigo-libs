@@ -72,6 +72,7 @@ public class AuthzAttributeTagProcessor extends AbstractAttributeTagProcessor
 
 	/**
 	 * Constructor.
+	 *
 	 * @param dialectPrefix Dialect prefix (tc)
 	 */
 	public AuthzAttributeTagProcessor(final String dialectPrefix) {
@@ -134,7 +135,8 @@ public class AuthzAttributeTagProcessor extends AbstractAttributeTagProcessor
 			return EvaluationUtils.evaluateAsBoolean(value);
 		}
 		Assertion.check().isFalse(attributeValue.contains("&&"), attributeValue,
-				"Authz don't support &&, use a complete expression like : vu:authz=\"${authz.hasAuthorization('myGlobalAuthz') && authz.hasAuthorization('mySecuredEntityAuthz$read')}\". ({0})", attributeValue);
+				"Authz don't support &&, use a complete expression like : vu:authz=\"${authz.hasAuthorization('myGlobalAuthz') && authz.hasAuthorization('mySecuredEntityAuthz$read')}\". ({0})",
+				attributeValue);
 		//Sinon on récupère depuis le context d'exec de la page
 		final UiAuthorizationUtil authz = obtainUiAuthorizationUtil(context);
 		//Liste d'authorizations () avec deux modes :
@@ -153,9 +155,10 @@ public class AuthzAttributeTagProcessor extends AbstractAttributeTagProcessor
 			if (isNeg) {
 				authzAttribut = authzAttribut.substring(1).trim();
 			}
-			if (attributeValue.indexOf('.') > 0) { //le $ n'est pas discriminant entre les deux modes
+			if (attributeValue.contains(".")) { //le $ n'est pas discriminant entre les deux modes
 				final int opeIdx = attributeValue.indexOf('$');
-				Assertion.check().isTrue(opeIdx > 0, "Authz invalid syntax : missing $ in '{0}'. When check object instance, you must provide operation (xxx.myEntityInstance$operation)", attributeValue);
+				Assertion.check().isTrue(opeIdx > 0, "Authz invalid syntax : missing $ in '{0}'. When check object instance, you must provide operation (xxx.myEntityInstance$operation)",
+						attributeValue);
 
 				final String modelPart = attributeValue.substring(0, opeIdx);
 				final String opePart = attributeValue.substring(opeIdx + 1);
