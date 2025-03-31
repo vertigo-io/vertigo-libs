@@ -32,6 +32,7 @@ import io.vertigo.account.authorization.definitions.rulemodel.RuleUserPropertyVa
  * @author npiedeloup
  */
 public final class SqlSecurityRuleTranslator extends AbstractSecurityRuleTranslator<SqlSecurityRuleTranslator> {
+
 	/**
 	 * @return This security rule as SQL Query
 	 */
@@ -78,7 +79,7 @@ public final class SqlSecurityRuleTranslator extends AbstractSecurityRuleTransla
 	private void appendExpression(final StringBuilder query, final RuleExpression expressionDefinition) {
 
 		query.append(expressionDefinition.getFieldName());
-		if (expressionDefinition.getValue() instanceof RuleUserPropertyValue userPropertyValue) {
+		if (expressionDefinition.getValue() instanceof final RuleUserPropertyValue userPropertyValue) {
 			final List<Serializable> userValues = getUserCriteria(userPropertyValue.getUserProperty());
 			if (userValues.size() > 0) {
 				if (userValues.size() == 1) {
@@ -125,9 +126,24 @@ public final class SqlSecurityRuleTranslator extends AbstractSecurityRuleTransla
 				}
 			}
 		} else if (expressionDefinition.getValue() instanceof RuleFixedValue) {
-			query
-					.append(expressionDefinition.getOperator())
-					.append(((RuleFixedValue) expressionDefinition.getValue()).getFixedValue());
+			final var fixedValue = ((RuleFixedValue) expressionDefinition.getValue()).getFixedValue();
+			final var operator = expressionDefinition.getOperator();
+			if (fixedValue == null || "null".equalsIgnoreCase(fixedValue)) {
+				if (operator == ValueOperator.NEQ) {
+					query.append(" is not null");
+				} else if (operator == ValueOperator.EQ) {
+					query.append(" is null");
+				} else {
+					//always false
+					query.append(operator)
+							.append(fixedValue);
+				}
+			} else {
+				//may translate > and >= to 'like' expressions
+				query
+						.append(operator)
+						.append(fixedValue);
+			}
 		} else {
 			throw new IllegalArgumentException("value type not supported " + expressionDefinition.getValue().getClass().getName());
 		}

@@ -17,63 +17,80 @@
  */
 package io.vertigo.account.authorization.dsl;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import io.vertigo.account.impl.authorization.dsl.translator.CriteriaSecurityRuleTranslator;
 import io.vertigo.account.impl.authorization.dsl.translator.SearchSecurityRuleTranslator;
 import io.vertigo.account.impl.authorization.dsl.translator.SqlSecurityRuleTranslator;
+import io.vertigo.core.lang.Tuple;
+import io.vertigo.datamodel.criteria.Criteria;
+import io.vertigo.datamodel.criteria.CriteriaCtx;
+import io.vertigo.datamodel.criteria.CriteriaEncoder;
+import io.vertigo.datamodel.criteria.CriteriaLogicalOperator;
+import io.vertigo.datamodel.criteria.CriterionLimit;
+import io.vertigo.datamodel.criteria.CriterionOperator;
+import io.vertigo.datamodel.data.definitions.DataFieldName;
 
 /**
- * @author  npiedeloup
+ * @author npiedeloup
  */
 public final class DslSecurityRulesBuilderTest {
 
 	@Test
 	public void testStringQuery() {
-		final String[][] testQueries = new String[][] {
+		final String[][] testQueries = {
 				//QueryPattern, UserQuery, EspectedResult, OtherAcceptedResult ...
 				{ "ALL=${query}", "Test", "ALL=Test", "(+ALL:Test)" }, //0
 				{ "ALL=${query}", "'Test test2'", "ALL='Test test2'", "(+ALL:'Test test2')" }, //1
-				{ "ALL=${query} && OTHER='VALID'", "Test", "ALL=Test AND OTHER='VALID'", "(+ALL:Test +OTHER:'VALID')" }, //2
-				{ "ALL=${query} || OTHER='VALID'", "Test", "ALL=Test OR OTHER='VALID'", "(ALL:Test OTHER:'VALID')" }, //3
+				{ "ALL=${query} && OTHER='VALID'", "Test", "ALL=Test AND OTHER='VALID'", "(+ALL:Test +OTHER:'VALID')", "(ALL=Test AND OTHER='VALID')" }, //2
+				{ "ALL=${query} || OTHER='VALID'", "Test", "ALL=Test OR OTHER='VALID'", "(ALL:Test OTHER:'VALID')", "(ALL=Test OR OTHER='VALID')" }, //3
 				{ "(ALL=${query} || OTHER='VALID')", "Test", "(ALL=Test OR OTHER='VALID')", "(ALL:Test OTHER:'VALID')" }, //4
 				{ "((ALL=${query} || OTHER='VALID') && (ALL=${query} || OTHER='VALID'))", "Test",
 						"((ALL=Test OR OTHER='VALID') AND (ALL=Test OR OTHER='VALID'))",
 						"(+(ALL:Test OTHER:'VALID') +(ALL:Test OTHER:'VALID'))" }, //5
 				{ "(ALL=${query} || OTHER='VALID') && (ALL=${query} || OTHER='VALID')", "Test",
 						"(ALL=Test OR OTHER='VALID') AND (ALL=Test OR OTHER='VALID')",
-						"(+(ALL:Test OTHER:'VALID') +(ALL:Test OTHER:'VALID'))" }, //6
+						"(+(ALL:Test OTHER:'VALID') +(ALL:Test OTHER:'VALID'))", "((ALL=Test OR OTHER='VALID') AND (ALL=Test OR OTHER='VALID'))" }, //6
 				{ "ALL>${query}", "'Test'", "ALL>'Test'", "(+ALL:>'Test')" }, //7
-				{ "ALL=${query}", null, "ALL is null", "(-_exists_:ALL)" }, //8*/
-				{ "ALL=${query}", "100;102", "ALL IN (100,102)", "(+(ALL:100 ALL:102))" }, //9
-				{ "actif=true && GEO<=${query}", "'Test'", "actif=true AND GEO<='Test'", "(+actif:true +GEO:<='Test')" }, //8
-				{ "GEO<=${query} && actif=true", "'Test'", "GEO<='Test' AND actif=true", "(+GEO:<='Test' +actif:true)" }, //9
-				//{ "ALL>${query}", "'Test'", "ALL like 'Test' || '%'" }, //3
+				{ "ALL=${query}", null, "ALL is null", "(-_exists_:ALL)", "ALL is null" }, //8*/
+				{ "ALL=${query}", "100;102", "ALL IN (100,102)", "(+(ALL:100 ALL:102))", "(ALL=100 OR ALL=102)" }, //9
+				{ "actif=true && GEO<=${query}", "'Test'", "actif=true AND GEO<='Test'", "(+actif:true +GEO:<='Test')", "(actif=true AND GEO<='Test')" }, //10
+				{ "GEO<=${query} && actif=true", "'Test'", "GEO<='Test' AND actif=true", "(+GEO:<='Test' +actif:true)", "(GEO<='Test' AND actif=true)" }, //11
+
+				{ "ALL=null", null, "ALL is null", "(-_exists_:ALL)" }, //12
+				{ "ALL=NULL", null, "ALL is null", "(-_exists_:ALL)" }, //13
+				//{ "ALL>${query}", "'Test'", "ALL like 'Test' || '%'" }, //14
 		};
 		testSearchAndSqlQuery(testQueries);
 	}
 
 	@Test
 	public void testStringMultipleQuery() {
-		final String[][] testQueries = new String[][] {
+		final String[][] testQueries = {
 				//QueryPattern, UserQuery, EspectedResult, OtherAcceptedResult ...
-				{ "ALL=${query}", "Test;Test2", "ALL IN (Test,Test2)", "(+(ALL:Test ALL:Test2))" }, //0
-				{ "ALL=${query}", "'Test test2';'Test3 test4'", "ALL IN ('Test test2','Test3 test4')", "(+(ALL:'Test test2' ALL:'Test3 test4'))" }, //1
-				{ "ALL=${query} && OTHER='VALID'", "Test;Test2", "ALL IN (Test,Test2) AND OTHER='VALID'", "(+(ALL:Test ALL:Test2) +OTHER:'VALID')" }, //2
-				{ "ALL=${query} || OTHER='VALID'", "Test;Test2", "ALL IN (Test,Test2) OR OTHER='VALID'", "((ALL:Test ALL:Test2) OTHER:'VALID')" }, //3
-				{ "(ALL=${query} || OTHER='VALID')", "Test;Test2", "(ALL IN (Test,Test2) OR OTHER='VALID')", "((ALL:Test ALL:Test2) OTHER:'VALID')" }, //4
+				{ "ALL=${query}", "Test;Test2", "ALL IN (Test,Test2)", "(+(ALL:Test ALL:Test2))", "(ALL=Test OR ALL=Test2)" }, //0
+				{ "ALL=${query}", "'Test test2';'Test3 test4'", "ALL IN ('Test test2','Test3 test4')", "(+(ALL:'Test test2' ALL:'Test3 test4'))", "(ALL='Test test2' OR ALL='Test3 test4')" }, //1
+				{ "ALL=${query} && OTHER='VALID'", "Test;Test2", "ALL IN (Test,Test2) AND OTHER='VALID'", "(+(ALL:Test ALL:Test2) +OTHER:'VALID')", "((ALL=Test OR ALL=Test2) AND OTHER='VALID')" }, //2
+				{ "ALL=${query} || OTHER='VALID'", "Test;Test2", "ALL IN (Test,Test2) OR OTHER='VALID'", "((ALL:Test ALL:Test2) OTHER:'VALID')", "(ALL=Test OR ALL=Test2 OR OTHER='VALID')" }, //3
+				{ "(ALL=${query} || OTHER='VALID')", "Test;Test2", "(ALL IN (Test,Test2) OR OTHER='VALID')", "((ALL:Test ALL:Test2) OTHER:'VALID')", "(ALL=Test OR ALL=Test2 OR OTHER='VALID')" }, //4
 				{ "((ALL=${query} || OTHER='VALID') && (ALL=${query} || OTHER='VALID'))", "Test;Test2",
 						"((ALL IN (Test,Test2) OR OTHER='VALID') AND (ALL IN (Test,Test2) OR OTHER='VALID'))",
-						"(+((ALL:Test ALL:Test2) OTHER:'VALID') +((ALL:Test ALL:Test2) OTHER:'VALID'))" }, //5
+						"(+((ALL:Test ALL:Test2) OTHER:'VALID') +((ALL:Test ALL:Test2) OTHER:'VALID'))",
+						"((ALL=Test OR ALL=Test2 OR OTHER='VALID') AND (ALL=Test OR ALL=Test2 OR OTHER='VALID'))" }, //5
 				{ "(ALL=${query} || OTHER='VALID') && (ALL=${query} || OTHER='VALID')", "Test;Test2",
 						"(ALL IN (Test,Test2) OR OTHER='VALID') AND (ALL IN (Test,Test2) OR OTHER='VALID')",
-						"(+((ALL:Test ALL:Test2) OTHER:'VALID') +((ALL:Test ALL:Test2) OTHER:'VALID'))" }, //6
-				{ "ALL>${query}", "'Test';'Test2'", "ALL>'Test' OR ALL>'Test2'", "(+(ALL:>'Test' ALL:>'Test2'))" }, //7
+						"(+((ALL:Test ALL:Test2) OTHER:'VALID') +((ALL:Test ALL:Test2) OTHER:'VALID'))",
+						"((ALL=Test OR ALL=Test2 OR OTHER='VALID') AND (ALL=Test OR ALL=Test2 OR OTHER='VALID'))" }, //6
+				{ "ALL>${query}", "'Test';'Test2'", "ALL>'Test' OR ALL>'Test2'", "(+(ALL:>'Test' ALL:>'Test2'))", "(ALL>'Test' OR ALL>'Test2')" }, //7
 				{ "ALL=${query}", null, "ALL is null", "(-_exists_:ALL)" }, //8*/
-				{ "ALL=${query}", "100;102", "ALL IN (100,102)", "(+(ALL:100 ALL:102))" }, //9
+				{ "ALL=${query}", "100;102", "ALL IN (100,102)", "(+(ALL:100 ALL:102))", "(ALL=100 OR ALL=102)" }, //9
 
 				//{ "ALL>${query}", "'Test'", "ALL like 'Test' || '%'" }, //3
 		};
@@ -83,7 +100,7 @@ public final class DslSecurityRulesBuilderTest {
 	private void testSearchAndSqlQuery(final String[]... testData) {
 		int i = 0;
 		for (final String[] testParam : testData) {
-			//testCriteriaStringSqlQuery(testParam, i);
+			testCriteriaStringSqlQuery(testParam, i);
 			testSqlQuery(testParam, i);
 			testSearchQuery(testParam, i);
 			i++;
@@ -96,6 +113,10 @@ public final class DslSecurityRulesBuilderTest {
 
 	int getSearchResult() {
 		return 3;
+	}
+
+	int getCriteriaResult() {
+		return 4;
 	}
 
 	private void testSqlQuery(final String[] testParam, final int i) {
@@ -118,13 +139,15 @@ public final class DslSecurityRulesBuilderTest {
 		Assertions.assertEquals(expectedResult, result, "Built search query #" + i + " incorrect");
 	}
 
-	/*private void testCriteriaStringSqlQuery(final String[] testParam, final int i) {
-		final CriteriaSecurityRuleTranslator securityRuleTranslator = new CriteriaSecurityRuleTranslator()
+	private void testCriteriaStringSqlQuery(final String[] testParam, final int i) {
+		final CriteriaSecurityRuleTranslator<?> securityRuleTranslator = new CriteriaSecurityRuleTranslator<>()
 				.withRule(testParam[0])
-				.withSecurityKeys(Collections.singletonMap("query", Collections.singletonList(testParam[1])));
+				//.withSecurityKeys(Collections.singletonMap("query", Collections.singletonList(testParam[1])));
+				.withSecurityKeys(Collections.singletonMap("query", testParam[1] != null ? Arrays.asList(testParam[1].split(";")) : Collections.singletonList(testParam[1])));
 
 		final Criteria result = securityRuleTranslator.toCriteria();
-		final String expectedResult = testParam[Math.min(getSqlResult(), testParam.length - 1)];
+
+		final String expectedResult = testParam[Math.min(getCriteriaResult() > testParam.length - 1 ? getSqlResult() : getCriteriaResult(), testParam.length - 1)];
 
 		final Tuple<String, CriteriaCtx> resultTuple = result.toStringAnCtx(defaultSQLCriteriaEncoder);
 		String resultStr = resultTuple.val1();
@@ -191,6 +214,6 @@ public final class DslSecurityRulesBuilderTest {
 			return ")";
 		}
 
-	};*/
+	};
 
 }
