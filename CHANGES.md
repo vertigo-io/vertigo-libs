@@ -1,23 +1,136 @@
 Version history
 ===============
 
-Running 4.3.0
+Running 5.0.0
 ----------------------
-[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-420-to-430)
-  
-* [Ui] Various fix
-  - Fileupload, add can be triggered by keyboard
-  - Select, searchable component state is now correctly cleared on mounting
-* [Ui] Change modal default size from 'style' to css & add 'autoHeight' property
-* [Ui] Add DSFR components
-* [Ui] Add VFileUpload component (not quasar based)
-* [Ui] Scripts are now all located in header
-* [Ui] Display formatted numerics in table and text-field-read-reactive
-
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-430-to-500)
 more to come :)
 
 
-Running 4.2.0 - 2024/07/04
+Release 4.3.0 - 2025/03/27
+----------------------
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-420-to-430)
+
+* **[Ui] Add DSFR components**
+* **[Ui] EncoderDate now uses ISO format yyyy-MM-dd and yyyy-MM-dd'T'HH:mm**
+* **[Ui] Add length constraint on text-area (same as other inputs : from smartType)**
+* **[Ui] Add wysiwyg editor based on tiptap** (quasar editor is renamed q-text-editor)
+* **[Ui-vuejs] Change i18n to use object instead of string**
+    (this.i18n('uploader.progress') to $vui.i18n().uploader.progress)
+* [Ui] Various fix
+  - Fileupload, add can be triggered by keyboard
+  - Select, searchable component state is now correctly cleared on mounting
+  - Column fix closing th:block position in default content
+* [UI] Facet component : make facetValueTranslatorProvider optional
+* [Ui] Change modal default size from 'style' to css & add 'autoHeight' property
+* [Ui] Add VFileUpload component (not quasar based)
+* [Ui] Scripts are now all located in header
+* [Ui] Display formatted numerics in table and text-field-read-reactive
+* [Ui] Use displayField if displayField defined in table columns
+* [Ui] Extends quasar lang obj instead override it (for i18n)
+* [Ui] Fix api viewContext.getSelectedFacetValues (SearchQuery instead of FacetedQuery)
+* [Ui] fix button-submit-confirm inside table action slot
+* [Ui] Fix select-multiple with rowIndex
+* [UI] Search in select list now display "start with" elements first
+* [Ui] Add Jetty KVSessionDataStore : can use Redis
+* [Ui] Add NoJettySessionCache boot params
+* [Ui] Fix delete session at logout
+* [Ui] Add error message in log for authorization errors
+* [Ui] Better exception for missing new ctxId format
+* [Ui] Missing context message distinct (init context vs view context)
+* [Ui] Update Axios version & make it configurable (`axiosVersion` on `vu:head`)
+* [Ui-vuejs] Better chart barChart and stackedBarChart
+* [Ui] add other_attrs on facets
+* [Ui] Open getViewContext controller method as getUiMessageStack
+* [UI] Transaction handling on UiMdlList
+* [Ui] Fail fast on adding field message if object not in context
+* [Ui] Fix uploader (quasar) height
+* [Ui] Exclude Comment in NamedComponent body
+* [Ui] Fix style of selected rows into table
+* [Ui] Fix missing reset thymeleaf var (rowIndex) in <vu:table>
+* [Ui] rowIndex only on row slots
+* [Ui] Extends httpPostAjax options notifyUiMessageStack to support notify uiMmessageStack
+* [Ui] Add vNoDefaultErrorHandler axios parameter to disable default notif Error handling on VNotifications (icon change)
+* [Ui] Fix handler error in some case (badly show 404, instead of 500)
+* [Ui] Add bridge to use dsfr-icons as Quasar iconSet
+* [Ui] Add default ressourcekeys on facets labels for external text (like i18n)
+* [Ui] Add unit tests abstract for Ui Tests
+* [Ui] Change message text color (RGAA)
+* [Ui] Improve uiMessageStack conservation (avoid confusion between threads)
+* [Ui] Add Jetty started log (time to start)
+* [Ui] formatted value is always based on typed value
+* [Ui] fix componentUUID (no more brackets)
+* [Ui] use `_fmt` suffix for date and numbers
+* [Ui] Integrate lodash debounce to replace quasar dependency
+* [Ui] Restore curentUserSession on error pages (handled in another thread by Spring), can be use to get currentLocale
+* [Ui] Fix geolocation input
+* [Vega] WebServiceClientAmplifier No content-type in request when there is no body
+* [Vega] Add maxDayRequests and whiteListUsers to RateLimitingManager
+* [Vega] Fix logout if no session
+* [Vega] WebAuthent redirect(302) for page, but send error (401) with `location` for WebServices json
+* [Vega] Keep default max rows in uiListModifiable
+* [Vega] Add Log Error HandlerPlugin for WS in case of status 5xx
+* [Vega] Log Handler : log body only at Trace level
+* [Vega] Update swaggerUi 4.18.3 -> 5.20.1
+* [Vega][OIDC] Fix logout parameters (add missing + handle no session)
+* [Vega][OIDC] Fix error on browser "back" just after login
+* [Vega][OIDC] Refactoring to provide usable OIDC client over the lib
+* [Vega][OIDC] Make additional state info in session versatile/neutral
+* [Datastore] Add typeMime detector SimpleMagic (lighter than tika)
+* [DataStore] Fix FileStoreManager.resolveMimeType using plugin
+* [DataStore] Add loadifAbsent and lazyGet to Store Accessors
+* [DataStore] Fix to support multiple FsFullFileStore plugin (unicity of daemon)
+* [DataStore] Add KVStore removeIfExists
+* [DataStore] Add analytics to RedisKvStore
+* [Datastore] S3FileStore add purge daemon if CSP don't support it
+* [Datastore] Add countByCriteria in DAO (replace count)
+* [Datastore] sonar : close speedb options
+* [Database] Fix H2 exceptionHandler : exclude schema prefix
+* [Database] Sql fix case of GenerationMode.Generated_keys
+* [Database] Fix some issus with jdbc Types.BLOB, now use VARBINARY instead
+* [DataFactory] Fix clustering with multiple facets
+* [Datafactory] Support multiSelectable facets in CollectionManager facets
+* **[Datafactory] Update Elastic pom `transport` -> `x-pack-transport`
+* [Commons] Refacto Peg & import operator/comparison rules from easyForms
+* [Commons] Fix Peg operation with null values
+* [Commons] Add base64LegacyCodec (diff than base64UrlCodec)
+* [Basics] Add current local to FormatterDate
+* [all] Update libs 
+  - c3p0 0.10.1 -> 0.10.2
+  - ojdbc11 23.4.0.24.05 -> 23.7.0.25.01
+  - postgresql 42.7.3 -> 42.7.5
+  - liquibase-core 4.28.0 -> 4.31.1
+  - org.elasticsearch.client transport -> x-pack-transport
+  - tika 2.9.2 -> 3.1.0
+  - guava 33.2.1 -> 33.4.6
+  - jersey-client 3.1.6 -> 3.0.17 (more recent, lock to jdk17)
+  - spring-webmvc 6.1.10 -> 6.2.5
+  - thymeleaf-spring6 3.1.2 -> 3.1.3
+  - thymeleaf-layout-dialect 3.3.0 -> 3.4.0
+  - nashorn 15.4 -> 15.6
+  - selenium 4.15.0 -> 4.30.0
+  - jackson 2.15.3 -> 2.18.3
+  - rest-assured 5.4.0 -> 5.5.1
+* [Ui-vuejs] update libs 
+  - *JS libs :*
+  - vue-dsfr -> 8.3.0
+  - axios 1.7.2 -> 1.8.4
+  - core-js 3.37.1 -> 3.41.0
+  - vite 5.3.1 -> 6.2.3
+  - quasar 2.16.5 -> 2.18.1
+  - @vitejs/plugin-vue 5.0.5 -> 5.2.3
+  - vite-plugin-mkcert 1.17.5 -> 1.17.8
+  - vue 3.4.31 -> 3.5.13
+  - ol 9.2.4 -> 10.4.0
+  - eslint 9.6.0 -> 9.23.0
+  - eslint-plugin-vue 9.27.0 -> 10.0.0
+  - lodash.debounce 4.0.8
+  - *3rd party :*
+  - materialdesignicons v142 -> v143
+  - fontawesome 6.5.2 -> 6.7.2
+  - roboto v20 -> v47
+
+Release 4.2.0 - 2024/07/04
 ----------------------
 [Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-410-to-420)
 * **Github : split `vertigo-extensions` to `vertigo-libs` and `vertigo-modules`**  
