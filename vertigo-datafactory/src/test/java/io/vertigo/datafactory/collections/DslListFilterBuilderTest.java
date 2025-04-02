@@ -35,13 +35,13 @@ import io.vertigo.datafactory.collections.definitions.ListFilterBuilder;
 import io.vertigo.datafactory.impl.search.dsl.DslListFilterBuilder;
 
 /**
- * @author  npiedeloup
+ * @author npiedeloup
  */
 public final class DslListFilterBuilderTest {
 
 	@Test
 	public void testStringQuery() {
-		final String[][] testQueries = new String[][] {
+		final String[][] testQueries = {
 				//QueryPattern, UserQuery, EspectedResult, OtherAcceptedResult ...
 				{ "ALL:#query#", "Test", "ALL:Test" }, //0
 				{ "ALL:#query#", "Test test2", "ALL:(Test test2)" }, //1
@@ -58,7 +58,7 @@ public final class DslListFilterBuilderTest {
 
 	@Test
 	public void testStringGlobalModifierQuery() {
-		final String[][] testQueries = new String[][] {
+		final String[][] testQueries = {
 				//QueryPattern, UserQuery, EspectedResult
 				{ "ALL:#query#", "Test", "ALL:(Test)", "ALL:Test" }, //0
 				{ "ALL:#query#", "Test test2", "ALL:(Test test2)" }, //1
@@ -75,7 +75,7 @@ public final class DslListFilterBuilderTest {
 
 	@Test
 	public void testStringAdvancedQuery() {
-		final String[][] testQueries = new String[][] {
+		final String[][] testQueries = {
 				//QueryPattern, UserQuery, EspectedResult
 				{ "ALL:#query#", "Test or test2", "ALL:(Test or test2)" }, //0
 				{ "ALL:#query#", "Test and test2", "ALL:(Test and test2)" }, //1
@@ -106,7 +106,7 @@ public final class DslListFilterBuilderTest {
 
 	@Test
 	public void testStringEscapedModeQuery() {
-		final String[][] testQueries = new String[][] {
+		final String[][] testQueries = {
 
 				//QueryPattern, UserQuery, EspectedResult
 				{ "ALL:#query#", "Test or test2", "ALL:(Test or test2)" }, //0
@@ -152,7 +152,7 @@ public final class DslListFilterBuilderTest {
 
 	@Test
 	public void testStringEscapedQuery() {
-		final String[][] testQueries = new String[][] {
+		final String[][] testQueries = {
 				//QueryPattern, UserQuery, EspectedResult
 				{ "ALL:#query#", "Test \\or test2", "ALL:(Test \\or test2)" }, //0
 				{ "ALL:#query#", "Test \\and test2", "ALL:(Test \\and test2)" }, //1
@@ -183,7 +183,7 @@ public final class DslListFilterBuilderTest {
 
 	@Test
 	public void testStringBooleanQuery() {
-		final String[][] testQueries = new String[][] {
+		final String[][] testQueries = {
 				//QueryPattern, UserQuery, EspectedResult
 				{ "F1:#query# or F2:#query#", "Test", "F1:Test OR F2:Test" }, //0
 				{ "F1:#query# and F2:#query#", "Test", "F1:Test AND F2:Test" }, //1
@@ -197,7 +197,7 @@ public final class DslListFilterBuilderTest {
 
 	@Test
 	public void testStringBadBooleanQuery() {
-		final String[][] testQueries = new String[][] {
+		final String[][] testQueries = {
 				//QueryPattern, UserQuery, EspectedResult
 				{ "ALL:#query#", "Test or ", "ALL:(Test \\or )" }, //0
 				{ "ALL:#query#", "Test and ", "ALL:(Test \\and )" }, //1
@@ -241,7 +241,7 @@ public final class DslListFilterBuilderTest {
 
 	@Test
 	public void testNullableStringQuery() {
-		final String[][] testQueries = new String[][] {
+		final String[][] testQueries = {
 				//QueryPattern, UserQuery, EspectedResult
 				{ "ALL:#query#", "", "ALL:*" }, //0
 				{ "+YEAR:[2000 to #query#!(*)]", "", "+YEAR:[2000 TO *]" }, //1
@@ -251,7 +251,7 @@ public final class DslListFilterBuilderTest {
 
 	@Test
 	public void testStringOverridedFieldQuery() {
-		final String[][] testQueries = new String[][] {
+		final String[][] testQueries = {
 				//QueryPattern, UserQuery, EspectedResult
 				{ "ALL:#query#", "OTHER:Test", "OTHER:(Test)", "OTHER:Test" }, //0
 				{ "ALL:#+query*#", "OTHER:Test", "OTHER:(Test)", "OTHER:Test" }, //1
@@ -273,7 +273,7 @@ public final class DslListFilterBuilderTest {
 
 	@Test
 	public void testStringOverridedModifierQuery() {
-		final String[][] testQueries = new String[][] {
+		final String[][] testQueries = {
 				//QueryPattern, UserQuery, EspectedResult
 				{ "ALL:#query#", "+Test", "ALL:(+Test)" }, //0
 				{ "ALL:#query#", "+Test test2", "ALL:(+Test test2)" }, //1
@@ -291,7 +291,7 @@ public final class DslListFilterBuilderTest {
 
 	@Test
 	public void testStringFixedQuery() {
-		final String[][] testQueries = new String[][] {
+		final String[][] testQueries = {
 				//QueryPattern, UserQuery, EspectedResult
 				{ "ALL:fixedValue", "Test", "ALL:fixedValue" },
 				{ "ALL:fixedValue", "Test test2", "ALL:fixedValue" },
@@ -301,7 +301,7 @@ public final class DslListFilterBuilderTest {
 
 	@Test
 	public void testStringEmptyQuery() {
-		final String[][] testQueries = new String[][] {
+		final String[][] testQueries = {
 				//QueryPattern, UserQuery, EspectedResult
 				{ "ALL:#+query*# +security:fixedValue", "Test", "ALL:(+Test*) +security:fixedValue" }, //0
 				{ "ALL:#+query*# +security:fixedValue", "*", "ALL:* +security:fixedValue" }, //1
@@ -316,7 +316,7 @@ public final class DslListFilterBuilderTest {
 	@Test
 	public void testStringSpecialCharQuery() {
 		//ElasticSearch reserved characters are: + - = && || > < ! ( ) { } [ ] ^ " ~ * ? : \ /
-		final String[][] testQueries = new String[][] {
+		final String[][] testQueries = {
 				//QueryPattern, UserQuery, EspectedResult
 				{ "ALL:#+query*#", "-Test", "ALL:(-Test*)" }, //0
 				{ "ALL:#+query*#", "Test-", "ALL:(+Test-)" }, //1
@@ -355,7 +355,7 @@ public final class DslListFilterBuilderTest {
 	@Test
 	public void testStringWithSpaceQuery() {
 		//ElasticSearch reserved characters are: ' ' \n \t \r
-		final String[][] testQueries = new String[][] {
+		final String[][] testQueries = {
 				//QueryPattern, UserQuery, EspectedResult
 				{ " ALL:#query# ", "Andrey Mariette", "ALL:(Andrey Mariette)" },
 				{ "ALL:(#query# )", "Andrey Mariette", "ALL:(Andrey Mariette)" },
@@ -366,7 +366,7 @@ public final class DslListFilterBuilderTest {
 
 	@Test
 	public void testStringHackQuery() {
-		final String[][] testQueries = new String[][] {
+		final String[][] testQueries = {
 				//QueryPattern, UserQuery, EspectedResult
 				{ "ALL:#query# +security:fixedValue", "Test OR 1=1", "ALL:(Test OR 1=1) +security:fixedValue" },
 				{ "ALL:#query# +security:\"fixedValue\"", "Test OR 1=1", "ALL:(Test OR 1=1) +security:\"fixedValue\"" },
@@ -384,7 +384,7 @@ public final class DslListFilterBuilderTest {
 		final Instant instantTest2 = LocalDateTime.of(2015, 07, 23, 16, 45, 00).toInstant(ZoneOffset.UTC);
 
 		final TestBean testBean = new TestBean("Test", "Test test2", dateTest1, dateTest2, instantTest1, instantTest2, 5, 10);
-		final Object[][] testQueries = new Object[][] {
+		final Object[][] testQueries = {
 				//QueryPattern, UserQuery, EspectedResult
 				{ "ALL:#str1#", testBean, "ALL:(Test)", "ALL:Test" }, //0
 				{ "ALL:#str2#", testBean, "ALL:(Test test2)" }, //1
@@ -411,8 +411,10 @@ public final class DslListFilterBuilderTest {
 				{ "+DATE_SESSION:[* to #instant1#}", testBean, "+DATE_SESSION:[* TO \"2015-07-23T12:30:00Z\"}" }, //22
 				{ "+DATE_SESSION:[#date1# to *}", testBean, "+DATE_SESSION:[\"2015-07-23\" TO *}" }, //23
 				{ "+DATE_SESSION:[#instant1# to *}", testBean, "+DATE_SESSION:[\"2015-07-23T12:30:00Z\" TO *}" }, //24
-				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str2# +DATE_MODIFICATION_DEPUIS:[#instant1#!(*) TO *] +DATE_NAISSANCE:#instant2#!(*)", testBean, "+(NOM_NAISSANCE:(+Test) OR NOM:(+Test)) +PRENOM:(+Test +test2) +DATE_MODIFICATION_DEPUIS:[\"2015-07-23T12:30:00Z\" TO *] +DATE_NAISSANCE:\"2015-07-23T16:45:00Z\"" }, //25
-				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str2# +DATE_MODIFICATION_DEPUIS:[#date1#!(*) TO *] +DATE_NAISSANCE:#date2#!(*)", testBean, "+(NOM_NAISSANCE:(+Test) OR NOM:(+Test)) +PRENOM:(+Test +test2) +DATE_MODIFICATION_DEPUIS:[\"2015-07-23\" TO *] +DATE_NAISSANCE:\"2015-07-23\"" }, //26
+				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str2# +DATE_MODIFICATION_DEPUIS:[#instant1#!(*) TO *] +DATE_NAISSANCE:#instant2#!(*)", testBean,
+						"+(NOM_NAISSANCE:(+Test) OR NOM:(+Test)) +PRENOM:(+Test +test2) +DATE_MODIFICATION_DEPUIS:[\"2015-07-23T12:30:00Z\" TO *] +DATE_NAISSANCE:\"2015-07-23T16:45:00Z\"" }, //25
+				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str2# +DATE_MODIFICATION_DEPUIS:[#date1#!(*) TO *] +DATE_NAISSANCE:#date2#!(*)", testBean,
+						"+(NOM_NAISSANCE:(+Test) OR NOM:(+Test)) +PRENOM:(+Test +test2) +DATE_MODIFICATION_DEPUIS:[\"2015-07-23\" TO *] +DATE_NAISSANCE:\"2015-07-23\"" }, //26
 
 		};
 		testObjectFixedQuery(testQueries);
@@ -426,7 +428,7 @@ public final class DslListFilterBuilderTest {
 		final Instant instantTest2 = LocalDateTime.of(2015, 07, 23, 16, 45, 00).toInstant(ZoneOffset.UTC);
 
 		final TestBean testBean = new TestBean("Test", "Test test2", dateTest1, dateTest2, instantTest1, instantTest2, 5, 10);
-		final Object[][] testQueries = new Object[][] {
+		final Object[][] testQueries = {
 				//QueryPattern, UserQuery, EspectedResult
 				{ "+(NOM_NAISSANCE:#+null# NOM:#+str1#) +PRENOM:#+str2#", testBean, "+NOM:(+Test) +PRENOM:(+Test +test2)" }, //0
 				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+null#) +PRENOM:#+str2#", testBean, "+NOM_NAISSANCE:(+Test) +PRENOM:(+Test +test2)" }, //1
@@ -449,7 +451,7 @@ public final class DslListFilterBuilderTest {
 		final Instant instantTest2 = LocalDateTime.of(2015, 07, 23, 16, 45, 00).toInstant(ZoneOffset.UTC);
 
 		final TestBean testBean = new TestBean("Test", "Test test2", dateTest1, dateTest2, instantTest1, instantTest2, 5, 10);
-		final Object[][] testQueries = new Object[][] {
+		final Object[][] testQueries = {
 				//QueryPattern, UserQuery, EspectedResult
 				{ "NOM_NAISSANCE:#str1# NOM=#str1#", testBean, 24, "Terminal ':' is expected" }, //0
 				{ "NOM_NAISSANCE:#str1# NOM:#str1# (NOM_NAISSANCE:#str1# NOM=#str1#) NOM_NAISSANCE:#str1# NOM:#str1# ", testBean, 57, "Terminal ':' is expected" }, //1
@@ -479,7 +481,7 @@ public final class DslListFilterBuilderTest {
 		final TestBean testBeanMultiple = new TestBean("12 13", "Test test2", null, null, null, null, null, null);
 		final TestBean testBeanMultipleCode = new TestBean("CODE_1 CODE_3", "Test test2", null, null, null, null, null, null);
 		final TestBean testBeanMultipleTrackIt = new TestBean(null, "item", null, null, null, null, null, null);
-		final Object[][] testQueries = new Object[][] {
+		final Object[][] testQueries = {
 				//QueryPattern, UserQuery, EspectedResult
 				{ "+PRO_ID:#str1# +ALL:#str2#", testBeanNull, " +ALL:(Test test2)", "+ALL:(Test test2)" }, //0
 				{ "+PRO_ID:#str1# +ALL:#str2#", testBeanEmpty, "+PRO_ID:* +ALL:(Test test2)" }, //1
@@ -489,12 +491,18 @@ public final class DslListFilterBuilderTest {
 				{ "+PRO_ID:#str1# +ALL:#str2#", testBeanMultipleCode, "+PRO_ID:(CODE_1 CODE_3) +ALL:(Test test2)" }, //5
 				{ "+PRO_ID:#+str1# +ALL:#str2#", testBeanMultipleCode, "+PRO_ID:(+CODE_1 +CODE_3) +ALL:(Test test2)" }, //6
 				{ "+(PRO_ID:#str1#) +ALL:#str2#", testBeanNull, "+ALL:(Test test2)" }, //7
-				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str1# +DATE_MODIFICATION_DEPUIS:[#date2#!(*) TO *] +DATE_NAISSANCE:#date1#!(*)", testBeanNull, "+DATE_MODIFICATION_DEPUIS:[\"2015-07-23\" TO *] +DATE_NAISSANCE:*" }, //8
-				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str1# +DATE_MODIFICATION_DEPUIS:[#date2#!(*) TO *] +DATE_NAISSANCE:#date1#!(*)", testBeanEmpty, "+(NOM_NAISSANCE:* OR NOM:*) +PRENOM:* +DATE_MODIFICATION_DEPUIS:[\"2015-07-23\" TO *] +DATE_NAISSANCE:*" }, //9
-				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str1# +DATE_MODIFICATION_DEPUIS:[#date2#!(*) TO *] +DATE_NAISSANCE:#date1#!(*)", testBeanNull, "+DATE_MODIFICATION_DEPUIS:[\"2015-07-23\" TO *] +DATE_NAISSANCE:*" }, //10
-				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str1# +DATE_MODIFICATION_DEPUIS:[#instant2#!(*) TO *] +DATE_NAISSANCE:#instant1#!(*)", testBeanNull, "+DATE_MODIFICATION_DEPUIS:[\"2015-07-23T12:30:00Z\" TO *] +DATE_NAISSANCE:*" }, //11
-				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str1# +DATE_MODIFICATION_DEPUIS:[#instant2#!(*) TO *] +DATE_NAISSANCE:#instant1#!(*)", testBeanEmpty, "+(NOM_NAISSANCE:* OR NOM:*) +PRENOM:* +DATE_MODIFICATION_DEPUIS:[\"2015-07-23T12:30:00Z\" TO *] +DATE_NAISSANCE:*" }, //12
-				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str1# +DATE_MODIFICATION_DEPUIS:[#instant2#!(*) TO *] +DATE_NAISSANCE:#instant1#!(*)", testBeanNull, "+DATE_MODIFICATION_DEPUIS:[\"2015-07-23T12:30:00Z\" TO *] +DATE_NAISSANCE:*" }, //13
+				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str1# +DATE_MODIFICATION_DEPUIS:[#date2#!(*) TO *] +DATE_NAISSANCE:#date1#!(*)", testBeanNull,
+						"+DATE_MODIFICATION_DEPUIS:[\"2015-07-23\" TO *] +DATE_NAISSANCE:*" }, //8
+				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str1# +DATE_MODIFICATION_DEPUIS:[#date2#!(*) TO *] +DATE_NAISSANCE:#date1#!(*)", testBeanEmpty,
+						"+(NOM_NAISSANCE:* OR NOM:*) +PRENOM:* +DATE_MODIFICATION_DEPUIS:[\"2015-07-23\" TO *] +DATE_NAISSANCE:*" }, //9
+				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str1# +DATE_MODIFICATION_DEPUIS:[#date2#!(*) TO *] +DATE_NAISSANCE:#date1#!(*)", testBeanNull,
+						"+DATE_MODIFICATION_DEPUIS:[\"2015-07-23\" TO *] +DATE_NAISSANCE:*" }, //10
+				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str1# +DATE_MODIFICATION_DEPUIS:[#instant2#!(*) TO *] +DATE_NAISSANCE:#instant1#!(*)", testBeanNull,
+						"+DATE_MODIFICATION_DEPUIS:[\"2015-07-23T12:30:00Z\" TO *] +DATE_NAISSANCE:*" }, //11
+				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str1# +DATE_MODIFICATION_DEPUIS:[#instant2#!(*) TO *] +DATE_NAISSANCE:#instant1#!(*)", testBeanEmpty,
+						"+(NOM_NAISSANCE:* OR NOM:*) +PRENOM:* +DATE_MODIFICATION_DEPUIS:[\"2015-07-23T12:30:00Z\" TO *] +DATE_NAISSANCE:*" }, //12
+				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str1# +DATE_MODIFICATION_DEPUIS:[#instant2#!(*) TO *] +DATE_NAISSANCE:#instant1#!(*)", testBeanNull,
+						"+DATE_MODIFICATION_DEPUIS:[\"2015-07-23T12:30:00Z\" TO *] +DATE_NAISSANCE:*" }, //13
 				{ "+ITM_ID:#int1# +OPE_STATUS_CODE_NOT_ANALYZED:#str2# PART_NUMBER:#str1#^10 +[PART_NUMBER^10,DESCRIPTION_TRACKIT,COLLECTIONS,FAMILY]:#+str2*#", testBeanMultipleTrackIt,
 						"+OPE_STATUS_CODE_NOT_ANALYZED:item +(+(PART_NUMBER:(item*)^10 DESCRIPTION_TRACKIT:(item*) COLLECTIONS:(item*) FAMILY:(item*)))" }, //14
 				{ "+COM_ID:#str1# +INC_AGENTS_ACTIFS:#str1# +QUA_ID:#str1# +COR_ID:#str1# +COG_ID:#str1# +STR_ID:#str1# +MCL_ID_1:#str1# +MCL_ID_2:#str1# +MCL_ID_3:#str1# +MCL_ID_4:#str1# +MCL_ID_5:#str1# +(LISTE_MCL_ID:#str2#) +MOT_CLE_SUP:#str2# +(DATE_SEANCE:[#date1#!(*) to #date1#!(*)] INC_SEANCES_NULL:#booTrue#)",
@@ -507,7 +515,7 @@ public final class DslListFilterBuilderTest {
 
 	@Test
 	public void testMultiFieldQuery() {
-		final String[][] testQueries = new String[][] {
+		final String[][] testQueries = {
 				//QueryPattern, UserQuery, EspectedResult
 				{ "+FIELD_1:#query*#", "Test test2", "+FIELD_1:(Test* test2*)" }, //0
 				{ "[FIELD_1,FIELD_2]:#query*#", "Test test2", "FIELD_1:(Test* test2*) FIELD_2:(Test* test2*)" }, //1
@@ -545,7 +553,7 @@ public final class DslListFilterBuilderTest {
 		final Instant instantTest2 = LocalDateTime.of(2015, 07, 23, 16, 45, 00).toInstant(ZoneOffset.UTC);
 
 		final TestBean testBean = new TestBean("Test", "Test test2", dateTest1, dateTest2, instantTest1, instantTest2, 5, 10);
-		final Object[][] testQueries = new Object[][] {
+		final Object[][] testQueries = {
 				//QueryPattern, UserQuery, EspectedResult
 				{ "+([FIELD_1,FIELD_2]:#+str1*# \n\r\t+FIELD_2:#str1# \n\r\t+DATE_MODIFICATION_DEPUIS:[#date1# TO #date2#])", testBean,
 						"+((+(FIELD_1:(Test*) FIELD_2:(Test*))) +FIELD_2:Test +DATE_MODIFICATION_DEPUIS:[\"2015-07-23\" TO \"2015-07-23\"])" }, //0
