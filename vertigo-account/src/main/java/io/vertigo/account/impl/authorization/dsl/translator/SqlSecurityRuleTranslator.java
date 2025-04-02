@@ -128,7 +128,7 @@ public final class SqlSecurityRuleTranslator extends AbstractSecurityRuleTransla
 		} else if (expressionDefinition.getValue() instanceof RuleFixedValue) {
 			final var fixedValue = ((RuleFixedValue) expressionDefinition.getValue()).getFixedValue();
 			final var operator = expressionDefinition.getOperator();
-			if (fixedValue == null || "null".equalsIgnoreCase(fixedValue)) {
+			if (fixedValue == null) {
 				if (operator == ValueOperator.NEQ) {
 					query.append(" is not null");
 				} else if (operator == ValueOperator.EQ) {

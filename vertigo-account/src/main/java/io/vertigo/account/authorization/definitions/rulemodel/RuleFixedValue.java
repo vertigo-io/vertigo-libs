@@ -25,6 +25,7 @@ import io.vertigo.core.lang.Assertion;
  * @author npiedeloup
  */
 public final class RuleFixedValue implements RuleValue {
+
 	private final String fixedValue;
 
 	/**
@@ -40,7 +41,7 @@ public final class RuleFixedValue implements RuleValue {
 	 * @return fixedValue
 	 */
 	public String getFixedValue() {
-		return fixedValue;
+		return fixedValue.equalsIgnoreCase("null") ? null : fixedValue;
 	}
 
 	/** {@inheritDoc} */

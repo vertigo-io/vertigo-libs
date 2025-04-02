@@ -156,9 +156,6 @@ abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTran
 	}
 
 	protected final Serializable parseFixedValue(final String fieldName, final String stringValue) {
-		if ("null".equalsIgnoreCase(stringValue)) {
-			return null;
-		}
 		if (mySecuredEntity != null) {
 			final DataField field = mySecuredEntity.getEntity().getField(fieldName);
 			Serializable typedValue;

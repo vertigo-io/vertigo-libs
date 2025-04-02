@@ -59,14 +59,12 @@ public final class DslSecurityRulesBuilderTest {
 						"(ALL=Test OR OTHER='VALID') AND (ALL=Test OR OTHER='VALID')",
 						"(+(ALL:Test OTHER:'VALID') +(ALL:Test OTHER:'VALID'))", "((ALL=Test OR OTHER='VALID') AND (ALL=Test OR OTHER='VALID'))" }, //6
 				{ "ALL>${query}", "'Test'", "ALL>'Test'", "(+ALL:>'Test')" }, //7
-				{ "ALL=${query}", null, "ALL is null", "(-_exists_:ALL)", "ALL is null" }, //8*/
+				{ "ALL=${query}", null, "ALL is null", "(-_exists_:ALL)", "ALL is null" }, //8
 				{ "ALL=${query}", "100;102", "ALL IN (100,102)", "(+(ALL:100 ALL:102))", "(ALL=100 OR ALL=102)" }, //9
 				{ "actif=true && GEO<=${query}", "'Test'", "actif=true AND GEO<='Test'", "(+actif:true +GEO:<='Test')", "(actif=true AND GEO<='Test')" }, //10
 				{ "GEO<=${query} && actif=true", "'Test'", "GEO<='Test' AND actif=true", "(+GEO:<='Test' +actif:true)", "(GEO<='Test' AND actif=true)" }, //11
-
 				{ "ALL=null", null, "ALL is null", "(-_exists_:ALL)" }, //12
 				{ "ALL=NULL", null, "ALL is null", "(-_exists_:ALL)" }, //13
-				//{ "ALL>${query}", "'Test'", "ALL like 'Test' || '%'" }, //14
 		};
 		testSearchAndSqlQuery(testQueries);
 	}
