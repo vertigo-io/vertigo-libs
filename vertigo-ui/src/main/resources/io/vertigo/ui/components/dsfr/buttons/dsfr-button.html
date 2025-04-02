@@ -1,4 +1,4 @@
-<th:block th:fragment="dsfr-button(componentId, label, icon, title, v-title, loading, v-loading, other_attrs)"
+<th:block th:fragment="dsfr-button(componentId, label, icon, title, v-title, loading, disabled, v-disabled, v-loading, other_attrs)"
           th:assert="(${label} != null or (${icon} != null and (${title} != null or ${vTitle} != null)))"
           th:with="myComponentId=${componentId?:model.util.generateComponentUID('button', null, null, null)}">
 
@@ -8,7 +8,8 @@
                 th:label="${label?:''}"
                 th:title="${vTitle==null ? (title?:'') : ''}"
                 th::title="${vTitle?:''}"
-                th::aria-disabled="'$refs[\'' + ${myComponentId} + '\']?.$props.disabled || ' + ${loading?:vLoading?:false}"
+                th::disabled="${disabled?:'('+vDisabled+')'}"
+                th::aria-disabled="${disabled?:'('+vDisabled+')'} + ' || ' + ${loading?:vLoading?:false}"
                 th:attr="ref=${myComponentId}, __${other_attrs}__">
         
         <span th:if="${loading} OR ${vLoading} != null" 

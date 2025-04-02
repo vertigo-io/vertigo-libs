@@ -37,6 +37,7 @@ import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.data.definitions.DataField;
 
 abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTranslator<S>> {
+
 	private static final Pattern BEGIN_LINE_TRIM_PATTERN = Pattern.compile("^\\s+");
 	private static final Pattern END_LINE_TRIM_PATTERN = Pattern.compile("\\s+$");
 	private static final Pattern MULTIPLE_WHITESPACE_PATTERN = Pattern.compile("\\s+");
@@ -56,7 +57,7 @@ abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTran
 	public S on(final SecuredEntity securedEntity) {
 		Assertion.check().isNotNull(securedEntity);
 		//-----
-		this.mySecuredEntity = securedEntity;
+		mySecuredEntity = securedEntity;
 		return (S) this;
 	}
 
@@ -163,7 +164,8 @@ abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTran
 					typedValue = new BigDecimal(stringValue);
 					break;
 				case Boolean:
-					Assertion.check().isTrue("true".equalsIgnoreCase(stringValue) || "false".equalsIgnoreCase(stringValue), "Fixed boolean value rule only support true or false value ({0})", stringValue);
+					Assertion.check().isTrue("true".equalsIgnoreCase(stringValue) || "false".equalsIgnoreCase(stringValue), "Fixed boolean value rule only support true or false value ({0})",
+							stringValue);
 					typedValue = Boolean.valueOf(stringValue);
 					break;
 				case Double:

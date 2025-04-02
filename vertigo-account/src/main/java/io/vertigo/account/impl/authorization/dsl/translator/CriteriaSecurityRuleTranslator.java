@@ -31,8 +31,8 @@ import io.vertigo.account.authorization.definitions.rulemodel.RuleUserPropertyVa
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.datamodel.criteria.Criteria;
 import io.vertigo.datamodel.criteria.Criterions;
-import io.vertigo.datamodel.data.definitions.DataFieldName;
 import io.vertigo.datamodel.data.definitions.DataField;
+import io.vertigo.datamodel.data.definitions.DataFieldName;
 import io.vertigo.datamodel.data.model.Entity;
 
 /**
@@ -90,16 +90,19 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 				Criteria<E> mainCriteria = null; //comment collecter en stream ?
 				for (final Serializable userValue : userValues) {
 					//userValue can be null : a user may don't have a key needed for some modules
-					Assertion.check()
-							.isNotNull(userValue, "Null security key : {0}={1}", userPropertyValue.getUserProperty(), userValues)
-							.when(!userValue.getClass().isArray(), () -> Assertion.check()
-									.isTrue(userValue instanceof Comparable,
-											"Security keys must be serializable AND comparable (key : {0})", userValues.getClass().getSimpleName()))
-							.when(userValue.getClass().isArray(), () -> Assertion.check()
-									.isTrue(Comparable.class.isAssignableFrom(userValue.getClass().getComponentType()),
-											"Security keys must be serializable AND comparable (key : {0})", userValue.getClass().getComponentType()));
-					//----
-					mainCriteria = orCriteria(mainCriteria, toCriteria(expression.getFieldName(), expression.getOperator(), userValue));
+					if (userValue == null) {
+						mainCriteria = orCriteria(mainCriteria, toCriteria(expression.getFieldName(), expression.getOperator(), userValue));
+					} else {
+						Assertion.check()
+								.when(!userValue.getClass().isArray(), () -> Assertion.check()
+										.isTrue(userValue instanceof Comparable,
+												"Security keys must be serializable AND comparable (key : {0})", userValues.getClass().getSimpleName()))
+								.when(userValue.getClass().isArray(), () -> Assertion.check()
+										.isTrue(Comparable.class.isAssignableFrom(userValue.getClass().getComponentType()),
+												"Security keys must be serializable AND comparable (key : {0})", userValue.getClass().getComponentType()));
+						//----
+						mainCriteria = orCriteria(mainCriteria, toCriteria(expression.getFieldName(), expression.getOperator(), userValue));
+					}
 				}
 				return mainCriteria;
 			}
@@ -141,6 +144,9 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 	private Criteria<E> simpleToCriteria(final DataFieldName<E> fieldName, final ValueOperator operator, final Serializable value) {
 		switch (operator) {
 			case EQ:
+				if (value == null) {
+					return Criterions.isNull(fieldName);
+				}
 				return Criterions.isEqualTo(fieldName, value);
 			case GT:
 				return Criterions.isGreaterThan(fieldName, value);
@@ -151,6 +157,9 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 			case LTE:
 				return Criterions.isLessThanOrEqualTo(fieldName, value);
 			case NEQ:
+				if (value == null) {
+					return Criterions.isNotNull(fieldName);
+				}
 				return Criterions.isNotEqualTo(fieldName, value);
 			default:
 				throw new IllegalArgumentException("Operator not supported " + operator.name());
@@ -200,7 +209,8 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 				.map(DataField::name)
 				.toList();
 		Assertion.check()
-				.isTrue(strDimensionfields.size() <= treeKeys.length, "Entity security tree must have the same or at least the {0} firsts fields ({1}) of User securityKey {2}", strDimensionfields.size(), strDimensionfields, securityDimension.getName());
+				.isTrue(strDimensionfields.size() <= treeKeys.length, "Entity security tree must have the same or at least the {0} firsts fields ({1}) of User securityKey {2}",
+						strDimensionfields.size(), strDimensionfields, securityDimension.getName());
 		//		.when(strDimensionfields.size() < treeKeys.length,
 		//				() -> Assertion.check() //TODO a tester
 		//				.isTrue(true,"When entity security tree have only the first field of user securityField, only operators '=', ' are accepted (can't use {0})", operator));
