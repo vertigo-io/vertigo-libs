@@ -1,7 +1,13 @@
 Version history
 ===============
 
-Running 4.3.0
+Running 4.3.1
+----------------------
+* [UI][DSFR] Fix `dsfr-button` inside a `v-for` loop.
+* [Account][Security] Handle comparison between a field and 'null' value
+
+
+Running 4.3.0 - 2025/03/27
 ----------------------
 [Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-420-to-430)
   
@@ -13,8 +19,6 @@ Running 4.3.0
 * [Ui] Add VFileUpload component (not quasar based)
 * [Ui] Scripts are now all located in header
 * [Ui] Display formatted numerics in table and text-field-read-reactive
-
-more to come :)
 
 
 Running 4.2.0 - 2024/07/04
