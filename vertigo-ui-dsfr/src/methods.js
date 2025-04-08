@@ -153,9 +153,9 @@ export default {
         this.componentStates?.dsfrHeader?.navItems
             .forEach(item => {
                 if (item.title) {
-                    item.active = item.links.some(link => link.setActive === true || window.location.pathname.startsWith(link.to));
+                    item.active = item.links.some(link => link["data-set-active"] === true || window.location.pathname.startsWith(link.to));
                 } else {
-                    item.active = item.setActive === true;
+                    item.active = item["data-set-active"] === true;
                 }
             });
     },

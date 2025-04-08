@@ -10039,7 +10039,7 @@ const Zh = {
   dsfrUpdateMenuNavigationActiveState: function() {
     var a, t;
     (t = (a = this.componentStates) == null ? void 0 : a.dsfrHeader) == null || t.navItems.forEach((e) => {
-      e.title ? e.active = e.links.some((n) => n.setActive === !0 || window.location.pathname.startsWith(n.to)) : e.active = e.setActive === !0;
+      e.title ? e.active = e.links.some((n) => n["data-set-active"] === !0 || window.location.pathname.startsWith(n.to)) : e.active = e["data-set-active"] === !0;
     });
   },
   dsfrTableRows: function(a) {
@@ -10450,7 +10450,6 @@ const wv = /* @__PURE__ */ Ae(av, [["render", kv], ["__scopeId", "data-v-0be4e59
           icon: u.icon,
           tertiary: "",
           "no-outline": "",
-          "icon-left": "",
           class: "fr-nav__link"
         }, u.$attrs), null, 16, ["label", "id", "icon"])) : (i(), f("a", Q({
           key: 1,
@@ -10463,7 +10462,7 @@ const wv = /* @__PURE__ */ Ae(av, [["render", kv], ["__scopeId", "data-v-0be4e59
       ]);
     };
   }
-}), Lv = /* @__PURE__ */ Ae(Pv, [["__scopeId", "data-v-2b0119ca"]]), Mv = ["for", "id"], Bv = {
+}), Lv = /* @__PURE__ */ Ae(Pv, [["__scopeId", "data-v-b29bb72d"]]), Mv = ["for", "id"], Bv = {
   key: 0,
   class: "required"
 }, Sv = {

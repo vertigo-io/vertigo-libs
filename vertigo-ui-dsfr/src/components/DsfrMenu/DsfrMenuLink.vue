@@ -30,7 +30,7 @@ addMenuItem(props.label, currentCount)
   <li role="none">
     <template v-if="url === ''">
       <dsfr-button tabindex="-1" role="menuitem" :label="label" :id="`${id}_item_${currentCount}`"
-                   :icon="icon" tertiary no-outline icon-left
+                   :icon="icon" tertiary no-outline
                    class="fr-nav__link"
                    v-bind="$attrs"/>
     </template>
