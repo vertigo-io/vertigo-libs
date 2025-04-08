@@ -32,17 +32,17 @@
 		<div class="fr-px-0">
 		    <th:block th:if="${vTitle!=null || title!=null}" th:with="headerTitle=${vTitle!=null?'{{'+vTitle+'}}' : title?:''}" >
 				<div class="fr-grid-row fr-col fr-grid-row--middle">
-		           <h1  th:if="${currentBlockLevel == 1}"><span th:if="${vTitle!=null}" th:text="${'{{'+vTitle+'}}'}"/><span th:unless="${vTitle!=null}" vu:text="${title?:''}"/></h1>
-		           <h2  th:if="${currentBlockLevel == 2}"><span th:if="${vTitle!=null}" th:text="${'{{'+vTitle+'}}'}"/><span th:unless="${vTitle!=null}" vu:text="${title?:''}"/></h2>
-		           <h3  th:if="${currentBlockLevel == 3}"><span th:if="${vTitle!=null}" th:text="${'{{'+vTitle+'}}'}"/><span th:unless="${vTitle!=null}" vu:text="${title?:''}"/></h3>
-		           <h4  th:if="${currentBlockLevel == 4}"><span th:if="${vTitle!=null}" th:text="${'{{'+vTitle+'}}'}"/><span th:unless="${vTitle!=null}" vu:text="${title?:''}"/></h4>
-		           <h5  th:if="${currentBlockLevel == 5}"><span th:if="${vTitle!=null}" th:text="${'{{'+vTitle+'}}'}"/><span th:unless="${vTitle!=null}" vu:text="${title?:''}"/></h5>
-		           <h6  th:if="${currentBlockLevel == 6}"><span th:if="${vTitle!=null}" th:text="${'{{'+vTitle+'}}'}"/><span th:unless="${vTitle!=null}" vu:text="${title?:''}"/></h6>
-		           <div th:if="${dontUseHeading == true}"><span th:if="${vTitle!=null}" th:text="${'{{'+vTitle+'}}'}"/><span th:unless="${vTitle!=null}" vu:text="${title?:''}"/></div>
+		           <h1  th:if="${currentBlockLevel == 1}"><span th:if="${vTitle!=null}" th:text="${'{{'+vTitle+'}}'}"></span><span th:unless="${vTitle!=null}" vu:text="${title?:''}"></span></h1>
+		           <h2  th:if="${currentBlockLevel == 2}"><span th:if="${vTitle!=null}" th:text="${'{{'+vTitle+'}}'}"></span><span th:unless="${vTitle!=null}" vu:text="${title?:''}"></span></h2>
+		           <h3  th:if="${currentBlockLevel == 3}"><span th:if="${vTitle!=null}" th:text="${'{{'+vTitle+'}}'}"></span><span th:unless="${vTitle!=null}" vu:text="${title?:''}"></span></h3>
+		           <h4  th:if="${currentBlockLevel == 4}"><span th:if="${vTitle!=null}" th:text="${'{{'+vTitle+'}}'}"></span><span th:unless="${vTitle!=null}" vu:text="${title?:''}"></span></h4>
+		           <h5  th:if="${currentBlockLevel == 5}"><span th:if="${vTitle!=null}" th:text="${'{{'+vTitle+'}}'}"></span><span th:unless="${vTitle!=null}" vu:text="${title?:''}"></span></h5>
+		           <h6  th:if="${currentBlockLevel == 6}"><span th:if="${vTitle!=null}" th:text="${'{{'+vTitle+'}}'}"></span><span th:unless="${vTitle!=null}" vu:text="${title?:''}"></span></h6>
+		           <div th:if="${dontUseHeading == true}"><span th:if="${vTitle!=null}" th:text="${'{{'+vTitle+'}}'}"></span><span th:unless="${vTitle!=null}" vu:text="${title?:''}"></span></div>
 				</div>
 				<div class="fr-grid-row fr-col fr-grid-row--middle">
-		           <div class="text-subtitle2" vu:text="${subtitle?:''}" th:if="${subtitle!=null}"/>
-		           <div class="text-subtitle2" th:text="${'{{'+vSubtitle+'}}'?:''}" th:if="${vSubtitle!=null}"/>
+		           <div class="text-subtitle2" vu:text="${subtitle?:''}" th:if="${subtitle!=null}"></div>
+		           <div class="text-subtitle2" th:text="${'{{'+vSubtitle+'}}'?:''}" th:if="${vSubtitle!=null}"></div>
 				</div>
 		    </th:block>
 		</div>
