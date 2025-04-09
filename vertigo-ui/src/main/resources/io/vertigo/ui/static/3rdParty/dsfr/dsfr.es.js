@@ -10157,8 +10157,8 @@ const Zh = {
 }, nv = {
   key: 0,
   class: "fr-mb-2w flex flex-column gap--sm"
-}, rv = { class: "fr-mb-1w fr-text--md" }, lv = { key: 0 }, sv = { class: "facet" }, ov = { class: "flex justify-between w-full fr-mb-0" }, iv = { class: "facet--count" }, uv = { key: 1 }, dv = { class: "flex justify-between w-full" }, cv = { class: "facet--count" }, fv = { key: 0 }, pv = { class: "facet" }, mv = { class: "flex justify-between w-full fr-mb-0" }, hv = { class: "facet--count" }, vv = { key: 1 }, gv = { class: "flex justify-between w-full" }, bv = { class: "facet--count" }, yv = { class: "fr-mb-2w" };
-function kv(a, t, e, n, r, l) {
+}, rv = { class: "fr-mb-1w fr-text--md" }, lv = { key: 0 }, sv = { key: 0 }, ov = { class: "facet" }, iv = { class: "flex justify-between w-full fr-mb-0" }, uv = { class: "facet--count" }, dv = { key: 1 }, cv = { class: "flex justify-between w-full" }, fv = { class: "facet--count" }, pv = { key: 1 }, mv = { key: 0 }, hv = { class: "facet" }, vv = { class: "flex justify-between w-full fr-mb-0" }, gv = { class: "facet--count" }, bv = { key: 1 }, yv = { class: "flex justify-between w-full" }, kv = { class: "facet--count" }, wv = { class: "fr-mb-2w" };
+function _v(a, t, e, n, r, l) {
   const s = xe("DsfrTag"), o = xe("DsfrCheckbox"), u = xe("DsfrButton");
   return i(), f("div", null, [
     l.isAnyFacetValueSelected() ? (i(), f("div", nv, [
@@ -10182,49 +10182,49 @@ function kv(a, t, e, n, r, l) {
     }, [
       d.multiple || !l.isFacetSelected(d.code) ? (i(), f(z, { key: 0 }, [
         c("h6", rv, v(d.label), 1),
-        c("ul", null, [
+        l.selectedInvisibleFacets(d.code, d.values).length > 0 ? (i(), f("ul", lv, [
           (i(!0), f(z, null, J(l.selectedInvisibleFacets(d.code), (p) => (i(), f(z, {
             key: p.code
           }, [
-            d.multiple ? (i(), f("li", lv, [
-              c("div", sv, [
+            d.multiple ? (i(), f("li", sv, [
+              c("div", ov, [
                 ee(o, {
                   small: "",
                   modelValue: !0,
                   "onUpdate:modelValue": (h) => a.$emit("toogle-facet", d.code, p.code, e.contextKey)
                 }, {
                   label: Z(() => [
-                    c("p", ov, [
+                    c("p", iv, [
                       V(v(l.facetValueLabelByCode(d.code, p.code)) + " ", 1),
-                      c("span", iv, v(p.count), 1)
+                      c("span", uv, v(p.count), 1)
                     ])
                   ]),
                   _: 2
                 }, 1032, ["onUpdate:modelValue"])
               ])
-            ])) : (i(), f("li", uv, [
+            ])) : (i(), f("li", dv, [
               ee(u, {
                 tertiary: "",
                 "no-outline": "",
                 onClick: (h) => a.$emit("toogle-facet", d.code, p.code, e.contextKey)
               }, {
                 default: Z(() => [
-                  c("span", dv, [
+                  c("span", cv, [
                     V(v(l.facetValueLabelByCode(d.code, p.code)) + " ", 1),
-                    c("span", cv, v(p.count), 1)
+                    c("span", fv, v(p.count), 1)
                   ])
                 ]),
                 _: 2
               }, 1032, ["onClick"])
             ]))
           ], 64))), 128))
-        ]),
-        c("ul", null, [
+        ])) : g("", !0),
+        l.visibleFacets(d.code, d.values).length > 0 ? (i(), f("ul", pv, [
           (i(!0), f(z, null, J(l.visibleFacets(d.code, d.values), (p) => (i(), f(z, {
             key: p.code
           }, [
-            d.multiple ? (i(), f("li", fv, [
-              c("div", pv, [
+            d.multiple ? (i(), f("li", mv, [
+              c("div", hv, [
                 ee(o, {
                   small: "",
                   modelValue: l.isFacetValueSelected(d.code, p.code),
@@ -10232,32 +10232,32 @@ function kv(a, t, e, n, r, l) {
                   "onUpdate:modelValue": (h) => a.$emit("toogle-facet", d.code, p.code, e.contextKey)
                 }, {
                   label: Z(() => [
-                    c("p", mv, [
+                    c("p", vv, [
                       V(v(l.facetValueLabelByCode(d.code, p.code)) + " ", 1),
-                      c("span", hv, v(p.count), 1)
+                      c("span", gv, v(p.count), 1)
                     ])
                   ]),
                   _: 2
                 }, 1032, ["modelValue", "onUpdate:modelValue"])
               ])
-            ])) : (i(), f("li", vv, [
+            ])) : (i(), f("li", bv, [
               ee(u, {
                 tertiary: "",
                 "no-outline": "",
                 onClick: (h) => a.$emit("toogle-facet", d.code, p.code, e.contextKey)
               }, {
                 default: Z(() => [
-                  c("span", gv, [
+                  c("span", yv, [
                     V(v(l.facetValueLabelByCode(d.code, p.code)) + " ", 1),
-                    c("span", bv, v(p.count), 1)
+                    c("span", kv, v(p.count), 1)
                   ])
                 ]),
                 _: 2
               }, 1032, ["onClick"])
             ]))
           ], 64))), 128))
-        ]),
-        c("div", yv, [
+        ])) : g("", !0),
+        c("div", wv, [
           d.values.length > e.maxValues && !l.isFacetExpanded(d.code) ? (i(), H(u, {
             key: 0,
             size: "sm",
@@ -10285,7 +10285,7 @@ function kv(a, t, e, n, r, l) {
     ]))), 128))
   ]);
 }
-const wv = /* @__PURE__ */ Ae(av, [["render", kv], ["__scopeId", "data-v-0be4e596"]]), ca = () => {
+const xv = /* @__PURE__ */ Ae(av, [["render", _v], ["__scopeId", "data-v-2ee64a48"]]), ca = () => {
   const a = K(), t = K(!1), e = K(!1), n = () => {
     if (!a.value)
       return;
@@ -10309,10 +10309,10 @@ const wv = /* @__PURE__ */ Ae(av, [["render", kv], ["__scopeId", "data-v-0be4e59
       t.value = !1, a.value && s === !1 && a.value.style.removeProperty("--collapse-max-height");
     }
   };
-}, _v = ["id", "onKeydown", "aria-disabled", "aria-controls", "aria-expanded"], xv = ["id", "aria-labelledby", "onKeydown"], Dv = {
+}, Dv = ["id", "onKeydown", "aria-disabled", "aria-controls", "aria-expanded"], Tv = ["id", "aria-labelledby", "onKeydown"], Iv = {
   class: "fr-menu__list",
   role: "none"
-}, Tv = /* @__PURE__ */ F({
+}, Cv = /* @__PURE__ */ F({
   inheritAttrs: !1,
   __name: "DsfrMenu",
   props: {
@@ -10404,7 +10404,7 @@ const wv = /* @__PURE__ */ Ae(av, [["render", kv], ["__scopeId", "data-v-0be4e59
         "aria-expanded": d.value
       }, w.$attrs), [
         c("span", null, v(w.label), 1)
-      ], 16, _v),
+      ], 16, Dv),
       c("div", {
         id: `${w.id}_menu`,
         ref_key: "collapse",
@@ -10422,13 +10422,13 @@ const wv = /* @__PURE__ */ Ae(av, [["render", kv], ["__scopeId", "data-v-0be4e59
         ],
         onTransitionend: A[8] || (A[8] = (P) => q(s)(d.value))
       }, [
-        c("ul", Dv, [
+        c("ul", Iv, [
           S(w.$slots, "default", {}, void 0, !0)
         ])
-      ], 42, xv)
+      ], 42, Tv)
     ], 544));
   }
-}), Iv = /* @__PURE__ */ Ae(Tv, [["__scopeId", "data-v-7c863055"]]), Cv = { role: "none" }, Ev = ["id", "href"], Pv = /* @__PURE__ */ F({
+}), Ev = /* @__PURE__ */ Ae(Cv, [["__scopeId", "data-v-7c863055"]]), Pv = { role: "none" }, Lv = ["id", "href"], Mv = /* @__PURE__ */ F({
   inheritAttrs: !1,
   __name: "DsfrMenuLink",
   props: {
@@ -10440,7 +10440,7 @@ const wv = /* @__PURE__ */ Ae(av, [["render", kv], ["__scopeId", "data-v-0be4e59
     const t = a, { menuItemIndex: e, addMenuItem: n } = Qe("menuItem"), l = `fr-btn fr-btn--secondary fr-nav__link ${_(() => typeof t.icon == "string" && t.icon.startsWith("fr-icon-")) ? t.icon : ""} fr-btn--icon-left`, s = Qe("id"), o = e.value;
     return n(t.label, o), (u, d) => {
       const p = xe("dsfr-button");
-      return i(), f("li", Cv, [
+      return i(), f("li", Pv, [
         u.url === "" ? (i(), H(p, Q({
           key: 0,
           tabindex: "-1",
@@ -10458,26 +10458,26 @@ const wv = /* @__PURE__ */ Ae(av, [["render", kv], ["__scopeId", "data-v-0be4e59
           id: `${q(s)}_item_${q(o)}`,
           href: u.url,
           class: l
-        }, u.$attrs), v(u.label), 17, Ev))
+        }, u.$attrs), v(u.label), 17, Lv))
       ]);
     };
   }
-}), Lv = /* @__PURE__ */ Ae(Pv, [["__scopeId", "data-v-b29bb72d"]]), Mv = ["for", "id"], Bv = {
+}), Bv = /* @__PURE__ */ Ae(Mv, [["__scopeId", "data-v-b29bb72d"]]), Sv = ["for", "id"], $v = {
   key: 0,
   class: "required"
-}, Sv = {
+}, Av = {
   key: 0,
   class: "fr-hint-text"
-}, $v = ["id", "value", "aria-expanded", "aria-controls", "aria-disabled", "aria-required"], Av = { class: "grow overflow" }, Ov = { class: "fr-pl-1v fr-select__icon" }, Rv = ["id"], Fv = {
+}, Ov = ["id", "value", "aria-expanded", "aria-controls", "aria-disabled", "aria-required"], Rv = { class: "grow overflow" }, Fv = { class: "fr-pl-1v fr-select__icon" }, Vv = ["id"], Nv = {
   key: 0,
   class: "fr-btns-group fr-btns-group--icon-left"
-}, Vv = ["id"], Nv = {
+}, qv = ["id"], jv = {
   key: 1,
   class: "fr-input-wrap fr-icon-search-line fr-mb-3v"
-}, qv = ["id", "aria-controls"], jv = ["id"], Hv = {
+}, Hv = ["id", "aria-controls"], Wv = ["id"], Kv = {
   key: 0,
   class: "fr-hint-text"
-}, Wv = ["aria-describedby", "id"], Kv = ["id", "onKeydown", "onClick", "aria-selected"], Qv = ["data-id", "value"], Yv = ["id"], zv = /* @__PURE__ */ F({
+}, Qv = ["aria-describedby", "id"], Yv = ["id", "onKeydown", "onClick", "aria-selected"], zv = ["data-id", "value"], Gv = ["id"], Xv = /* @__PURE__ */ F({
   inheritAttrs: !1,
   __name: "DsfrSelectMultiple",
   props: /* @__PURE__ */ Be({
@@ -10608,11 +10608,11 @@ const wv = /* @__PURE__ */ Ae(av, [["render", kv], ["__scopeId", "data-v-0be4e59
             S($.$slots, "label", {}, () => [
               V(v($.label) + " ", 1),
               S($.$slots, "required-tip", {}, () => [
-                $.required ? (i(), f("span", Bv, " *")) : g("", !0)
+                $.required ? (i(), f("span", $v, " *")) : g("", !0)
               ], !0)
             ], !0),
-            $.description ? (i(), f("span", Sv, v($.description), 1)) : g("", !0)
-          ], 8, Mv),
+            $.description ? (i(), f("span", Av, v($.description), 1)) : g("", !0)
+          ], 8, Sv),
           c("div", {
             id: $.id,
             class: R([{ [`fr-select--${L.value}`]: D.value !== "" }, "fr-input fr-select--menu flex"]),
@@ -10628,14 +10628,14 @@ const wv = /* @__PURE__ */ Ae(av, [["render", kv], ["__scopeId", "data-v-0be4e59
             "aria-disabled": $.disabled,
             "aria-required": $.required
           }, [
-            c("p", Av, v(I.value), 1),
-            c("div", Ov, [
+            c("p", Rv, v(I.value), 1),
+            c("div", Fv, [
               ee(U, {
                 style: { "font-size": "1rem" },
                 name: "ri-arrow-down-s-line"
               })
             ])
-          ], 42, $v),
+          ], 42, Ov),
           c("div", {
             id: `${$.id}_dialog`,
             ref_key: "collapse",
@@ -10647,7 +10647,7 @@ const wv = /* @__PURE__ */ Ae(av, [["render", kv], ["__scopeId", "data-v-0be4e59
             onKeydown: E,
             onTransitionend: O[5] || (O[5] = (Y) => q(l)(o.value))
           }, [
-            $.comboHasButton ? (i(), f("div", Fv, [
+            $.comboHasButton ? (i(), f("div", Nv, [
               c("button", {
                 class: R(["fr-btn fr-btn--tertiary fr-btn--sm", `${y.value}`]),
                 id: `${$.id}_button`,
@@ -10655,9 +10655,9 @@ const wv = /* @__PURE__ */ Ae(av, [["render", kv], ["__scopeId", "data-v-0be4e59
                 ref_key: "button",
                 ref: h,
                 type: "button"
-              }, v(x.value), 11, Vv)
+              }, v(x.value), 11, qv)
             ])) : g("", !0),
-            $.comboHasFilter ? (i(), f("div", Nv, [
+            $.comboHasFilter ? (i(), f("div", jv, [
               Me(c("input", {
                 class: "fr-input",
                 id: `${$.id}_filter`,
@@ -10670,7 +10670,7 @@ const wv = /* @__PURE__ */ Ae(av, [["render", kv], ["__scopeId", "data-v-0be4e59
                 "aria-controls": `${$.id}_listbox`,
                 placeholder: "Rechercher",
                 type: "text"
-              }, null, 40, qv), [
+              }, null, 40, Hv), [
                 [pa, C.value]
               ])
             ])) : g("", !0),
@@ -10680,8 +10680,8 @@ const wv = /* @__PURE__ */ Ae(av, [["render", kv], ["__scopeId", "data-v-0be4e59
               id: `${$.id}_combolabel`
             }, [
               V(v($.comboLabel) + " ", 1),
-              $.comboDescription ? (i(), f("span", Hv, v($.comboDescription), 1)) : g("", !0)
-            ], 8, jv)) : g("", !0),
+              $.comboDescription ? (i(), f("span", Kv, v($.comboDescription), 1)) : g("", !0)
+            ], 8, Wv)) : g("", !0),
             c("ul", {
               role: "listbox",
               "aria-multiselectable": "true",
@@ -10706,32 +10706,32 @@ const wv = /* @__PURE__ */ Ae(av, [["render", kv], ["__scopeId", "data-v-0be4e59
                   tabindex: "-1",
                   value: Y.value,
                   "onUpdate:modelValue": O[4] || (O[4] = (ne) => u.value = ne)
-                }, null, 8, Qv), [
+                }, null, 8, zv), [
                   [pa, u.value]
                 ]),
                 c("span", null, v(Y.text), 1)
-              ], 40, Kv))), 256))
-            ], 8, Wv)
-          ], 42, Rv)
+              ], 40, Yv))), 256))
+            ], 8, Qv)
+          ], 42, Vv)
         ], 16),
         D.value ? (i(), f("p", {
           key: 0,
           id: `select-${L.value}-desc-${L.value}`,
           class: R(`fr-${L.value}-text`)
-        }, v(D.value), 11, Yv)) : g("", !0)
+        }, v(D.value), 11, Gv)) : g("", !0)
       ], 64);
     };
   }
-}), Gv = /* @__PURE__ */ Ae(zv, [["__scopeId", "data-v-3c129b3e"]]), Xv = ["id", "onKeydown", "aria-disabled", "aria-controls", "aria-expanded"], Uv = ["id", "aria-labelledby", "onKeydown"], Zv = {
+}), Uv = /* @__PURE__ */ Ae(Xv, [["__scopeId", "data-v-3c129b3e"]]), Zv = ["id", "onKeydown", "aria-disabled", "aria-controls", "aria-expanded"], Jv = ["id", "aria-labelledby", "onKeydown"], eg = {
   key: 0,
   class: "fr-label fr-mb-0"
-}, Jv = {
+}, tg = {
   key: 0,
   class: "fr-hint-text"
-}, eg = {
+}, ag = {
   class: "fr-menu-header__list fr-mx-n4v fr-pt-2v fr-mb-0",
   role: "none"
-}, tg = { role: "none" }, ag = { class: "fr-p-2v" }, ng = ["id", "href"], rg = /* @__PURE__ */ F({
+}, ng = { role: "none" }, rg = { class: "fr-p-2v" }, lg = ["id", "href"], sg = /* @__PURE__ */ F({
   inheritAttrs: !1,
   __name: "DsfrHeaderMenu",
   props: {
@@ -10816,7 +10816,7 @@ const wv = /* @__PURE__ */ Ae(av, [["render", kv], ["__scopeId", "data-v-0be4e59
         "aria-expanded": u.value
       }, I.$attrs), [
         c("span", null, v(I.label), 1)
-      ], 16, Xv),
+      ], 16, Zv),
       c("div", {
         id: `${I.id}_menu`,
         ref_key: "collapse",
@@ -10835,15 +10835,15 @@ const wv = /* @__PURE__ */ Ae(av, [["render", kv], ["__scopeId", "data-v-0be4e59
         onTransitionend: M[8] || (M[8] = (T) => q(l)(u.value))
       }, [
         S(I.$slots, "detail", {}, () => [
-          I.nom === "" && I.email === "" ? g("", !0) : (i(), f("p", Zv, [
+          I.nom === "" && I.email === "" ? g("", !0) : (i(), f("p", eg, [
             V(v(I.nom) + " ", 1),
-            I.email !== "" ? (i(), f("span", Jv, v(I.email), 1)) : g("", !0)
+            I.email !== "" ? (i(), f("span", tg, v(I.email), 1)) : g("", !0)
           ]))
         ], !0),
-        c("ul", eg, [
+        c("ul", ag, [
           S(I.$slots, "default", {}, void 0, !0),
-          c("li", tg, [
-            c("div", ag, [
+          c("li", ng, [
+            c("div", rg, [
               I.logoutUrl !== "" ? (i(), f("a", {
                 key: 0,
                 id: `${I.id}_item_${q(d) - 1}`,
@@ -10851,14 +10851,14 @@ const wv = /* @__PURE__ */ Ae(av, [["render", kv], ["__scopeId", "data-v-0be4e59
                 role: "menuitem",
                 tabindex: "-1",
                 href: I.logoutUrl
-              }, v(I.logoutLabel), 9, ng)) : g("", !0)
+              }, v(I.logoutLabel), 9, lg)) : g("", !0)
             ])
           ])
         ])
-      ], 42, Uv)
+      ], 42, Jv)
     ], 544));
   }
-}), lg = /* @__PURE__ */ Ae(rg, [["__scopeId", "data-v-3a8c3dd5"]]), sg = Symbol("header"), og = ["aria-label"], ig = { class: "fr-btns-group" }, Qt = /* @__PURE__ */ F({
+}), og = /* @__PURE__ */ Ae(sg, [["__scopeId", "data-v-3a8c3dd5"]]), ig = Symbol("header"), ug = ["aria-label"], dg = { class: "fr-btns-group" }, Qt = /* @__PURE__ */ F({
   __name: "DsfrCustomHeaderMenuLinks",
   props: {
     links: { default: () => [] },
@@ -10871,7 +10871,7 @@ const wv = /* @__PURE__ */ Ae(av, [["render", kv], ["__scopeId", "data-v-0be4e59
       role: "navigation",
       "aria-label": n.navAriaLabel
     }, [
-      c("ul", ig, [
+      c("ul", dg, [
         (i(!0), f(z, null, J(n.links, (l, s) => (i(), f("li", { key: s }, [
           ee(q(sa), Q({ ref_for: !0 }, l, {
             "on-click": (o) => {
@@ -10882,39 +10882,39 @@ const wv = /* @__PURE__ */ Ae(av, [["render", kv], ["__scopeId", "data-v-0be4e59
         ]))), 128)),
         S(n.$slots, "default")
       ])
-    ], 8, og));
+    ], 8, ug));
   }
-}), ug = {
+}), cg = {
   role: "banner",
   class: "fr-header"
-}, dg = { class: "fr-header__body" }, cg = { class: "fr-container width-inherit" }, fg = { class: "fr-header__body-row" }, pg = { class: "fr-header__brand fr-enlarge-link" }, mg = { class: "fr-header__brand-top" }, hg = { class: "fr-header__logo" }, vg = {
+}, fg = { class: "fr-header__body" }, pg = { class: "fr-container width-inherit" }, mg = { class: "fr-header__body-row" }, hg = { class: "fr-header__brand fr-enlarge-link" }, vg = { class: "fr-header__brand-top" }, gg = { class: "fr-header__logo" }, bg = {
   key: 0,
   class: "fr-header__operator"
-}, gg = ["src", "alt"], bg = {
+}, yg = ["src", "alt"], kg = {
   key: 1,
   class: "fr-header__navbar"
-}, yg = ["aria-label", "title", "data-fr-opened"], kg = ["aria-label", "title"], wg = {
+}, wg = ["aria-label", "title", "data-fr-opened"], _g = ["aria-label", "title"], xg = {
   key: 0,
   class: "fr-header__service"
-}, _g = { class: "fr-header__service-title" }, xg = {
+}, Dg = { class: "fr-header__service-title" }, Tg = {
   key: 0,
   class: "fr-badge fr-badge--sm fr-badge--green-emeraude"
-}, Dg = {
+}, Ig = {
   key: 0,
   class: "fr-header__service-tagline"
-}, Tg = {
+}, Cg = {
   key: 1,
   class: "fr-header__service"
-}, Ig = { class: "fr-header__tools" }, Cg = {
+}, Eg = { class: "fr-header__tools" }, Pg = {
   key: 0,
   class: "fr-header__tools-links"
-}, Eg = { class: "fr-header__search fr-modal" }, Pg = ["aria-label"], Lg = { class: "fr-container" }, Mg = { class: "fr-header__menu-links" }, Bg = {
+}, Lg = { class: "fr-header__search fr-modal" }, Mg = ["aria-label"], Bg = { class: "fr-container" }, Sg = { class: "fr-header__menu-links" }, $g = {
   key: 1,
   class: "flex justify-center items-center"
-}, Sg = { class: "fr-header__menu fr-modal" }, $g = {
+}, Ag = { class: "fr-header__menu fr-modal" }, Og = {
   key: 0,
   class: "fr-container"
-}, Ag = /* @__PURE__ */ F({
+}, Rg = /* @__PURE__ */ F({
   __name: "DsfrCustomHeader",
   props: {
     searchbarId: { default: "searchbar-header" },
@@ -10961,16 +10961,16 @@ const wv = /* @__PURE__ */ Ae(av, [["render", kv], ["__scopeId", "data-v-0be4e59
       var y;
       return !!((y = C.operator) != null && y.call(C).length) || !!e.operatorImgSrc;
     }), L = _(() => !!C.mainnav);
-    return Re(sg, () => u), (y, x) => {
+    return Re(ig, () => u), (y, x) => {
       var M, T, E;
       const I = xe("RouterLink");
-      return i(), f("header", ug, [
-        c("div", dg, [
-          c("div", cg, [
-            c("div", fg, [
-              c("div", pg, [
-                c("div", mg, [
-                  c("div", hg, [
+      return i(), f("header", cg, [
+        c("div", fg, [
+          c("div", pg, [
+            c("div", mg, [
+              c("div", hg, [
+                c("div", vg, [
+                  c("div", gg, [
                     ee(I, {
                       to: y.homeTo,
                       title: `${y.homeLabel} - ${y.serviceTitle}`
@@ -10984,7 +10984,7 @@ const wv = /* @__PURE__ */ Ae(av, [["render", kv], ["__scopeId", "data-v-0be4e59
                       _: 1
                     }, 8, ["to", "title"])
                   ]),
-                  D.value ? (i(), f("div", vg, [
+                  D.value ? (i(), f("div", bg, [
                     S(y.$slots, "operator", {}, () => [
                       y.operatorImgSrc ? (i(), f("img", {
                         key: 0,
@@ -10992,10 +10992,10 @@ const wv = /* @__PURE__ */ Ae(av, [["render", kv], ["__scopeId", "data-v-0be4e59
                         src: y.operatorImgSrc,
                         alt: y.operatorImgAlt,
                         style: Te(y.operatorImgStyle)
-                      }, null, 12, gg)) : g("", !0)
+                      }, null, 12, yg)) : g("", !0)
                     ])
                   ])) : g("", !0),
-                  y.showSearch || L.value || (M = y.quickLinks) != null && M.length ? (i(), f("div", bg, [
+                  y.showSearch || L.value || (M = y.quickLinks) != null && M.length ? (i(), f("div", kg, [
                     y.showSearch ? (i(), f("button", {
                       key: 0,
                       class: "fr-btn fr-btn--search",
@@ -11004,7 +11004,7 @@ const wv = /* @__PURE__ */ Ae(av, [["render", kv], ["__scopeId", "data-v-0be4e59
                       title: y.showSearchLabel,
                       "data-fr-opened": s.value,
                       onClick: x[0] || (x[0] = te((b) => h(), ["prevent", "stop"]))
-                    }, null, 8, yg)) : g("", !0),
+                    }, null, 8, wg)) : g("", !0),
                     L.value || (T = y.quickLinks) != null && T.length ? (i(), f("button", {
                       key: 1,
                       id: "button-menu",
@@ -11016,32 +11016,32 @@ const wv = /* @__PURE__ */ Ae(av, [["render", kv], ["__scopeId", "data-v-0be4e59
                       title: y.menuLabel,
                       "data-testid": "open-menu-btn",
                       onClick: x[1] || (x[1] = te((b) => p(), ["prevent", "stop"]))
-                    }, null, 8, kg)) : g("", !0)
+                    }, null, 8, _g)) : g("", !0)
                   ])) : g("", !0)
                 ]),
-                y.serviceTitle ? (i(), f("div", wg, [
+                y.serviceTitle ? (i(), f("div", xg, [
                   ee(I, Q({
                     to: y.homeTo,
                     title: `${y.homeLabel} - ${y.serviceTitle}`
                   }, y.$attrs), {
                     default: Z(() => [
-                      c("p", _g, [
+                      c("p", Dg, [
                         V(v(y.serviceTitle) + " ", 1),
-                        y.showBeta ? (i(), f("span", xg, " BETA ")) : g("", !0)
+                        y.showBeta ? (i(), f("span", Tg, " BETA ")) : g("", !0)
                       ])
                     ]),
                     _: 1
                   }, 16, ["to", "title"]),
-                  y.serviceDescription ? (i(), f("p", Dg, v(y.serviceDescription), 1)) : g("", !0)
+                  y.serviceDescription ? (i(), f("p", Ig, v(y.serviceDescription), 1)) : g("", !0)
                 ])) : g("", !0),
-                !y.serviceTitle && y.showBeta ? (i(), f("div", Tg, x[9] || (x[9] = [
+                !y.serviceTitle && y.showBeta ? (i(), f("div", Cg, x[9] || (x[9] = [
                   c("p", { class: "fr-header__service-title" }, [
                     c("span", { class: "fr-badge fr-badge--sm fr-badge--green-emeraude" }, "BETA")
                   ], -1)
                 ]))) : g("", !0)
               ]),
-              c("div", Ig, [
-                (E = y.quickLinks) != null && E.length || r.value ? (i(), f("div", Cg, [
+              c("div", Eg, [
+                (E = y.quickLinks) != null && E.length || r.value ? (i(), f("div", Pg, [
                   l.value ? g("", !0) : (i(), H(Qt, {
                     key: 0,
                     links: y.quickLinks,
@@ -11056,7 +11056,7 @@ const wv = /* @__PURE__ */ Ae(av, [["render", kv], ["__scopeId", "data-v-0be4e59
                     onSelect: x[2] || (x[2] = (b) => n("language-select", b))
                   }), null, 16)) : g("", !0)
                 ])) : g("", !0),
-                c("div", Eg, [
+                c("div", Lg, [
                   S(y.$slots, "header-search"),
                   y.showSearch ? (i(), H(q(lt), {
                     key: 0,
@@ -11079,7 +11079,7 @@ const wv = /* @__PURE__ */ Ae(av, [["render", kv], ["__scopeId", "data-v-0be4e59
               role: "dialog",
               "aria-modal": "true"
             }, [
-              c("div", Lg, [
+              c("div", Bg, [
                 c("button", {
                   id: "close-button",
                   class: "fr-btn fr-btn--close",
@@ -11087,7 +11087,7 @@ const wv = /* @__PURE__ */ Ae(av, [["render", kv], ["__scopeId", "data-v-0be4e59
                   "data-testid": "close-modal-btn",
                   onClick: x[5] || (x[5] = te((b) => u(), ["prevent", "stop"]))
                 }, v(y.closeMenuModalLabel), 1),
-                c("div", Mg, [
+                c("div", Sg, [
                   r.value ? (i(), H(q(rt), Q({ key: 0 }, r.value, {
                     onSelect: x[6] || (x[6] = (b) => r.value.currentLanguage = b.codeIso)
                   }), null, 16)) : g("", !0),
@@ -11109,7 +11109,7 @@ const wv = /* @__PURE__ */ Ae(av, [["render", kv], ["__scopeId", "data-v-0be4e59
                   key: 0,
                   hidemodal: u
                 }) : g("", !0),
-                s.value ? (i(), f("div", Bg, [
+                s.value ? (i(), f("div", $g, [
                   ee(q(lt), {
                     "searchbar-id": y.searchbarId,
                     "model-value": y.modelValue,
@@ -11119,30 +11119,30 @@ const wv = /* @__PURE__ */ Ae(av, [["render", kv], ["__scopeId", "data-v-0be4e59
                   }, null, 8, ["searchbar-id", "model-value", "placeholder"])
                 ])) : g("", !0)
               ])
-            ], 10, Pg)) : g("", !0),
+            ], 10, Mg)) : g("", !0),
             S(y.$slots, "default")
           ])
         ]),
-        c("div", Sg, [
-          L.value && !o.value ? (i(), f("div", $g, [
+        c("div", Ag, [
+          L.value && !o.value ? (i(), f("div", Og, [
             S(y.$slots, "mainnav", { hidemodal: u })
           ])) : g("", !0)
         ])
       ]);
     };
   }
-}), Og = { class: "fr-table" }, Rg = { class: "fr-table__wrapper" }, Fg = { class: "fr-table__container" }, Vg = { class: "fr-table__content" }, Ng = ["id"], qg = {
+}), Fg = { class: "fr-table" }, Vg = { class: "fr-table__wrapper" }, Ng = { class: "fr-table__container" }, qg = { class: "fr-table__content" }, jg = ["id"], Hg = {
   key: 0,
   class: "fr-cell--fixed",
   role: "columnheader"
-}, jg = {
+}, Wg = {
   key: 0,
   class: "fr-checkbox-group fr-checkbox-group--sm"
-}, Hg = ["id", "checked"], Wg = ["for"], Kg = ["tabindex", "onClick", "onKeydown"], Qg = { key: 0 }, Yg = { key: 1 }, zg = ["data-row-key"], Gg = {
+}, Kg = ["id", "checked"], Qg = ["for"], Yg = ["tabindex", "onClick", "onKeydown"], zg = { key: 0 }, Gg = { key: 1 }, Xg = ["data-row-key"], Ug = {
   key: 0,
   class: "fr-cell--fixed",
   role: "columnheader"
-}, Xg = { class: "fr-checkbox-group fr-checkbox-group--sm" }, Ug = ["id", "value"], Zg = ["for"], Jg = ["onKeydown"], eb = { key: 0 }, tb = ["colspan"], ab = { class: "flex gap-2 items-center" }, nb = ["selected"], rb = ["value", "selected"], lb = { class: "flex ml-1" }, sb = /* @__PURE__ */ F({
+}, Zg = { class: "fr-checkbox-group fr-checkbox-group--sm" }, Jg = ["id", "value"], eb = ["for"], tb = ["onKeydown"], ab = { key: 0 }, nb = ["colspan"], rb = { class: "flex gap-2 items-center" }, lb = ["selected"], sb = ["value", "selected"], ob = { class: "flex ml-1" }, ib = /* @__PURE__ */ F({
   __name: "DsfrCustomDataTable",
   props: /* @__PURE__ */ Be({
     id: { default: () => $e("table") },
@@ -11236,28 +11236,28 @@ const wv = /* @__PURE__ */ Ae(av, [["render", kv], ["__scopeId", "data-v-0be4e59
     function A() {
       o.value = 0;
     }
-    return t({ resetCurrentPage: A }), (P, G) => (i(), f("div", Og, [
-      c("div", Rg, [
-        c("div", Fg, [
-          c("div", Vg, [
+    return t({ resetCurrentPage: A }), (P, G) => (i(), f("div", Fg, [
+      c("div", Vg, [
+        c("div", Ng, [
+          c("div", qg, [
             c("table", { id: P.id }, [
               c("caption", {
                 class: R({ "fr-sr-only": P.noCaption })
               }, v(P.title), 3),
               c("thead", null, [
                 c("tr", null, [
-                  P.selectableRows ? (i(), f("th", qg, [
-                    P.showToggleAll ? (i(), f("div", jg, [
+                  P.selectableRows ? (i(), f("th", Hg, [
+                    P.showToggleAll ? (i(), f("div", Wg, [
                       c("input", {
                         id: `table-select--${P.id}-all`,
                         checked: T.value,
                         type: "checkbox",
                         onInput: G[0] || (G[0] = (k) => M(k.target.checked))
-                      }, null, 40, Hg),
+                      }, null, 40, Kg),
                       c("label", {
                         class: "fr-label",
                         for: `table-select--${P.id}-all`
-                      }, " Sélectionner tout ", 8, Wg)
+                      }, " Sélectionner tout ", 8, Qg)
                     ])) : g("", !0)
                   ])) : g("", !0),
                   (i(!0), f(z, null, J(P.headersRow, (k, B) => (i(), f("th", Q({
@@ -11286,18 +11286,18 @@ const wv = /* @__PURE__ */ Ae(av, [["render", kv], ["__scopeId", "data-v-0be4e59
                       S(P.$slots, "header", Q({ ref_for: !0 }, typeof k == "object" ? k : { key: k, label: k }), () => [
                         V(v(typeof k == "object" ? k.label : k), 1)
                       ], !0),
-                      D.value !== (k.key ?? k) && (P.sortableRows === !0 || Array.isArray(P.sortableRows) && P.sortableRows.includes(k.key ?? k)) ? (i(), f("span", Qg, [
+                      D.value !== (k.key ?? k) && (P.sortableRows === !0 || Array.isArray(P.sortableRows) && P.sortableRows.includes(k.key ?? k)) ? (i(), f("span", zg, [
                         ee(q(be), {
                           name: "ri-sort-asc",
                           color: "var(--grey-625-425)"
                         })
-                      ])) : D.value === (k.key ?? k) ? (i(), f("span", Yg, [
+                      ])) : D.value === (k.key ?? k) ? (i(), f("span", Gg, [
                         ee(q(be), {
                           name: L.value ? "ri-sort-desc" : "ri-sort-asc"
                         }, null, 8, ["name"])
                       ])) : g("", !0)
                     ], 2)
-                  ], 16, Kg))), 128))
+                  ], 16, Yg))), 128))
                 ])
               ]),
               c("tbody", null, [
@@ -11305,21 +11305,21 @@ const wv = /* @__PURE__ */ Ae(av, [["render", kv], ["__scopeId", "data-v-0be4e59
                   key: `row-${B}`,
                   "data-row-key": B + 1
                 }, [
-                  P.selectableRows ? (i(), f("th", Gg, [
-                    c("div", Xg, [
+                  P.selectableRows ? (i(), f("th", Ug, [
+                    c("div", Zg, [
                       Me(c("input", {
                         id: `row-select-${P.id}-${B}`,
                         "onUpdate:modelValue": G[1] || (G[1] = (j) => l.value = j),
                         value: k[0][P.rowKey] ?? `row-${B}`,
                         type: "checkbox",
                         onChange: G[2] || (G[2] = (j) => E())
-                      }, null, 40, Ug), [
+                      }, null, 40, Jg), [
                         [yt, l.value]
                       ]),
                       c("label", {
                         class: "fr-label",
                         for: `row-select-${P.id}-${B}`
-                      }, " Sélectionner la ligne " + v(B + 1), 9, Zg)
+                      }, " Sélectionner la ligne " + v(B + 1), 9, eb)
                     ])
                   ])) : g("", !0),
                   (i(!0), f(z, null, J(k, (j, $) => (i(), f("td", {
@@ -11340,15 +11340,15 @@ const wv = /* @__PURE__ */ Ae(av, [["render", kv], ["__scopeId", "data-v-0be4e59
                     }), () => [
                       V(v(typeof j == "object" ? j[P.rowKey] : j), 1)
                     ], !0)
-                  ], 42, Jg))), 128))
-                ], 8, zg))), 128)),
-                I.value.length === 0 ? (i(), f("tr", eb, [
+                  ], 42, tb))), 128))
+                ], 8, Xg))), 128)),
+                I.value.length === 0 ? (i(), f("tr", ab, [
                   c("td", {
                     colspan: P.selectableRows ? P.headersRow.length + 1 : P.headersRow.length
-                  }, v(n.noResultLabel), 9, tb)
+                  }, v(n.noResultLabel), 9, nb)
                 ])) : g("", !0)
               ])
-            ], 8, Ng)
+            ], 8, jg)
           ])
         ])
       ]),
@@ -11364,7 +11364,7 @@ const wv = /* @__PURE__ */ Ae(av, [["render", kv], ["__scopeId", "data-v-0be4e59
               key: 0,
               class: R(["fr-mb-0 fr-ml-1v", { "fr-text--sm": m.value }])
             }, v(P.rows.length) + " résulat(s)", 3)) : g("", !0),
-            c("div", ab, [
+            c("div", rb, [
               c("label", {
                 class: R(["fr-label", { "fr-text--sm": m.value }]),
                 for: "pagination-options"
@@ -11380,17 +11380,17 @@ const wv = /* @__PURE__ */ Ae(av, [["render", kv], ["__scopeId", "data-v-0be4e59
                   selected: !P.paginationOptions.includes(s.value),
                   disabled: "true",
                   hidden: "hidden"
-                }, " Sélectionner une option ", 8, nb),
+                }, " Sélectionner une option ", 8, lb),
                 (i(!0), f(z, null, J(P.paginationOptions, (k, B) => (i(), f("option", {
                   key: B,
                   value: k,
                   selected: +k === s.value
-                }, v(k), 9, rb))), 128))
+                }, v(k), 9, sb))), 128))
               ], 544), [
                 [Xt, s.value]
               ])
             ]),
-            c("div", lb, [
+            c("div", ob, [
               c("span", {
                 class: R(["self-center", { "fr-text--sm": m.value }])
               }, " Page " + v(o.value + 1) + " sur " + v(u.value), 3)
@@ -11407,18 +11407,18 @@ const wv = /* @__PURE__ */ Ae(av, [["render", kv], ["__scopeId", "data-v-0be4e59
       ], 2)
     ]));
   }
-}), ob = /* @__PURE__ */ Ae(sb, [["__scopeId", "data-v-50097005"]]), ib = ["id", "name", "value", "checked", "required", "data-testid", "data-test"], ub = ["for"], db = {
+}), ub = /* @__PURE__ */ Ae(ib, [["__scopeId", "data-v-50097005"]]), db = ["id", "name", "value", "checked", "required", "data-testid", "data-test"], cb = ["for"], fb = {
   key: 0,
   class: "required"
-}, cb = {
+}, pb = {
   key: 0,
   class: "fr-hint-text"
-}, fb = {
+}, mb = {
   key: 0,
   class: "fr-messages-group",
   "aria-live": "assertive",
   role: "alert"
-}, pb = /* @__PURE__ */ F({
+}, hb = /* @__PURE__ */ F({
   inheritAttrs: !1,
   __name: "DsfrCustomCheckbox",
   props: /* @__PURE__ */ Be({
@@ -11462,7 +11462,7 @@ const wv = /* @__PURE__ */ Ae(av, [["render", kv], ["__scopeId", "data-v-0be4e59
         }, l.$attrs, {
           "data-testid": `input-checkbox-${l.id}`,
           "data-test": `input-checkbox-${l.id}`
-        }), null, 16, ib), [
+        }), null, 16, db), [
           [yt, r.value]
         ]),
         c("label", {
@@ -11472,16 +11472,16 @@ const wv = /* @__PURE__ */ Ae(av, [["render", kv], ["__scopeId", "data-v-0be4e59
           S(l.$slots, "label", {}, () => [
             V(v(l.label) + " ", 1),
             S(l.$slots, "required-tip", {}, () => [
-              l.required ? (i(), f("span", db, " *")) : g("", !0)
+              l.required ? (i(), f("span", fb, " *")) : g("", !0)
             ])
           ]),
-          l.hint ? (i(), f("span", cb, [
+          l.hint ? (i(), f("span", pb, [
             S(l.$slots, "hint", {}, () => [
               V(v(l.hint), 1)
             ])
           ])) : g("", !0)
-        ], 8, ub),
-        e.value ? (i(), f("div", fb, [
+        ], 8, cb),
+        e.value ? (i(), f("div", mb, [
           c("p", {
             class: R(["fr-message--info flex items-center", n.value])
           }, v(e.value), 3)
@@ -11489,13 +11489,13 @@ const wv = /* @__PURE__ */ Ae(av, [["render", kv], ["__scopeId", "data-v-0be4e59
       ], 2)
     ], 2));
   }
-}), mb = ["for"], hb = {
+}), vb = ["for"], gb = {
   key: 0,
   class: "required"
-}, vb = {
+}, bb = {
   key: 0,
   class: "fr-hint-text"
-}, gb = ["id", "name", "disabled", "aria-disabled", "required"], bb = ["selected"], yb = ["selected", "value", "disabled", "aria-disabled"], kb = ["id"], wb = /* @__PURE__ */ F({
+}, yb = ["id", "name", "disabled", "aria-disabled", "required"], kb = ["selected"], wb = ["selected", "value", "disabled", "aria-disabled"], _b = ["id"], xb = /* @__PURE__ */ F({
   inheritAttrs: !1,
   __name: "DsfrCustomSelect",
   props: {
@@ -11534,11 +11534,11 @@ const wv = /* @__PURE__ */ Ae(av, [["render", kv], ["__scopeId", "data-v-0be4e59
         S(l.$slots, "label", {}, () => [
           V(v(l.label) + " ", 1),
           S(l.$slots, "required-tip", {}, () => [
-            l.required ? (i(), f("span", hb, " *")) : g("", !0)
+            l.required ? (i(), f("span", gb, " *")) : g("", !0)
           ])
         ]),
-        l.hint ?? l.description ? (i(), f("span", vb, v(l.hint ?? l.description), 1)) : g("", !0)
-      ], 8, mb),
+        l.hint ?? l.description ? (i(), f("span", bb, v(l.hint ?? l.description), 1)) : g("", !0)
+      ], 8, vb),
       c("select", Q({
         id: l.selectId,
         class: [{ [`fr-select--${n.value}`]: e.value }, "fr-select"],
@@ -11556,23 +11556,23 @@ const wv = /* @__PURE__ */ Ae(av, [["render", kv], ["__scopeId", "data-v-0be4e59
           selected: !l.options.some((o) => typeof o != "object" || o === null ? o === l.modelValue : o.value === l.modelValue),
           disabled: "",
           hidden: ""
-        }, v(l.defaultUnselectedText), 9, bb),
+        }, v(l.defaultUnselectedText), 9, kb),
         (i(!0), f(z, null, J(l.options, (o, u) => (i(), f("option", {
           key: u,
           selected: l.modelValue === o || typeof o == "object" && o.value === l.modelValue,
           value: typeof o == "object" ? o.value : o,
           disabled: !!(typeof o == "object" && o.disabled),
           "aria-disabled": !!(typeof o == "object" && o.disabled)
-        }, v(typeof o == "object" ? o.text : o), 9, yb))), 128))
-      ], 16, gb),
+        }, v(typeof o == "object" ? o.text : o), 9, wb))), 128))
+      ], 16, yb),
       e.value ? (i(), f("p", {
         key: 0,
         id: `select-${n.value}-desc-${n.value}`,
         class: R(`fr-${n.value}-text`)
-      }, v(e.value), 11, kb)) : g("", !0)
+      }, v(e.value), 11, _b)) : g("", !0)
     ], 2));
   }
-}), _b = ["id"], xb = /* @__PURE__ */ F({
+}), Db = ["id"], Tb = /* @__PURE__ */ F({
   __name: "DsfrComponentTooltip",
   props: {
     id: { default: () => $e("tooltip") },
@@ -11682,10 +11682,10 @@ const wv = /* @__PURE__ */ Ae(av, [["render", kv], ["__scopeId", "data-v-0be4e59
         S(b.$slots, "default", {}, () => [
           V(v(b.content), 1)
         ], !0)
-      ], 46, _b)
+      ], 46, Db)
     ], 64));
   }
-}), tr = /* @__PURE__ */ Ae(xb, [["__scopeId", "data-v-9aff3af2"]]), Db = /* @__PURE__ */ F({
+}), tr = /* @__PURE__ */ Ae(Tb, [["__scopeId", "data-v-9aff3af2"]]), Ib = /* @__PURE__ */ F({
   __name: "DsfrButtonTooltip",
   setup(a) {
     return (t, e) => (i(), H(tr, Q({ "is-link": !1 }, t.$attrs), {
@@ -11695,7 +11695,7 @@ const wv = /* @__PURE__ */ Ae(av, [["render", kv], ["__scopeId", "data-v-0be4e59
       _: 3
     }, 16));
   }
-}), Tb = /* @__PURE__ */ F({
+}), Cb = /* @__PURE__ */ F({
   __name: "DsfrLinkTooltip",
   props: {
     asButton: { type: Boolean, default: !1 }
@@ -11710,7 +11710,7 @@ const wv = /* @__PURE__ */ Ae(av, [["render", kv], ["__scopeId", "data-v-0be4e59
       _: 3
     }, 16, ["is-link"]));
   }
-}), Ib = ["id", "href", "aria-disabled"], Cb = /* @__PURE__ */ F({
+}), Eb = ["id", "href", "aria-disabled"], Pb = /* @__PURE__ */ F({
   __name: "DsfrLink",
   props: {
     id: { default: () => $e("link") },
@@ -11753,18 +11753,18 @@ const wv = /* @__PURE__ */ Ae(av, [["render", kv], ["__scopeId", "data-v-0be4e59
       S(o.$slots, "default", {}, () => [
         V(v(o.label), 1)
       ], !0)
-    ], 16, Ib));
+    ], 16, Eb));
   }
-}), Eb = /* @__PURE__ */ Ae(Cb, [["__scopeId", "data-v-44994a07"]]), Pb = (a, t) => a.matches ? a.matches(t) : a.msMatchesSelector ? a.msMatchesSelector(t) : a.webkitMatchesSelector ? a.webkitMatchesSelector(t) : null, Lb = (a, t) => {
+}), Lb = /* @__PURE__ */ Ae(Pb, [["__scopeId", "data-v-44994a07"]]), Mb = (a, t) => a.matches ? a.matches(t) : a.msMatchesSelector ? a.msMatchesSelector(t) : a.webkitMatchesSelector ? a.webkitMatchesSelector(t) : null, Bb = (a, t) => {
   let e = a;
   for (; e && e.nodeType === 1; ) {
-    if (Pb(e, t))
+    if (Mb(e, t))
       return e;
     e = e.parentNode;
   }
   return null;
-}, Mb = (a, t) => a.closest ? a.closest(t) : Lb(a, t), Bb = (a) => !!(a && typeof a.then == "function");
-class Sb {
+}, Sb = (a, t) => a.closest ? a.closest(t) : Bb(a, t), $b = (a) => !!(a && typeof a.then == "function");
+class Ab {
   constructor({
     search: t,
     autoSelect: e = !1,
@@ -11842,7 +11842,7 @@ class Sb {
       t.preventDefault();
     });
     N(this, "handleResultClick", (t) => {
-      const { target: e } = t, n = Mb(e, "[data-result-index]");
+      const { target: e } = t, n = Sb(e, "[data-result-index]");
       if (n) {
         this.selectedIndex = parseInt(n.dataset.resultIndex, 10);
         const r = this.results[this.selectedIndex];
@@ -11885,15 +11885,15 @@ class Sb {
       const n = t.getBoundingClientRect(), r = e.getBoundingClientRect();
       r.top < n.top ? t.scrollTop -= n.top - r.top : r.bottom > n.bottom && (t.scrollTop += r.bottom - n.bottom);
     });
-    this.search = Bb(t) ? t : (C) => Promise.resolve(t(C)), this.autoSelect = e, this.setValue = n, this.setAttribute = r, this.onUpdate = l, this.onSubmit = s, this.autocorrect = u, this.onShow = o, this.onHide = d, this.onLoading = p, this.onLoaded = h, this.submitOnEnter = m;
+    this.search = $b(t) ? t : (C) => Promise.resolve(t(C)), this.autoSelect = e, this.setValue = n, this.setAttribute = r, this.onUpdate = l, this.onSubmit = s, this.autocorrect = u, this.onShow = o, this.onHide = d, this.onLoading = p, this.onLoaded = h, this.submitOnEnter = m;
   }
 }
-const $b = (a, t) => {
+const Ob = (a, t) => {
   const e = a.getBoundingClientRect(), n = t.getBoundingClientRect();
   return /* 1 */ e.bottom + n.height > window.innerHeight && /* 2 */
   window.innerHeight - e.bottom < e.top && /* 3 */
   window.pageYOffset + e.top - n.height > 0 ? "above" : "below";
-}, Ab = (a, t, e) => {
+}, Rb = (a, t, e) => {
   let n;
   return function() {
     const l = this, s = arguments, o = function() {
@@ -11901,7 +11901,7 @@ const $b = (a, t) => {
     };
     clearTimeout(n), n = setTimeout(o, t);
   };
-}, Ob = (a) => {
+}, Fb = (a) => {
   if (a != null && a.length) {
     const t = a.startsWith("#");
     return {
@@ -11909,7 +11909,7 @@ const $b = (a, t) => {
       content: t ? a.substring(1) : a
     };
   }
-}, Rb = {
+}, Vb = {
   name: "Autocomplete",
   inheritAttrs: !1,
   props: {
@@ -11948,7 +11948,7 @@ const $b = (a, t) => {
   },
   emits: ["update", "submit"],
   data() {
-    const a = new Sb({
+    const a = new Ab({
       search: this.search,
       autoSelect: this.autoSelect,
       setValue: this.setValue,
@@ -11960,7 +11960,7 @@ const $b = (a, t) => {
       onLoaded: this.handleLoaded,
       submitOnEnter: this.submitOnEnter
     });
-    return this.debounceTime > 0 && (a.handleInput = Ab(a.handleInput, this.debounceTime)), {
+    return this.debounceTime > 0 && (a.handleInput = Rb(a.handleInput, this.debounceTime)), {
       core: a,
       value: this.defaultValue,
       resultListId: `${this.baseClass}-result-list-${Yt()}`,
@@ -12013,7 +12013,7 @@ const $b = (a, t) => {
       };
     },
     resultListProps() {
-      const a = this.position === "below" ? "top" : "bottom", t = Ob(this.resultListLabel);
+      const a = this.position === "below" ? "top" : "bottom", t = Fb(this.resultListLabel);
       return {
         id: this.resultListId,
         class: `${this.baseClass}-result-list`,
@@ -12052,7 +12052,7 @@ const $b = (a, t) => {
     document.body.removeEventListener("click", this.handleDocumentClick);
   },
   updated() {
-    !this.$refs.input || !this.$refs.resultList || (this.resetPosition && this.results.length > 0 && (this.resetPosition = !1, this.position = $b(
+    !this.$refs.input || !this.$refs.resultList || (this.resetPosition && this.results.length > 0 && (this.resetPosition = !1, this.position = Ob(
       this.$refs.input,
       this.$refs.resultList
     )), this.core.checkSelectedResultVisible(this.$refs.resultList));
@@ -12087,7 +12087,7 @@ const $b = (a, t) => {
     }
   }
 };
-function Fb(a, t, e, n, r, l) {
+function Nb(a, t, e, n, r, l) {
   return i(), f("div", Q({ ref: "root" }, {
     class: a.$attrs.class,
     ...a.$attrs.style ? { style: a.$attrs.style } : {}
@@ -12123,16 +12123,16 @@ function Fb(a, t, e, n, r, l) {
     ])
   ], 16);
 }
-const Vb = /* @__PURE__ */ Ae(Rb, [["render", Fb]]);
-var Nb = {
+const qb = /* @__PURE__ */ Ae(Vb, [["render", Nb]]);
+var jb = {
   install: function(a, t) {
-    a.use(Zp), a.component("RouterLink", tv), a.component("DsfrFacets", wv), a.component("DsfrSelectMultiple", Gv), a.component("DsfrMenu", Iv), a.component("DsfrMenuLink", Lv), a.component("DsfrHeaderMenu", lg), a.component("DsfrCustomHeader", Ag), a.component("DsfrCustomHeaderMenuLinks", Qt), a.component("DsfrCustomDataTable", ob), a.component("DsfrCustomCheckbox", pb), a.component("DsfrCustomSelect", wb), a.component("DsfrButtonTooltip", Db), a.component("DsfrLinkTooltip", Tb), a.component("DsfrLink", Eb), a.component("autocomplete", Vb);
+    a.use(Zp), a.component("RouterLink", tv), a.component("DsfrFacets", xv), a.component("DsfrSelectMultiple", Uv), a.component("DsfrMenu", Ev), a.component("DsfrMenuLink", Bv), a.component("DsfrHeaderMenu", og), a.component("DsfrCustomHeader", Rg), a.component("DsfrCustomHeaderMenuLinks", Qt), a.component("DsfrCustomDataTable", ub), a.component("DsfrCustomCheckbox", hb), a.component("DsfrCustomSelect", xb), a.component("DsfrButtonTooltip", Ib), a.component("DsfrLinkTooltip", Cb), a.component("DsfrLink", Lb), a.component("autocomplete", qb);
   },
   methods: Zh,
   utils: Jh
 };
-window && (window.DSFR = Nb);
+window && (window.DSFR = jb);
 export {
-  Nb as default
+  jb as default
 };
 //# sourceMappingURL=dsfr.es.js.map
