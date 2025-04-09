@@ -17,7 +17,7 @@
       <template v-if="facet.multiple || !isFacetSelected(facet.code)">
         <h6 class="fr-mb-1w fr-text--md">{{ facet.label }}</h6>
 
-        <ul>
+        <ul v-if="selectedInvisibleFacets(facet.code, facet.values).length > 0">
           <template v-for="(value) in selectedInvisibleFacets(facet.code)" :key="value.code">
             <li v-if="facet.multiple">
               <div class="facet">
@@ -26,7 +26,8 @@
                   <template #label>
                     <p class="flex justify-between w-full fr-mb-0">
                       {{ facetValueLabelByCode(facet.code, value.code) }}
-                      <span class="facet--count">{{ value.count }}</span>
+                      <span class="facet--count" aria-hidden="true">{{ value.count }}</span>
+                      <span class="fr-sr-only">({{value.count}} élément(s))</span>
                     </p>
                   </template>
                 </DsfrCheckbox>
@@ -37,14 +38,15 @@
                           @click="$emit('toogle-facet', facet.code, value.code, contextKey)">
                 <span class="flex justify-between w-full">
                   {{ facetValueLabelByCode(facet.code, value.code) }}
-                  <span class="facet--count">{{ value.count }}</span>
+                  <span class="facet--count" aria-hidden="true">{{ value.count }}</span>
+                  <span class="fr-sr-only">({{value.count}} élément(s))</span>
                 </span>
               </DsfrButton>
             </li>
           </template>
         </ul>
 
-        <ul>
+        <ul v-if="visibleFacets(facet.code, facet.values).length > 0">
           <template v-for="(value) in visibleFacets(facet.code, facet.values)" :key="value.code">
             <li v-if="facet.multiple">
               <div class="facet">
@@ -53,7 +55,8 @@
                   <template #label>
                     <p class="flex justify-between w-full fr-mb-0">
                       {{ facetValueLabelByCode(facet.code, value.code) }}
-                      <span class="facet--count">{{ value.count }}</span>
+                      <span class="facet--count" aria-hidden="true">{{ value.count }}</span>
+                      <span class="fr-sr-only">({{value.count}} élément(s))</span>
                     </p>
                   </template>
                 </DsfrCheckbox>
@@ -64,7 +67,8 @@
                           @click="$emit('toogle-facet', facet.code, value.code, contextKey)">
                 <span class="flex justify-between w-full">
                   {{ facetValueLabelByCode(facet.code, value.code) }}
-                  <span class="facet--count">{{ value.count }}</span>
+                  <span class="facet--count" aria-hidden="true">{{ value.count }}</span>
+                  <span class="fr-sr-only">({{value.count}} élément(s))</span>
                 </span>
               </DsfrButton>
             </li>
@@ -74,11 +78,11 @@
         <div class="fr-mb-2w">
           <DsfrButton size="sm" tertiary v-if="facet.values.length > maxValues && !isFacetExpanded(facet.code)"
                       @click="expandFacet(facet.code)">
-            {{ $q.lang.vui.facets.showAll }}
+            Voir plus
           </DsfrButton>
           <DsfrButton size="sm" tertiary v-if="facet.values.length > maxValues && isFacetExpanded(facet.code)"
                       @click="reduceFacet(facet.code)">
-            {{ $q.lang.vui.facets.showLess }}
+            Voir moins
           </DsfrButton>
         </div>
       </template>
@@ -199,6 +203,7 @@ export default {
   min-width: 100%;
   color: var(--text-label-grey);
   font-weight: normal;
+  text-align: left;
 }
 
 .facets ul {
