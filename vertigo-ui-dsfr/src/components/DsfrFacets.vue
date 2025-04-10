@@ -24,11 +24,11 @@
                 <DsfrCheckbox small v-bind:modelValue="true"
                               @update:modelValue="$emit('toogle-facet', facet.code, value.code, contextKey)">
                   <template #label>
-                    <p class="flex justify-between w-full fr-mb-0">
+                    <span class="flex justify-between w-full fr-mb-0">
                       {{ facetValueLabelByCode(facet.code, value.code) }}
                       <span class="facet--count" aria-hidden="true">{{ value.count }}</span>
                       <span class="fr-sr-only">({{value.count}} élément(s))</span>
-                    </p>
+                    </span>
                   </template>
                 </DsfrCheckbox>
               </div>
@@ -53,11 +53,11 @@
                 <DsfrCheckbox small v-bind:modelValue="isFacetValueSelected(facet.code, value.code)" class="facet"
                               @update:modelValue="$emit('toogle-facet', facet.code, value.code, contextKey)">
                   <template #label>
-                    <p class="flex justify-between w-full fr-mb-0">
+                    <span class="flex justify-between w-full fr-mb-0">
                       {{ facetValueLabelByCode(facet.code, value.code) }}
                       <span class="facet--count" aria-hidden="true">{{ value.count }}</span>
                       <span class="fr-sr-only">({{value.count}} élément(s))</span>
-                    </p>
+                    </span>
                   </template>
                 </DsfrCheckbox>
               </div>

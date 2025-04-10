@@ -10215,7 +10215,7 @@ function Tv(n, t, e, a, r, l) {
                   "onUpdate:modelValue": (v) => n.$emit("toogle-facet", d.code, p.code, e.contextKey)
                 }, {
                   label: U(() => [
-                    c("p", ov, [
+                    c("span", ov, [
                       V(h(l.facetValueLabelByCode(d.code, p.code)) + " ", 1),
                       c("span", iv, h(p.count), 1),
                       c("span", uv, "(" + h(p.count) + " élément(s))", 1)
@@ -10255,7 +10255,7 @@ function Tv(n, t, e, a, r, l) {
                   "onUpdate:modelValue": (v) => n.$emit("toogle-facet", d.code, p.code, e.contextKey)
                 }, {
                   label: U(() => [
-                    c("p", gv, [
+                    c("span", gv, [
                       V(h(l.facetValueLabelByCode(d.code, p.code)) + " ", 1),
                       c("span", bv, h(p.count), 1),
                       c("span", yv, "(" + h(p.count) + " élément(s))", 1)
@@ -10310,7 +10310,7 @@ function Tv(n, t, e, a, r, l) {
     ]))), 128))
   ]);
 }
-const Iv = /* @__PURE__ */ Ae(nv, [["render", Tv], ["__scopeId", "data-v-649dcfae"]]), fn = () => {
+const Iv = /* @__PURE__ */ Ae(nv, [["render", Tv], ["__scopeId", "data-v-8511e7a9"]]), fn = () => {
   const n = K(), t = K(!1), e = K(!1), a = () => {
     if (!n.value)
       return;
