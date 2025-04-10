@@ -56,6 +56,8 @@ public final class RateLimitingManagerImpl implements RateLimitingManager {
 	private static final double DEFAULT_BANISH_REPEATER_MULT = 2; //Banish mult for over raters repeaters
 	public static final long DEFAULT_BANISH_MAX_SECONDS = 7 * 24 * 60 * 60; //Banish over raters seconds
 
+	private static final int MAX_WHITELIST_SIZE = 100_000; //max size of whitelist IPs, to avoid too many IPs in memory
+
 	private enum OverRateLimitMode {
 		nothing, //inactive rate limiting
 		logOnly, //log over rate request
@@ -83,10 +85,11 @@ public final class RateLimitingManagerImpl implements RateLimitingManager {
 	private final double banishRepeaterMult; //Banish mult for repeaters
 	private final long maxBanishSeconds; //Max banish seconds
 	private final String banishMessage; //Banish message
-	private final Set<String> whiteListUsers;
 
 	private final AnalyticsManager analyticsManager;
 	private final RateLimitingStorePlugin rateLimitingStorePlugin;
+
+	private final IpWhitelistHelper ipWhitelistHelper;
 
 	@Inject
 	public RateLimitingManagerImpl(
@@ -143,7 +146,8 @@ public final class RateLimitingManagerImpl implements RateLimitingManager {
 		}
 		this.banishMessage = banishMessage.orElse(defaultBanishMessage.toString()); //Message returned if banished
 
-		this.whiteListUsers = whiteListUsers.map(s -> Set.of(s.split("\\s*,\\s*"))).orElse(Set.of());
+		ipWhitelistHelper = new IpWhitelistHelper(whiteListUsers.map(s -> Set.of(s.split("\\s*[,;]\\s*"))).orElse(Set.of()), MAX_WHITELIST_SIZE);
+
 	}
 
 	@Override
@@ -160,7 +164,7 @@ public final class RateLimitingManagerImpl implements RateLimitingManager {
 			return true;
 		}
 		final var userKey = obtainUserKey(request);
-		if (whiteListUsers.contains(userKey)) { //fast bypass
+		if (ipWhitelistHelper.isIpInWhitelist(userKey)) { //fast bypass
 			return true;
 		}
 
@@ -297,14 +301,14 @@ public final class RateLimitingManagerImpl implements RateLimitingManager {
 	private Optional<String> obtainUserIp(final HttpServletRequest request) {
 		if (useHeaderUserIp.isPresent()) {
 			final var userIp = obtainUserIpFromHeader(request, useHeaderUserIp.get()); //if no useHeaderUserIp : use X-Forwarded-For or remoteAddr
-			if (userIp != null) {//userIp is null if header not found
+			if (userIp.isPresent()) {//userIp is empty if header not found
 				return userIp;
 			}
 			//if no useHeaderUserIp : use X-Forwarded-For or remoteAddr
 		}
 		if (useForwardedFor) {
 			final var userIp = obtainUserIpFromHeader(request, "X-Forwarded-For"); //if no useHeaderUserIp : use X-Forwarded-For or remoteAddr
-			if (userIp != null) {//userIp is null if header not found
+			if (userIp.isPresent()) {//userIp is empty if header not found
 				return userIp;
 			}
 			//if no X-Forwarded-For : use remoteAddr
@@ -327,7 +331,7 @@ public final class RateLimitingManagerImpl implements RateLimitingManager {
 				return Optional.of(useHeaderUserIp);
 			}
 		}
-		return null;//header not found
+		return Optional.empty();//header not found
 	}
 
 	private static Optional<String> obtainSessionId(final HttpServletRequest request) {
