@@ -15,7 +15,7 @@
     </div>
     <div v-for="facet in facets" :key="facet.code" class="facets">
       <template v-if="facet.multiple || !isFacetSelected(facet.code)">
-        <h6 class="fr-mb-1w fr-text--md">{{ facet.label }}</h6>
+        <component :is="heading" class="fr-mb-1w fr-text--md">{{ facet.label }}</component>
 
         <ul v-if="selectedInvisibleFacets(facet.code, facet.values).length > 0">
           <template v-for="(value) in selectedInvisibleFacets(facet.code)" :key="value.code">
@@ -101,6 +101,10 @@ export default {
     selectedFacets: Object,
     contextKey: String,
     facetValueTranslatorProvider: Function,
+    heading: {
+      type: String,
+      default: "h6"
+    },
     maxValues: {
       type: Number,
       default: 5
