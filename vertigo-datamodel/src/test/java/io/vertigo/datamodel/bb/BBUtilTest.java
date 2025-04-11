@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.vortex.bb;
+package io.vertigo.datamodel.bb;
 
 import javax.inject.Inject;
 
@@ -26,8 +26,9 @@ import org.junit.jupiter.api.Test;
 
 import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.component.di.DIInjector;
+import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.NodeConfig;
-import io.vertigo.vortex.VortexFeatures;
+import io.vertigo.datamodel.DataModelFeatures;
 
 public class BBUtilTest {
 
@@ -44,8 +45,12 @@ public class BBUtilTest {
 
 	private NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
+				.withBoot(BootConfig.builder()
+						.withLocales("fr_FR")
+						.build())
+
 				.addModule(
-						new VortexFeatures()
+						new DataModelFeatures()
 								.withBlackboard()
 								.withMemoryBlackboard()
 								.build())

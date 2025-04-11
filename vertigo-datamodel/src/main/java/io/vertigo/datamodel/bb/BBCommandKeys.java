@@ -15,37 +15,47 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.vortex.bb;
+package io.vertigo.datamodel.bb;
+
+import java.util.Set;
 
 /**
- * Part of Blackboard to manage strings
- * 	- put
- *  - get
- *  - eq
- *  and some specific commands 
- *  - append
- *  - eqCaseInsensitive
- *  - startsWith
- *  
+ * Blackboard commands to manage keys.
+ * 	
  * @author pchretien
  */
-public interface BBCommandString extends BBCommandKV<String> {
+public interface BBCommandKeys {
 	/**
-	 * Appends something to a key
+	 * Returns if the keys exists
 	 *
 	 * @param key the key
-	 * @param something something
+	 * @return if the key exists
 	 */
-	void append(final BBKey key, final String something);
-
-	boolean eqCaseInsensitive(final BBKey key, final String compare);
+	boolean exists(final BBKey key);
 
 	/**
-	 * Returns true if the value associated to the key starts with the compare string
+	 * Returns all the keys matching the pattern
+	 * The magic pattern * returns all the keys
+	 *
+	 * @param keyPattern the pattern
+	 * @return A list of keys
+	 */
+	Set<BBKey> findAll(final BBKeyPattern keyPattern);
+
+	/**
+	 * Deletes all the keys matching the pattern
+	 *
+	 * The magic pattern * remove all the keys
+	 *
+	 * @param keyPattern the pattern
+	 */
+	void deleteAll(final BBKeyPattern keyPattern);
+
+	/**
+	 * Returns the key type or null if the keys doesn't exist
 	 *
 	 * @param key the key
-	 * @param compare the value to compare
-	 * @return true if the value associated to the key starts with the compare string
+	 * @return the key type or null
 	 */
-	boolean startsWith(final BBKey key, final String compare);
+	BBType getType(final BBKey key);
 }

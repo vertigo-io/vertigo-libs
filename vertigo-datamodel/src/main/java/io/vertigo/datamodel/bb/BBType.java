@@ -15,24 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.vortex.bb;
+package io.vertigo.datamodel.bb;
 
-public interface BBCommandKV<O> {
-	/**
-	 * Returns the value or null if the key does not exist
-	 *
-	 * @param key the key
-	 * @return the value mapped with the key or null if the key does not exist
-	 */
-	O get(final BBKey key);
-
-	/**
-	 * Associates the specified value with the specified key
-	 *
-	 * @param key the key
-	 * @param value the value
-	 */
-	void put(final BBKey key, final O value);
-
-	boolean eq(final BBKey key, final O compare);
+/**
+ * Types
+ */
+public enum BBType {
+	Boolean, String, Integer, List // of Strings
 }

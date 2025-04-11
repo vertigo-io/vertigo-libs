@@ -15,29 +15,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.vortex.bb.redis;
+package io.vertigo.datamodel.bb.memory;
 
-import io.vertigo.connectors.redis.RedisFeatures;
 import io.vertigo.core.node.config.NodeConfig;
-import io.vertigo.core.param.Param;
-import io.vertigo.vortex.VortexFeatures;
-import io.vertigo.vortex.bb.AbstractBBBlackBoardTest;
+import io.vertigo.datamodel.DataModelFeatures;
+import io.vertigo.datamodel.bb.AbstractBBBlackBoardTest;
 
-public class RedisBBBlackBoardTest extends AbstractBBBlackBoardTest {
+public class MemoryBBBlackBoardTest extends AbstractBBBlackBoardTest {
 
 	@Override
 	protected NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
-				.addModule(new RedisFeatures()
-						.withJedis(
-								Param.of("host", "docker-vertigo.part.klee.lan.net"),
-								Param.of("port", 6379),
-								Param.of("database", 0))
-						.build())
 				.addModule(
-						new VortexFeatures()
+						new DataModelFeatures()
 								.withBlackboard()
-								.withRedisBlackboard()
+								.withMemoryBlackboard()
 								.build())
 				.build();
 	}

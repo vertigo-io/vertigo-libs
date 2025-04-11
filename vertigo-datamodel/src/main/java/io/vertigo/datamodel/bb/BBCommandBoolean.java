@@ -15,23 +15,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.vortex.bb.memory;
+package io.vertigo.datamodel.bb;
 
-import io.vertigo.core.node.config.NodeConfig;
-import io.vertigo.vortex.VortexFeatures;
-import io.vertigo.vortex.bb.AbstractBBBlackBoardTest;
-
-public class MemoryBBBlackBoardTest extends AbstractBBBlackBoardTest {
-
-	@Override
-	protected NodeConfig buildNodeConfig() {
-		return NodeConfig.builder()
-				.addModule(
-						new VortexFeatures()
-								.withBlackboard()
-								.withMemoryBlackboard()
-								.build())
-				.build();
-	}
-
+/**
+ * Blackboard commands to manage booleans
+ * 	- put
+ *  - get
+ *  - eq
+ * 	
+ * @author pchretien
+ */
+public interface BBCommandBoolean extends BBCommandKV<Boolean> {
+	//
 }

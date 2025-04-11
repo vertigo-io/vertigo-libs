@@ -17,11 +17,17 @@
  */
 package io.vertigo.datamodel;
 
+import io.vertigo.core.node.config.Feature;
 import io.vertigo.core.node.config.Features;
+import io.vertigo.core.param.Param;
+import io.vertigo.datamodel.bb.BlackBoardManager;
+import io.vertigo.datamodel.impl.bb.BlackBoardManagerImpl;
 import io.vertigo.datamodel.impl.data.metrics.DataMetricsProvider;
 import io.vertigo.datamodel.impl.smarttype.SmartTypeManagerImpl;
 import io.vertigo.datamodel.impl.task.TaskManagerImpl;
 import io.vertigo.datamodel.impl.task.metrics.TaskMetricsProvider;
+import io.vertigo.datamodel.plugins.bb.memory.MemoryBlackBoardStorePlugin;
+import io.vertigo.datamodel.plugins.bb.redis.RedisBlackBoardStorePlugin;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.task.TaskManager;
 
@@ -37,6 +43,42 @@ public final class DataModelFeatures extends Features<DataModelFeatures> {
 	 */
 	public DataModelFeatures() {
 		super("vertigo-datamodel");
+	}
+
+	/**
+	 * Activates BlackBoard.
+	 *
+	 * @return these features
+	 */
+	@Feature("blackboard")
+	public DataModelFeatures withBlackboard() {
+		getModuleConfigBuilder()
+				.addComponent(BlackBoardManager.class, BlackBoardManagerImpl.class);
+		return this;
+	}
+
+	/**
+	 * Add ability to use memory plugin to store Blackboards.
+	 *
+	 * @return these features
+	 */
+	@Feature("blackboard.memory")
+	public DataModelFeatures withMemoryBlackboard(final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(MemoryBlackBoardStorePlugin.class, params);
+		return this;
+	}
+
+	/**
+	 * Add ability to use redis plugin to store Blackboards.
+	 *
+	 * @return these features
+	 */
+	@Feature("blackboard.redis")
+	public DataModelFeatures withRedisBlackboard(final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(RedisBlackBoardStorePlugin.class, params);
+		return this;
 	}
 
 	/** {@inheritDoc} */

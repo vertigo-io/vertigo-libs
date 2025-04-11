@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.vortex.bb;
+package io.vertigo.datamodel.bb;
 
 /**
  * The blackboard is a simple structure allowing to read and write values identified by keys.

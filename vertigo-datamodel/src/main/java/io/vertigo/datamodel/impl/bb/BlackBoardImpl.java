@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.vortex.impl.bb;
+package io.vertigo.datamodel.impl.bb;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -24,16 +24,16 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.vortex.bb.BBCommandBoolean;
-import io.vertigo.vortex.bb.BBCommandInteger;
-import io.vertigo.vortex.bb.BBCommandKeys;
-import io.vertigo.vortex.bb.BBCommandList;
-import io.vertigo.vortex.bb.BBCommandString;
-import io.vertigo.vortex.bb.BBKey;
-import io.vertigo.vortex.bb.BBKeyPattern;
-import io.vertigo.vortex.bb.BBKeyTemplate;
-import io.vertigo.vortex.bb.BBType;
-import io.vertigo.vortex.bb.BlackBoard;
+import io.vertigo.datamodel.bb.BBCommandBoolean;
+import io.vertigo.datamodel.bb.BBCommandInteger;
+import io.vertigo.datamodel.bb.BBCommandKeys;
+import io.vertigo.datamodel.bb.BBCommandList;
+import io.vertigo.datamodel.bb.BBCommandString;
+import io.vertigo.datamodel.bb.BBKey;
+import io.vertigo.datamodel.bb.BBKeyPattern;
+import io.vertigo.datamodel.bb.BBKeyTemplate;
+import io.vertigo.datamodel.bb.BBType;
+import io.vertigo.datamodel.bb.BlackBoard;
 
 final class BlackBoardImpl implements BlackBoard {
 	private final BlackBoardStorePlugin blackBoardStorePlugin;

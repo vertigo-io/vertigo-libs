@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.vortex.plugins.bb.memory;
+package io.vertigo.datamodel.plugins.bb.memory;
 
 import java.util.ArrayList;
 import java.util.Collections;

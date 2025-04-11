@@ -46,42 +46,6 @@ public class VortexFeatures extends Features<VortexFeatures> {
 	//		return this;
 	//	}
 	//
-	/**
-	 * Activates BlackBoard.
-	 *
-	 * @return these features
-	 */
-	@Feature("blackboard")
-	public VortexFeatures withBlackboard() {
-		getModuleConfigBuilder()
-				.addComponent(BlackBoardManager.class, BlackBoardManagerImpl.class);
-		return this;
-	}
-
-	/**
-	 * Add ability to use memory plugin to store Blackboards.
-	 *
-	 * @return these features
-	 */
-	@Feature("blackboard.memory")
-	public VortexFeatures withMemoryBlackboard(final Param... params) {
-		getModuleConfigBuilder()
-				.addPlugin(MemoryBlackBoardStorePlugin.class, params);
-		return this;
-	}
-
-	/**
-	 * Add ability to use redis plugin to store Blackboards.
-	 *
-	 * @return these features
-	 */
-	@Feature("blackboard.redis")
-	public VortexFeatures withRedisBlackboard(final Param... params) {
-		getModuleConfigBuilder()
-				.addPlugin(RedisBlackBoardStorePlugin.class, params);
-		return this;
-	}
-
 	//	/**
 	//	 * Activates NLU.
 	//	 *

@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.vortex.bb;
+package io.vertigo.datamodel.bb;
 
 import io.vertigo.core.lang.Assertion;
 
@@ -43,7 +43,7 @@ import io.vertigo.core.lang.Assertion;
 public record BBKey(String key) {
 	public static String KEY_REGEX = "(/[a-z0-9]+)+";
 
-	public BBKey{
+	public BBKey {
 		Assertion.check()
 				.isNotBlank(key)
 				.isTrue(key.matches(KEY_REGEX), "the key '{0}' must contain only a-z 1-9 words separated with /", key);

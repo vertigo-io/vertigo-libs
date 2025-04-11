@@ -15,47 +15,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.vortex.bb;
-
-import java.util.Set;
+package io.vertigo.datamodel.bb;
 
 /**
- * Blackboard commands to manage keys.
- * 	
+ * Blackboard commands to manage scalars ( Boolean, Integer, String)
+ * 	- put
+ *  - get
+ *  - eq
+ *  
  * @author pchretien
  */
-public interface BBCommandKeys {
+interface BBCommandKV<O> {
 	/**
-	 * Returns if the keys exists
+	 * Returns the value or null if the key does not exist
 	 *
 	 * @param key the key
-	 * @return if the key exists
+	 * @return the value mapped with the key or null if the key does not exist
 	 */
-	boolean exists(final BBKey key);
+	O get(final BBKey key);
 
 	/**
-	 * Returns all the keys matching the pattern
-	 * The magic pattern * returns all the keys
-	 *
-	 * @param keyPattern the pattern
-	 * @return A list of keys
-	 */
-	Set<BBKey> findAll(final BBKeyPattern keyPattern);
-
-	/**
-	 * Deletes all the keys matching the pattern
-	 *
-	 * The magic pattern * remove all the keys
-	 *
-	 * @param keyPattern the pattern
-	 */
-	void deleteAll(final BBKeyPattern keyPattern);
-
-	/**
-	 * Returns the key type or null if the keys doesn't exist
+	 * Associates the specified value with the specified key
 	 *
 	 * @param key the key
-	 * @return the key type or null
+	 * @param value the value
 	 */
-	BBType getType(final BBKey key);
+	void put(final BBKey key, final O value);
+
+	boolean eq(final BBKey key, final O compare);
 }

@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.vortex.plugins.bb.redis;
+package io.vertigo.datamodel.plugins.bb.redis;
 
 import java.util.HashSet;
 import java.util.List;
@@ -27,11 +27,11 @@ import javax.inject.Inject;
 import io.vertigo.connectors.redis.RedisConnector;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.param.ParamValue;
-import io.vertigo.vortex.bb.BBKey;
-import io.vertigo.vortex.bb.BBKeyPattern;
-import io.vertigo.vortex.bb.BBType;
-import io.vertigo.vortex.bb.BlackBoardManager;
-import io.vertigo.vortex.impl.bb.BlackBoardStorePlugin;
+import io.vertigo.datamodel.bb.BBKey;
+import io.vertigo.datamodel.bb.BBKeyPattern;
+import io.vertigo.datamodel.bb.BBType;
+import io.vertigo.datamodel.bb.BlackBoardManager;
+import io.vertigo.datamodel.impl.bb.BlackBoardStorePlugin;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Transaction;
 import redis.clients.jedis.params.ScanParams;
