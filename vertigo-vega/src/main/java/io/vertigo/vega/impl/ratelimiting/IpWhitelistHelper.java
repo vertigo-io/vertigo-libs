@@ -27,20 +27,22 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
 
 /**
- * Helper to manager whiteList ip, parameterize by pattern.
- * Full ip :
+ * Helper to manage whitelist IPs, parameterized by patterns.
+ * Supported formats:
+ *
+ * Full IP:
  * - 192.168.1.0
  * - 2001:0db8:85a3:0000:0000:8a2e:0370:7334
  *
- * Range ip : on last byte only
+ * IP Range: on last byte only
  * - 192.168.1.0-192.168.1.134 (must have the same prefix)
  * - 192.168.1.0-134
  * - 2001:0db8:85a3:0000:0000:8a2e:0370:7334-7440
- * 
- * CIDR : on ipv4 only
+ *
+ * CIDR: for IPv4 only
  * - 192.168.1.0/25
  *
- * Whitelist is limited on size (hard limit 1_000_000)
+ * Whitelist is limited in size (hard limit 1,000,000)
  *
  * @author npiedeloup
  */
@@ -50,6 +52,12 @@ class IpWhitelistHelper {
 	private final Set<String> whitelist;
 	private final int maxWhitelistSize;
 
+	/**
+	 * Constructor for IpWhitelistHelper.
+	 *
+	 * @param whitelistPatterns Set of IP patterns to be whitelisted
+	 * @param maxWhitelistSize Maximum number of IPs allowed in the whitelist (must be between 1 and 1,000,000)
+	 */
 	public IpWhitelistHelper(final Set<String> whitelistPatterns, final int maxWhitelistSize) {
 		Assertion.check()
 				.isNotNull(whitelistPatterns)
@@ -62,17 +70,24 @@ class IpWhitelistHelper {
 	}
 
 	/**
-	 * Vérifie si une adresse IP est dans la whitelist.
+	 * Checks if an IP address is in the whitelist.
 	 *
-	 * @param ip Adresse IP à vérifier.
-	 * @return true si l'adresse IP est dans la whitelist, false sinon.
+	 * @param ip IP address to check
+	 * @return true if the IP address is in the whitelist, false otherwise
 	 */
 	public boolean isIpInWhitelist(final String ip) {
 		return whitelist.contains(normalizeAddress(ip));
 	}
 
+	/**
+	 * Normalizes an IP address by removing brackets for IPv6 and handling leading zeros.
+	 *
+	 * @param ip IP address to normalize
+	 * @return Normalized IP address
+	 */
 	private String normalizeAddress(final String ip) {
 		var normalized = removeBracketsIpv6Address(ip);
+		// If IP contains leading zeros, normalize it using InetAddress
 		if (normalized.startsWith("0") || normalized.contains(".0") || normalized.contains(":0")) {
 			try {
 				normalized = InetAddress.getByName(normalized).getHostAddress();
@@ -83,19 +98,29 @@ class IpWhitelistHelper {
 		return normalized;
 	}
 
+	/**
+	 * Estimates the number of IP addresses in the whitelist.
+	 *
+	 * @return Number of IPs in the whitelist
+	 */
 	public int estimateIpCount() {
 		return whitelist.size();
 	}
 
+	/**
+	 * Returns the whitelist patterns as a string.
+	 *
+	 * @return String representation of the whitelist patterns
+	 */
 	public String printWhitelist() {
 		return String.join(", ", whitelistPatterns);
 	}
 
 	/**
-	 * Initialise la whitelist en calculant toutes les adresses IP possibles
-	 * Accepte une syntaxe range dans chaque sous-réseau donné.
+	 * Initializes the whitelist by calculating all possible IP addresses
+	 * Accepts range syntax in each given subnet.
 	 *
-	 * @param whitelistPatterns Collection de sous-réseaux au format "adresse" ou "adresse/préfixe" (ex. "192.168.1.0/25").
+	 * @param whitelistPatterns Collection of subnets in format "address" or "address/prefix" (e.g., "192.168.1.0/25")
 	 */
 	public void addWhitelist(final Set<String> whitelistPatterns) {
 		Assertion.check().isNotNull(whitelistPatterns);
@@ -104,10 +129,13 @@ class IpWhitelistHelper {
 			try {
 				subnet = removeBracketsIpv6Address(subnet);
 				if (subnet.indexOf('-') > 0) {
+					// Handle IP range format (e.g., 192.168.1.0-192.168.1.134)
 					whitelist.addAll(initIpRange(subnet));
 				} else if (subnet.indexOf('/') > 0) {
+					// Handle CIDR format (e.g., 192.168.1.0/25)
 					whitelist.addAll(initCIDR(subnet));
 				} else {
+					// Handle single IP address
 					whitelist.add(InetAddress.getByName(subnet).getHostAddress());//normalize
 				}
 			} catch (final UnknownHostException e) {
@@ -118,6 +146,13 @@ class IpWhitelistHelper {
 		}
 	}
 
+	/**
+	 * Initializes a range of IP addresses from a pattern like "192.168.1.1-192.168.1.10" or "192.168.1.1-10".
+	 *
+	 * @param ipRange The IP range pattern
+	 * @return Set of IP addresses in the range
+	 * @throws UnknownHostException If an IP address in the range is invalid
+	 */
 	private Set<String> initIpRange(final String ipRange) throws UnknownHostException {
 		final String[] parts = ipRange.split("-");
 		Assertion.check()
@@ -125,57 +160,31 @@ class IpWhitelistHelper {
 		//---
 		final String startIp = parts[0].trim();
 		final String endIp = parts[1].trim();
+		// Determine if we're dealing with IPv4 or IPv6
 		final char prefixSep = startIp.indexOf(':') > 0 ? ':' : '.';
 		final String prefix = startIp.substring(0, startIp.lastIndexOf(prefixSep));
+
 		final InetAddress startAdr = InetAddress.getByName(startIp);
 		final InetAddress endAdr;
+
+		// Handle two different formats: full IP in end range or just the last part
 		if (endIp.indexOf(prefixSep) > 0) {
 			if (!endIp.startsWith(prefix)) {
 				throw new IllegalArgumentException("Invalid IP range " + ipRange + ", endIp must start with first part of startIp");
 			}
 			endAdr = InetAddress.getByName(endIp);
 		} else {
+			// Handle shorthand notation: prefix + end value
 			endAdr = InetAddress.getByName(prefix + prefixSep + endIp);
 		}
+
+		// Convert IP addresses to numeric representation for iteration
 		final BigInteger hmin = new BigInteger(startAdr.getAddress());
 		final BigInteger hmax = new BigInteger(endAdr.getAddress());
 		Assertion.check()
 				.isTrue(hmin.compareTo(hmax) <= 0, "Invalid IP range " + ipRange + ", startIp must be less than endIp");
 
-		final var ipRangeSet = new HashSet<String>();
-		for (BigInteger ip = hmin; ip.compareTo(hmax) <= 0; ip = ip.add(BigInteger.ONE)) {
-			final InetAddress ipAddress = InetAddress.getByAddress(ip.toByteArray());
-			ipRangeSet.add(ipAddress.getHostAddress());
-		}
-		return ipRangeSet;
-	}
-
-	private Set<String> initCIDR(final String subnet) throws UnknownHostException {
-		final String[] parts = subnet.contains("/") ? subnet.split("/") : new String[] { subnet, "32" };
-		final String baseIp = parts[0];
-		final InetAddress baseAddr = InetAddress.getByName(baseIp);
-		final int prefixLength = Integer.parseInt(parts[1]);
-		if (prefixLength < 0 || prefixLength > 32) {
-			throw new IllegalStateException("Invalid mask in subnet " + subnet);
-		}
-		final BigInteger address = new BigInteger(baseAddr.getAddress());
-		BigInteger hmin, hmax;
-		if (prefixLength == 31) {
-			hmin = address.subtract(BigInteger.ONE);
-			hmax = address;
-		} else if (prefixLength == 32) {
-			hmin = address;
-			hmax = address;
-		} else {
-			BigInteger mask = BigInteger.ONE.shiftLeft(prefixLength).subtract(BigInteger.ONE).shiftLeft(32 - prefixLength);
-			final byte[] maskBytes = mask.toByteArray();
-			if (maskBytes.length == 5 && maskBytes[0] == 0) {
-				mask = new BigInteger(mask.toByteArray(), 1, 4);
-			}
-			final BigInteger network = address.and(mask);
-			hmin = network.add(BigInteger.ONE);
-			hmax = network.add(BigInteger.ONE.shiftLeft(32 - prefixLength).subtract(BigInteger.TWO));
-		}
+		// Generate all IP addresses in the range
 		final var ipRangeSet = new HashSet<String>();
 		for (BigInteger ip = hmin; ip.compareTo(hmax) <= 0; ip = ip.add(BigInteger.ONE)) {
 			final InetAddress ipAddress = InetAddress.getByAddress(ip.toByteArray());
@@ -185,9 +194,64 @@ class IpWhitelistHelper {
 	}
 
 	/**
-	 * Remove brackets if present.
-	 * @param ipWithBrackets
-	 * @return ip without brackets
+	 * Initializes a set of IP addresses from a CIDR notation (IPv4 only).
+	 *
+	 * @param subnet The subnet in CIDR notation (e.g., "192.168.1.0/24")
+	 * @return Set of IP addresses in the CIDR range
+	 * @throws UnknownHostException If the base IP is invalid
+	 */
+	private Set<String> initCIDR(final String subnet) throws UnknownHostException {
+		final String[] parts = subnet.contains("/") ? subnet.split("/") : new String[] { subnet, "32" };
+		final String baseIp = parts[0];
+		final InetAddress baseAddr = InetAddress.getByName(baseIp);
+		final int prefixLength = Integer.parseInt(parts[1]);
+
+		// Validate prefix length
+		if (prefixLength < 0 || prefixLength > 32) {
+			throw new IllegalStateException("Invalid mask in subnet " + subnet);
+		}
+
+		// Calculate IP range based on CIDR prefix
+		final BigInteger address = new BigInteger(baseAddr.getAddress());
+		BigInteger hmin, hmax;
+
+		// Special cases for /31 and /32 prefixes
+		if (prefixLength == 31) {
+			hmin = address.subtract(BigInteger.ONE);
+			hmax = address;
+		} else if (prefixLength == 32) {
+			hmin = address;
+			hmax = address;
+		} else {
+			// Calculate network address and broadcast address for the subnet
+			BigInteger mask = BigInteger.ONE.shiftLeft(prefixLength).subtract(BigInteger.ONE).shiftLeft(32 - prefixLength);
+			final byte[] maskBytes = mask.toByteArray();
+
+			// Handle leading zero byte that might be added by BigInteger.toByteArray()
+			if (maskBytes.length == 5 && maskBytes[0] == 0) {
+				mask = new BigInteger(mask.toByteArray(), 1, 4);
+			}
+
+			// Calculate usable IP range (excluding network and broadcast addresses)
+			final BigInteger network = address.and(mask);
+			hmin = network.add(BigInteger.ONE); // First usable address (network address + 1)
+			hmax = network.add(BigInteger.ONE.shiftLeft(32 - prefixLength).subtract(BigInteger.TWO)); // Last usable address
+		}
+
+		// Generate all IP addresses in the range
+		final var ipRangeSet = new HashSet<String>();
+		for (BigInteger ip = hmin; ip.compareTo(hmax) <= 0; ip = ip.add(BigInteger.ONE)) {
+			final InetAddress ipAddress = InetAddress.getByAddress(ip.toByteArray());
+			ipRangeSet.add(ipAddress.getHostAddress());
+		}
+		return ipRangeSet;
+	}
+
+	/**
+	 * Removes brackets from IPv6 addresses if present.
+	 *
+	 * @param ipWithBrackets IP address potentially with brackets
+	 * @return IP address without brackets
 	 */
 	private static String removeBracketsIpv6Address(final String ipWithBrackets) {
 		if (ipWithBrackets != null && ipWithBrackets.startsWith("[") && ipWithBrackets.endsWith("]")) {
