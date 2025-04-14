@@ -11590,6 +11590,7 @@ const _v = /* @__PURE__ */ Ae(av, [["render", wv], ["__scopeId", "data-v-27da8f0
       }), [
         c("option", {
           selected: !l.options.some((o) => typeof o != "object" || o === null ? o === l.modelValue : o.value === l.modelValue),
+          value: "",
           disabled: "",
           hidden: ""
         }, h(l.defaultUnselectedText), 9, yb),
