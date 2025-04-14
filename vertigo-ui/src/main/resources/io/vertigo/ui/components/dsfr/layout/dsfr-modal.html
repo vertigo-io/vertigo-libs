@@ -1,12 +1,13 @@
 <th:block th:fragment="dsfr-modal(componentId, title, closeLabel, srcUrl, width, height, autoHeight, iframeTitle, iframe_attrs, section_attrs, modal_attrs)"
       th:assert="${componentId} != null or ${iframeTitle} != null"
+          th:with="myIframeTitle=${iframeTitle?:title}"
       th:attr=" objectKey=${model.vContext['componentStates'].addComponentState(componentId)
 	                                                         .addPrimitive('opened', false)
 	                                                         .addPrimitive('loading', true)
 	                                                         .addPrimitive('title', title?:'')
                                                              .addPrimitive('srcUrl', srcUrl?:'')
                                                              .addPrimitive('width', width?:'')
-                                                             .addPrimitive('height', height?:'')}" >
+                                                             .addPrimitive('height', height?:'')}">
        
     <dsfr-modal th:v-model:opened="|componentStates.${componentId}.opened|"
                 th:@close="|componentStates.${componentId}.opened = false|"
@@ -25,7 +26,7 @@
                             @load="(e) => modal_iframeLoad(e.target)"
 					        th:data-auto-height="${autoHeight}"
 					        th:data-component-id="${componentId}"
-                            th:title="${iframeTitle}"
+                            th:title="${myIframeTitle}"
                             th:attr="__${iframe_attrs}__" ></iframe>
                 </div>
             </template>
