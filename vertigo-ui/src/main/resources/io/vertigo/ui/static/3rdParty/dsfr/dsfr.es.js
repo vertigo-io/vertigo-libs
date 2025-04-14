@@ -10504,7 +10504,7 @@ const _v = /* @__PURE__ */ Ae(av, [["render", wv], ["__scopeId", "data-v-27da8f0
 }, $v = {
   key: 0,
   class: "fr-hint-text"
-}, Av = ["id", "value", "aria-expanded", "aria-describedby", "aria-controls", "aria-disabled", "aria-required"], Ov = { class: "grow overflow" }, Rv = { class: "fr-pl-1v fr-select__icon" }, Fv = ["id"], Vv = {
+}, Av = ["id", "aria-expanded", "aria-describedby", "aria-controls", "aria-disabled", "aria-required"], Ov = { class: "grow overflow" }, Rv = { class: "fr-pl-1v fr-select__icon" }, Fv = ["id"], Vv = {
   key: 0,
   class: "fr-btns-group fr-btns-group--icon-left"
 }, Nv = ["id"], qv = {
@@ -10653,7 +10653,6 @@ const _v = /* @__PURE__ */ Ae(av, [["render", wv], ["__scopeId", "data-v-27da8f0
             class: R([{ [`fr-select--${M.value}`]: D.value !== "" }, "fr-input fr-select--menu flex"]),
             onClick: O[0] || (O[0] = (Y) => o.value = !o.value),
             onKeydown: E,
-            value: I.value,
             tabindex: "0",
             "aria-autocomplete": "none",
             role: "combobox",
@@ -10758,7 +10757,7 @@ const _v = /* @__PURE__ */ Ae(av, [["render", wv], ["__scopeId", "data-v-27da8f0
       ], 64);
     };
   }
-}), Xv = /* @__PURE__ */ Ae(Gv, [["__scopeId", "data-v-333303fc"]]), Uv = ["id", "onKeydown", "aria-disabled", "aria-controls", "aria-expanded"], Zv = ["id", "aria-labelledby", "onKeydown"], Jv = {
+}), Xv = /* @__PURE__ */ Ae(Gv, [["__scopeId", "data-v-8c7de2e6"]]), Uv = ["id", "onKeydown", "aria-disabled", "aria-controls", "aria-expanded"], Zv = ["id", "aria-labelledby", "onKeydown"], Jv = {
   key: 0,
   class: "fr-label fr-mb-0"
 }, eg = {

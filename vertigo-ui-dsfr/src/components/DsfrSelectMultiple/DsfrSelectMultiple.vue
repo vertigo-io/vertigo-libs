@@ -301,7 +301,6 @@ let toggleOption = (event, value) => {
         class="fr-input fr-select--menu flex"
         @click="expanded = !expanded"
         @keydown="handleDivKeypress"
-        :value="selectionDisplay"
         tabindex="0"
         aria-autocomplete="none"
         role="combobox"
