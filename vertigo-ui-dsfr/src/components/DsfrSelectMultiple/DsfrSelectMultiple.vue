@@ -276,9 +276,8 @@ let toggleOption = (event, value) => {
       :class="{ [`fr-select-group--${messageType}`]: message !== ''}"
       v-bind="$attrs"
   >
-    <label
-        class="fr-label"
-        :for="id"
+    <p
+        class="fr-label fr-mb-0"
         :id="`${id}_label`"
     >
       <slot name="label">
@@ -294,7 +293,7 @@ let toggleOption = (event, value) => {
       <span
           v-if="description"
           class="fr-hint-text">{{ description }}</span>
-    </label>
+    </p>
 
     <div
         :id="id"
@@ -308,6 +307,7 @@ let toggleOption = (event, value) => {
         role="combobox"
         :aria-expanded="expanded"
         aria-haspopup="dialog"
+        :aria-describedby="`${id}_label`"
         :aria-controls="`${id}_dialog`"
         :aria-disabled="disabled"
         :aria-required="required"

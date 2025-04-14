@@ -10498,13 +10498,13 @@ const _v = /* @__PURE__ */ Ae(av, [["render", wv], ["__scopeId", "data-v-27da8f0
       ]);
     };
   }
-}), Lv = /* @__PURE__ */ Ae(Mv, [["__scopeId", "data-v-b29bb72d"]]), Bv = ["for", "id"], Sv = {
+}), Lv = /* @__PURE__ */ Ae(Mv, [["__scopeId", "data-v-b29bb72d"]]), Bv = ["id"], Sv = {
   key: 0,
   class: "required"
 }, $v = {
   key: 0,
   class: "fr-hint-text"
-}, Av = ["id", "value", "aria-expanded", "aria-controls", "aria-disabled", "aria-required"], Ov = { class: "grow overflow" }, Rv = { class: "fr-pl-1v fr-select__icon" }, Fv = ["id"], Vv = {
+}, Av = ["id", "value", "aria-expanded", "aria-describedby", "aria-controls", "aria-disabled", "aria-required"], Ov = { class: "grow overflow" }, Rv = { class: "fr-pl-1v fr-select__icon" }, Fv = ["id"], Vv = {
   key: 0,
   class: "fr-btns-group fr-btns-group--icon-left"
 }, Nv = ["id"], qv = {
@@ -10636,9 +10636,8 @@ const _v = /* @__PURE__ */ Ae(av, [["render", wv], ["__scopeId", "data-v-27da8f0
             ["tab"]
           ))
         }, $.$attrs), [
-          c("label", {
-            class: "fr-label",
-            for: $.id,
+          c("p", {
+            class: "fr-label fr-mb-0",
             id: `${$.id}_label`
           }, [
             S($.$slots, "label", {}, () => [
@@ -10660,6 +10659,7 @@ const _v = /* @__PURE__ */ Ae(av, [["render", wv], ["__scopeId", "data-v-27da8f0
             role: "combobox",
             "aria-expanded": o.value,
             "aria-haspopup": "dialog",
+            "aria-describedby": `${$.id}_label`,
             "aria-controls": `${$.id}_dialog`,
             "aria-disabled": $.disabled,
             "aria-required": $.required
@@ -10758,7 +10758,7 @@ const _v = /* @__PURE__ */ Ae(av, [["render", wv], ["__scopeId", "data-v-27da8f0
       ], 64);
     };
   }
-}), Xv = /* @__PURE__ */ Ae(Gv, [["__scopeId", "data-v-3c129b3e"]]), Uv = ["id", "onKeydown", "aria-disabled", "aria-controls", "aria-expanded"], Zv = ["id", "aria-labelledby", "onKeydown"], Jv = {
+}), Xv = /* @__PURE__ */ Ae(Gv, [["__scopeId", "data-v-333303fc"]]), Uv = ["id", "onKeydown", "aria-disabled", "aria-controls", "aria-expanded"], Zv = ["id", "aria-labelledby", "onKeydown"], Jv = {
   key: 0,
   class: "fr-label fr-mb-0"
 }, eg = {
