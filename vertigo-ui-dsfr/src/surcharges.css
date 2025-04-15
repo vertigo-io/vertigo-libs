@@ -1,3 +1,9 @@
+/* DSFR */
+/* Contraste des textes desactivés */
+:root {
+    --text-disabled-grey: #717171
+}
+
 /* Corrige la taille de la selection du nombre d’éléments par page  */
 .fr-table .fr-select {
     max-width: 5rem;
