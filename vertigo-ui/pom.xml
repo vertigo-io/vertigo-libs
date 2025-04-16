@@ -14,7 +14,7 @@
 	<parent>
 		<groupId>io.vertigo</groupId>
 		<artifactId>vertigo-libs</artifactId>
-		<version>4.3.1</version>
+		<version>4.3.1-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>vertigo-ui</artifactId>
