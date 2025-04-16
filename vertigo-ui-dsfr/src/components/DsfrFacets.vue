@@ -203,6 +203,13 @@ export default {
   text-align: left;
 }
 
+.facets div[role=group] {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 8px;
+}
+
 .facets ul {
   --ul-type: none;
   --ul-start: 0.25rem;
