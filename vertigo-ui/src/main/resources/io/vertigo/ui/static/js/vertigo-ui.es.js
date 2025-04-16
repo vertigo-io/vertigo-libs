@@ -3867,14 +3867,14 @@ const On = /* @__PURE__ */ qs(Fs), D = window.Quasar, At = {
     }
     this.$data.componentStates[e].opened = !0;
   },
-  toogleFacet: function(e, t, n) {
-    let a = this.$data.vueData;
-    var s = !1;
-    a[n + "_facets"].forEach(function(i) {
-      i.code === e && (s = i.multiple);
+  toogleFacet: function(e, t, n, a = 1) {
+    let s = this.$data.vueData;
+    var o = !1;
+    s[n + "_facets"].forEach(function(r) {
+      r.code === e && (o = r.multiple);
     });
-    var o = a[n + "_selectedFacets"][e];
-    o ? o.includes(t) ? s ? o.splice(o.indexOf(t), 1) : o.splice(0) : o.push(t) : a[n + "_selectedFacets"][e] = [t], this.search(n);
+    var i = s[n + "_selectedFacets"][e];
+    i ? i.includes(t) ? o ? i.splice(i.indexOf(t), 1) : i.splice(0) : i.push(t) : s[n + "_selectedFacets"][e] = [t], this.search(n, a);
   },
   search: On(function(e, t = 1) {
     let n = this.$data.componentStates, a = this.$data.vueData;

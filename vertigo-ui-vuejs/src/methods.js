@@ -340,7 +340,7 @@ export default {
         this.$data.componentStates[modalId].opened = true;
     },
 
-    toogleFacet: function (facetCode, facetValueCode, contextKey) {
+    toogleFacet: function (facetCode, facetValueCode, contextKey, pageIndexReset = 1) {
         let vueData = this.$data.vueData;
         var multiple = false;
         vueData[contextKey + "_facets"].forEach(function (facet) {
@@ -363,7 +363,7 @@ export default {
         } else {
             vueData[contextKey + "_selectedFacets"][facetCode] = [facetValueCode];
         }
-        this.search(contextKey);
+        this.search(contextKey, pageIndexReset);
     },
 
     search: Debounce(function (contextKey, pageIndexReset = 1) {
