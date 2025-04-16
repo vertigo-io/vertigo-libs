@@ -190,13 +190,13 @@ export default {
 </script>
 
 <style scoped>
-.facets .fr-btn {
+.facets div[role=group] .fr-btn {
   min-width: 100%;
   padding: .25rem .8rem;
   min-height: 2rem;
 }
 
-.facets .fr-btn > :deep(span) {
+.facets div[role=group] .fr-btn > :deep(span) {
   min-width: 100%;
   color: var(--text-label-grey);
   font-weight: normal;
