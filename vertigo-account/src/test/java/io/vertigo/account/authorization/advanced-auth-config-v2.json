@@ -32,6 +32,12 @@
 			"rules": [
 				"(amount<=${montantMax} AND utiIdOwner!=${utiId}) OR (amount>${montantMax} AND utiIdOwner=${utiId})"
 			]
+		}, {
+			"__comment": "Visibilité globale tant que non affecté, uniquement sur l'affecté sinon.",
+			"name": "read4", "label" : "Lecture",
+			"rules": [
+				"utiIdOwner=null or utiIdOwner=${utiId}"
+			]
 		},{
 			"__comment": "Tests uniquement",
 			"name": "test", "label" : "Test",
@@ -130,7 +136,7 @@
             ]
         }, {
 			"__comment": "Visibilité attribuable avec un montant maximum, et visibilité pour l'utilisateur créateur.",
-			"name": "read",	 "grants": ["read2", "read3"] , "label" : "Lecture",
+			"name": "read",	 "grants": ["read2", "read3", "read4"] , "label" : "Lecture",
 			"rules": [
 				"amount<=${montantMax}",
 				"utiIdOwner=${utiId}"
