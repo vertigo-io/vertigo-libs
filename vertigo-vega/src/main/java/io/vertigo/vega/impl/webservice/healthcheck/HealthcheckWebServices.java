@@ -23,6 +23,8 @@ import javax.inject.Inject;
 
 import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.analytics.health.HealthCheck;
+import io.vertigo.core.analytics.health.HealthStatus;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.stereotype.AnonymousAccessAllowed;
 import io.vertigo.vega.webservice.stereotype.GET;
@@ -60,6 +62,21 @@ public final class HealthcheckWebServices implements WebServices {
 	@GET("/complete")
 	public List<HealthCheck> completeHealthcheck() {
 		return analyticsManager.getHealthChecks();
+	}
+
+	/**
+	 * Readiness node healthcheck WebService.
+	 * @return a simple health status of the node for all the monitored components.
+	 * @throws IllegalStateException if a component is not ready
+	 */
+	@SessionLess
+	@AnonymousAccessAllowed
+	@GET("/readiness")
+	public String readinessHealthcheck() {
+		for (final HealthCheck check : analyticsManager.getHealthChecks()) {
+			Assertion.check().isFalse(check.healthMeasure().status() == HealthStatus.RED, "Component {0} is not ready", check.name());
+		}
+		return "OK";
 	}
 
 }
