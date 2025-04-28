@@ -869,7 +869,7 @@ const Oo = /* @__PURE__ */ L(xo, [["render", To]]), Mo = {
       return this.isFacetExpanded(e) ? t : t.slice(0, this.maxValues);
     }
   }
-}, De = window.Vue.renderList, be = window.Vue.Fragment, S = window.Vue.openBlock, j = window.Vue.createElementBlock, ce = window.Vue.resolveComponent, q = window.Vue.createVNode, x = window.Vue.withCtx, dn = window.Vue.mergeProps, X = window.Vue.createBlock, ye = window.Vue.createCommentVNode, Lo = window.Vue.normalizeClass, ne = window.Vue.toDisplayString, ue = window.Vue.createTextVNode, Po = {
+}, De = window.Vue.renderList, be = window.Vue.Fragment, S = window.Vue.openBlock, j = window.Vue.createElementBlock, ce = window.Vue.resolveComponent, q = window.Vue.createVNode, x = window.Vue.withCtx, dn = window.Vue.mergeProps, K = window.Vue.createBlock, ye = window.Vue.createCommentVNode, Lo = window.Vue.normalizeClass, ne = window.Vue.toDisplayString, ue = window.Vue.createTextVNode, Po = {
   key: 1,
   class: "facets"
 }, No = {
@@ -886,7 +886,7 @@ function Ao(e, t, n, a, s, o) {
       key: c.code,
       class: "facet-select"
     }, [
-      c.multiple ? (S(), X(p, {
+      c.multiple ? (S(), K(p, {
         key: 0,
         label: c.label,
         "model-value": n.selectedFacets[c.code],
@@ -937,7 +937,7 @@ function Ao(e, t, n, a, s, o) {
           }, 1040)
         ]),
         _: 2
-      }, 1032, ["label", "model-value", "onAdd", "onRemove", "options"])) : (S(), X(p, {
+      }, 1032, ["label", "model-value", "onAdd", "onRemove", "options"])) : (S(), K(p, {
         key: 1,
         label: c.label,
         "model-value": n.selectedFacets[c.code].length > 0 ? n.selectedFacets[c.code][0] : null,
@@ -983,7 +983,7 @@ function Ao(e, t, n, a, s, o) {
   ], 2)) : (S(), j("div", Po, [
     o.isAnyFacetValueSelected() ? (S(), j("div", No, [
       (S(!0), j(be, null, De(n.selectedFacets, (c, f) => (S(), j("div", { key: f }, [
-        o.facetMultipleByCode(f) ? ye("", !0) : (S(!0), j(be, { key: 0 }, De(c, (m) => (S(), X(d, {
+        o.facetMultipleByCode(f) ? ye("", !0) : (S(!0), j(be, { key: 0 }, De(c, (m) => (S(), K(d, {
           clickable: "",
           class: "q-mb-sm",
           key: m.code,
@@ -997,7 +997,7 @@ function Ao(e, t, n, a, s, o) {
         }, 1032, ["onClick"]))), 128))
       ]))), 128))
     ])) : ye("", !0),
-    (S(!0), j(be, null, De(n.facets.filter(n.facetFilter), (c) => (S(), X(g, {
+    (S(!0), j(be, null, De(n.facets.filter(n.facetFilter), (c) => (S(), K(g, {
       key: c.code,
       class: "facetValues q-py-none",
       dense: ""
@@ -1010,14 +1010,14 @@ function Ao(e, t, n, a, s, o) {
             ]),
             _: 2
           }, 1024),
-          (S(!0), j(be, null, De(o.selectedInvisibleFacets(c.code), (f) => (S(), X(u, {
+          (S(!0), j(be, null, De(o.selectedInvisibleFacets(c.code), (f) => (S(), K(u, {
             key: f.code,
             class: "facetValue q-ml-md",
             clickable: "",
             onClick: (m) => e.$emit("toogle-facet", c.code, f.code, n.contextKey)
           }, {
             default: x(() => [
-              c.multiple ? (S(), X(r, {
+              c.multiple ? (S(), K(r, {
                 key: 0,
                 side: ""
               }, {
@@ -1045,14 +1045,14 @@ function Ao(e, t, n, a, s, o) {
             ]),
             _: 2
           }, 1032, ["onClick"]))), 128)),
-          (S(!0), j(be, null, De(o.visibleFacets(c.code, c.values), (f) => (S(), X(u, {
+          (S(!0), j(be, null, De(o.visibleFacets(c.code, c.values), (f) => (S(), K(u, {
             key: f.code,
             class: "facetValue q-ml-md",
             clickable: "",
             onClick: (m) => e.$emit("toogle-facet", c.code, f.code, n.contextKey)
           }, {
             default: x(() => [
-              c.multiple ? (S(), X(r, {
+              c.multiple ? (S(), K(r, {
                 key: 0,
                 side: ""
               }, {
@@ -1082,7 +1082,7 @@ function Ao(e, t, n, a, s, o) {
           }, 1032, ["onClick"]))), 128)),
           q(u, null, {
             default: x(() => [
-              c.values.length > n.maxValues && !o.isFacetExpanded(c.code) ? (S(), X(h, {
+              c.values.length > n.maxValues && !o.isFacetExpanded(c.code) ? (S(), K(h, {
                 key: 0,
                 flat: "",
                 onClick: (f) => o.expandFacet(c.code),
@@ -1093,7 +1093,7 @@ function Ao(e, t, n, a, s, o) {
                 ]),
                 _: 2
               }, 1032, ["onClick"])) : ye("", !0),
-              c.values.length > n.maxValues && o.isFacetExpanded(c.code) ? (S(), X(h, {
+              c.values.length > n.maxValues && o.isFacetExpanded(c.code) ? (S(), K(h, {
                 key: 1,
                 flat: "",
                 onClick: (f) => o.reduceFacet(c.code),
@@ -2169,6 +2169,7 @@ function gi(e, t, n, a, s, o) {
 }
 const wi = /* @__PURE__ */ L(Xa, [["render", gi]]), bi = {
   props: {
+    inputId: Number,
     readonly: Boolean,
     label: String,
     simple: { type: Boolean, default: !1 },
@@ -2261,22 +2262,22 @@ const wi = /* @__PURE__ */ L(Xa, [["render", gi]]), bi = {
       return `${e.toFixed(t)} ${this.$data.units[n]}`;
     }
   }
-}, K = window.Vue.toDisplayString, ft = window.Vue.createTextVNode, he = window.Vue.resolveComponent, U = window.Vue.withCtx, Q = window.Vue.createVNode, k = window.Vue.openBlock, H = window.Vue.createBlock, O = window.Vue.createCommentVNode, ie = window.Vue.createElementBlock, Z = window.Vue.createElementVNode, vn = window.Vue.renderList, Ot = window.Vue.Fragment, yi = window.Vue.normalizeClass, vi = window.Vue.mergeProps, $i = window.Vue.createSlots, _i = { class: "q-uploader__header-content flex flex-center no-wrap q-gutter-xs" }, Ci = { class: "col column justify-center" }, xi = {
+}, Q = window.Vue.toDisplayString, ft = window.Vue.createTextVNode, he = window.Vue.resolveComponent, U = window.Vue.withCtx, Z = window.Vue.createVNode, k = window.Vue.openBlock, H = window.Vue.createBlock, O = window.Vue.createCommentVNode, ie = window.Vue.createElementBlock, W = window.Vue.createElementVNode, vn = window.Vue.renderList, Ot = window.Vue.Fragment, yi = window.Vue.normalizeClass, vi = window.Vue.renderSlot, $i = window.Vue.mergeProps, _i = window.Vue.createSlots, Ci = { class: "q-uploader__header-content flex flex-center no-wrap q-gutter-xs" }, xi = { class: "col column justify-center" }, Si = {
   key: 0,
   class: "q-uploader__title"
-}, Si = {
+}, ki = {
   key: 1,
   class: "q-uploader__subtitle"
-}, ki = {
+}, Vi = {
   key: 2,
   class: "q-uploader__subtitle"
-}, Vi = { class: "row" }, qi = { class: "col column justify-center" }, Di = { class: "q-uploader__file-header row flex-center no-wrap" }, Fi = { class: "q-uploader__file-header-content col" }, Ei = { class: "q-uploader__title" }, Ti = { class: "q-uploader__file-header row flex-center no-wrap" }, Oi = { class: "q-uploader__file-header-content col" }, Mi = { class: "q-uploader__title" }, Li = {
+}, qi = { class: "row" }, Di = { class: "col column justify-center" }, Fi = { class: "q-uploader__file-header row flex-center no-wrap" }, Ei = { class: "q-uploader__file-header-content col" }, Ti = { class: "q-uploader__title" }, Oi = { class: "q-uploader__file-header row flex-center no-wrap" }, Mi = { class: "q-uploader__file-header-content col" }, Li = ["id"], Pi = ["aria-labelledby"], Ni = {
   key: 0,
   class: "q-field__after q-field__marginal row no-wrap items-center"
 };
-function Pi(e, t, n, a, s, o) {
+function Ai(e, t, n, a, s, o) {
   const i = he("q-tooltip"), r = he("q-btn"), l = he("q-spinner"), d = he("q-uploader-add-trigger"), u = he("q-icon"), p = he("q-circular-progress"), h = he("q-field"), g = he("q-uploader");
-  return k(), H(g, vi({
+  return k(), H(g, $i({
     url: e.$props.url,
     "auto-upload": "",
     "field-name": e.$props.fieldName,
@@ -2286,10 +2287,10 @@ function Pi(e, t, n, a, s, o) {
     onUploaded: o.uploadedFiles,
     onFailed: o.failedFiles,
     readonly: e.$props.readonly || !o.globalCanAddFiles([])
-  }, e.$attrs, { ref: "quasarUploader" }), $i({
+  }, e.$attrs, { ref: "quasarUploader" }), _i({
     list: U((c) => [
-      Z("div", Vi, [
-        Q(h, {
+      W("div", qi, [
+        Z(h, {
           "label-width": 3,
           label: e.$props.simple ? e.$props.label : void 0,
           class: "col",
@@ -2298,7 +2299,7 @@ function Pi(e, t, n, a, s, o) {
           borderless: ""
         }, {
           control: U(() => [
-            Z("div", qi, [
+            W("div", Di, [
               e.$props.readonly ? O("", !0) : (k(!0), ie(Ot, { key: 0 }, vn(c.files, (f) => (k(), ie(Ot, {
                 key: f.name
               }, [
@@ -2309,19 +2310,19 @@ function Pi(e, t, n, a, s, o) {
                     "q-uploader__file--uploaded": f.__status === "uploaded"
                   }])
                 }, [
-                  Z("div", Di, [
+                  W("div", Fi, [
                     f.__status === "failed" ? (k(), H(u, {
                       key: 0,
                       class: "q-uploader__file-status",
                       name: e.$q.iconSet.type.negative,
                       color: "negative"
                     }, null, 8, ["name"])) : O("", !0),
-                    Q(u, {
+                    Z(u, {
                       class: "q-uploader__file-status",
                       name: f.type.indexOf("video/") === 0 ? "movie" : f.type.indexOf("image/") === 0 ? "photo" : f.type.indexOf("audio/") === 0 ? "audiotrack" : "insert_drive_file"
                     }, null, 8, ["name"]),
-                    Z("div", Fi, [
-                      Z("div", Ei, K(f.name), 1)
+                    W("div", Ei, [
+                      W("div", Ti, Q(f.name), 1)
                     ]),
                     f.__status === "uploading" ? (k(), H(p, {
                       key: 1,
@@ -2345,36 +2346,46 @@ function Pi(e, t, n, a, s, o) {
                 key: f.name,
                 class: "q-uploader__file relative-position q-uploader__file--uploaded"
               }, [
-                Z("div", Ti, [
-                  Q(u, {
+                W("div", Oi, [
+                  Z(u, {
                     class: "q-uploader__file-status",
                     name: f.type.indexOf("video/") === 0 ? "movie" : f.type.indexOf("image/") === 0 ? "photo" : f.type.indexOf("audio/") === 0 ? "audiotrack" : "insert_drive_file"
                   }, null, 8, ["name"]),
-                  Z("div", Oi, [
-                    Z("div", Mi, K(f.name), 1)
+                  W("div", Mi, [
+                    W("div", {
+                      class: "q-uploader__title",
+                      id: f.fileUri + "_label"
+                    }, Q(f.name), 9, Li)
                   ]),
-                  e.$props.readonly ? O("", !0) : (k(), H(r, {
-                    key: 0,
-                    round: "",
-                    dense: "",
-                    flat: "",
-                    icon: "delete",
-                    onClick: (m) => o.removeRemoteFile(f)
-                  }, null, 8, ["onClick"])),
-                  Q(r, {
-                    round: "",
-                    dense: "",
-                    flat: "",
-                    icon: "file_download",
-                    onClick: (m) => e.$emit("download-file", f.fileUri)
-                  }, null, 8, ["onClick"])
+                  W("div", {
+                    role: "toolbar",
+                    "aria-labelledby": f.fileUri + "_label"
+                  }, [
+                    e.$props.readonly ? O("", !0) : (k(), H(r, {
+                      key: 0,
+                      round: "",
+                      dense: "",
+                      flat: "",
+                      icon: "delete",
+                      onClick: (m) => o.removeRemoteFile(f),
+                      title: e.$q.lang.vui.uploader.remove
+                    }, null, 8, ["onClick", "title"])),
+                    Z(r, {
+                      round: "",
+                      dense: "",
+                      flat: "",
+                      icon: "file_download",
+                      onClick: (m) => e.$emit("download-file", f.fileUri),
+                      title: e.$q.lang.vui.uploader.download
+                    }, null, 8, ["onClick", "title"])
+                  ], 8, Pi)
                 ])
               ]))), 128))
             ])
           ]),
           _: 2
         }, 1032, ["label"]),
-        e.$props.simple && !e.$props.readonly ? (k(), ie("div", Li, [
+        e.$props.simple && !e.$props.readonly ? (k(), ie("div", Ni, [
           c.isUploading ? (k(), H(l, {
             key: 0,
             class: "q-uploader__spinner"
@@ -2387,7 +2398,7 @@ function Pi(e, t, n, a, s, o) {
             dense: ""
           }, {
             default: U(() => [
-              Q(d)
+              Z(d)
             ]),
             _: 1
           }, 8, ["icon"])) : O("", !0),
@@ -2400,9 +2411,9 @@ function Pi(e, t, n, a, s, o) {
             onClick: c.abort
           }, {
             default: U(() => [
-              Q(i, null, {
+              Z(i, null, {
                 default: U(() => [
-                  ft(K(e.$q.lang.vui.uploader.abort), 1)
+                  ft(Q(e.$q.lang.vui.uploader.abort), 1)
                 ]),
                 _: 1
               })
@@ -2410,7 +2421,8 @@ function Pi(e, t, n, a, s, o) {
             _: 2
           }, 1032, ["icon", "onClick"])) : O("", !0)
         ])) : O("", !0)
-      ])
+      ]),
+      vi(e.$slots, "footer")
     ]),
     _: 2
   }, [
@@ -2421,7 +2433,7 @@ function Pi(e, t, n, a, s, o) {
     } : {
       name: "header",
       fn: U((c) => [
-        Z("div", _i, [
+        W("div", Ci, [
           c.queuedFiles.length > 0 && !c.readonly ? (k(), H(r, {
             key: 0,
             type: "a",
@@ -2431,18 +2443,18 @@ function Pi(e, t, n, a, s, o) {
             onClick: c.removeQueuedFiles
           }, {
             default: U(() => [
-              Q(i, null, {
+              Z(i, null, {
                 default: U(() => [
-                  ft(K(e.$q.lang.vui.uploader.clear_all), 1)
+                  ft(Q(e.$q.lang.vui.uploader.clear_all), 1)
                 ]),
                 _: 1
               })
             ]),
             _: 2
           }, 1032, ["icon", "onClick"])) : O("", !0),
-          Z("div", Ci, [
-            e.$props.label !== void 0 ? (k(), ie("div", xi, K(e.$props.label), 1)) : O("", !0),
-            c.isUploading ? (k(), ie("div", Si, K(o.getGlobalSizeLabel()) + " / " + K(c.uploadProgressLabel), 1)) : (k(), ie("div", ki, K(o.getGlobalSizeLabel()), 1))
+          W("div", xi, [
+            e.$props.label !== void 0 ? (k(), ie("div", Si, Q(e.$props.label), 1)) : O("", !0),
+            c.isUploading ? (k(), ie("div", ki, Q(o.getGlobalSizeLabel()) + " / " + Q(c.uploadProgressLabel), 1)) : (k(), ie("div", Vi, Q(o.getGlobalSizeLabel()), 1))
           ]),
           c.isUploading ? (k(), H(l, {
             key: 1,
@@ -2458,9 +2470,9 @@ function Pi(e, t, n, a, s, o) {
             onClick: c.abort
           }, {
             default: U(() => [
-              Q(i, null, {
+              Z(i, null, {
                 default: U(() => [
-                  ft(K(e.$q.lang.vui.uploader.abort), 1)
+                  ft(Q(e.$q.lang.vui.uploader.abort), 1)
                 ]),
                 _: 1
               })
@@ -2475,10 +2487,12 @@ function Pi(e, t, n, a, s, o) {
             onClick: c.pickFiles
           }, {
             default: U(() => [
-              Q(d),
-              Q(i, null, {
+              Z(d, {
+                id: e.$props.inputId
+              }, null, 8, ["id"]),
+              Z(i, null, {
                 default: U(() => [
-                  ft(K(e.$q.lang.vui.uploader.add), 1)
+                  ft(Q(e.$q.lang.vui.uploader.add), 1)
                 ]),
                 _: 1
               })
@@ -2491,7 +2505,7 @@ function Pi(e, t, n, a, s, o) {
     }
   ]), 1040, ["url", "field-name", "multiple", "max-files", "onUploaded", "onFailed", "readonly"]);
 }
-const Ni = /* @__PURE__ */ L(bi, [["render", Pi]]);
+const Ui = /* @__PURE__ */ L(bi, [["render", Ai]]);
 function zt(e, t, n) {
   e.prototype = t.prototype = n, n.constructor = e;
 }
@@ -2502,7 +2516,7 @@ function Mn(e, t) {
 }
 function Ye() {
 }
-var Ge = 0.7, wt = 1 / Ge, Ee = "\\s*([+-]?\\d+)\\s*", Je = "\\s*([+-]?(?:\\d*\\.)?\\d+(?:[eE][+-]?\\d+)?)\\s*", ee = "\\s*([+-]?(?:\\d*\\.)?\\d+(?:[eE][+-]?\\d+)?)%\\s*", Ai = /^#([0-9a-f]{3,8})$/, Ui = new RegExp(`^rgb\\(${Ee},${Ee},${Ee}\\)$`), Bi = new RegExp(`^rgb\\(${ee},${ee},${ee}\\)$`), Ii = new RegExp(`^rgba\\(${Ee},${Ee},${Ee},${Je}\\)$`), ji = new RegExp(`^rgba\\(${ee},${ee},${ee},${Je}\\)$`), zi = new RegExp(`^hsl\\(${Je},${ee},${ee}\\)$`), Ri = new RegExp(`^hsla\\(${Je},${ee},${ee},${Je}\\)$`), $n = {
+var Ge = 0.7, wt = 1 / Ge, Ee = "\\s*([+-]?\\d+)\\s*", Je = "\\s*([+-]?(?:\\d*\\.)?\\d+(?:[eE][+-]?\\d+)?)\\s*", ee = "\\s*([+-]?(?:\\d*\\.)?\\d+(?:[eE][+-]?\\d+)?)%\\s*", Bi = /^#([0-9a-f]{3,8})$/, Ii = new RegExp(`^rgb\\(${Ee},${Ee},${Ee}\\)$`), ji = new RegExp(`^rgb\\(${ee},${ee},${ee}\\)$`), zi = new RegExp(`^rgba\\(${Ee},${Ee},${Ee},${Je}\\)$`), Ri = new RegExp(`^rgba\\(${ee},${ee},${ee},${Je}\\)$`), Hi = new RegExp(`^hsl\\(${Je},${ee},${ee}\\)$`), Gi = new RegExp(`^hsla\\(${Je},${ee},${ee},${Je}\\)$`), $n = {
   aliceblue: 15792383,
   antiquewhite: 16444375,
   aqua: 65535,
@@ -2662,18 +2676,18 @@ zt(Ye, yt, {
   hex: _n,
   // Deprecated! Use color.formatHex.
   formatHex: _n,
-  formatHex8: Hi,
-  formatHsl: Gi,
+  formatHex8: Ji,
+  formatHsl: Yi,
   formatRgb: Cn,
   toString: Cn
 });
 function _n() {
   return this.rgb().formatHex();
 }
-function Hi() {
+function Ji() {
   return this.rgb().formatHex8();
 }
-function Gi() {
+function Yi() {
   return Ln(this).formatHsl();
 }
 function Cn() {
@@ -2681,7 +2695,7 @@ function Cn() {
 }
 function yt(e) {
   var t, n;
-  return e = (e + "").trim().toLowerCase(), (t = Ai.exec(e)) ? (n = t[1].length, t = parseInt(t[1], 16), n === 6 ? xn(t) : n === 3 ? new N(t >> 8 & 15 | t >> 4 & 240, t >> 4 & 15 | t & 240, (t & 15) << 4 | t & 15, 1) : n === 8 ? ht(t >> 24 & 255, t >> 16 & 255, t >> 8 & 255, (t & 255) / 255) : n === 4 ? ht(t >> 12 & 15 | t >> 8 & 240, t >> 8 & 15 | t >> 4 & 240, t >> 4 & 15 | t & 240, ((t & 15) << 4 | t & 15) / 255) : null) : (t = Ui.exec(e)) ? new N(t[1], t[2], t[3], 1) : (t = Bi.exec(e)) ? new N(t[1] * 255 / 100, t[2] * 255 / 100, t[3] * 255 / 100, 1) : (t = Ii.exec(e)) ? ht(t[1], t[2], t[3], t[4]) : (t = ji.exec(e)) ? ht(t[1] * 255 / 100, t[2] * 255 / 100, t[3] * 255 / 100, t[4]) : (t = zi.exec(e)) ? Vn(t[1], t[2] / 100, t[3] / 100, 1) : (t = Ri.exec(e)) ? Vn(t[1], t[2] / 100, t[3] / 100, t[4]) : $n.hasOwnProperty(e) ? xn($n[e]) : e === "transparent" ? new N(NaN, NaN, NaN, 0) : null;
+  return e = (e + "").trim().toLowerCase(), (t = Bi.exec(e)) ? (n = t[1].length, t = parseInt(t[1], 16), n === 6 ? xn(t) : n === 3 ? new N(t >> 8 & 15 | t >> 4 & 240, t >> 4 & 15 | t & 240, (t & 15) << 4 | t & 15, 1) : n === 8 ? ht(t >> 24 & 255, t >> 16 & 255, t >> 8 & 255, (t & 255) / 255) : n === 4 ? ht(t >> 12 & 15 | t >> 8 & 240, t >> 8 & 15 | t >> 4 & 240, t >> 4 & 15 | t & 240, ((t & 15) << 4 | t & 15) / 255) : null) : (t = Ii.exec(e)) ? new N(t[1], t[2], t[3], 1) : (t = ji.exec(e)) ? new N(t[1] * 255 / 100, t[2] * 255 / 100, t[3] * 255 / 100, 1) : (t = zi.exec(e)) ? ht(t[1], t[2], t[3], t[4]) : (t = Ri.exec(e)) ? ht(t[1] * 255 / 100, t[2] * 255 / 100, t[3] * 255 / 100, t[4]) : (t = Hi.exec(e)) ? Vn(t[1], t[2] / 100, t[3] / 100, 1) : (t = Gi.exec(e)) ? Vn(t[1], t[2] / 100, t[3] / 100, t[4]) : $n.hasOwnProperty(e) ? xn($n[e]) : e === "transparent" ? new N(NaN, NaN, NaN, 0) : null;
 }
 function xn(e) {
   return new N(e >> 16 & 255, e >> 8 & 255, e & 255, 1);
@@ -2689,11 +2703,11 @@ function xn(e) {
 function ht(e, t, n, a) {
   return a <= 0 && (e = t = n = NaN), new N(e, t, n, a);
 }
-function Ji(e) {
+function Wi(e) {
   return e instanceof Ye || (e = yt(e)), e ? (e = e.rgb(), new N(e.r, e.g, e.b, e.opacity)) : new N();
 }
 function Ut(e, t, n, a) {
-  return arguments.length === 1 ? Ji(e) : new N(e, t, n, a ?? 1);
+  return arguments.length === 1 ? Wi(e) : new N(e, t, n, a ?? 1);
 }
 function N(e, t, n, a) {
   this.r = +e, this.g = +t, this.b = +n, this.opacity = +a;
@@ -2717,14 +2731,14 @@ zt(N, Ut, Mn(Ye, {
   hex: Sn,
   // Deprecated! Use color.formatHex.
   formatHex: Sn,
-  formatHex8: Yi,
+  formatHex8: Xi,
   formatRgb: kn,
   toString: kn
 }));
 function Sn() {
   return `#${$e(this.r)}${$e(this.g)}${$e(this.b)}`;
 }
-function Yi() {
+function Xi() {
   return `#${$e(this.r)}${$e(this.g)}${$e(this.b)}${$e((isNaN(this.opacity) ? 1 : this.opacity) * 255)}`;
 }
 function kn() {
@@ -2741,28 +2755,28 @@ function $e(e) {
   return e = _e(e), (e < 16 ? "0" : "") + e.toString(16);
 }
 function Vn(e, t, n, a) {
-  return a <= 0 ? e = t = n = NaN : n <= 0 || n >= 1 ? e = t = NaN : t <= 0 && (e = NaN), new W(e, t, n, a);
+  return a <= 0 ? e = t = n = NaN : n <= 0 || n >= 1 ? e = t = NaN : t <= 0 && (e = NaN), new X(e, t, n, a);
 }
 function Ln(e) {
-  if (e instanceof W) return new W(e.h, e.s, e.l, e.opacity);
-  if (e instanceof Ye || (e = yt(e)), !e) return new W();
-  if (e instanceof W) return e;
+  if (e instanceof X) return new X(e.h, e.s, e.l, e.opacity);
+  if (e instanceof Ye || (e = yt(e)), !e) return new X();
+  if (e instanceof X) return e;
   e = e.rgb();
   var t = e.r / 255, n = e.g / 255, a = e.b / 255, s = Math.min(t, n, a), o = Math.max(t, n, a), i = NaN, r = o - s, l = (o + s) / 2;
-  return r ? (t === o ? i = (n - a) / r + (n < a) * 6 : n === o ? i = (a - t) / r + 2 : i = (t - n) / r + 4, r /= l < 0.5 ? o + s : 2 - o - s, i *= 60) : r = l > 0 && l < 1 ? 0 : i, new W(i, r, l, e.opacity);
+  return r ? (t === o ? i = (n - a) / r + (n < a) * 6 : n === o ? i = (a - t) / r + 2 : i = (t - n) / r + 4, r /= l < 0.5 ? o + s : 2 - o - s, i *= 60) : r = l > 0 && l < 1 ? 0 : i, new X(i, r, l, e.opacity);
 }
 function Bt(e, t, n, a) {
-  return arguments.length === 1 ? Ln(e) : new W(e, t, n, a ?? 1);
+  return arguments.length === 1 ? Ln(e) : new X(e, t, n, a ?? 1);
 }
-function W(e, t, n, a) {
+function X(e, t, n, a) {
   this.h = +e, this.s = +t, this.l = +n, this.opacity = +a;
 }
-zt(W, Bt, Mn(Ye, {
+zt(X, Bt, Mn(Ye, {
   brighter(e) {
-    return e = e == null ? wt : Math.pow(wt, e), new W(this.h, this.s, this.l * e, this.opacity);
+    return e = e == null ? wt : Math.pow(wt, e), new X(this.h, this.s, this.l * e, this.opacity);
   },
   darker(e) {
-    return e = e == null ? Ge : Math.pow(Ge, e), new W(this.h, this.s, this.l * e, this.opacity);
+    return e = e == null ? Ge : Math.pow(Ge, e), new X(this.h, this.s, this.l * e, this.opacity);
   },
   rgb() {
     var e = this.h % 360 + (this.h < 0) * 360, t = isNaN(e) || isNaN(this.s) ? 0 : this.s, n = this.l, a = n + (n < 0.5 ? n : 1 - n) * t, s = 2 * n - a;
@@ -2774,7 +2788,7 @@ zt(W, Bt, Mn(Ye, {
     );
   },
   clamp() {
-    return new W(qn(this.h), pt(this.s), pt(this.l), bt(this.opacity));
+    return new X(qn(this.h), pt(this.s), pt(this.l), bt(this.opacity));
   },
   displayable() {
     return (0 <= this.s && this.s <= 1 || isNaN(this.s)) && 0 <= this.l && this.l <= 1 && 0 <= this.opacity && this.opacity <= 1;
@@ -2799,26 +2813,26 @@ function Pn(e, t) {
     return e + n * t;
   };
 }
-function Wi(e, t, n) {
+function Ki(e, t, n) {
   return e = Math.pow(e, n), t = Math.pow(t, n) - e, n = 1 / n, function(a) {
     return Math.pow(e + a * t, n);
   };
 }
-function Xi(e, t) {
+function Qi(e, t) {
   var n = t - e;
   return n ? Pn(e, n > 180 || n < -180 ? n - 360 * Math.round(n / 360) : n) : Rt(isNaN(e) ? t : e);
 }
-function Ki(e) {
+function Zi(e) {
   return (e = +e) == 1 ? He : function(t, n) {
-    return n - t ? Wi(t, n, e) : Rt(isNaN(t) ? n : t);
+    return n - t ? Ki(t, n, e) : Rt(isNaN(t) ? n : t);
   };
 }
 function He(e, t) {
   var n = t - e;
   return n ? Pn(e, n) : Rt(isNaN(e) ? t : e);
 }
-const Qi = function e(t) {
-  var n = Ki(t);
+const es = function e(t) {
+  var n = Zi(t);
   function a(s, o) {
     var i = n((s = Ut(s)).r, (o = Ut(o)).r), r = n(s.g, o.g), l = n(s.b, o.b), d = He(s.opacity, o.opacity);
     return function(u) {
@@ -2827,7 +2841,7 @@ const Qi = function e(t) {
   }
   return a.gamma = e, a;
 }(1);
-function Zi(e) {
+function ts(e) {
   return function(t, n) {
     var a = e((t = Bt(t)).h, (n = Bt(n)).h), s = He(t.s, n.s), o = He(t.l, n.l), i = He(t.opacity, n.opacity);
     return function(r) {
@@ -2835,12 +2849,12 @@ function Zi(e) {
     };
   };
 }
-const es = Zi(Xi);
-let pe = { color: yt, interpolateHsl: es, interpolateRgb: Qi };
+const ns = ts(Qi);
+let pe = { color: yt, interpolateHsl: ns, interpolateRgb: es };
 function Lt(e, t, n) {
   if (e != "DEFAULT") {
-    var a, s = ts;
-    e == "RAINBOW" || e == "iRAINBOW" ? a = ["#FF0000", "#FFA500", "#FFFF00", "#00FF00", "#00FF00", "rgb(75, 0, 130)", "rgb(238, 130, 238)"] : e == "SPECTRUM" || e == "iSPECTRUM" ? (a = ["rgb(230, 30, 30)", "rgb(230, 230, 30)", "rgb(30, 230, 30)", "rgb(30, 230, 230)", "rgb(30, 30, 230)", "rgb(230, 30, 230)", "rgb(230, 30, 30)"], s = os) : e == "RED2GREEN" || e == "iRED2GREEN" ? a = ["rgb(255, 51, 51)", "rgb(250, 235, 0)", "rgb(51, 200, 51)"] : e == "GREEN2BLUE" || e == "iGREEN2BLUE" ? a = ["rgb(51, 153, 51)", "rgb(51, 153, 200)", "rgb(51, 51, 255)"] : e == "HEAT" || e == "iHEAT" ? a = ["rgb(255, 51, 51)", "rgb(255, 255, 51)", "rgb(51, 153, 51)", "rgb(51, 153, 255)"] : e == "GREEN:INTENSITY" || e == "iGREEN:INTENSITY" ? (a = ["rgb(51, 153, 51)", "rgb(170, 250, 170)"], s = ns) : e == "ANDROID" || e == "iANDROID" ? a = ["#0099CC", "#9933CC", "#CC0000", "#FF8800", "#669900"] : (e == "ANDROID:LIGHT" || e == "iANDROID:LIGHT") && (a = ["#33B5E5", "#AA66CC", "#ff4444", "#ffbb33", "#99cc00"]), e.charAt(0) == "i" && (a = a.reverse());
+    var a, s = os;
+    e == "RAINBOW" || e == "iRAINBOW" ? a = ["#FF0000", "#FFA500", "#FFFF00", "#00FF00", "#00FF00", "rgb(75, 0, 130)", "rgb(238, 130, 238)"] : e == "SPECTRUM" || e == "iSPECTRUM" ? (a = ["rgb(230, 30, 30)", "rgb(230, 230, 30)", "rgb(30, 230, 30)", "rgb(30, 230, 230)", "rgb(30, 30, 230)", "rgb(230, 30, 230)", "rgb(230, 30, 30)"], s = is) : e == "RED2GREEN" || e == "iRED2GREEN" ? a = ["rgb(255, 51, 51)", "rgb(250, 235, 0)", "rgb(51, 200, 51)"] : e == "GREEN2BLUE" || e == "iGREEN2BLUE" ? a = ["rgb(51, 153, 51)", "rgb(51, 153, 200)", "rgb(51, 51, 255)"] : e == "HEAT" || e == "iHEAT" ? a = ["rgb(255, 51, 51)", "rgb(255, 255, 51)", "rgb(51, 153, 51)", "rgb(51, 153, 255)"] : e == "GREEN:INTENSITY" || e == "iGREEN:INTENSITY" ? (a = ["rgb(51, 153, 51)", "rgb(170, 250, 170)"], s = as) : e == "ANDROID" || e == "iANDROID" ? a = ["#0099CC", "#9933CC", "#CC0000", "#FF8800", "#669900"] : (e == "ANDROID:LIGHT" || e == "iANDROID:LIGHT") && (a = ["#33B5E5", "#AA66CC", "#ff4444", "#ffbb33", "#99cc00"]), e.charAt(0) == "i" && (a = a.reverse());
     var i, o = a[0] == a[a.length - 1], i = s(a, t + (o ? 1 : 0));
     return n ? i.map(function(r, l) {
       var d = pe.color(r);
@@ -2848,17 +2862,17 @@ function Lt(e, t, n) {
     }) : i;
   }
 }
-function ts(e, t) {
+function os(e, t) {
   return Ht(e, t, function(n, a, s, o, i) {
     return pe.interpolateHsl(s, o)(n);
   });
 }
-function ns(e, t) {
+function as(e, t) {
   return Ht(e, t, function(n, a, s, o, i) {
     return pe.interpolateRgb(s, o)(n);
   });
 }
-function os(e, t) {
+function is(e, t) {
   return Ht(e, t, function(n, a, s, o, i) {
     var r = { r: null, g: null, b: null }, l = a ? pe.rgb(a) : r, d = pe.rgb(s), u = pe.rgb(o), p = i ? pe.rgb(i) : r, h = Math.max(Math.min(Math.round(Pt(n, l.r, d.r, u.r, p.r)), 255), 0), g = Math.max(Math.min(Math.round(Pt(n, l.g, d.g, u.g, p.g)), 255), 0), c = Math.max(Math.min(Math.round(Pt(n, l.b, d.b, u.b, p.b)), 255), 0);
     return pe.rgb(h, g, c);
@@ -2887,7 +2901,7 @@ function Pt(e, t, n, a, s) {
   var o = a - n, i = t ?? n - o, r = s ?? a + o;
   return 0.5 * (2 * n + (-i + a) * e + (2 * i - 5 * n + 4 * a - r) * e * e + (-i + 3 * n - 3 * a + r) * e * e * e);
 }
-const as = {
+const ss = {
   id: "verticalLineTooltipPlugin",
   afterDraw: (e) => {
     var t, n;
@@ -2896,7 +2910,7 @@ const as = {
       o.save(), o.beginPath(), o.moveTo(a, s.top), o.lineTo(a, s.bottom), o.lineWidth = 2, o.strokeStyle = "rgba(50, 50, 50, 0.4)", o.stroke(), o.restore();
     }
   }
-}, is = {
+}, rs = {
   id: "verticalLinePlugin",
   getLinePositionAtIndex: function(e, t) {
     return e.getDatasetMeta(0).data[t].x;
@@ -2911,7 +2925,7 @@ const as = {
   afterDatasetsDraw: function(e, t) {
     e.config.options.vLineAt && e.config.options.vLineAt.forEach((n) => this.renderVerticalLine(e, n));
   }
-}, ss = {
+}, ls = {
   props: {
     title: { type: String },
     type: { type: String, required: !0 },
@@ -3045,7 +3059,7 @@ const as = {
           type: f,
           data: C,
           options: V,
-          plugins: [as, is]
+          plugins: [ss, rs]
         });
         window.dashboardGraphChart[this.$data.graphChartId] = w;
       }
@@ -3285,11 +3299,11 @@ const as = {
       return this.mergeDeep(e, ...t);
     }
   }
-}, rs = window.Vue.openBlock, ls = window.Vue.createElementBlock, ds = { ref: "graphCanvas" };
-function cs(e, t, n, a, s, o) {
-  return rs(), ls("canvas", ds, null, 512);
+}, ds = window.Vue.openBlock, cs = window.Vue.createElementBlock, us = { ref: "graphCanvas" };
+function fs(e, t, n, a, s, o) {
+  return ds(), cs("canvas", us, null, 512);
 }
-const us = /* @__PURE__ */ L(ss, [["render", cs]]), fs = {
+const hs = /* @__PURE__ */ L(ls, [["render", fs]]), ps = {
   mounted: function(e, t, n) {
     var a = t.value;
     if (!window.watcherUpdates && (window.watcherUpdates = {
@@ -3318,14 +3332,14 @@ const us = /* @__PURE__ */ L(ss, [["render", cs]]), fs = {
   unmounted: function() {
     window.removeEventListener("beforeunload", window.watcherUpdates.beforeWindowUnload);
   }
-}, hs = {
+}, ms = {
   mounted: function(e, t, n) {
     var a = t.value;
     a && !window.autofocus && (window.autofocus = !0, e.focus());
   }
-}, ps = window.Vue.nextTick, ms = {
+}, gs = window.Vue.nextTick, ws = {
   updated: function(e, t, n) {
-    ps(() => {
+    gs(() => {
       !window.watcherUpdates || !window.watcherUpdates.updates_detected ? e.classList.add("hidden") : e.classList.remove("hidden");
     });
   }
@@ -3338,7 +3352,7 @@ function Nn(e, t = 250) {
     }, t), a = e.apply(this, arguments)), a;
   };
 }
-const ve = window.Vue, gs = {
+const ve = window.Vue, bs = {
   created: function(e, t) {
     const n = t.value ? t.value.topOffset : null, a = t.value ? t.value.topOffsetEl : null, s = t.value ? t.value.leftOffset : null, o = t.value ? t.value.leftOffsetEl : null, i = t.value ? t.value.scrollContainerEl : ".q-page-container", r = e.querySelector(".mini");
     for (var l = 0; l < e.childNodes.length; l++) {
@@ -3371,20 +3385,20 @@ const ve = window.Vue, gs = {
       n.classList && n.classList.remove("not-mini");
     }
   }
-}, ws = [null, document, document.body, document.scrollingElement, document.documentElement];
-function bs(e, t) {
-  let n = Ss(t);
+}, ys = [null, document, document.body, document.scrollingElement, document.documentElement];
+function vs(e, t) {
+  let n = Vs(t);
   if (n === void 0) {
     if (e == null)
       return window;
     n = e.closest(".scroll,.scroll-y,.overflow-auto");
   }
-  return ws.includes(n) ? window : n;
+  return ys.includes(n) ? window : n;
 }
-function ys(e) {
+function $s(e) {
   return (e === window ? document.body : e).scrollHeight;
 }
-function vs(e) {
+function _s(e) {
   return (e === window ? document.body : e).scrollWidth;
 }
 function An(e) {
@@ -3429,14 +3443,14 @@ function jt(e, t) {
   }
   e.scrollLeft = t;
 }
-function $s(e, t, n) {
+function Cs(e, t, n) {
   if (n) {
     Gt(e, t, n);
     return;
   }
   It(e, t);
 }
-function _s(e, t, n) {
+function xs(e, t, n) {
   if (n) {
     Jt(e, t, n);
     return;
@@ -3444,7 +3458,7 @@ function _s(e, t, n) {
   jt(e, t);
 }
 let mt;
-function Cs() {
+function Ss() {
   if (mt !== void 0)
     return mt;
   const e = document.createElement("p"), t = document.createElement("div");
@@ -3465,10 +3479,10 @@ function Cs() {
   let a = e.offsetWidth;
   return n === a && (a = t.clientWidth), t.remove(), mt = n - a, mt;
 }
-function xs(e, t = !0) {
+function ks(e, t = !0) {
   return !e || e.nodeType !== Node.ELEMENT_NODE ? !1 : t ? e.scrollHeight > e.clientHeight && (e.classList.contains("scroll") || e.classList.contains("overflow-auto") || ["auto", "scroll"].includes(window.getComputedStyle(e)["overflow-y"])) : e.scrollWidth > e.clientWidth && (e.classList.contains("scroll") || e.classList.contains("overflow-auto") || ["auto", "scroll"].includes(window.getComputedStyle(e)["overflow-x"]));
 }
-function Ss(e) {
+function Vs(e) {
   if (e == null)
     return;
   if (typeof e == "string")
@@ -3487,18 +3501,18 @@ function Dn(e, t) {
     n[a] = t[a];
 }
 const Fe = {
-  getScrollTarget: bs,
-  getScrollHeight: ys,
-  getScrollWidth: vs,
+  getScrollTarget: vs,
+  getScrollHeight: $s,
+  getScrollWidth: _s,
   getVerticalScrollPosition: An,
   getHorizontalScrollPosition: Un,
   animVerticalScrollTo: Gt,
   animHorizontalScrollTo: Jt,
-  setVerticalScrollPosition: $s,
-  setHorizontalScrollPosition: _s,
-  getScrollbarWidth: Cs,
-  hasScrollbar: xs
-}, M = window.Vue, ks = {
+  setVerticalScrollPosition: Cs,
+  setHorizontalScrollPosition: xs,
+  getScrollbarWidth: Ss,
+  hasScrollbar: ks
+}, M = window.Vue, qs = {
   created: function(e, t) {
     M.createDebugLine = function(g, c, f, m) {
       let b = document.createElement("div");
@@ -3568,7 +3582,7 @@ const Fe = {
       t.removeEventListener("click");
   }
 };
-function Vs(e, t) {
+function Ds(e, t) {
   return new Date(e) - new Date(t);
 }
 function Fn(e) {
@@ -3578,11 +3592,11 @@ function En(e) {
   return typeof e == "number" && isFinite(e);
 }
 var gt = typeof globalThis < "u" ? globalThis : typeof window < "u" ? window : typeof global < "u" ? global : typeof self < "u" ? self : {};
-function qs(e) {
+function Fs(e) {
   return e && e.__esModule && Object.prototype.hasOwnProperty.call(e, "default") ? e.default : e;
 }
 var Nt, Tn;
-function Ds() {
+function Es() {
   if (Tn) return Nt;
   Tn = 1;
   var e = "Expected a function", t = NaN, n = "[object Symbol]", a = /^\s+|\s+$/g, s = /^[-+]0x[0-9a-f]+$/i, o = /^0b[01]+$/i, i = /^0o[0-7]+$/i, r = parseInt, l = typeof gt == "object" && gt && gt.Object === Object && gt, d = typeof self == "object" && self && self.Object === Object && self, u = l || d || Function("return this")(), p = Object.prototype, h = p.toString, g = Math.max, c = Math.min, f = function() {
@@ -3662,8 +3676,8 @@ function Ds() {
   }
   return Nt = m, Nt;
 }
-var Fs = Ds();
-const On = /* @__PURE__ */ qs(Fs), D = window.Quasar, At = {
+var Ts = Es();
+const On = /* @__PURE__ */ Fs(Ts), D = window.Quasar, At = {
   debounce: On,
   onAjaxError: function(e) {
     let t = {
@@ -3794,7 +3808,7 @@ const On = /* @__PURE__ */ qs(Fs), D = window.Quasar, At = {
     const a = n === !0 ? -1 : 1, s = (i) => i[t], o = new Intl.Collator();
     return e.sort((i, r) => {
       let l = s(i), d = s(r);
-      return l == null ? -1 * a : d == null ? 1 * a : En(l) === !0 && En(d) === !0 ? (l - d) * a : Fn(l) === !0 && Fn(d) === !0 ? Vs(l, d) * a : typeof l == "boolean" && typeof d == "boolean" ? (l - d) * a : ([l, d] = [l, d].map((u) => (u + "").toLocaleString()), o.compare(l, d) * a);
+      return l == null ? -1 * a : d == null ? 1 * a : En(l) === !0 && En(d) === !0 ? (l - d) * a : Fn(l) === !0 && Fn(d) === !0 ? Ds(l, d) * a : typeof l == "boolean" && typeof d == "boolean" ? (l - d) * a : ([l, d] = [l, d].map((u) => (u + "").toLocaleString()), o.compare(l, d) * a);
     });
   },
   selectedFunction: function(e, t, n) {
@@ -4089,7 +4103,7 @@ const On = /* @__PURE__ */ qs(Fs), D = window.Quasar, At = {
   editorHandlerParagrapheFix(e, t, n) {
     this.editorHandlerFixHelper(["h1", "h2", "h3", "h4", "h5", "h6", "h7", "h8", "h9"], /<\/?h[1-9][^>]*\/?>/g, "div", "div", t, n);
   }
-}, Es = {
+}, Os = {
   ajaxErrors: {
     code401: "UnAuthorized, you may login with an authorized account",
     code403: "Forbidden, your havn&quote;t enought rights",
@@ -4145,7 +4159,7 @@ const On = /* @__PURE__ */ qs(Fs), D = window.Quasar, At = {
   handles: {
     placeholder: "Enter a handle : format is type/code"
   }
-}, Ts = {
+}, Ms = {
   ajaxErrors: {
     code401: "Non autoris&eacute;, essayez de vous reconnecter",
     code403: "Vous n&quote;avez pas les droits suffisants pour effectuer cette action",
@@ -4208,7 +4222,7 @@ var Bn = {
     return Object.keys(t).forEach((a) => n[a] = t[a].bind(e)), n;
   },
   install: function(e, t) {
-    if (e.component("v-chatbot", ao), e.component("v-commands", go), e.component("v-comments", Co), e.component("v-extensions-store", Oo), e.component("v-facets", Uo), e.component("v-geopoint-input", Ro), e.component("v-handles", ea), e.component("v-json-editor", ca), e.component("v-notifications", wa), e.component("v-map", Va), e.component("v-map-layer", Na), e.component("v-tree", Ya), e.component("v-file-upload", wi), e.component("v-file-upload-quasar", Ni), e.component("v-dashboard-chart", us), e.directive("alert-unsaved-updates", fs), e.directive("autofocus", hs), e.directive("if-unsaved-updates", ms), e.directive("minify", gs), e.directive("scroll-spy", ks), !t.axios) {
+    if (e.component("v-chatbot", ao), e.component("v-commands", go), e.component("v-comments", Co), e.component("v-extensions-store", Oo), e.component("v-facets", Uo), e.component("v-geopoint-input", Ro), e.component("v-handles", ea), e.component("v-json-editor", ca), e.component("v-notifications", wa), e.component("v-map", Va), e.component("v-map-layer", Na), e.component("v-tree", Ya), e.component("v-file-upload", wi), e.component("v-file-upload-quasar", Ui), e.component("v-dashboard-chart", hs), e.directive("alert-unsaved-updates", ps), e.directive("autofocus", ms), e.directive("if-unsaved-updates", ws), e.directive("minify", bs), e.directive("scroll-spy", qs), !t.axios) {
       console.error("You have to install axios");
       return;
     }
@@ -4235,8 +4249,8 @@ var Bn = {
     e.vueData = t.vueData, e.componentStates = t.componentStates, e.uiMessageStack = t.uiMessageStack, e.vuiLang = t.vuiLang;
   },
   lang: {
-    enUS: Es,
-    fr: Ts
+    enUS: Os,
+    fr: Ms
   }
 };
 window && (window.VertigoUi = Bn);

@@ -1,19 +1,23 @@
 <th:block th:fragment="label-edit(object,field,rowIndex, label, required, after_label_slot, label_attrs)" vu:alias="label" vu:selector="${viewMode=='edit'}"
-          th:with="myLabel=${label?:model.util.label(object + '.' + field)}, myRequired=${required != null ? required : model.util.required(object + '.' + field)}"
+          th:with="myComponentId=${model.util.generateComponentUID('label', object, field, rowIndex)},
+                   myLabel=${label?:model.util.label(object + '.' + field)},
+                   myRequired=${required != null ? required : model.util.required(object + '.' + field)}"
           th:assert="${object} != null and ${field} != null">
     <q-field
             th::label-width="${overridedLabelWidth?:3}"
             th:label="${modifiableTable!=null?null:myLabel}"
+            th:aria-labelledby="|${myComponentId}_label|"
             th:classappend="|${myRequired?'v-field_'+'_required':''}${after_label_slot!=null?' v-field_'+'_has_after_label':''}|"
             th:aria-required="${myRequired}"
             th::error="|hasFieldsError('${object}', '${field}', ${rowIndex})|"
-            th::error-message="|getErrorMessage('${object}', '${field}', ${rowIndex})|"
+            th::aria-invalid="|hasFieldsError('${object}', '${field}', ${rowIndex})|"
+            th::aria-describedby="|hasFieldsError('${object}', '${field}', ${rowIndex}) ? '${myComponentId}_desc-error' : null|"
             orientation="vertical"
             stack-label
             borderless
             th:attr="__${label_attrs}__"
     >
-    	<vu:quasar-label-slot label="${myLabel}" after_label_slot="after_label_slot"/>
+    	<vu:quasar-label-slot label="${myLabel}" componentId="${myComponentId}" after_label_slot="after_label_slot"/>
         <vu:content/>
     </q-field>
 </th:block>
@@ -34,9 +38,15 @@
         <vu:content/>
     </q-field>
 </th:block>
-<th:block th:fragment="quasar-label-slot(label, after_label_slot)" >
-   	<template th:if="${label != null && after_label_slot != null}" v-slot:label slot-scope="props">
-   		<span vu:text="${label}"/>
-		<span class="v-field__after_label all-pointer-events"><vu:content-slot name="after_label_slot"/></span>
-   	</template>
+<th:block th:fragment="quasar-label-slot(label, componentId, after_label_slot)"
+          th:with="myComponentId=${componentId?:model.util.generateComponentUID('label', object, field, rowIndex)}">
+    <template v-slot:label slot-scope="props">
+        <span th:id="|${myComponentId}_label|">
+	        <span vu:text="${label}"/>
+	        <span class="v-field__after_label all-pointer-events"><vu:content-slot name="after_label_slot"/></span>
+	    </span>
+    </template>
+    <template v-slot:error>
+        <div th:id="|${myComponentId}_desc-error|">{{ <th:block th:text="|getErrorMessage('${object}', '${field}', ${rowIndex})|"/> }}</div>
+    </template>
 </th:block>

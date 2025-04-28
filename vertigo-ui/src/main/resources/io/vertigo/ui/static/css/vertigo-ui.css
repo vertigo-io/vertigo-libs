@@ -10,6 +10,10 @@
 	--v-accent-invert:	rgba(255, 255, 255, 0.9);
 }
 
+.flex-end {
+	align-items: flex-end;
+}
+
 /** Use to add elements for ScreenReader only */
 .sr-only {
   border: 0 !important;
