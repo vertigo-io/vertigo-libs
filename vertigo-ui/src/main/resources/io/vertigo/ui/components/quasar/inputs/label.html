@@ -6,7 +6,7 @@
     <q-field
             th::label-width="${overridedLabelWidth?:3}"
             th:label="${modifiableTable!=null?null:myLabel}"
-            th::aria-labelledby="|'${myComponentId}_label' + (hasFieldsError('${object}', '${field}', ${rowIndex}) ? ' ${myComponentId}_desc-error' : null)|"
+            th::aria-labelledby="|'${myComponentId}_label' + (hasFieldsError('${object}', '${field}', ${rowIndex}) ? ' ${myComponentId}_desc-error' : '')|"
             th:classappend="|${myRequired?'v-field_'+'_required':''}${after_label_slot!=null?' v-field_'+'_has_after_label':''}|"
             th:aria-required="${myRequired}"
             th::error="|hasFieldsError('${object}', '${field}', ${rowIndex})|"
@@ -29,7 +29,7 @@
             th:label="${modifiableTable!=null?null:myLabel}"
             orientation="vertical"
             stack-label
-            readonly
+            readonly aria-readonly="true"
             borderless
             th:attr="__${label_attrs}__"
     >
