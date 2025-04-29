@@ -187,7 +187,8 @@ watch(props.disabled, () => {
       @blur="onMouseLeave($event)"
       v-bind="$attrs"
   >
-    {{ label }}
+    <span v-if="iconOnly" class="fr-sr-only">{{ label }}</span>
+    <template v-else>{{ label }}</template>
   </component>
   <p
       :id="id"

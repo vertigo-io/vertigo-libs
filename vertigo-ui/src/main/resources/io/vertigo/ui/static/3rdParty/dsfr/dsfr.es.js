@@ -11608,7 +11608,10 @@ const _v = /* @__PURE__ */ Ae(nv, [["render", wv], ["__scopeId", "data-v-628fafb
       }, h(e.value), 11, wb)) : g("", !0)
     ], 2));
   }
-}), xb = ["id"], Db = /* @__PURE__ */ F({
+}), xb = {
+  key: 0,
+  class: "fr-sr-only"
+}, Db = ["id"], Tb = /* @__PURE__ */ F({
   __name: "DsfrComponentTooltip",
   props: {
     id: { default: () => $e("tooltip") },
@@ -11698,7 +11701,9 @@ const _v = /* @__PURE__ */ Ae(nv, [["render", wv], ["__scopeId", "data-v-628fafb
         onBlur: w[3] || (w[3] = (A) => E())
       }, b.$attrs), {
         default: U(() => [
-          V(h(b.label), 1)
+          b.iconOnly ? (i(), f("span", xb, h(b.label), 1)) : (i(), f(z, { key: 1 }, [
+            V(h(b.label), 1)
+          ], 64))
         ]),
         _: 1
       }, 16, ["id", "href", "class", "aria-disabled", "aria-labelledby"])),
@@ -11718,10 +11723,10 @@ const _v = /* @__PURE__ */ Ae(nv, [["render", wv], ["__scopeId", "data-v-628fafb
         S(b.$slots, "default", {}, () => [
           V(h(b.content), 1)
         ], !0)
-      ], 46, xb)
+      ], 46, Db)
     ], 64));
   }
-}), tr = /* @__PURE__ */ Ae(Db, [["__scopeId", "data-v-9aff3af2"]]), Tb = /* @__PURE__ */ F({
+}), tr = /* @__PURE__ */ Ae(Tb, [["__scopeId", "data-v-cdf16abc"]]), Ib = /* @__PURE__ */ F({
   __name: "DsfrButtonTooltip",
   setup(n) {
     return (t, e) => (i(), j(tr, Q({ "is-link": !1 }, t.$attrs), {
@@ -11731,7 +11736,7 @@ const _v = /* @__PURE__ */ Ae(nv, [["render", wv], ["__scopeId", "data-v-628fafb
       _: 3
     }, 16));
   }
-}), Ib = /* @__PURE__ */ F({
+}), Cb = /* @__PURE__ */ F({
   __name: "DsfrLinkTooltip",
   props: {
     asButton: { type: Boolean, default: !1 }
@@ -11746,7 +11751,7 @@ const _v = /* @__PURE__ */ Ae(nv, [["render", wv], ["__scopeId", "data-v-628fafb
       _: 3
     }, 16, ["is-link"]));
   }
-}), Cb = ["id", "href"], Eb = /* @__PURE__ */ F({
+}), Eb = ["id", "href"], Pb = /* @__PURE__ */ F({
   __name: "DsfrLink",
   props: {
     id: { default: () => $e("link") },
@@ -11788,18 +11793,18 @@ const _v = /* @__PURE__ */ Ae(nv, [["render", wv], ["__scopeId", "data-v-628fafb
       S(o.$slots, "default", {}, () => [
         V(h(o.label), 1)
       ], !0)
-    ], 16, Cb));
+    ], 16, Eb));
   }
-}), Pb = /* @__PURE__ */ Ae(Eb, [["__scopeId", "data-v-edcd30c2"]]), Mb = (n, t) => n.matches ? n.matches(t) : n.msMatchesSelector ? n.msMatchesSelector(t) : n.webkitMatchesSelector ? n.webkitMatchesSelector(t) : null, Lb = (n, t) => {
+}), Mb = /* @__PURE__ */ Ae(Pb, [["__scopeId", "data-v-edcd30c2"]]), Lb = (n, t) => n.matches ? n.matches(t) : n.msMatchesSelector ? n.msMatchesSelector(t) : n.webkitMatchesSelector ? n.webkitMatchesSelector(t) : null, Bb = (n, t) => {
   let e = n;
   for (; e && e.nodeType === 1; ) {
-    if (Mb(e, t))
+    if (Lb(e, t))
       return e;
     e = e.parentNode;
   }
   return null;
-}, Bb = (n, t) => n.closest ? n.closest(t) : Lb(n, t), Sb = (n) => !!(n && typeof n.then == "function");
-class $b {
+}, Sb = (n, t) => n.closest ? n.closest(t) : Bb(n, t), $b = (n) => !!(n && typeof n.then == "function");
+class Ab {
   constructor({
     search: t,
     autoSelect: e = !1,
@@ -11877,7 +11882,7 @@ class $b {
       t.preventDefault();
     });
     N(this, "handleResultClick", (t) => {
-      const { target: e } = t, a = Bb(e, "[data-result-index]");
+      const { target: e } = t, a = Sb(e, "[data-result-index]");
       if (a) {
         this.selectedIndex = parseInt(a.dataset.resultIndex, 10);
         const r = this.results[this.selectedIndex];
@@ -11920,15 +11925,15 @@ class $b {
       const a = t.getBoundingClientRect(), r = e.getBoundingClientRect();
       r.top < a.top ? t.scrollTop -= a.top - r.top : r.bottom > a.bottom && (t.scrollTop += r.bottom - a.bottom);
     });
-    this.search = Sb(t) ? t : (C) => Promise.resolve(t(C)), this.autoSelect = e, this.setValue = a, this.setAttribute = r, this.onUpdate = l, this.onSubmit = s, this.autocorrect = u, this.onShow = o, this.onHide = d, this.onLoading = p, this.onLoaded = v, this.submitOnEnter = m;
+    this.search = $b(t) ? t : (C) => Promise.resolve(t(C)), this.autoSelect = e, this.setValue = a, this.setAttribute = r, this.onUpdate = l, this.onSubmit = s, this.autocorrect = u, this.onShow = o, this.onHide = d, this.onLoading = p, this.onLoaded = v, this.submitOnEnter = m;
   }
 }
-const Ab = (n, t) => {
+const Ob = (n, t) => {
   const e = n.getBoundingClientRect(), a = t.getBoundingClientRect();
   return /* 1 */ e.bottom + a.height > window.innerHeight && /* 2 */
   window.innerHeight - e.bottom < e.top && /* 3 */
   window.pageYOffset + e.top - a.height > 0 ? "above" : "below";
-}, Ob = (n, t, e) => {
+}, Rb = (n, t, e) => {
   let a;
   return function() {
     const l = this, s = arguments, o = function() {
@@ -11936,7 +11941,7 @@ const Ab = (n, t) => {
     };
     clearTimeout(a), a = setTimeout(o, t);
   };
-}, Rb = (n) => {
+}, Fb = (n) => {
   if (n != null && n.length) {
     const t = n.startsWith("#");
     return {
@@ -11944,7 +11949,7 @@ const Ab = (n, t) => {
       content: t ? n.substring(1) : n
     };
   }
-}, Fb = {
+}, Vb = {
   name: "Autocomplete",
   inheritAttrs: !1,
   props: {
@@ -11983,7 +11988,7 @@ const Ab = (n, t) => {
   },
   emits: ["update", "submit"],
   data() {
-    const n = new $b({
+    const n = new Ab({
       search: this.search,
       autoSelect: this.autoSelect,
       setValue: this.setValue,
@@ -11995,7 +12000,7 @@ const Ab = (n, t) => {
       onLoaded: this.handleLoaded,
       submitOnEnter: this.submitOnEnter
     });
-    return this.debounceTime > 0 && (n.handleInput = Ob(n.handleInput, this.debounceTime)), {
+    return this.debounceTime > 0 && (n.handleInput = Rb(n.handleInput, this.debounceTime)), {
       core: n,
       value: this.defaultValue,
       resultListId: `${this.baseClass}-result-list-${Yt()}`,
@@ -12048,7 +12053,7 @@ const Ab = (n, t) => {
       };
     },
     resultListProps() {
-      const n = this.position === "below" ? "top" : "bottom", t = Rb(this.resultListLabel);
+      const n = this.position === "below" ? "top" : "bottom", t = Fb(this.resultListLabel);
       return {
         id: this.resultListId,
         class: `${this.baseClass}-result-list`,
@@ -12087,7 +12092,7 @@ const Ab = (n, t) => {
     document.body.removeEventListener("click", this.handleDocumentClick);
   },
   updated() {
-    !this.$refs.input || !this.$refs.resultList || (this.resetPosition && this.results.length > 0 && (this.resetPosition = !1, this.position = Ab(
+    !this.$refs.input || !this.$refs.resultList || (this.resetPosition && this.results.length > 0 && (this.resetPosition = !1, this.position = Ob(
       this.$refs.input,
       this.$refs.resultList
     )), this.core.checkSelectedResultVisible(this.$refs.resultList));
@@ -12122,7 +12127,7 @@ const Ab = (n, t) => {
     }
   }
 };
-function Vb(n, t, e, a, r, l) {
+function Nb(n, t, e, a, r, l) {
   return i(), f("div", Q({ ref: "root" }, {
     class: n.$attrs.class,
     ...n.$attrs.style ? { style: n.$attrs.style } : {}
@@ -12158,16 +12163,16 @@ function Vb(n, t, e, a, r, l) {
     ])
   ], 16);
 }
-const Nb = /* @__PURE__ */ Ae(Fb, [["render", Vb]]);
-var qb = {
+const qb = /* @__PURE__ */ Ae(Vb, [["render", Nb]]);
+var jb = {
   install: function(n, t) {
-    n.use(Zp), n.component("RouterLink", tv), n.component("DsfrFacets", _v), n.component("DsfrSelectMultiple", Xv), n.component("DsfrMenu", Cv), n.component("DsfrMenuLink", Lv), n.component("DsfrHeaderMenu", sg), n.component("DsfrCustomHeader", Og), n.component("DsfrCustomHeaderMenuLinks", Qt), n.component("DsfrCustomDataTable", ib), n.component("DsfrCustomCheckbox", mb), n.component("DsfrCustomSelect", _b), n.component("DsfrButtonTooltip", Tb), n.component("DsfrLinkTooltip", Ib), n.component("DsfrLink", Pb), n.component("autocomplete", Nb);
+    n.use(Zp), n.component("RouterLink", tv), n.component("DsfrFacets", _v), n.component("DsfrSelectMultiple", Xv), n.component("DsfrMenu", Cv), n.component("DsfrMenuLink", Lv), n.component("DsfrHeaderMenu", sg), n.component("DsfrCustomHeader", Og), n.component("DsfrCustomHeaderMenuLinks", Qt), n.component("DsfrCustomDataTable", ib), n.component("DsfrCustomCheckbox", mb), n.component("DsfrCustomSelect", _b), n.component("DsfrButtonTooltip", Ib), n.component("DsfrLinkTooltip", Cb), n.component("DsfrLink", Mb), n.component("autocomplete", qb);
   },
   methods: Zh,
   utils: Jh
 };
-window && (window.DSFR = qb);
+window && (window.DSFR = jb);
 export {
-  qb as default
+  jb as default
 };
 //# sourceMappingURL=dsfr.es.js.map
