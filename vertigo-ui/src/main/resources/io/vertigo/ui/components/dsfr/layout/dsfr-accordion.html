@@ -1,17 +1,17 @@
-<th:block th:fragment="dsfr-accordion(componentId, title, opened, other_attrs)"
+<th:block th:fragment="dsfr-accordion(componentId, title, opened, title-tag, other_attrs)"
           vu:alias="dsfr-accordion"
           th:assert="${componentId} != null or (${componentId == null} and ${isAccordionGroup})">
     <th:block th:if="${isAccordionsGroup}">
-        <dsfr-accordion th:title="${title}" th:attr="__${other_attrs}__">
-            <vu:content th:with="title=null"/>
+        <dsfr-accordion th:title="${title}" th:title-tag="${titleTag}" th:attr="__${other_attrs}__">
+            <vu:content th:with="title=null, title-tag=null"/>
         </dsfr-accordion>
     </th:block>
     <th:block th:unless="${isAccordionsGroup}">
         <th:block th:if="${opened == null or opened == false}" th:with="o=${model.vContext['componentStates'].addComponentState(componentId).addPrimitive('expand', -1)}"/>
         <th:block th:if="${opened == true}" th:with="o=${model.vContext['componentStates'].addComponentState(componentId).addPrimitive('expand', 0)}"/>
         <dsfr-accordions-group th:v-model="|componentStates.__${componentId}__.expand|">
-            <dsfr-accordion th:title="${title}" th:attr="__${other_attrs}__">
-                <vu:content th:with="title=null"/>
+            <dsfr-accordion th:title="${title}" th:title-tag="${titleTag}" th:attr="__${other_attrs}__">
+                <vu:content th:with="title=null, title-tag=null"/>
             </dsfr-accordion>
         </dsfr-accordions-group>
     </th:block>
