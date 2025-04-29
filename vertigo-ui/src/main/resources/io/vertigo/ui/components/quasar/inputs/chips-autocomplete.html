@@ -14,12 +14,11 @@
 	<q-select th:if="${!myStaticData}"
        	th:v-model="|vueData.${object}.${field}|"
 		th:label="${myLabel}"
-		th:aria-labelledby="|${myComponentId}_label|"
+		th::aria-labelledby="|'${myComponentId}_label' + (hasFieldsError('${object}', '${field}', ${rowIndex}) ? ' ${myComponentId}_desc-error' : null)|"
 		th:classappend="|${myRequired?'v-field_'+'_required':''}${after_label_slot!=null?' v-field_'+'_has_after_label':''}|"
 		th:aria-required="${myrequired}"
 		th::error="|hasFieldsError('${object}', '${field}')|"
         th::aria-invalid="|hasFieldsError('${object}', '${field}', ${rowIndex})|"
-        th::aria-describedby="|hasFieldsError('${object}', '${field}', ${rowIndex}) ? '${myComponentId}_desc-error' : null|"
 		orientation="vertical"
 		multiple
 		hide-dropdown-icon
@@ -40,12 +39,11 @@
      <q-select th:if="${myStaticData}"
        	th:v-model="|vueData.${object}.${field}|"
 		th:label="${myLabel}"
-		th:aria-labelledby="|${myComponentId}_label|"
+		th::aria-labelledby="|'${myComponentId}_label' + (hasFieldsError('${object}', '${field}', ${rowIndex}) ? ' ${myComponentId}_desc-error' : null)|"
 		th:classappend="|${myRequired?'v-field_'+'_required':''}${after_label_slot!=null?' v-field_'+'_has_after_label':''}|"
 		th:aria-required="${myrequired}"
 		th::error="|hasFieldsError('${object}', '${field}')|"
         th::aria-invalid="|hasFieldsError('${object}', '${field}', ${rowIndex})|"
-        th::aria-describedby="|hasFieldsError('${object}', '${field}', ${rowIndex}) ? '${myComponentId}_desc-error' : null|"
 		orientation="vertical"
 		multiple
 		hide-dropdown-icon

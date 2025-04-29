@@ -21,12 +21,11 @@
             th:@filter="${searchable != null && searchable ? '(val, update, abort) => update(() => this.componentStates.'+myComponentId+'.searchValue = val, ref => ref.setOptionIndex(0))' :null}"
 			th::label-width="${overridedLabelWidth?:3}"
 			th:label="${modifiableTable!=null?null:myLabel}"
-			th:aria-labelledby="|${myComponentId}_label|"
+			th::aria-labelledby="|'${myComponentId}_label' + (hasFieldsError('${object}', '${field}', ${rowIndex}) ? ' ${myComponentId}_desc-error' : null)|"
 			th:classappend="|${myRequired?'v-field_'+'_required':''}${after_label_slot!=null?' v-field_'+'_has_after_label':''}|"
             th:aria-required="${myRequired}"
             th::error="|hasFieldsError('${object}', '${field}', ${rowIndex})|"
             th::aria-invalid="|hasFieldsError('${object}', '${field}', ${rowIndex})|"
-            th::aria-describedby="|hasFieldsError('${object}', '${field}', ${rowIndex}) ? '${myComponentId}_desc-error' : null|"
 			orientation="vertical"
 			stack-label
 			th:attr="__${label_attrs}__,__${input_attrs}__">

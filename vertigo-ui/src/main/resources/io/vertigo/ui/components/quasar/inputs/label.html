@@ -6,12 +6,11 @@
     <q-field
             th::label-width="${overridedLabelWidth?:3}"
             th:label="${modifiableTable!=null?null:myLabel}"
-            th:aria-labelledby="|${myComponentId}_label|"
+            th::aria-labelledby="|'${myComponentId}_label' + (hasFieldsError('${object}', '${field}', ${rowIndex}) ? ' ${myComponentId}_desc-error' : null)|"
             th:classappend="|${myRequired?'v-field_'+'_required':''}${after_label_slot!=null?' v-field_'+'_has_after_label':''}|"
             th:aria-required="${myRequired}"
             th::error="|hasFieldsError('${object}', '${field}', ${rowIndex})|"
             th::aria-invalid="|hasFieldsError('${object}', '${field}', ${rowIndex})|"
-            th::aria-describedby="|hasFieldsError('${object}', '${field}', ${rowIndex}) ? '${myComponentId}_desc-error' : null|"
             orientation="vertical"
             stack-label
             borderless
@@ -38,7 +37,7 @@
         <vu:content/>
     </q-field>
 </th:block>
-<th:block th:fragment="quasar-label-slot(label, componentId, after_label_slot)"
+<th:block th:fragment="quasar-label-slot(label, object, field, rowIndex, componentId, after_label_slot)"
           th:with="myComponentId=${componentId?:model.util.generateComponentUID('label', object, field, rowIndex)}">
     <template v-slot:label slot-scope="props">
         <span th:id="|${myComponentId}_label|">
