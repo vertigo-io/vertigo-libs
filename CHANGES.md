@@ -6,7 +6,6 @@ Running 4.3.1
 * [UI][Quasar] Improved Accessibility
 * [UI][DSFR] Improved Accessibility
 * [UI][DSFR] Fix `dsfr-button` inside a `v-for` loop.
-* [UI][DSFR] fix `titleTag` unwanted tag in accordions children
 * [UI][DSFR] better facets style
 * [UI][DSFR] Fix pagination on facet selection
 * [Account][Security] Handle comparison between a field and 'null' value
