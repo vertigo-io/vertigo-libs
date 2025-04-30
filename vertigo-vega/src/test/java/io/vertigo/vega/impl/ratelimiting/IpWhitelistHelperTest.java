@@ -73,10 +73,10 @@ public class IpWhitelistHelperTest {
 
 	@ParameterizedTest(name = "CIDR {0} should produce {1} IPs")
 	@CsvSource({
-			"192.168.0.0/30, 2",
+			"192.168.0.0/30, 4",
 			"192.168.0.1/32, 1",
 			"192.168.0.0/32, 1",
-			"192.168.0.0/29, 6"
+			"192.168.0.0/29, 8"
 	})
 	void testCIDRSize(final String cidr, final int expectedCount) {
 		// Given
@@ -98,9 +98,11 @@ public class IpWhitelistHelperTest {
 		final IpWhitelistHelper helper = new IpWhitelistHelper(subnets, DEFAULT_MAX_WHITELIST_SIZE);
 
 		// Then
+		assertTrue(helper.isIpInWhitelist("192.168.0.0"));
 		assertTrue(helper.isIpInWhitelist("192.168.0.1"));
 		assertTrue(helper.isIpInWhitelist("192.168.0.2"));
-		assertFalse(helper.isIpInWhitelist("192.168.0.3"));
+		assertTrue(helper.isIpInWhitelist("192.168.0.3"));
+		assertFalse(helper.isIpInWhitelist("192.168.0.4"));
 	}
 
 	@Test
@@ -112,10 +114,77 @@ public class IpWhitelistHelperTest {
 		final IpWhitelistHelper helper = new IpWhitelistHelper(subnets, DEFAULT_MAX_WHITELIST_SIZE);
 
 		// Then
-		for (int i = 1; i <= 6; i++) {
+		for (int i = 0; i <= 7; i++) {
 			assertTrue(helper.isIpInWhitelist("192.168.0." + i));
 		}
-		assertFalse(helper.isIpInWhitelist("192.168.0.7"));
+		assertFalse(helper.isIpInWhitelist("192.168.0.8"));
+	}
+
+	// ===== IPv6 CIDR Tests =====
+
+	@Test
+	void testIPv6CIDR() {
+		// Given
+		final Set<String> subnets = Set.of("2001:db8::/126");
+
+		// When
+		final IpWhitelistHelper helper = new IpWhitelistHelper(subnets, DEFAULT_MAX_WHITELIST_SIZE);
+
+		// Then
+		assertEquals(4, helper.estimateIpCount());
+		assertTrue(helper.isIpInWhitelist("2001:db8::0"));
+		assertTrue(helper.isIpInWhitelist("2001:db8::1"));
+		assertTrue(helper.isIpInWhitelist("2001:db8::2"));
+		assertTrue(helper.isIpInWhitelist("2001:db8::3"));
+		assertFalse(helper.isIpInWhitelist("2001:db8::4"));
+	}
+
+	@Test
+	void testIPv6CIDR127() {
+		// Given
+		final Set<String> subnets = Set.of("2001:db8::/127");
+
+		// When
+		final IpWhitelistHelper helper = new IpWhitelistHelper(subnets, DEFAULT_MAX_WHITELIST_SIZE);
+
+		// Then
+		assertEquals(2, helper.estimateIpCount());
+		assertTrue(helper.isIpInWhitelist("2001:db8::"));
+		assertTrue(helper.isIpInWhitelist("2001:db8::1"));
+		assertFalse(helper.isIpInWhitelist("2001:db8::2"));
+	}
+
+	@Test
+	void testIPv6CIDR128() {
+		// Given
+		final Set<String> subnets = Set.of("2001:db8::1/128");
+
+		// When
+		final IpWhitelistHelper helper = new IpWhitelistHelper(subnets, DEFAULT_MAX_WHITELIST_SIZE);
+
+		// Then
+		assertEquals(1, helper.estimateIpCount());
+		assertTrue(helper.isIpInWhitelist("2001:db8::1"));
+		assertFalse(helper.isIpInWhitelist("2001:db8::"));
+		assertFalse(helper.isIpInWhitelist("2001:db8::2"));
+	}
+
+	@ParameterizedTest(name = "IPv6 CIDR {0} should produce {1} IPs")
+	@CsvSource({
+			"2001:db8::/126, 4",
+			"2001:db8::1/128, 1",
+			"2001:db8::/127, 2",
+			"2001:db8::/125, 8"
+	})
+	void testIPv6CIDRSize(final String cidr, final int expectedCount) {
+		// Given
+		final Set<String> subnets = Set.of(cidr);
+
+		// When
+		final IpWhitelistHelper helper = new IpWhitelistHelper(subnets, DEFAULT_MAX_WHITELIST_SIZE);
+
+		// Then
+		assertEquals(expectedCount, helper.estimateIpCount());
 	}
 
 	// ===== Multiple Subnet Tests =====
@@ -128,12 +197,13 @@ public class IpWhitelistHelperTest {
 		subnets.add("10.0.0.1-10.0.0.3");
 		subnets.add("10.0.1.1-3");
 		subnets.add("172.16.0.0/31");
+		subnets.add("2001:db8::/127"); // IPv6 CIDR
 
 		// When
 		final IpWhitelistHelper helper = new IpWhitelistHelper(subnets, DEFAULT_MAX_WHITELIST_SIZE);
 
 		// Then
-		assertEquals(9, helper.estimateIpCount());
+		assertEquals(11, helper.estimateIpCount());
 
 		// Verify different formats
 		assertTrue(helper.isIpInWhitelist("192.168.0.1")); // Single IP
@@ -149,8 +219,15 @@ public class IpWhitelistHelperTest {
 		assertTrue(helper.isIpInWhitelist("10.0.1.3"));
 
 		// CIDR
+		assertFalse(helper.isIpInWhitelist("172.15.255.255"));
 		assertTrue(helper.isIpInWhitelist("172.16.0.0"));
-		assertFalse(helper.isIpInWhitelist("172.16.0.1"));
+		assertTrue(helper.isIpInWhitelist("172.16.0.1"));
+		assertFalse(helper.isIpInWhitelist("172.16.0.2"));
+
+		// IPv6 CIDR
+		assertTrue(helper.isIpInWhitelist("2001:db8::"));
+		assertTrue(helper.isIpInWhitelist("2001:db8::1"));
+		assertFalse(helper.isIpInWhitelist("2001:db8::2"));
 	}
 
 	// ===== IPv6 Tests =====
@@ -193,7 +270,7 @@ public class IpWhitelistHelperTest {
 			"192.168.0.1/33", // Invalid CIDR
 			"192.168.0.5-192.168.0.1", // Reversed range
 			"192.168.0.1-192.169.0.5", // Different prefix
-			"[2001:0db8:85a3:0000:0000:8a2e:0370:7334/64]" // Unsupported IPv6 CIDR
+			"[2001:0db8:85a3:0000:0000:8a2e:0370:7334/64]" // Unsupported IPv6 CIDR (prefix too large)
 	})
 	void testInvalidInputs(final String invalidSubnet) {
 		// Given
@@ -218,13 +295,25 @@ public class IpWhitelistHelperTest {
 		assertThrows(IllegalStateException.class, () -> helper.addWhitelist(subnets));
 	}
 
+	@Test
+	void testIPv6CIDRSizeLimitExceeded() {
+		// Given - a CIDR with too many IPs
+		final Set<String> subnets = Set.of("2001:db8::/108"); // Should generate more than 1000 IPs
+
+		// When / Then
+		final IpWhitelistHelper helper = new IpWhitelistHelper(Set.of(), 1000);
+		assertThrows(IllegalStateException.class, () -> helper.addWhitelist(subnets));
+	}
+
 	// ===== Valid Input Tests (verification of no exceptions) =====
 
 	@ParameterizedTest(name = "Valid format {0}")
 	@ValueSource(strings = {
 			"192.168.0.1", // Simple IP
 			"10.0.0.1/32", // IP with CIDR
-			"172.16.0.1-172.16.0.5" // IP range
+			"172.16.0.1-172.16.0.5", // IP range
+			"2001:db8::/126", // IPv6 CIDR
+			"2001:db8::1/128" // IPv6 with CIDR
 	})
 	void testValidInputs(final String validSubnet) {
 		// Given
@@ -270,13 +359,14 @@ public class IpWhitelistHelperTest {
 	@Test
 	void testPrintWhitelist() {
 		// Given
-		final Set<String> subnets = Set.of("192.168.0.1", "10.0.0.1/32");
+		final Set<String> subnets = Set.of("192.168.0.1", "10.0.0.1/32", "2001:db8::1/128");
 		final IpWhitelistHelper helper = new IpWhitelistHelper(subnets, DEFAULT_MAX_WHITELIST_SIZE);
 
 		// Then
 		final String whitelistStr = helper.printWhitelist();
 		assertTrue(whitelistStr.contains("192.168.0.1"));
 		assertTrue(whitelistStr.contains("10.0.0.1/32"));
+		assertTrue(whitelistStr.contains("2001:db8::1/128"));
 	}
 
 	@Test
@@ -292,11 +382,11 @@ public class IpWhitelistHelperTest {
 	@Test
 	void testPerformanceOfIsIpInWhitelist() {
 		// Given
-		final Set<String> subnets = Set.of("192.168.0.0/24", "192.168.1.0/24", "10.0.0.0/24", "172.16.0.0/24");
+		final Set<String> subnets = Set.of("192.168.0.0/24", "192.168.1.0/24", "10.0.0.0/24", "172.16.0.0/24", "2001:db8::/118");
 		final IpWhitelistHelper helper = new IpWhitelistHelper(subnets, 1000000);
 
 		// Verify size first
-		assertEquals(1016, helper.estimateIpCount()); // Four /24 networks should have ~1016 usable IPs
+		assertEquals(1024 * 2, helper.estimateIpCount()); // Four /24 networks should have ~1024 usable IPs and one IPv6 /118 should have 24 usable IPs
 
 		// When - Measure performance of 1000 lookups
 		final String existingIp = "192.168.0.100";

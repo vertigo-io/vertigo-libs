@@ -18,6 +18,7 @@
 package io.vertigo.vega.impl.ratelimiting;
 
 import java.math.BigInteger;
+import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.HashSet;
@@ -39,8 +40,9 @@ import io.vertigo.core.lang.WrappedException;
  * - 192.168.1.0-134
  * - 2001:0db8:85a3:0000:0000:8a2e:0370:7334-7440
  *
- * CIDR: for IPv4 only
+ * CIDR: for both IPv4 and IPv6
  * - 192.168.1.0/25
+ * - 2001:0db8:85a3::/64
  *
  * Whitelist is limited in size (hard limit 1,000,000)
  *
@@ -88,7 +90,7 @@ class IpWhitelistHelper {
 	private String normalizeAddress(final String ip) {
 		var normalized = removeBracketsIpv6Address(ip);
 		// If IP contains leading zeros, normalize it using InetAddress
-		if (normalized.startsWith("0") || normalized.contains(".0") || normalized.contains(":0")) {
+		if (normalized.startsWith("0") || normalized.contains(".0") || normalized.contains(":0") || normalized.contains("::")) {
 			try {
 				normalized = InetAddress.getByName(normalized).getHostAddress();
 			} catch (final UnknownHostException e) {
@@ -194,57 +196,101 @@ class IpWhitelistHelper {
 	}
 
 	/**
-	 * Initializes a set of IP addresses from a CIDR notation (IPv4 only).
+	 * Initializes a set of IP addresses from a CIDR notation (IPv4 and IPv6).
 	 *
-	 * @param subnet The subnet in CIDR notation (e.g., "192.168.1.0/24")
+	 * @param subnet The subnet in CIDR notation (e.g., "192.168.1.0/24" or "2001:db8::/64")
 	 * @return Set of IP addresses in the CIDR range
 	 * @throws UnknownHostException If the base IP is invalid
 	 */
 	private Set<String> initCIDR(final String subnet) throws UnknownHostException {
-		final String[] parts = subnet.contains("/") ? subnet.split("/") : new String[] { subnet, "32" };
+		final String[] parts = subnet.contains("/") ? subnet.split("/") : new String[] { subnet, null };
 		final String baseIp = parts[0];
 		final InetAddress baseAddr = InetAddress.getByName(baseIp);
+		final int maskPrefixLength = baseAddr instanceof Inet6Address ? 128 : 32;
+		if (parts[1] == null) {
+			parts[1] = String.valueOf(maskPrefixLength);
+		}
 		final int prefixLength = Integer.parseInt(parts[1]);
 
 		// Validate prefix length
-		if (prefixLength < 0 || prefixLength > 32) {
+		if (prefixLength < 0 || prefixLength > maskPrefixLength) {
 			throw new IllegalStateException("Invalid mask in subnet " + subnet);
+		}
+		// Calculate maximum bits that can be allowed to change
+		final int maxChangedBits = 20; // Allow up to 2^20 addresses (about 1 million)
+		if (maskPrefixLength - prefixLength > maxChangedBits) {
+			throw new IllegalStateException("For performance reason, mask cannot be lower than " + (maskPrefixLength - maxChangedBits));
 		}
 
 		// Calculate IP range based on CIDR prefix
-		final BigInteger address = new BigInteger(baseAddr.getAddress());
-		BigInteger hmin, hmax;
+		// For both IPv4 and IPv6 we now use the same approach
+		final byte[] addrBytes = baseAddr.getAddress();
+		final BigInteger address = new BigInteger(1, addrBytes);
 
-		// Special cases for /31 and /32 prefixes
-		if (prefixLength == 31) {
-			hmin = address.subtract(BigInteger.ONE);
-			hmax = address;
-		} else if (prefixLength == 32) {
+		// Calculate network and broadcast addresses
+		final int addressLengthBits = addrBytes.length * 8;
+		final BigInteger networkMask = BigInteger.ONE.shiftLeft(prefixLength).subtract(BigInteger.ONE)
+				.shiftLeft(addressLengthBits - prefixLength);
+		final BigInteger network = address.and(networkMask);
+
+		// Special cases for /31 and /32 (IPv4) or /127 and /128 (IPv6)
+		BigInteger hmin, hmax;
+		if (prefixLength == maskPrefixLength - 1) {
+			// For /31 (IPv4) or /127 (IPv6), we consider both addresses
+			hmin = network;
+			hmax = network.add(BigInteger.ONE);
+		} else if (prefixLength == maskPrefixLength) {
 			hmin = address;
 			hmax = address;
 		} else {
-			// Calculate network address and broadcast address for the subnet
-			BigInteger mask = BigInteger.ONE.shiftLeft(prefixLength).subtract(BigInteger.ONE).shiftLeft(32 - prefixLength);
-			final byte[] maskBytes = mask.toByteArray();
-
-			// Handle leading zero byte that might be added by BigInteger.toByteArray()
-			if (maskBytes.length == 5 && maskBytes[0] == 0) {
-				mask = new BigInteger(mask.toByteArray(), 1, 4);
-			}
-
-			// Calculate usable IP range (excluding network and broadcast addresses)
-			final BigInteger network = address.and(mask);
-			hmin = network.add(BigInteger.ONE); // First usable address (network address + 1)
-			hmax = network.add(BigInteger.ONE.shiftLeft(32 - prefixLength).subtract(BigInteger.TWO)); // Last usable address
+			// For other prefixes
+			hmin = network;
+			hmax = network.add(BigInteger.ONE.shiftLeft(addressLengthBits - prefixLength).subtract(BigInteger.ONE)); // Last usable address
 		}
 
 		// Generate all IP addresses in the range
 		final var ipRangeSet = new HashSet<String>();
 		for (BigInteger ip = hmin; ip.compareTo(hmax) <= 0; ip = ip.add(BigInteger.ONE)) {
-			final InetAddress ipAddress = InetAddress.getByAddress(ip.toByteArray());
+			final byte[] ipBytes = toByteArray(ip, addrBytes.length);
+			final InetAddress ipAddress = InetAddress.getByAddress(ipBytes);
 			ipRangeSet.add(ipAddress.getHostAddress());
 		}
 		return ipRangeSet;
+	}
+
+	/**
+	 * Ensures a BigInteger is represented as a byte array of the expected length.
+	 * This is necessary because BigInteger.toByteArray() may return an array with a leading zero
+	 * or shorter than expected.
+	 *
+	 * @param value The BigInteger value
+	 * @param length The expected length of the byte array
+	 * @return A byte array of the expected length
+	 */
+	private byte[] toByteArray(final BigInteger value, final int length) {
+		final byte[] bytes = value.toByteArray();
+
+		// If the byte array is already the correct length, return it
+		if (bytes.length == length) {
+			return bytes;
+		}
+
+		// If it's longer (likely has a leading 0), remove the extra byte
+		if (bytes.length == length + 1 && bytes[0] == 0) {
+			final byte[] result = new byte[length];
+			System.arraycopy(bytes, 1, result, 0, length);
+			return result;
+		}
+
+		// If it's shorter, pad with leading zeros
+		if (bytes.length < length) {
+			final byte[] result = new byte[length];
+			System.arraycopy(bytes, 0, result, length - bytes.length, bytes.length);
+			return result;
+		}
+
+		// Should not happen, but just in case
+		return bytes;
 	}
 
 	/**
