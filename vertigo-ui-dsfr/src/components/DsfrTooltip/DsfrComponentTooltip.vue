@@ -76,14 +76,6 @@ async function computePosition () {
 
 watch(show, computePosition, { immediate: true })
 
-onMounted(() => {
-  window.addEventListener('scroll', computePosition)
-  source.value.addEventListener('click', () => show.value = false);
-})
-onUnmounted (() => {
-  window.removeEventListener('scroll', computePosition)
-})
-
 const sm = computed(() => ['sm', 'small'].includes(props.size))
 const md = computed(() => ['md', 'medium'].includes(props.size))
 const lg = computed(() => ['lg', 'large'].includes(props.size))
@@ -131,24 +123,50 @@ const onMouseLeave = (event) => {
   }, 50);
 }
 
+let savedClickHandler;
+let isClickHandlerSaved = false;
+
+const disable = () => {
+  if (isClickHandlerSaved === true) { return }
+
+  savedClickHandler = source.value?.onclick;
+  isClickHandlerSaved = true
+
+  source.value.onclick = function (e) {
+    e.stopImmediatePropagation();
+    e.preventDefault()
+  }
+}
+
+const enable = () => {
+  if (isClickHandlerSaved === false) { return }
+
+  source.value.onclick = savedClickHandler;
+  isClickHandlerSaved = false
+  savedClickHandler = null;
+}
+
 onMounted(() => {
+  window.addEventListener('scroll', computePosition)
+  source.value.addEventListener('click', () => show.value = false);
   document.documentElement.addEventListener('keydown', keydownHandler)
   document.documentElement.addEventListener('mouseover', onMouseEnterHandler)
   if (props.disabled) {
-    source.value.addEventListener('click', e => e.preventDefault());
+    disable()
   }
 })
 
 onUnmounted(() => {
+  window.removeEventListener('scroll', computePosition)
   document.documentElement.removeEventListener('keydown', keydownHandler)
   document.documentElement.removeEventListener('mouseover', onMouseEnterHandler)
 })
 
-watch(props.disabled, () => {
+watch(() => props.disabled, () => {
   if (props.disabled) {
-    source.value.addEventListener('click', e => e.preventDefault());
+    disable()
   } else {
-    source.value.removeEventListener('click', e => e.preventDefault());
+    enable()
   }
 })
 
