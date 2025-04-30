@@ -4,11 +4,16 @@ Version history
 Running 4.3.1
 ----------------------
 * [UI][Quasar] Improved Accessibility
+* [UI][DSFR] Improved Accessibility
 * [UI][DSFR] Fix `dsfr-button` inside a `v-for` loop.
+* [UI][DSFR] fix `titleTag` unwanted tag in accordions children
+* [UI][DSFR] better facets style
+* [UI][DSFR] Fix pagination on facet selection
 * [Account][Security] Handle comparison between a field and 'null' value
+* [Vega] Add healthCheck readiness (no subcomponents RED)
 
 
-Running 4.3.0 - 2025/03/27
+Release 4.3.0 - 2025/03/27
 ----------------------
 [Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-420-to-430)
   
@@ -22,7 +27,7 @@ Running 4.3.0 - 2025/03/27
 * [Ui] Display formatted numerics in table and text-field-read-reactive
 
 
-Running 4.2.0 - 2024/07/04
+Release 4.2.0 - 2024/07/04
 ----------------------
 [Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-410-to-420)
 * **Github : split `vertigo-extensions` to `vertigo-libs` and `vertigo-modules`**  
