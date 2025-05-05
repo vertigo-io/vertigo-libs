@@ -309,8 +309,11 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 			dataDefinition.getFields()
 					.stream()
 					.filter(dtField -> dtField.getType() != FieldType.COMPUTED)// we don't deserialize computed fields
+					.filter(dtField -> jsonObject.has(dtField.name()))
 					.forEach(field -> {
-						final Type targetType = field.cardinality().hasMany() ? new KnownParameterizedType(field.getTargetJavaClass(), field.smartTypeDefinition().getJavaClass()) : field.smartTypeDefinition().getJavaClass();
+						final Type targetType = field.cardinality().hasMany() ?
+								new KnownParameterizedType(field.getTargetJavaClass(), field.smartTypeDefinition().getJavaClass())
+								: field.smartTypeDefinition().getJavaClass();
 						field.getDataAccessor().setValue(dtObject, context.deserialize(jsonObject.get(field.name()), targetType));
 					});
 
@@ -473,7 +476,8 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 		return subFields;
 	}
 
-	private static void parseSubFieldName(final Set<String> filteredFields, final Map<String, Tuple<Set<String>, Set<String>>> subFields, final Function<Tuple<Set<String>, Set<String>>, Set<String>> getter) {
+	private static void parseSubFieldName(final Set<String> filteredFields, final Map<String, Tuple<Set<String>, Set<String>>> subFields,
+			final Function<Tuple<Set<String>, Set<String>>, Set<String>> getter) {
 		for (final String filteredField : filteredFields) {
 			final int commaIdx = filteredField.indexOf('.');
 			final String key;
