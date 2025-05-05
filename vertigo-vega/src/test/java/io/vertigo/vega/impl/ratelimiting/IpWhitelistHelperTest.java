@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -357,16 +358,29 @@ public class IpWhitelistHelperTest {
 	}
 
 	@Test
-	void testPrintWhitelist() {
+	void testGetWhitelistPatterns() {
 		// Given
 		final Set<String> subnets = Set.of("192.168.0.1", "10.0.0.1/32", "2001:db8::1/128");
 		final IpWhitelistHelper helper = new IpWhitelistHelper(subnets, DEFAULT_MAX_WHITELIST_SIZE);
 
 		// Then
-		final String whitelistStr = helper.printWhitelist();
+		final String whitelistStr = helper.getWhitelistPatterns();
 		assertTrue(whitelistStr.contains("192.168.0.1"));
 		assertTrue(whitelistStr.contains("10.0.0.1/32"));
 		assertTrue(whitelistStr.contains("2001:db8::1/128"));
+	}
+
+	@Test
+	void testGetWhiteList() {
+		// Given
+		final Set<String> subnets = Set.of("192.168.0.1", "10.0.0.1/30", "2001:db8::1/128");
+		final IpWhitelistHelper helper = new IpWhitelistHelper(subnets, DEFAULT_MAX_WHITELIST_SIZE);
+
+		// Then
+		final Collection<String> whitelistIps = helper.getWhiteList();
+		assertTrue(whitelistIps.contains("192.168.0.1"));
+		assertTrue(whitelistIps.contains("10.0.0.2"));
+		assertTrue(whitelistIps.contains("2001:db8:0:0:0:0:0:1"));
 	}
 
 	@Test

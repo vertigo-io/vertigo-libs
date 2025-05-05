@@ -21,7 +21,10 @@ import java.math.BigInteger;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import io.vertigo.core.lang.Assertion;
@@ -114,8 +117,50 @@ class IpWhitelistHelper {
 	 *
 	 * @return String representation of the whitelist patterns
 	 */
-	public String printWhitelist() {
+	public String getWhitelistPatterns() {
 		return String.join(", ", whitelistPatterns);
+	}
+
+	/**
+	 * Returns the whitelist IP addresses as a collection of strings.
+	 *
+	 * @return Collection of whitelisted IP addresses
+	 */
+	public Collection<String> getWhiteList() {
+		return whitelist.stream()
+				.map(ip -> {
+					try {
+						return InetAddress.getByName(ip);
+					} catch (final UnknownHostException e) {
+						return null;
+					}
+				})
+				.filter(Objects::nonNull)
+				.sorted(Comparator
+						// place Inet6Address first
+						.comparing((final InetAddress addr) -> addr instanceof Inet6Address ? 0 : 1)
+
+						// natural integer order for ips
+						.thenComparing(InetAddress::getAddress, (m1, m2) -> {
+							final int len1 = m1.length;
+							final int len2 = m2.length;
+							if (len1 < len2) {
+								return -1;
+							}
+							if (len1 > len2) {
+								return 1;
+							}
+							for (int i = 0; i < len1; i++) {
+								final int a = m1[i];
+								final int b = m2[i];
+								if (a != b) {
+									return (a & 0xFF) < (b & 0xFF) ? -1 : 1;
+								}
+							}
+							return 1;
+						}))
+				.map(InetAddress::getHostAddress)
+				.toList();
 	}
 
 	/**
@@ -185,6 +230,9 @@ class IpWhitelistHelper {
 		final BigInteger hmax = new BigInteger(endAdr.getAddress());
 		Assertion.check()
 				.isTrue(hmin.compareTo(hmax) <= 0, "Invalid IP range " + ipRange + ", startIp must be less than endIp");
+		if (hmin.add(BigInteger.ONE.shiftLeft(20).subtract(BigInteger.ONE)).compareTo(hmax) < 0) {
+			throw new IllegalStateException("For performance reason, cannot have more than " + Math.pow(2, 20) + " adresses");
+		}
 
 		// Generate all IP addresses in the range
 		final var ipRangeSet = new HashSet<String>();
