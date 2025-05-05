@@ -17,8 +17,10 @@
  */
 package io.vertigo.datastore.plugins.filestore.s3;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -38,6 +40,9 @@ import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.connectors.s3.S3Connector;
 import io.vertigo.core.analytics.AnalyticsManager;
+import io.vertigo.core.analytics.health.HealthChecked;
+import io.vertigo.core.analytics.health.HealthMeasure;
+import io.vertigo.core.analytics.health.HealthMeasureBuilder;
 import io.vertigo.core.daemon.Daemon;
 import io.vertigo.core.daemon.definitions.DaemonDefinition;
 import io.vertigo.core.lang.Assertion;
@@ -81,8 +86,6 @@ public final class S3FileStorePlugin implements FileStorePlugin, Activeable, Sim
 
 	private static final String STORE_READ_ONLY = "Store is in read-only mode";
 	private static final int PURGE_MAX_BATCH_SIZE = 1000;
-
-	private static final int PURGE_DEAMON_MIN_PERIODE_SECONDS = 5; //5 seconds minimum
 
 	/**
 	 * List of the storage Dto fields.
@@ -191,8 +194,7 @@ public final class S3FileStorePlugin implements FileStorePlugin, Activeable, Sim
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
 		final List<? extends Definition> definition;
 		if (purgeDelayMinutesOpt.isPresent()) {
-			final int purgePeriodSeconds = Math.max(PURGE_DEAMON_MIN_PERIODE_SECONDS, purgeDelayMinutesOpt.get()) * 60; //
-			definition = Collections.singletonList(new DaemonDefinition(dmnUniqueName, () -> new DeleteOldFilesDaemon(this), purgePeriodSeconds));
+			definition = Collections.singletonList(new DaemonDefinition(dmnUniqueName, () -> new DeleteOldFilesDaemon(this), 5 * 60));
 		} else {
 			definition = Collections.emptyList();
 		}
@@ -441,8 +443,6 @@ public final class S3FileStorePlugin implements FileStorePlugin, Activeable, Sim
 
 	/**
 	 * Daemon to delete old files.
-	 *
-	 * @author xdurand
 	 */
 	public static final class DeleteOldFilesDaemon implements Daemon {
 
@@ -462,6 +462,25 @@ public final class S3FileStorePlugin implements FileStorePlugin, Activeable, Sim
 		public void run() {
 			s3FileStorePlugin.deleteOldFiles();
 		}
+	}
+
+	/**
+	 * @return HealthMeasure of this plugin
+	 */
+	@HealthChecked(name = "io", feature = "S3FileStore")
+	public HealthMeasure checkIo() {
+		final HealthMeasureBuilder healthMeasureBuilder = HealthMeasure.builder();
+		try (var t = transactionManager.createCurrentTransaction()) {
+			final var text = "Lorem ipsum";
+			final var file = StreamFile.of("health", "text/plain", Instant.now(), text.length(), () -> new ByteArrayInputStream(text.getBytes(StandardCharsets.UTF_8)));
+			final var newFi = new S3FileInfo(new FileInfoDefinition("FiHealth", "health"), file);
+			create(newFi); // will be roll back after transaction
+			healthMeasureBuilder.withGreenStatus();
+		} catch (final Exception e) {
+			healthMeasureBuilder.withRedStatus(e.getMessage());
+		}
+		return healthMeasureBuilder.build();
+
 	}
 
 }
