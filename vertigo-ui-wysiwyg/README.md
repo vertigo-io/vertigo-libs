@@ -1,6 +1,6 @@
 # WYSIWYG
 
-We are building our own umd version of the tiptap wysiwyg editor with a custom vue component handeling our options and with double binding
+We are building our own UMD version of the Tiptap WYSIWYG editor with a custom Vue component handling our options and with two-way binding.
 
 ## Project Setup
 
