@@ -194,7 +194,7 @@ public final class S3FileStorePlugin implements FileStorePlugin, Activeable, Sim
 			final int purgePeriodSeconds = Math.max(PURGE_DEAMON_MIN_PERIODE_SECONDS, purgeDelayMinutesOpt.get()) * 60; //
 			definition = Collections.singletonList(new DaemonDefinition(dmnUniqueName, () -> new DeleteOldFilesDaemon(this), purgePeriodSeconds));
 		} else {
-			definition = Collections.EMPTY_LIST;
+			definition = Collections.emptyList();
 		}
 		return definition;
 	}
@@ -228,8 +228,7 @@ public final class S3FileStorePlugin implements FileStorePlugin, Activeable, Sim
 		final Long length = getValue(fileInfoDto, DtoFields.length, Long.class);
 		final String filePath = getValue(fileInfoDto, DtoFields.filePath, String.class);
 
-		final InputStream readResponse = s3Helper.readObject(bucketName, filePath);
-		final VFile vFile = StreamFile.of(fileName, mimeType, lastModified, length, () -> readResponse);
+		final VFile vFile = StreamFile.of(fileName, mimeType, lastModified, length, () -> s3Helper.readObject(bucketName, filePath));
 
 		// retourne le fileinfo avec le fichier et son URI
 		final S3FileInfo s3FileInfo = new S3FileInfo(uri.getDefinition(), vFile);
@@ -422,11 +421,11 @@ public final class S3FileStorePlugin implements FileStorePlugin, Activeable, Sim
 		try (VTransactionWritable tr = transactionManager.createCurrentTransaction()) {
 			final DtList<Entity> expiredEntities = getEntityStoreManager().find(storeDataDefinition, criteriaExpired, DtListState.of(PURGE_MAX_BATCH_SIZE));
 
-			if (expiredEntities.isEmpty() == false) {
-				LOG.info("{0} s3 files has expired and will be deleted", expiredEntities.size());
+			if (!expiredEntities.isEmpty()) {
+				LOG.info("{} s3 files has expired and will be deleted", expiredEntities.size());
 
-				final List<String> expiredS3Paths = new ArrayList<>();
-				final List<UID<Entity>> expiredEntitiesUids = new ArrayList<>();
+				final List<String> expiredS3Paths = new ArrayList<>(expiredEntities.size());
+				final List<UID<Entity>> expiredEntitiesUids = new ArrayList<>(expiredEntities.size());
 				for (final Entity entity : expiredEntities) {
 					expiredS3Paths.add(getValue(entity, DtoFields.filePath, String.class));
 					expiredEntitiesUids.add(entity.getUID());
@@ -442,6 +441,7 @@ public final class S3FileStorePlugin implements FileStorePlugin, Activeable, Sim
 
 	/**
 	 * Daemon to delete old files.
+	 *
 	 * @author xdurand
 	 */
 	public static final class DeleteOldFilesDaemon implements Daemon {

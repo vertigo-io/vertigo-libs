@@ -10,6 +10,7 @@ Running 4.3.1
 * [UI][DSFR] Fix pagination on facet selection
 * [Account][Security] Handle comparison between a field and 'null' value
 * [Vega] Add healthCheck readiness (no subcomponents RED)
+* [Datastore][S3] InputStream in S3FileStorePlugin no longer shared (may lead to corrupt file on subsequent reads)
 
 
 Release 4.3.0 - 2025/03/27
