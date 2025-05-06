@@ -167,3 +167,8 @@ button[aria-disabled="true"]:hover {
     all: unset;
     white-space: pre-wrap;
 }
+
+/* Gestion des fr-menu dans les iframes */
+.within-iframe .fr-select-group .fr-menu, .within-iframe .fr-menu__wrapper .fr-menu {
+    position: sticky;
+}
