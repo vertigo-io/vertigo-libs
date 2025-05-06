@@ -37,7 +37,7 @@
 
 <th:block th:fragment="select-multiple-read(object,field, rowIndex,label,list,valueField, labelField, filterFunction, required, edit_content_slot, after_label_slot, input_attrs, label_attrs)" 
 th:if="${modifiableTable==null}"
-vu:alias="select-multiple" vu:selector="${viewMode=='read'}" 
+vu:alias="select-multiple" vu:selector="${viewMode=='read' && reactive!=true}" 
 	th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)}, myLabelField=${labelField != null ? labelField : model.util.getDisplayField(list)}, value=${__${model.util.contextGet(object, null, rowIndex)}__.getTypedValue('__${field}__')}">
 	<vu:label-read object="${object}" field="${field}" label="${label}" label_attrs="${label_attrs}" after_label_slot="after_label_slot"  >
 		<th:block th:if="${value!=null}" th:each="singleValue, iterStat : ${value} " >
@@ -49,16 +49,32 @@ vu:alias="select-multiple" vu:selector="${viewMode=='read'}"
 </th:block>
 
 <th:block th:fragment="select-multiple-read(object,field, rowIndex,label,list,valueField, labelField, filterFunction, required, edit_content_slot, after_label_slot, input_attrs, label_attrs)"
-th:if="${modifiableTable!=null}"
-vu:alias="select-multiple" vu:selector="${viewMode=='read'}" 
-    th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)}, myLabelField=${labelField != null ? labelField : model.util.getDisplayField(list)}">
+          th:if="${modifiableTable!=null}"
+          vu:alias="select-multiple" vu:selector="${viewMode=='read' && reactive!=true}" 
+          th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)}, myLabelField=${labelField != null ? labelField : model.util.getDisplayField(list)}">
     <vu:include-data object="${object}" field="${field}"/>
     <vu:include-data object="${list}" field="${myValueField}"/>
     <vu:include-data object="${list}" field="${myLabelField}"/>
+    <span th:remove="${label_attrs=='noOp=_'}?'tag':'none'" th:attr="__${label_attrs}__">
+        <q-chip th:attr="__${input_attrs}__" th:v-for="|(entry, idx) in ${model.util.vueDataKey(object, field, rowIndex)}|"
+	        th:text="|{{vueData.${list}.filter(o => o.${myValueField} === entry).map(o => o.${myLabelField}).join()}}|">
+	    </q-chip>
+    </span>
+</th:block>
+
+<th:block th:fragment="select-multiple-read-reactive(object,field, rowIndex,label,list,valueField, labelField, filterFunction, required, edit_content_slot, after_label_slot, input_attrs, label_attrs)"
+          vu:alias="select-multiple" vu:selector="${viewMode=='read' && reactive==true}" 
+          th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)}, myLabelField=${labelField != null ? labelField : model.util.getDisplayField(list)}">
+    <vu:include-data object="${object}" field="${field}"/>
+    <vu:include-data object="${list}" field="${myValueField}"/>
+    <vu:include-data object="${list}" field="${myLabelField}"/>
+    
+    <vu:label-read object="${object}" field="${field}" label="${label}" label_attrs="${label_attrs}" after_label_slot="after_label_slot"  >
         <span th:remove="${label_attrs=='noOp=_'}?'tag':'none'" th:attr="__${label_attrs}__">
 	        <q-chip th:attr="__${input_attrs}__" th:v-for="|(entry, idx) in ${model.util.vueDataKey(object, field, rowIndex)}|"
 		        th:text="|{{vueData.${list}.filter(o => o.${myValueField} === entry).map(o => o.${myLabelField}).join()}}|">
 		    </q-chip>
 	    </span>
+	</vu:label-read>
 </th:block>
 

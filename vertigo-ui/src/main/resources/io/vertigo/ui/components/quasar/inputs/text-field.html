@@ -26,7 +26,7 @@
 	</q-input>
 </th:block>
 <th:block th:fragment="text-field-read(object, field, rowIndex, label, suffix, required, edit_content_slot, after_label_slot, input_attrs, label_attrs)" 
-    vu:alias="text-field" vu:selector="${viewMode=='read'}"  th:if="${modifiableTable==null}"
+    vu:alias="text-field" vu:selector="${viewMode=='read' && reactive!=true}"  th:if="${modifiableTable==null}"
     th:assert="${object} != null and ${field} != null" 
     th:with="mySuffix=${model.util.smartTypeUnit(object, field, suffix)},
              useSuffix=${__${model.util.contextGet(object, field, rowIndex)}__!='' && mySuffix!='' && mySuffix!=null}">
@@ -35,14 +35,15 @@
     </vu:label-read>
 </th:block>
 <th:block th:fragment="text-field-read(object, field, rowIndex, label, suffix, required, edit_content_slot, after_label_slot, input_attrs, label_attrs)" 
-    vu:alias="text-field" vu:selector="${viewMode=='read'}" th:if="${modifiableTable!=null}"
+    vu:alias="text-field" vu:selector="${viewMode=='read' && reactive!=true}" th:if="${modifiableTable!=null}"
     th:assert="${object} != null and ${field} != null" 
     th:with="mySuffix=${model.util.smartTypeUnit(object, field, suffix)},
              useSuffix=${__${model.util.contextGet(object, field, rowIndex)}__!='' && mySuffix!='' && mySuffix!=null}">
     <vu:include-data object="${object}" field="${field}"/>
     <span th:attr="__${input_attrs}__" >{{[[${model.util.vueDataKey(object, field, rowIndex)}]]}}</span><span th:if="${useSuffix}" th:v-if="|${model.util.contextGet(object, field, rowIndex)}!=''|" vu:text="${mySuffix}"></span>
 </th:block>
-<th:block th:fragment="text-field-read-reactive(object, field, rowIndex, label, suffix, required, input_attrs, label_attrs)" 
+<th:block th:fragment="text-field-read-reactive(object, field, rowIndex, label, suffix, required, edit_content_slot, after_label_slot, input_attrs, label_attrs)"
+        vu:alias="text-field" vu:selector="${viewMode=='read' && reactive==true}" 
 		th:assert="${object} != null and ${field} != null" 
 		th:with="myDisplayField=${model.util.resolveDisplayField(object, field)},
 		         mySuffix=${model.util.smartTypeUnit(object, field, suffix)}">
