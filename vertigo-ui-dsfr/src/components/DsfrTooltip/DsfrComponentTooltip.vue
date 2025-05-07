@@ -178,6 +178,7 @@ watch(() => props.disabled, () => {
       ref="source"
       :is="href !== '' ? 'a' : 'button'"
       :href="(href !== '' && !disabled) ? href : undefined"
+      @click="(e) => { if (disabled) { e.preventDefault(); e.stopImmediatePropagation(); }}"
       :class="{
         'fr-link': isLink && !inline,
         'fr-btn': !isLink,
