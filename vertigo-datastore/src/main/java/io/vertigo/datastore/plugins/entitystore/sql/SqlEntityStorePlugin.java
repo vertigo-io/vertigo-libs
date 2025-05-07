@@ -601,7 +601,7 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 				.getResult();
 
 		if (sqlRowCount != uids.size()) {
-			throw new VSystemException("Deleted row count mismatch the size of elements in delete by list");
+			throw new VSystemException("Deleted row count mismatch the size of elements in delete by list (" + sqlRowCount + "deleted, " + uids.size() + " elements in list)");
 		}
 
 	}
