@@ -158,7 +158,7 @@ button[aria-disabled="true"] {
     cursor: not-allowed;
 }
 
-button[aria-disabled="true"]:hover {
+button[aria-disabled="true"]:hover, a:not([href]):hover {
     background-color: var(--background-disabled-grey);
 }
 
