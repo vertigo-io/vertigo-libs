@@ -162,7 +162,7 @@ button[aria-disabled="true"]:hover {
     background-color: var(--background-disabled-grey);
 }
 
-.fr-btn--secondary[aria-disabled] {
+.fr-btn--secondary[aria-disabled=true] {
     --hover: inherit;
     --active: inherit;
     background-color: transparent;
