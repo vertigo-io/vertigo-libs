@@ -28,7 +28,7 @@
                         </span>
                     </slot>
                 </div>
-                <div class="input" v-if="canAddFiles()">
+                <div class="input" v-show="canAddFiles()">
                     <slot name="input" v-bind="{...$data, ...$props, canAddFiles, addFiles, abortUpload, removeFile, downloadFile, getGlobalSize, getGlobalSizeLabel, humanStorageSize}">
                         <input :id="$props.inputId" ref="input"
                                type="file" :accept="$props.accept" :multiple="$props.multiple"
