@@ -9,10 +9,11 @@ Running 4.3.1
 * [UI][DSFR] better facets style
 * [UI][DSFR] Fix pagination on facet selection
 * [Account][Security] Handle comparison between a field and 'null' value
+* [Vega] Add missing 'webservices.healthcheck' feature
 * [Vega] Add healthCheck readiness (no subcomponents RED)
+* [Vega][Json] Don't set null values to object properties if not present in the json (fail if the attribute is a list)
 * [Datastore][S3] InputStream in S3FileStorePlugin no longer shared (may lead to corrupt file on subsequent reads)
 * [Datastore][S3] Add health check
-* [Vega][Json] Don't set null values to object properties if not present in the json (fail if the attribute is a list)
 
 
 Release 4.3.0 - 2025/03/27
