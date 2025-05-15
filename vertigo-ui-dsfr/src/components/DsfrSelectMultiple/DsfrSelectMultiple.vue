@@ -59,6 +59,9 @@ const button = ref(null)
 const filter = ref(null)
 const filterValue = ref('')
 
+// Emits
+const emit = defineEmits(['update:model-value', 'blur']);
+
 // Computed
 
 const message = computed(() => {
@@ -101,6 +104,7 @@ let selectAll = function () {
     const unduplicatedOptions = localOptions.value.filter(o => !props.modelValue.includes(o.value));
     unduplicatedOptions.forEach((opt) => props.modelValue.push(opt.value));
   }
+  emit('update:model-value');
 }
 
 let filterFn = function (event) {
@@ -193,6 +197,7 @@ const focusItemUp = (event) => focusNextItem("up");
 
 const handleTab = (e) => {
   if (!expanded.value) {
+    emit('blur');
     return
   }
 
@@ -251,6 +256,7 @@ let setFocusByFirstCharacter = (event) => {
 let handleFocusOut = (event) => {
   if (!container.value.contains(event.target)) {
     expanded.value = false;
+    emit('blur');
   }
 }
 
@@ -264,6 +270,7 @@ let toggleOption = (event, value) => {
       localOptions.value = props.options;
     }
   }
+  emit('update:model-value');
 }
 
 </script>
