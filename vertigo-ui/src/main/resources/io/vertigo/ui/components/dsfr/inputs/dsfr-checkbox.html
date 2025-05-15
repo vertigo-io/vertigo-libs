@@ -17,7 +17,7 @@
     </dsfr-custom-checkbox>
     <input type="hidden"
            th:v-if="|${model.util.vueDataKey(object, field, rowIndex)} !== true|"
-           th:name="${model.util.contextKey(object, field, rowIndex)}"
+           th::name="${model.util.contextKey(object, field, rowIndex)}"
            th:value="${myUncheckedValue}">
 </th:block>
 
