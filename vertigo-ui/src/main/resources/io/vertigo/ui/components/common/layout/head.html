@@ -75,8 +75,7 @@
     
     <!--/* Vertigo UI UMD */-->
 	<link th:href="@{/vertigo-ui/static/css/vertigo-ui.css?v=__${myVertigoUiVersion}__}" rel="stylesheet" type="text/css"/>
-    <script th:if="${!isVuiDevMode && !isVuejsDevMode}" defer th:src="@{/vertigo-ui/static/js/vertigo-ui.umd.js?v=__${myVertigoUiVersion}__}"></script>
-    <script th:if="${!isVuiDevMode && isVuejsDevMode}" defer th:src="@{/vertigo-ui/static/js/vertigo-ui.umd.js?v=__${myVertigoUiVersion}__}"></script>
+    <script th:if="${!isVuiDevMode}" defer th:src="@{/vertigo-ui/static/js/vertigo-ui.umd.js?v=__${myVertigoUiVersion}__}"></script>
     
 	<script th:if="${isVuiDevMode}" defer type="module" src="http://localhost:3000/@vite/client"></script>
 	<script th:if="${isVuiDevMode}" defer type="module" src="http://localhost:3000/src/main.js"></script>
