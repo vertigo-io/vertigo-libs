@@ -10624,7 +10624,7 @@ const Tv = /* @__PURE__ */ Ae(lv, [["render", Dv], ["__scopeId", "data-v-628fafb
     }, J = (A) => {
       v.value.contains(A.target) || (u.value = !1, B("blur"));
     }, te = (A, O) => {
-      console.log("Before toggle:", d.value), Array.isArray(d.value) || (console.log("Reset undefined"), d.value = []), d.value.includes(O) ? d.value.splice(d.value.indexOf(O), 1) : (d.value.push(O), p.value.length === 1 && (x.value = "", p.value = o.options)), console.log("After toggle:", d.value), B("update:model-value", d.value);
+      Array.isArray(d.value) || (d.value = []), d.value.includes(O) ? d.value.splice(d.value.indexOf(O), 1) : (d.value.push(O), p.value.length === 1 && (x.value = "", p.value = o.options)), B("update:model-value", d.value);
     };
     return (A, O) => {
       const ee = Te("v-icon");
@@ -10760,7 +10760,7 @@ const Tv = /* @__PURE__ */ Ae(lv, [["render", Dv], ["__scopeId", "data-v-628fafb
       ], 64);
     };
   }
-}), Jv = /* @__PURE__ */ Ae(Zv, [["__scopeId", "data-v-e78840f6"]]), eg = ["id", "onKeydown", "aria-disabled", "aria-controls", "aria-expanded"], tg = ["id", "aria-labelledby", "onKeydown"], ag = {
+}), Jv = /* @__PURE__ */ Ae(Zv, [["__scopeId", "data-v-93e61e6d"]]), eg = ["id", "onKeydown", "aria-disabled", "aria-controls", "aria-expanded"], tg = ["id", "aria-labelledby", "onKeydown"], ag = {
   key: 0,
   class: "fr-label fr-mb-0"
 }, ng = {
