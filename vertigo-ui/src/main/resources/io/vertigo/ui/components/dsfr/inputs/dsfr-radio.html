@@ -11,6 +11,7 @@
     <vu:include-data object="${object}" field="${field}" modifiable="true"/>
     <vu:include-data object="${list}" field="${myValueField}"/>
     <vu:include-data object="${list}" field="${myLabelField}"/>
+    <vu:include-data th:unless="${disabledField == null}" object="${list}" field="${disabledField}"/>
 
     <dsfr-radio-button-set th:legend="${myLabel}"
                            th:required="${required}"
