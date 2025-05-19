@@ -261,6 +261,10 @@ let handleFocusOut = (event) => {
 }
 
 let toggleOption = (event, value) => {
+  if (!Array.isArray(modelValue.value)) {
+    modelValue.value = [];
+  }
+
   if (modelValue.value.includes(value)) {
     modelValue.value.splice(modelValue.value.indexOf(value), 1);
   } else {
@@ -270,7 +274,8 @@ let toggleOption = (event, value) => {
       localOptions.value = props.options;
     }
   }
-  emit('update:model-value');
+
+  emit('update:model-value', modelValue.value);
 }
 
 </script>
