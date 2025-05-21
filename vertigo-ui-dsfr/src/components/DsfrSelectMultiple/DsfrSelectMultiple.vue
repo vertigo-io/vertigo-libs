@@ -94,6 +94,10 @@ const selectionDisplay = computed(() => {
 // Methods
 
 let selectAll = function () {
+  if (!Array.isArray(modelValue.value)) {
+    modelValue.value = [];
+  }
+
   const areLocalAllSelected = localOptions.value.every(o => props.modelValue.includes(o.value));
   if (areLocalAllSelected) {
     const localValues = localOptions.value.map(o => o.value);

@@ -7,8 +7,7 @@
           th:assert="${object} != null and ${field} != null">
     <vu:include-data object="${object}" field="${field}" modifiable="true"/>
     <dsfr-input-group type="date"
-                      th:v-bind:model-value="|dsfrDecodeDate(${model.util.vueDataKey(object, field, rowIndex)}, '${myFormat}')|"
-                      th:@update:model-value="|function (newValue) { ${model.util.vueDataKey(object, field, rowIndex)} = newValue }|"
+                      th:v-model="${model.util.vueDataKey(object, field, rowIndex)}"
                       th:label="${myLabel}"
                       th::label-visible="${myLabelVisible}"
                       th:required="${myRequired}"
