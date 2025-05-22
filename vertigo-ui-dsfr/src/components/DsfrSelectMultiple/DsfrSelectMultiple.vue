@@ -24,6 +24,7 @@ const {
 const props = withDefaults(defineProps<DsfrSelectMultipleProps>(), {
   id: () => useRandomId("select-multiple"),
   options: () => [],
+  modelValue: () => [],
   label: '',
   name: undefined,
   description: undefined,
@@ -36,7 +37,6 @@ const props = withDefaults(defineProps<DsfrSelectMultipleProps>(), {
 })
 
 const expanded = ref(false)
-const modelValue = defineModel({default: []})
 const localOptions = ref(props.options)
 
 watch(expanded, (newValue, oldValue) => {
@@ -94,10 +94,6 @@ const selectionDisplay = computed(() => {
 // Methods
 
 let selectAll = function () {
-  if (!Array.isArray(modelValue.value)) {
-    modelValue.value = [];
-  }
-
   const areLocalAllSelected = localOptions.value.every(o => props.modelValue.includes(o.value));
   if (areLocalAllSelected) {
     const localValues = localOptions.value.map(o => o.value);
@@ -108,7 +104,7 @@ let selectAll = function () {
     const unduplicatedOptions = localOptions.value.filter(o => !props.modelValue.includes(o.value));
     unduplicatedOptions.forEach((opt) => props.modelValue.push(opt.value));
   }
-  emit('update:model-value');
+  emit('update:model-value', props.modelValue);
 }
 
 let filterFn = function (event) {
@@ -265,21 +261,17 @@ let handleFocusOut = (event) => {
 }
 
 let toggleOption = (event, value) => {
-  if (!Array.isArray(modelValue.value)) {
-    modelValue.value = [];
-  }
-
-  if (modelValue.value.includes(value)) {
-    modelValue.value.splice(modelValue.value.indexOf(value), 1);
+  if (props.modelValue.includes(value)) {
+    props.modelValue.splice(props.modelValue.indexOf(value), 1);
   } else {
-    modelValue.value.push(value);
+    props.modelValue.push(value);
     if (localOptions.value.length === 1) {
       filterValue.value = "";
       localOptions.value = props.options;
     }
   }
 
-  emit('update:model-value', modelValue.value);
+  emit('update:model-value', props.modelValue);
 }
 
 </script>
@@ -382,9 +374,9 @@ let toggleOption = (event, value) => {
             role="option"
             @keydown.space.prevent="(e) => toggleOption(e, option.value)"
             @click="(e) => toggleOption(e, option.value)"
-            :aria-selected="modelValue.includes(option.value)">
+            :aria-selected="props.modelValue.includes(option.value)">
           <input :data-id="option.value" type="hidden" class="" tabindex="-1"
-                 :value="option.value" v-model="modelValue">
+                 :value="option.value" v-model="props.modelValue">
           <span>
             {{ option.text }}
           </span>
