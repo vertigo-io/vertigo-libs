@@ -129,6 +129,10 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 
 	}
 
+	public Gson getGson() {
+		return gson;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public String toJson(final Object data) {
@@ -311,8 +315,7 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 					.filter(dtField -> dtField.getType() != FieldType.COMPUTED)// we don't deserialize computed fields
 					.filter(dtField -> jsonObject.has(dtField.name()))
 					.forEach(field -> {
-						final Type targetType = field.cardinality().hasMany() ?
-								new KnownParameterizedType(field.getTargetJavaClass(), field.smartTypeDefinition().getJavaClass())
+						final Type targetType = field.cardinality().hasMany() ? new KnownParameterizedType(field.getTargetJavaClass(), field.smartTypeDefinition().getJavaClass())
 								: field.smartTypeDefinition().getJavaClass();
 						field.getDataAccessor().setValue(dtObject, context.deserialize(jsonObject.get(field.name()), targetType));
 					});
