@@ -35,11 +35,15 @@ import io.vertigo.core.node.Node;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.datamodel.data.util.DataModelUtil;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.smarttype.definitions.FormatterException;
+import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 import io.vertigo.ui.core.encoders.EncoderDate;
 import io.vertigo.vega.engines.webservice.json.VegaUiObject;
+import io.vertigo.vega.webservice.model.UiList;
+import io.vertigo.vega.webservice.model.UiObject;
 
 /**
  * Objet d'IHM, fournit les valeurs formatés des champs de l'objet métier sous-jacent.
@@ -89,7 +93,9 @@ public final class MapUiObject<D extends DataObject> extends VegaUiObject<D> imp
 		//-----
 		final var dtField = getDataField(keyFieldName);
 		if (dtField.cardinality().hasMany()) {
-			return getInputValue(keyFieldName);
+			final var stringValues = getInputValue(keyFieldName);
+
+			return stringValues != null ? stringValues : (Serializable) getDtListAsUiObjectList(keyFieldName, dtField);
 		}
 		if (isMultiple(dtField)) {
 			final var strValue = getSingleInputValue(keyFieldName);
@@ -98,8 +104,35 @@ public final class MapUiObject<D extends DataObject> extends VegaUiObject<D> imp
 			final var value = getTypedValue(keyFieldName, Boolean.class);
 			return value != null ? String.valueOf(value) : null;
 		} else {
-			return getSingleInputValue(keyFieldName);
+			final var stringValue = getSingleInputValue(keyFieldName);
+			return stringValue != null ? stringValue : (Serializable) getDataObjectAsUiObject(keyFieldName, dtField);
 		}
+	}
+
+	private UiList<DataObject> getDtListAsUiObjectList(final String fieldName, final DataField dtField) {
+		Assertion.check().isTrue(dtField.cardinality().hasMany(), "The field {0} must have a cardinality hasMany.", fieldName);
+		//-----
+		final SmartTypeDefinition smartType = dtField.smartTypeDefinition();
+
+		if (smartType.getScope().isDataType()) {
+			// no UI adapter but a DtList
+			final var value = (DtList<DataObject>) doGetTypedValue(fieldName);
+			return new BasicUiListModifiable<>(value, fieldName, viewContextUpdateSecurity);
+		}
+		return null;
+	}
+
+	private UiObject<DataObject> getDataObjectAsUiObject(final String fieldName, final DataField dtField) {
+		Assertion.check().isTrue(dtField.cardinality().hasOne(), "The field {0} must have a cardinality hasOne.", fieldName);
+		//-----
+		final SmartTypeDefinition smartType = dtField.smartTypeDefinition();
+
+		if (smartType.getScope().isDataType()) {
+			// no UI adapter but a DataObject
+			final var value = (DataObject) doGetTypedValue(fieldName);
+			return new MapUiObject<>(value, viewContextUpdateSecurity);
+		}
+		return null;
 	}
 
 	/** {@inheritDoc} */

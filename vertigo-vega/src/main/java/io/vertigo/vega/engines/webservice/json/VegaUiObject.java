@@ -83,6 +83,7 @@ public class VegaUiObject<D extends DataObject> implements io.vertigo.vega.webse
 	// ==========================================================================
 	/**
 	 * Constructor.
+	 *
 	 * @param inputDto partial object translated from input
 	 * @param modifiedFields modified fieldNames
 	 */
@@ -92,7 +93,7 @@ public class VegaUiObject<D extends DataObject> implements io.vertigo.vega.webse
 				.isNotNull(modifiedFields, "modifiedFields can't be null");
 		//-----
 		this.inputDto = inputDto;
-		this.dataDefinitionId = DataModelUtil.findDataDefinition(inputDto).id();
+		dataDefinitionId = DataModelUtil.findDataDefinition(inputDto).id();
 		fieldIndex = Collections.unmodifiableSet(getDtDefinition().getFields().stream()
 				.map(DataField::name)
 				.collect(Collectors.toSet()));
@@ -186,6 +187,7 @@ public class VegaUiObject<D extends DataObject> implements io.vertigo.vega.webse
 
 	/**
 	 * Vérifie les UiObjects de la liste et remplis la pile d'erreur.
+	 *
 	 * @param uiMessageStack Pile des messages qui sera mise à jour
 	 * @return if the object is valid (no format errors) if it's not valid you must not call mergeAndCheckInput
 	 */
@@ -200,6 +202,7 @@ public class VegaUiObject<D extends DataObject> implements io.vertigo.vega.webse
 
 	/**
 	 * Merge et Valide l'objet d'IHM et place les erreurs rencontrées dans la stack.
+	 *
 	 * @param dtObjectValidators Validateurs à utiliser, peut-être spécifique à l'objet.
 	 * @param uiMessageStack Pile des messages qui sera mise Ã  jour
 	 * @return Objet métier mis Ã  jour
@@ -387,7 +390,7 @@ public class VegaUiObject<D extends DataObject> implements io.vertigo.vega.webse
 			// succesful encoding we can format and put in the inputbuffer
 			formattedValue = smartTypeManager.valueToString(dtField.smartTypeDefinition(), typedValue);
 		} catch (final FormatterException e) { //We don't log nor rethrow this exception // it should be an encoding exception
-			/** Erreur de typage.	 */
+			/** Erreur de typage. */
 			//encoding error
 			getDtObjectErrors().addError(dtField.name(), e.getMessageText());
 			formattedValue = inputValue;
@@ -403,7 +406,7 @@ public class VegaUiObject<D extends DataObject> implements io.vertigo.vega.webse
 			// succesful encoding we can format and put in the inputbuffer
 			formattedValue = inputValue;
 		} catch (final Exception e) { //We don't log nor rethrow this exception // it should be an encoding exception
-			/** Erreur de typage.	 */
+			/** Erreur de typage. */
 			//encoding error
 			getDtObjectErrors().addError(dtField.name(), LocaleMessageText.of(e.getMessage()));
 			formattedValue = inputValue;
@@ -448,7 +451,7 @@ public class VegaUiObject<D extends DataObject> implements io.vertigo.vega.webse
 	 * @param dtField Champ
 	 * @return Valeur formatée (typée)
 	 */
-	private Object doGetTypedValue(final String fieldName) {
+	protected Object doGetTypedValue(final String fieldName) {
 		Assertion.check().isNotBlank(fieldName);
 		//
 		final DataField dtField = getDataField(fieldName);
