@@ -123,7 +123,7 @@ public final class MapUiObject<D extends DataObject> extends VegaUiObject<D> imp
 	}
 
 	private UiObject<DataObject> getDataObjectAsUiObject(final String fieldName, final DataField dtField) {
-		Assertion.check().isFalse(dtField.cardinality().hasMany(), "The field {0} must have a cardinality hasOne or optional.", fieldName);
+		Assertion.check().isTrue(dtField.cardinality().hasOne(), "The field {0} must have a cardinality hasOne.", fieldName);
 		//-----
 		final SmartTypeDefinition smartType = dtField.smartTypeDefinition();
 
