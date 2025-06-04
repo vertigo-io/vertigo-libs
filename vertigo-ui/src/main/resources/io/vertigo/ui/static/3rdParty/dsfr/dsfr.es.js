@@ -11398,7 +11398,7 @@ const Tv = /* @__PURE__ */ $e(lv, [["render", Dv], ["__scopeId", "data-v-628fafb
             E.showNbRows ? (i(), f("p", {
               key: 0,
               class: O(["fr-mb-0 fr-ml-1v", { "fr-text--sm": m.value }])
-            }, h(E.rows.length) + " résulat(s)", 3)) : b("", !0),
+            }, h(E.rows.length) + " résultat(s)", 3)) : b("", !0),
             c("div", sb, [
               c("label", {
                 class: O(["fr-label", { "fr-text--sm": m.value }]),
@@ -11442,7 +11442,7 @@ const Tv = /* @__PURE__ */ $e(lv, [["render", Dv], ["__scopeId", "data-v-628fafb
       ], 2)
     ]));
   }
-}), cb = /* @__PURE__ */ $e(db, [["__scopeId", "data-v-50097005"]]), fb = ["id", "name", "value", "checked", "required", "data-testid", "data-test"], pb = ["for"], mb = {
+}), cb = /* @__PURE__ */ $e(db, [["__scopeId", "data-v-44bdd1e4"]]), fb = ["id", "name", "value", "checked", "required", "data-testid", "data-test"], pb = ["for"], mb = {
   key: 0,
   class: "required"
 }, hb = {
