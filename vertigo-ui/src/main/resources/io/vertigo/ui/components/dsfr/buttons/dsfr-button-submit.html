@@ -23,39 +23,41 @@
                    myLoading=${loading}?:true"
         th:attr="objectKey=${model.vContext['componentStates'].addComponentState(myComponentId).addPrimitive('confirm',false)}">
 
-    <dsfr-button th:icon="${icon?:''}"
-                 th::icon-only="${label==null}"
-                 th:label="${label?:''}"
-                 th:title="${vTitle==null ? (title?:'') : ''}"
-                 th::title="${vTitle?:''}"
-                 th:@click="|(event) => {if (event.target.closest('form').reportValidity()) componentStates['${myComponentId}'].confirm = true}|"
-                 type="button"
-                 th:attr="ref=${myComponentId},__${other_attrs}__">
-        <span class="sr-only" th:if="${label==null && vTitle==null}" vu:text="${title?:''}"></span>
-        <span class="sr-only" th:if="${label==null && vTitle!=null}" th:text="|{{ ${vTitle?:''} }}|"></span>
-    </dsfr-button>
-    <dsfr-modal th:v-model:opened="|componentStates['${myComponentId}'].confirm|"
-                th:@close="|componentStates['${myComponentId}'].confirm = false|"
-                th:title="${titleMessage}"
-                th::origin="|$refs['${myComponentId}']|"
-                th:attr="__${modal_attrs}__">
-        <template #default>
-            <vu:content>
-                <p vu:text="${confirmMessage}"></p>
-            </vu:content>
-        </template>
-        <template #footer>
-            <dsfr-button-group align="right" inline-layout-when="large" reverse>
-                <li :key="0">
-                    <vu:dsfr-button-submit label="${myLabelOk}" action="${action}"
-                                           loading="${loading}"></vu:dsfr-button-submit>
-                </li>
-                <li :key="1">
-                    <dsfr-button th:label="${myLabelCancel}"
-                                 th:@click="|componentStates['${myComponentId}'].confirm = false|"
-                                 secondary></dsfr-button>
-                </li>
-            </dsfr-button-group>
-        </template>
-    </dsfr-modal>
+    <li th:remove="${(inActionGroup != null && inActionGroup) ? 'none' : 'tag'}">
+        <dsfr-button th:icon="${icon?:''}"
+                     th::icon-only="${label==null}"
+                     th:label="${label?:''}"
+                     th:title="${vTitle==null ? (title?:'') : ''}"
+                     th::title="${vTitle?:''}"
+                     th:@click="|(event) => {if (event.target.closest('form').reportValidity()) componentStates['${myComponentId}'].confirm = true}|"
+                     type="button"
+                     th:attr="ref=${myComponentId},__${other_attrs}__">
+            <span class="sr-only" th:if="${label==null && vTitle==null}" vu:text="${title?:''}"></span>
+            <span class="sr-only" th:if="${label==null && vTitle!=null}" th:text="|{{ ${vTitle?:''} }}|"></span>
+        </dsfr-button>
+        <dsfr-modal th:v-model:opened="|componentStates['${myComponentId}'].confirm|"
+                    th:@close="|componentStates['${myComponentId}'].confirm = false|"
+                    th:title="${titleMessage}"
+                    th::origin="|$refs['${myComponentId}']|"
+                    th:attr="__${modal_attrs}__">
+            <template #default>
+                <vu:content>
+                    <p vu:text="${confirmMessage}"></p>
+                </vu:content>
+            </template>
+            <template #footer>
+                <dsfr-button-group align="right" inline-layout-when="large" reverse>
+                    <li :key="0">
+                        <vu:dsfr-button-submit label="${myLabelOk}" action="${action}"
+                                               loading="${loading}"></vu:dsfr-button-submit>
+                    </li>
+                    <li :key="1">
+                        <dsfr-button th:label="${myLabelCancel}"
+                                     th:@click="|componentStates['${myComponentId}'].confirm = false|"
+                                     secondary></dsfr-button>
+                    </li>
+                </dsfr-button-group>
+            </template>
+        </dsfr-modal>
+    </li>
 </th:block>
