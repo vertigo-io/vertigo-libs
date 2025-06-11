@@ -58,7 +58,7 @@ public class KVSessionDataStore extends AbstractSessionDataStore {
 	private static final Logger LOG = LogManager.getLogger(KVSessionDataStore.class);
 
 	private KVStoreManager kvStoreManager;
-	private final KVCollection SESSIONS_COLLECTION_NAME;
+	private final KVCollection sessionsCollection;
 
 	private final Set<String> loadedSessionId = new HashSet<>();
 	private final String sessionCollectionName;
@@ -66,7 +66,7 @@ public class KVSessionDataStore extends AbstractSessionDataStore {
 	KVSessionDataStore(final String sessionCollectionName) {
 		super();
 		this.sessionCollectionName = sessionCollectionName;
-		SESSIONS_COLLECTION_NAME = new KVCollection(sessionCollectionName);
+		sessionsCollection = new KVCollection(sessionCollectionName);
 
 	}
 
@@ -87,7 +87,7 @@ public class KVSessionDataStore extends AbstractSessionDataStore {
 			public void run() {
 				LOG.debug("Check existing SessionID {} from KVStore {}", id, sessionCollectionName);
 				try {
-					reference.set(getKVStoreManager().find(SESSIONS_COLLECTION_NAME, id, byte[].class).isPresent());
+					reference.set(getKVStoreManager().find(sessionsCollection, id, byte[].class).isPresent());
 				} catch (final Exception e) {
 					exception.set(e);
 				}
@@ -115,7 +115,7 @@ public class KVSessionDataStore extends AbstractSessionDataStore {
 			public void run() {
 				LOG.debug("Loading SessionID {} from KVStore {}", id, sessionCollectionName);
 				try {
-					final var sessionBytes = getKVStoreManager().find(SESSIONS_COLLECTION_NAME, id, byte[].class);
+					final var sessionBytes = getKVStoreManager().find(sessionsCollection, id, byte[].class);
 					if (sessionBytes.isPresent()) {
 						reference.set(Optional.of(bytesToSessionData(sessionBytes.get(), id)));
 					} else {
@@ -145,7 +145,7 @@ public class KVSessionDataStore extends AbstractSessionDataStore {
 	@Override
 	public boolean delete(final String id) throws Exception {
 		LOG.debug("Deleting SessionID {} from KVStore {}", id, sessionCollectionName);
-		getKVStoreManager().removeIfExists(SESSIONS_COLLECTION_NAME, id);
+		getKVStoreManager().removeIfExists(sessionsCollection, id);
 		loadedSessionId.remove(id);
 		return true;
 	}
@@ -155,7 +155,7 @@ public class KVSessionDataStore extends AbstractSessionDataStore {
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("Store session: {} from KVStore {}", id, sessionCollectionName);
 		}
-		getKVStoreManager().put(SESSIONS_COLLECTION_NAME, id, sessionDataToBytes(id, session));
+		getKVStoreManager().put(sessionsCollection, id, sessionDataToBytes(id, session));
 		loadedSessionId.add(id);
 	}
 
