@@ -20,6 +20,7 @@
 	<artifactId>vertigo-ui</artifactId>
 	<packaging>jar</packaging>
 	<name>vertigo-ui</name>
+	<version>4.3.1-SNAPSHOT</version>
 	
     <repositories>
       <!-- Needed repo for tests embedded ElasticSearch -->
