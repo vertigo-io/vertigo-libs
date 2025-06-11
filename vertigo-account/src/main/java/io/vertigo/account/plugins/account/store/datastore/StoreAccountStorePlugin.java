@@ -63,7 +63,7 @@ import io.vertigo.datastore.filestore.model.VFile;
  * Source of identity.
  * @author npiedeloup
  */
-public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin implements AccountStorePlugin {
+public class StoreAccountStorePlugin extends AbstractAccountStorePlugin implements AccountStorePlugin {
 
 	private final SmartTypeManager smartTypeManager;
 	private final VTransactionManager transactionManager;
@@ -292,7 +292,7 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 		});
 	}
 
-	private <O> O executeInTransaction(final Supplier<O> supplier) {
+	protected <O> O executeInTransaction(final Supplier<O> supplier) {
 		if (transactionManager.hasCurrentTransaction()) {
 			return supplier.get();
 		}
