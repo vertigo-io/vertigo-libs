@@ -93,6 +93,11 @@ public final class AuthorizationUtil {
 		final AuthorizationManager authorizationManager = Node.getNode().getComponentSpace().resolve(AuthorizationManager.class);
 		return () -> authorizationManager.hasAuthorization(authorizationName);
 	}
+	
+	public static <E extends Entity> BooleanSupplier isAuthorized(final E entity, final OperationName<E> operation) {
+		final AuthorizationManager authorizationManager = Node.getNode().getComponentSpace().resolve(AuthorizationManager.class);
+		return () -> authorizationManager.isAuthorized(entity, operation);
+	}
 
 	public static <E extends Entity> AuthorizationCriteria<E> authorizationCriteria(final Class<E> clazz, final OperationName<E> operation) {
 		final AuthorizationManager authorizationManager = Node.getNode().getComponentSpace().resolve(AuthorizationManager.class);
