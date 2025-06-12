@@ -10,6 +10,7 @@
 	<artifactId>vertigo-datamodel</artifactId>
 	<packaging>jar</packaging>
 	<name>vertigo-datamodel</name>
+	<version>4.3.1-SNAPSHOT</version>
 
 	<dependencies>
 		<dependency>
