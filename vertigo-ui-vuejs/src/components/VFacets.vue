@@ -11,7 +11,7 @@
                                     <q-checkbox :model-value="selected" @update:model-value="toggleOption(opt)" size="sm"/>
                                 </q-item-section>
                                 <q-item-section>
-                                 <q-item-label v-html="opt.label" />
+                                 <q-item-label >{{ opt.label }}</q-item-label>
                                 </q-item-section>
                                 <q-item-section side>
                                     <q-chip :label="opt.count" size="sm"></q-chip>
@@ -26,7 +26,7 @@
                         <template v-slot:option="{ itemProps, opt, selected, toggleOption }">
                             <q-item v-bind="itemProps" class="facet-selection-option" dense>
                                 <q-item-section>
-                                 <q-item-label v-html="opt.label" />
+                                 <q-item-label>{{ opt.label }}</q-item-label>
                                 </q-item-section>
                                 <q-item-section side>
                                     <q-chip :label="opt.count" size="sm"></q-chip>
