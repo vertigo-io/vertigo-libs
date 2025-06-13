@@ -113,7 +113,7 @@ public class JettyBoot {
 			final SslContextFactory.Server sslContextFactory = new SslContextFactory.Server();
 			sslContextFactory.setKeyStore(jks);
 			sslContextFactory.setKeyStoreType("PKCS12");
-			sslContextFactory.setCertAlias(jettyBootParams.getSslKeystoreAlias());
+			sslContextFactory.setCertAlias(jettyBootParams.getSslKeystoreAlias()); //Should manage if multiple alias are present ?
 			sslContextFactory.setKeyStorePassword(keyStorePassword);
 			sslContextFactory.setTrustStore(jks);
 			sslContextFactory.setTrustStoreType("PKCS12");
