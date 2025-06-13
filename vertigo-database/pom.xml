@@ -22,17 +22,17 @@
 			<dependency>
 				<groupId>com.oracle.database.jdbc</groupId>
 				<artifactId>ojdbc11</artifactId>
-				<version>23.7.0.25.01</version>
+				<version>23.8.0.25.04</version>
 			</dependency>
 			<dependency>
 				<groupId>org.postgresql</groupId>
 				<artifactId>postgresql</artifactId>
-				<version>42.7.5</version>
+				<version>42.7.7</version>
 			</dependency>
 			<dependency>
 				<groupId>org.liquibase</groupId>
 				<artifactId>liquibase-core</artifactId>
-				<version>4.31.1</version>
+				<version>4.32.0</version>
 			</dependency>
 			<dependency>
 				<groupId>io.vertigo</groupId>
