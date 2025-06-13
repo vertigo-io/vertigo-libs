@@ -4,7 +4,7 @@ import { isNumber, isDate } from "quasar/src/utils/is/is.js"
 import Debounce from "lodash.debounce"
 
 export default {
-	debounce: Debounce,
+    debounce: Debounce,
     onAjaxError: function (response) {
         //Quasar Notif Schema
         let notif = {
@@ -16,10 +16,10 @@ export default {
         }
 
         //Setup Error Message
-        if(response) {
+        if (response) {
             if (Object.prototype.hasOwnProperty.call(response.data, 'redirect')) { //if response was a redirect
-                 window.location = response.data.redirect;
-                 return;
+                window.location = response.data.redirect;
+                return;
             } else if (Object.prototype.hasOwnProperty.call(response.data, 'message')) { //if response was an error
                 notif.message = response.data.message
             }
@@ -52,7 +52,7 @@ export default {
                     notif.message = response.data.message
                 } else if (Object.prototype.hasOwnProperty.call(response.data, 'globalErrors') && response.data.globalErrors && response.data.globalErrors.length > 0) {
                     var notifyMessages = this.uiMessageStackToNotify(response.data);
-                    notifyMessages.forEach(function(notifyMessage) { this.$q.notify(notifyMessage)}.bind(this));
+                    notifyMessages.forEach(function (notifyMessage) { this.$q.notify(notifyMessage) }.bind(this));
                     notif.message = ''; //déja envoyé
                 }
             }
@@ -62,43 +62,51 @@ export default {
             this.$q.notify(notif);
         }
     },
-    uiMessageStackToNotify : function(uiMessageStack) {
-      if(uiMessageStack) {
-        var notifyMessages = [];
-        if(Object.prototype.hasOwnProperty.call(uiMessageStack, 'globalErrors') && uiMessageStack.globalErrors && uiMessageStack.globalErrors.length > 0) {
-           uiMessageStack.globalErrors.forEach(function(uiMessage) { notifyMessages.push( {
-            color: 'negative', textColor:'white', message: uiMessage,
-            multiLine: true, timeout: 2500,
-           })});
+    uiMessageStackToNotify: function (uiMessageStack) {
+        if (uiMessageStack) {
+            var notifyMessages = [];
+            if (Object.prototype.hasOwnProperty.call(uiMessageStack, 'globalErrors') && uiMessageStack.globalErrors && uiMessageStack.globalErrors.length > 0) {
+                uiMessageStack.globalErrors.forEach(function (uiMessage) {
+                    notifyMessages.push({
+                        color: 'negative', textColor: 'white', message: uiMessage,
+                        multiLine: true, timeout: 2500,
+                    })
+                });
+            }
+            if (Object.prototype.hasOwnProperty.call(uiMessageStack, 'globalWarnings') && uiMessageStack.globalWarnings && uiMessageStack.globalWarnings.length > 0) {
+                uiMessageStack.globalWarnings.forEach(function (uiMessage) {
+                    notifyMessages.push({
+                        color: 'warning', textColor: 'black', message: uiMessage,
+                        multiLine: true, timeout: 2500,
+                    })
+                });
+            }
+            if (Object.prototype.hasOwnProperty.call(uiMessageStack, 'globalInfos') && uiMessageStack.globalInfos && uiMessageStack.globalInfos.length > 0) {
+                uiMessageStack.globalInfos.forEach(function (uiMessage) {
+                    notifyMessages.push({
+                        color: 'info', textColor: 'black', message: uiMessage,
+                        multiLine: true, timeout: 2500,
+                    })
+                });
+            }
+            if (Object.prototype.hasOwnProperty.call(uiMessageStack, 'globalSuccess') && uiMessageStack.globalSuccess && uiMessageStack.globalSuccess.length > 0) {
+                uiMessageStack.globalSuccess.forEach(function (uiMessage) {
+                    notifyMessages.push({
+                        color: 'positive', textColor: 'black', message: uiMessage,
+                        multiLine: true, timeout: 2500,
+                    })
+                });
+            }
+            //Pour le moment, rien avec : objectFieldErrors, objectFieldWarnings, objectFieldInfos
+
+            return notifyMessages;
         }
-        if(Object.prototype.hasOwnProperty.call(uiMessageStack, 'globalWarnings') && uiMessageStack.globalWarnings && uiMessageStack.globalWarnings.length > 0) {
-           uiMessageStack.globalWarnings.forEach(function(uiMessage) { notifyMessages.push( {
-            color: 'warning', textColor:'black', message: uiMessage,
-            multiLine: true, timeout: 2500,
-           })});
-        }
-        if(Object.prototype.hasOwnProperty.call(uiMessageStack, 'globalInfos') && uiMessageStack.globalInfos && uiMessageStack.globalInfos.length > 0) {
-           uiMessageStack.globalInfos.forEach(function(uiMessage) { notifyMessages.push( {
-            color: 'info', textColor:'black', message: uiMessage,
-            multiLine: true, timeout: 2500,
-           })});
-        }
-        if(Object.prototype.hasOwnProperty.call(uiMessageStack, 'globalSuccess') && uiMessageStack.globalSuccess && uiMessageStack.globalSuccess.length > 0) {
-           uiMessageStack.globalSuccess.forEach(function(uiMessage) { notifyMessages.push( {
-            color: 'positive', textColor:'black', message: uiMessage,
-            multiLine: true, timeout: 2500,
-           })});
-        }
-        //Pour le moment, rien avec : objectFieldErrors, objectFieldWarnings, objectFieldInfos
-        
-        return notifyMessages;
-      }
     },
-    
-    i18n: function() {
+
+    i18n: function () {
         return VertigoUi.lang[VertigoUi.vuiLang];
     },
-    
+
     getSafeValue: function (objectkey, fieldKey, subFieldKey) {
         if (this.$data.vueData[objectkey] && this.$data.vueData[objectkey][fieldKey]) {
             return this.$data.vueData[objectkey][fieldKey][subFieldKey];
@@ -114,20 +122,20 @@ export default {
         if (searchValue != null && searchValue.trim() !== '') {
             const searchNormalized = this.unaccentLower(searchValue);
             rawList = rawList.filter(val => this.unaccentLower(val[labelField].toString()).indexOf(searchNormalized) > -1); // label contains
-			rawList.sort((a,b) => {
-				const startWithA = this.unaccentLower(a[labelField].toString()).startsWith(searchNormalized);
-				const startWithB = this.unaccentLower(b[labelField].toString()).startsWith(searchNormalized);
-				if (startWithA && !startWithB) return -1;
-				if (!startWithA && startWithB) return 1;
-				return 0;
-			});
+            rawList.sort((a, b) => {
+                const startWithA = this.unaccentLower(a[labelField].toString()).startsWith(searchNormalized);
+                const startWithB = this.unaccentLower(b[labelField].toString()).startsWith(searchNormalized);
+                if (startWithA && !startWithB) return -1;
+                if (!startWithA && startWithB) return 1;
+                return 0;
+            });
         }
         return rawList.map(function (object) {
             return { value: object[valueField], label: object[labelField].toString() } // a label is always a string
         });
     },
-    
-    unaccentLower: function(value) {
+
+    unaccentLower: function (value) {
         return value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
     },
 
@@ -168,14 +176,14 @@ export default {
         }
         return this.$data.vueData[list];
     },
-    createDefaultTableSort: function(componentId) {
+    createDefaultTableSort: function (componentId) {
         if (this.$data.componentStates[componentId]) {
             return function (data, sortBy, descending) {
                 let sortedColumn = this.$data.componentStates[componentId].columns.find(column => column.name === sortBy);
                 if (sortedColumn.datetimeFormat) {
-                        const
+                    const
                         dir = descending === true ? -1 : 1,
-                        val =  v => v[sortedColumn.field]
+                        val = v => v[sortedColumn.field]
 
                     return data.sort((a, b) => {
                         let A = val(a),
@@ -193,7 +201,7 @@ export default {
 
         const
             dir = descending === true ? -1 : 1,
-            val =  v => v[sortBy]
+            val = v => v[sortBy]
 
         const collator = new Intl.Collator();
 
@@ -256,15 +264,15 @@ export default {
         } else {
             value = this.$data.vueData[objectName][fieldName];
         }
-         
+
         if (Array.isArray(value)) {
             value.forEach(element => this.loadMissingAutocompleteOption(list, valueField, labelField, componentId, url, element));
         } else {
             this.loadMissingAutocompleteOption(list, valueField, labelField, componentId, url, value);
         }
-        
+
     },
-    loadMissingAutocompleteOption: function (list, valueField, labelField, componentId, url, value){
+    loadMissingAutocompleteOption: function (list, valueField, labelField, componentId, url, value) {
         if (!value || (this.$data.componentStates[componentId].options
             .filter(function (option) { return option.value === value }.bind(this)).length > 0)) {
             return
@@ -416,14 +424,14 @@ export default {
         return [];
     },
     vueDataToObject(value) {
-        if(Array.isArray(value)) {
-            if (value.length == 0 ) {
+        if (Array.isArray(value)) {
+            if (value.length == 0) {
                 return null
             } else if (value.length == 1) {
                 return value[0]
             }
             return value;
-        } else if(value) {
+        } else if (value) {
             return value;
         }
         return null;
@@ -492,72 +500,95 @@ export default {
     },
     modal_iframeAjustHeight(ifrm) {
         let compId = ifrm.dataset.componentId;
-        let doc = ifrm.contentDocument? ifrm.contentDocument: ifrm.contentWindow.document;
-        setTimeout(function() { // slight delay to allow the iframe to be fully loaded and rendered
+        let doc = ifrm.contentDocument ? ifrm.contentDocument : ifrm.contentWindow.document;
+        setTimeout(function () { // slight delay to allow the iframe to be fully loaded and rendered
             let newHeight = this.getDocHeight(doc) + 4 + "px"; // IE opt. for bing/msn needs a bit added or scrollbar appears
 
             ifrm.style.height = ""; // reset iframe height to extends again
             this.componentStates[compId].height = newHeight; // set the height of the modal
         }.bind(this), 1);
     },
-    getDocHeight : function(doc) {
+    getDocHeight: function (doc) {
         doc = doc || document;
         let body = doc.body, html = doc.documentElement;
-        let height = Math.max( body.scrollHeight, body.offsetHeight, 
-                               html.scrollHeight, html.offsetHeight, html.clientHeight);
+        let height = Math.max(body.scrollHeight, body.offsetHeight,
+            html.scrollHeight, html.offsetHeight, html.clientHeight);
         return height;
     },
     httpPostAjax: function (url, paramsIn, options) {
-        var paramsInResolved = !paramsIn ? [] :  Array.isArray(paramsIn) ? this.vueDataParams(paramsIn) : paramsIn;
+        var paramsInResolved = !paramsIn ? [] : Array.isArray(paramsIn) ? this.vueDataParams(paramsIn) : paramsIn;
         let vueData = this.$data.vueData;
         let uiMessageStack = this.$data.uiMessageStack;
         let params = this.isFormData(paramsInResolved) ? paramsInResolved : this.objectToFormData(paramsInResolved);
         params.append('CTX', vueData.CTX);
         this.pushPendingAction(url);
         this.$http.post(url, params).then(function (response) {
-          if (response.data.model.CTX) {
-            vueData.CTX = response.data.model.CTX;
-          }
-          Object.keys(response.data.model).forEach(function (key) {
-            if ('CTX' != key) {
-              vueData[key] = response.data.model[key];
+            if (response.data.model.CTX) {
+                vueData.CTX = response.data.model.CTX;
             }
-          });
-		  if (options && options.notifyUiMessageStack) {
-			var notifyMessages = this.uiMessageStackToNotify(response.data.uiMessageStack);
-			notifyMessages.forEach(function(notifyMessage) { this.$q.notify(notifyMessage)}.bind(this));
-		  } else {
-			Object.keys(response.data.uiMessageStack).forEach(function (key) {
-	          uiMessageStack[key] = response.data.uiMessageStack[key];
-	        });
-		  }
-          if (options && options.onSuccess) {
-            options.onSuccess.call(this, response, window);
-          }
+            if (options && options.updatedKeys) {
+                for (var i = 0; i < options.updatedKeys.length; i++) {
+                    var attribs = options.updatedKeys[i].split('.', 2);
+                    var contextKey = attribs[0];
+                    var attribute = attribs[1];
+                    let modelValue = response.data.model[contextKey]
+                    if (modelValue && typeof modelValue === 'object' && Array.isArray(modelValue) === false) {
+                        // object
+                        if (attribute) {
+                            vueData[contextKey][attribute] = response.data.model[contextKey][attribute]
+                        } else {
+                            vueData[contextKey] = response.data.model[contextKey];
+                        }
+                    } else if (modelValue && Array.isArray(modelValue) === true) {
+                        // array
+                        vueData[contextKey] = response.data.model[contextKey];
+                    } else {
+                        // primitive
+                        vueData[contextKey] = response.data.model[contextKey];
+                    }
+                }
+            } else {
+                Object.keys(response.data.model).forEach(function (key) {
+                    if ('CTX' != key) {
+                        vueData[key] = response.data.model[key];
+                    }
+                });
+            }
+            if (options && options.notifyUiMessageStack) {
+                var notifyMessages = this.uiMessageStackToNotify(response.data.uiMessageStack);
+                notifyMessages.forEach(function (notifyMessage) { this.$q.notify(notifyMessage) }.bind(this));
+            } else {
+                Object.keys(response.data.uiMessageStack).forEach(function (key) {
+                    uiMessageStack[key] = response.data.uiMessageStack[key];
+                });
+            }
+            if (options && options.onSuccess) {
+                options.onSuccess.call(this, response, window);
+            }
         }.bind(this)).catch(function (error) {
-          if (options && options.onError) {
-            options.onError.call(this, error.response, window);
-          }              
+            if (options && options.onError) {
+                options.onError.call(this, error.response, window);
+            }
         }).finally(function () {
-          this.removePendingAction(url);
+            this.removePendingAction(url);
         }.bind(this));
     },
-    isPendingAction: function(actionName) {
-        if(actionName) {
+    isPendingAction: function (actionName) {
+        if (actionName) {
             return this.$data.componentStates.pendingAction.actionNames.includes(actionName);
         } else {
             return this.$data.componentStates.pendingAction.actionNames.length > 0;
         }
     },
-    pushPendingAction: function(actionName) {
-         this.$data.componentStates.pendingAction.actionNames.push(actionName);
+    pushPendingAction: function (actionName) {
+        this.$data.componentStates.pendingAction.actionNames.push(actionName);
     },
-    removePendingAction: function(actionName) {
+    removePendingAction: function (actionName) {
         this.$data.componentStates.pendingAction.actionNames = this.$data.componentStates.pendingAction.actionNames.filter(e => e !== actionName);
     },
-    removePendingActionAfterDelay: function(actionName, delay) {
-        setTimeout(function () {this.removePendingAction(actionName)}.bind(this), delay);
-    },        
+    removePendingActionAfterDelay: function (actionName, delay) {
+        setTimeout(function () { this.removePendingAction(actionName) }.bind(this), delay);
+    },
 
     hasFieldsError: function (object, field, rowIndex) {
         const fieldsErrors = this.$data.uiMessageStack.objectFieldErrors;
@@ -586,15 +617,15 @@ export default {
     vueDataParams: function (keys) {
         var params = new FormData();
         for (var i = 0; i < keys.length; i++) {
-            var attribs = keys[i].split('.',2);
+            var attribs = keys[i].split('.', 2);
             var contextKey = attribs[0];
             var attribute = attribs[1];
             var vueDataValue = this.$data.vueData[contextKey];
             if (vueDataValue && typeof vueDataValue === 'object' && Array.isArray(vueDataValue) === false) {
                 // object
-                if(!attribute) {
+                if (!attribute) {
                     Object.keys(vueDataValue).forEach(function (propertyKey) {
-                        if (!propertyKey.includes("_") ) {
+                        if (!propertyKey.includes("_")) {
                             //  properties taht start with _ are private and don't belong to the serialized entity
                             // we filter field with modifiers (like <field>_display and <field>_fmt)
                             this._vueDataParamsKey(params, contextKey, propertyKey, vueDataValue)
@@ -606,16 +637,16 @@ export default {
             } else if (vueDataValue && Array.isArray(vueDataValue) === true) {
                 // array
                 vueDataValue.forEach(function (value, index) {
-                    if(!attribute) {
+                    if (!attribute) {
                         Object.keys(value).forEach(function (propertyKey) {
-                            if (!propertyKey.includes("_") ) {
+                            if (!propertyKey.includes("_")) {
                                 //  properties that start with _ are private and don't belong to the serialized entity
                                 // we filter field with modifiers (like <field>_display and <field>_fmt)
-                                this._vueDataParamsKey(params, contextKey +']['+ index , propertyKey, value)
+                                this._vueDataParamsKey(params, contextKey + '][' + index, propertyKey, value)
                             }
                         }.bind(this));
                     } else {
-                        this._vueDataParamsKey(params, contextKey +']['+ index, attribute, value)
+                        this._vueDataParamsKey(params, contextKey + '][' + index, attribute, value)
                     }
                 }.bind(this));
             } else {
@@ -626,7 +657,7 @@ export default {
         return params;
 
     },
-    _vueDataParamsKey: function(params, contextKey, propertyKey, vueDataValue) {
+    _vueDataParamsKey: function (params, contextKey, propertyKey, vueDataValue) {
         let vueDataFieldValue = vueDataValue[propertyKey];
         if (Array.isArray(vueDataFieldValue)) {
             if (!vueDataFieldValue || vueDataFieldValue.length == 0) {
@@ -674,59 +705,59 @@ export default {
      * @author Daniel Thompson-Yvetot
      * @license MIT
      */
-    pastePlainTextCapture (evt, editorRef) {
-      // Let inputs do their thing, so we don't break pasting of links.
-      if (evt.target.nodeName === 'INPUT') return
-      let text, onPasteStripFormattingIEPaste
-      evt.preventDefault()
-      if (evt.originalEvent && evt.originalEvent.clipboardData.getData) {
-        text = evt.originalEvent.clipboardData.getData('text/plain')
-        this.$refs[editorRef].runCmd('insertText', text)
-      }
-      else if (evt.clipboardData && evt.clipboardData.getData) {
-        text = evt.clipboardData.getData('text/plain')
-        this.$refs[editorRef].runCmd('insertText', text)
-      }
-      else if (window.clipboardData && window.clipboardData.getData) {
-        if (!onPasteStripFormattingIEPaste) {
-          onPasteStripFormattingIEPaste = true
-          this.$refs[editorRef].runCmd('ms-pasteTextOnly', text)
+    pastePlainTextCapture(evt, editorRef) {
+        // Let inputs do their thing, so we don't break pasting of links.
+        if (evt.target.nodeName === 'INPUT') return
+        let text, onPasteStripFormattingIEPaste
+        evt.preventDefault()
+        if (evt.originalEvent && evt.originalEvent.clipboardData.getData) {
+            text = evt.originalEvent.clipboardData.getData('text/plain')
+            this.$refs[editorRef].runCmd('insertText', text)
         }
-        onPasteStripFormattingIEPaste = false
-      }
+        else if (evt.clipboardData && evt.clipboardData.getData) {
+            text = evt.clipboardData.getData('text/plain')
+            this.$refs[editorRef].runCmd('insertText', text)
+        }
+        else if (window.clipboardData && window.clipboardData.getData) {
+            if (!onPasteStripFormattingIEPaste) {
+                onPasteStripFormattingIEPaste = true
+                this.$refs[editorRef].runCmd('ms-pasteTextOnly', text)
+            }
+            onPasteStripFormattingIEPaste = false
+        }
     },
     editorHandlerFixHelper(tags, regexp, doBlockName, undoBlockName, eVm, caret) {
-        if(caret.hasParents(tags, true)) { 
+        if (caret.hasParents(tags, true)) {
             eVm.runCmd('formatBlock', undoBlockName);
-            
-            if(!caret.range.commonAncestorContainer.hasChildNodes()) {
-                 var currentNode = caret.selection.focusNode.parentNode;
-                while(currentNode && currentNode !== caret.el) {
-                    if(tags.includes(currentNode.nodeName.toLowerCase())) {
-                        currentNode.outerHTML = currentNode.outerHTML.replace(regexp,"");
+
+            if (!caret.range.commonAncestorContainer.hasChildNodes()) {
+                var currentNode = caret.selection.focusNode.parentNode;
+                while (currentNode && currentNode !== caret.el) {
+                    if (tags.includes(currentNode.nodeName.toLowerCase())) {
+                        currentNode.outerHTML = currentNode.outerHTML.replace(regexp, "");
                     }
                     currentNode = currentNode.parentNode;
-                }                    
+                }
             } else {
-               var inSelection = false;
+                var inSelection = false;
                 var startNode = caret.range.startContainer;
-                while(startNode && startNode !== caret.el && startNode.parentNode !== caret.range.commonAncestorContainer) {
+                while (startNode && startNode !== caret.el && startNode.parentNode !== caret.range.commonAncestorContainer) {
                     startNode = startNode.parentNode;
-                }                
+                }
                 var endNode = caret.range.endContainer;
-                while(endNode && endNode !== caret.el && endNode.parentNode !== caret.range.commonAncestorContainer) {
+                while (endNode && endNode !== caret.el && endNode.parentNode !== caret.range.commonAncestorContainer) {
                     endNode = endNode.parentNode;
                 }
                 caret.range.commonAncestorContainer.childNodes.forEach(
                     function (currentNode) {
-                        if(currentNode === startNode) {
+                        if (currentNode === startNode) {
                             inSelection = true;
                         }
-                        if(inSelection) {
-                            currentNode.outerHTML = currentNode.outerHTML.replace(regexp,"");
+                        if (inSelection) {
+                            currentNode.outerHTML = currentNode.outerHTML.replace(regexp, "");
                         }
-                        if(currentNode === endNode) {
-                            inSelection = false;                            
+                        if (currentNode === endNode) {
+                            inSelection = false;
                         }
                     }
                 )
@@ -735,10 +766,10 @@ export default {
             eVm.runCmd('formatBlock', doBlockName);
         }
     },
-    editorHandlerBlockquoteFix(e,eVm,caret) {
+    editorHandlerBlockquoteFix(e, eVm, caret) {
         this.editorHandlerFixHelper(['blockquote'], /<\/?blockquote[^>]*\/?>/g, 'blockquote', 'div', eVm, caret);
     },
-    editorHandlerParagrapheFix(e,eVm,caret) {
-        this.editorHandlerFixHelper(['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'h7', 'h8', 'h9'], /<\/?h[1-9][^>]*\/?>/g, 'div', 'div', eVm, caret);            
+    editorHandlerParagrapheFix(e, eVm, caret) {
+        this.editorHandlerFixHelper(['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'h7', 'h8', 'h9'], /<\/?h[1-9][^>]*\/?>/g, 'div', 'div', eVm, caret);
     }
 }
