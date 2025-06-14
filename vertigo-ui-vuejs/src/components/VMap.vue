@@ -5,6 +5,8 @@
 </template>
 <script>
 import * as ol from "ol"
+import Debounce from "lodash.debounce"
+
 
 
 export default {
@@ -84,20 +86,26 @@ export default {
         }
         
         // handle refresh if an endPoint is specified
+        this.onMapMoveEndDebounced = Debounce((topLeft, bottomRight) => {
+            this.$emit('moveend', topLeft, bottomRight);
+        }, 300);
         this.olMap.on('moveend', function(e) {
             let mapExtent =  e.map.getView().calculateExtent();
             let wgs84Extent = ol.proj.transformExtent(mapExtent, 'EPSG:3857', 'EPSG:4326');
             let topLeft = ol.extent.getTopLeft(wgs84Extent);
             let bottomRight = ol.extent.getBottomRight(wgs84Extent);
-            VUiPage.debounce(() => this.$emit('moveend',topLeft, bottomRight) , 300);        
+            this.onMapMoveEndDebounced(topLeft, bottomRight);       
         }.bind(this));
-        
+
+        this.onMapClickDebounced = Debounce((coordinate) => {
+            this.$emit('click', ol.proj.transform(coordinate, 'EPSG:3857', 'EPSG:4326'));
+        }, 300);
         setTimeout(function () {
             this.olMap.on('click', function(evt) {
                 if (evt.originalEvent.target instanceof HTMLCanvasElement ) {
                     // only when click on the map
                     evt.stopPropagation();
-                    VUiPage.debounce(() => this.$emit('click',ol.proj.transform(evt.coordinate, 'EPSG:3857', 'EPSG:4326')) , 300);
+                    this.onMapClickDebounced(evt.coordinate);
                 }
             }.bind(this)); 
         }.bind(this), 300); 

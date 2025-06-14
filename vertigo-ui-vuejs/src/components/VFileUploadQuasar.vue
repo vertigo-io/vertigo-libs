@@ -12,27 +12,27 @@
             ref="quasarUploader">
             <template v-if="$props.simple" v-slot:header ></template> 
             <template v-else v-slot:header="slotProps">
-                    <div class="q-uploader__header-content flex flex-center no-wrap q-gutter-xs">
-                        <q-btn v-if="slotProps.queuedFiles.length > 0 && !slotProps.readonly" type="a" :icon="$q.iconSet.uploader.clear_all" flat dense @click="slotProps.removeQueuedFiles">
-                           <q-tooltip>{{$q.lang.vui.uploader.clear_all}}</q-tooltip>
-                        </q-btn>
-                        <div class="col column justify-center">
-                          <div v-if="$props.label !== void 0" class="q-uploader__title">{{$props.label}}</div>
-                          <div v-if="slotProps.isUploading" class="q-uploader__subtitle">{{getGlobalSizeLabel()}} / {{slotProps.uploadProgressLabel}}</div>
-                          <div v-else class="q-uploader__subtitle">{{getGlobalSizeLabel()}}</div>
-                        </div>
-                        <q-spinner v-if="slotProps.isUploading" class="q-uploader__spinner"></q-spinner>
-                        <q-btn v-if="slotProps.isUploading  && !slotProps.readonly" type="a" href="#" :icon="$q.iconSet.uploader.clear" flat dense @click="slotProps.abort">
-                            <q-tooltip>{{$q.lang.vui.uploader.abort}}</q-tooltip>
-                        </q-btn>
-                        <q-btn v-if="globalCanAddFiles(slotProps.files) && !slotProps.readonly" :icon="$q.iconSet.uploader.add" flat dense @click="slotProps.pickFiles">
-							<q-uploader-add-trigger></q-uploader-add-trigger>
-                            <q-tooltip>{{$q.lang.vui.uploader.add}}</q-tooltip>
-                        </q-btn>
+                <div class="q-uploader__header-content flex flex-center no-wrap q-gutter-xs">
+                    <q-btn v-if="slotProps.queuedFiles.length > 0 && !slotProps.readonly" type="a" :icon="$q.iconSet.uploader.clear_all" flat dense @click="slotProps.removeQueuedFiles">
+                       <q-tooltip>{{$q.lang.vui.uploader.clear_all}}</q-tooltip>
+                    </q-btn>
+                    <div class="col column justify-center">
+                      <div v-if="$props.label !== void 0" class="q-uploader__title">{{$props.label}}</div>
+                      <div v-if="slotProps.isUploading" class="q-uploader__subtitle">{{getGlobalSizeLabel()}} / {{slotProps.uploadProgressLabel}}</div>
+                      <div v-else class="q-uploader__subtitle">{{getGlobalSizeLabel()}}</div>
                     </div>
+                    <q-spinner v-if="slotProps.isUploading" class="q-uploader__spinner"></q-spinner>
+                    <q-btn v-if="slotProps.isUploading  && !slotProps.readonly" type="a" href="#" :icon="$q.iconSet.uploader.clear" flat dense @click="slotProps.abort">
+                        <q-tooltip>{{$q.lang.vui.uploader.abort}}</q-tooltip>
+                    </q-btn>
+                    <q-btn v-if="globalCanAddFiles(slotProps.files) && !slotProps.readonly" :icon="$q.iconSet.uploader.add" flat dense @click="slotProps.pickFiles">
+                        <q-uploader-add-trigger :id="$props.inputId"></q-uploader-add-trigger>
+                        <q-tooltip>{{$q.lang.vui.uploader.add}}</q-tooltip>
+                    </q-btn>
+                </div>
             </template> 
             <template v-slot:list="slotProps">
-               <div class="row">
+                <div class="row">
                 <q-field :label-width="3"
                             :label="$props.simple ? $props.label : undefined"
                             class="col"
@@ -69,10 +69,12 @@
                                         (file.type.indexOf('image/') === 0 ? 'photo' :
                                         (file.type.indexOf('audio/') === 0 ? 'audiotrack' : 'insert_drive_file'))" ></q-icon>
                                     <div class="q-uploader__file-header-content col">
-                                    <div class="q-uploader__title">{{file.name}}</div>
+                                    	<div class="q-uploader__title" :id="file.fileUri + '_label'">{{file.name}}</div>
                                     </div>
-                                    <q-btn v-if="!$props.readonly" round dense flat icon="delete" @click="removeRemoteFile(file)"></q-btn>                      
-                                    <q-btn round dense flat icon="file_download"  @click="$emit('download-file', file.fileUri)" ></q-btn>
+									<div role="toolbar" :aria-labelledby="file.fileUri + '_label'">
+	                                    <q-btn v-if="!$props.readonly" round dense flat icon="delete" @click="removeRemoteFile(file)" :title="$q.lang.vui.uploader.remove"></q-btn>                      
+	                                    <q-btn round dense flat icon="file_download" @click="$emit('download-file', file.fileUri)" :title="$q.lang.vui.uploader.download"></q-btn>
+									</div>
                                 </div>
                             </div>
                         </div>
@@ -89,6 +91,7 @@
                             </q-btn>
                     </div>
                  </div>
+				 <slot name="footer"></slot>
             </template>   
         </q-uploader>
 </template>
@@ -96,7 +99,8 @@
 
 export default {
   props: {
-        readonly: Boolean,
+        inputId: Number,
+		readonly: Boolean,
         label: String,
         simple : {type: Boolean, default: false},
         fileInfoUris: Array,

@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2025, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,7 @@ import io.vertigo.vega.impl.webservice.WebServiceManagerImpl;
 import io.vertigo.vega.impl.webservice.catalog.CatalogWebServices;
 import io.vertigo.vega.impl.webservice.catalog.SwaggerWebServices;
 import io.vertigo.vega.impl.webservice.client.WebServiceClientAmplifierMethod;
+import io.vertigo.vega.impl.webservice.healthcheck.HealthcheckWebServices;
 import io.vertigo.vega.plugins.authentication.aad.AzureAdWebAuthenticationPlugin;
 import io.vertigo.vega.plugins.authentication.local.LocalWebAuthenticationPlugin;
 import io.vertigo.vega.plugins.authentication.oidc.OIDCWebAuthenticationPlugin;
@@ -178,6 +179,13 @@ public final class VegaFeatures extends Features<VegaFeatures> {
 	public VegaFeatures withWebServicesCatalog() {
 		getModuleConfigBuilder()
 				.addComponent(CatalogWebServices.class);
+		return this;
+	}
+
+	@Feature("webservices.healthcheck")
+	public VegaFeatures withWebServicesHealthcheck() {
+		getModuleConfigBuilder()
+				.addComponent(HealthcheckWebServices.class);
 		return this;
 	}
 

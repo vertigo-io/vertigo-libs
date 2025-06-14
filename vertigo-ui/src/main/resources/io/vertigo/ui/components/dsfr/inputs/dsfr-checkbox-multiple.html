@@ -22,7 +22,6 @@
                        th::error-message="|getErrorMessage('${object}', '${field}', ${rowIndex})|"
                        th::options="|dsfrTransformListForCheckbox('${list}', '${myValueField}', '${myLabelField}', '${disabledField}', '${hintField}', ${model.util.contextKey(object, field, rowIndex)}, ${filterFunction?:null})|"
                        th:v-model="|vueData.${object}.${field}|"
-                       th:name="|vContext[${object}][${field}]|"
                        th:attr="__${input_attrs}__"
     >
         <vu:content/>

@@ -12,6 +12,7 @@
         <input type="hidden" th:v-if="|vueDataToArray(${model.util.vueDataKey(object, field, rowIndex)}).length == 0|" th::name="${model.util.contextKey(object, field, rowIndex)}" value="" />
         <input type="hidden" th:v-for="|fileUri in vueDataToArray(${model.util.vueDataKey(object, field, rowIndex)})|" th::name="${model.util.contextKey(object, field, rowIndex)}" v-bind:value="fileUri" />
         <v-file-upload-quasar 
+            th:input-id="|${myComponentId}_input|"
             th::ref="|'${myComponentId}'|"
             :readonly="false"
             th:url="${url}" 

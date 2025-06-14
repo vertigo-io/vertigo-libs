@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2025, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -254,24 +254,23 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 
 		final Set<String> fields = getMeasureFields(measures);
 		// add the global data with all the fields we need
-		if (!fields.isEmpty()) {
-			dataVariableBuilder.append("and (");
-		}
-		dataVariableBuilder.append(fields.stream()
+		final StringBuilder dataFilterBuilder = new StringBuilder();
+		dataFilterBuilder.append(fields.stream()
 				.map(field -> buildDataFilterCondition(dataFilter, field))
 				.collect(Collectors.joining(" or ")));
-
-		if (!fields.isEmpty()) {
-			dataVariableBuilder.append(") \n");
+		if (dataFilterBuilder.length() > 0) {
+			dataVariableBuilder.append("and (");
+			dataVariableBuilder.append(dataFilterBuilder.toString())
+					.append(")\n");
 		}
 
 		for (final Map.Entry<String, String> filter : dataFilter.filters().entrySet()) {
-			String filterValue = filter.getValue();
+			final String filterValue = filter.getValue();
 			// <b>null</b> value mean no filter, <b>empty string</b> mean field shouldn't exists, <b>*</b> mean field must exists
 			if (filterValue != null) {
-				if("*".equals(filterValue)) {
+				if ("*".equals(filterValue)) {
 					dataVariableBuilder.append(" and exists r.").append(filter.getKey()).append("\n");
-				} else if(filterValue.isEmpty()) {
+				} else if (filterValue.isEmpty()) {
 					dataVariableBuilder.append(" and not exists r.").append(filter.getKey()).append("\n");
 				} else {
 					dataVariableBuilder.append(" and r.").append(filter.getKey()).append("==\"").append(filterValue).append("\"\n");
@@ -453,7 +452,8 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 							+ "}))\n")
 					.append("|> pivot(rowKey:[" + groupByFields + "], columnKey: [\"_field\", \"alias\"], valueColumn: \"_value\") \n")
 					.append("|> map(fn: (r) => ({ r with " + measures.stream().map(measure -> Tuple.of(measure, properedMeasures.get(measure)))
-							.map(tuple -> tuple.val2() + ": if exists r." + tuple.val2() + " then r." + tuple.val2() + " else " + getDefaultValueByMeasure(tuple.val1())).collect(Collectors.joining(", "))
+							.map(tuple -> tuple.val2() + ": if exists r." + tuple.val2() + " then r." + tuple.val2() + " else " + getDefaultValueByMeasure(tuple.val1()))
+							.collect(Collectors.joining(", "))
 							+ "}))\n")
 
 					.append("|> group() \n")
@@ -464,7 +464,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 	}
 
 	private static StringBuilder buildTimedQuery(final String appName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter) {
-		final String globalDataVariable = buildGlobalDataVariable(appName, measures, dataFilter, timeFilter, new String[] {});
+		final String globalDataVariable = buildGlobalDataVariable(appName, measures, dataFilter, timeFilter);
 		final Set<String> fields = getMeasureFields(measures);
 		final StringBuilder queryBuilder = new StringBuilder(globalDataVariable);
 		queryBuilder

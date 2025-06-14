@@ -14,6 +14,8 @@ const VUiApp = Vue.createApp({
   methods: { ...VertigoUi.methods, ...(typeof DSFR === 'undefined' || DSFR?.methods), ...VUiExtensions.methods }
 }, {...VUiExtensions.rootOptions });
 
+window.dispatchEvent(new CustomEvent('vui-before-plugins', { detail : {vuiAppInstance : VUiApp}}));
+
 if (typeof Quasar !== 'undefined') {
 	if (Quasar.lang.enUS) {
 	  Quasar.lang.enUS.vui = {...Quasar.lang.enUS.vui, ...VertigoUi.lang.enUS};
@@ -22,8 +24,6 @@ if (typeof Quasar !== 'undefined') {
 	  Quasar.lang.fr.vui = {...Quasar.lang.fr.vui, ...VertigoUi.lang.fr};
 	}
 }
-
-window.dispatchEvent(new CustomEvent('vui-before-plugins', { detail : {vuiAppInstance : VUiApp}}));
 
 if (typeof DSFR !== 'undefined') VUiApp.use(DSFR);
 

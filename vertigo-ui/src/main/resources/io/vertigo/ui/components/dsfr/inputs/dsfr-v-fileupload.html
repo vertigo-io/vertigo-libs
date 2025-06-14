@@ -20,8 +20,15 @@
     </th:block>
 
     <div class="fr-upload-group">
-        <vu:dsfr-label-edit key="${key}" object="${object}" field="${field}" label="${label}" hint="${hint}"
-                            required="${readonly == true ? false : myRequired}" th:for="|${myComponentId}__input|" label_attrs="${label_attrs}"/>
+        <th:block th:if="${readonly eq true}">
+            <vu:dsfr-label-read key="${key}" object="${object}" field="${field}" label="${label}" hint="${hint}"
+                                required="${readonly == true ? false : myRequired}" label_attrs="${label_attrs}"/>
+        </th:block>
+        <th:block th:unless="${readonly eq true}">
+            <vu:dsfr-label-edit key="${key}" object="${object}" field="${field}" label="${label}" hint="${hint}"
+                                required="${readonly == true ? false : myRequired}" th:for="|${myComponentId}__input|"
+                                label_attrs="${label_attrs}"/>
+        </th:block>
         <v-file-upload
                 th:input-id="|${myComponentId}__input|"
                 th::readonly="${readonly?:false}"
@@ -40,32 +47,41 @@
                 th:attr="__${uploader_attrs}__">
 
             <template #files="slotProps">
-                <div v-for="file in slotProps.files" class="file">
-                    <div :class="{'fr-message--error' : file.status === 'ERROR'}">
-                        <a v-if="file.status === 'OK'" th::href="|'${downloadUrl}' + file.fileUri|" @click="slotProps.downloadFile(file)">
-                            {{ file.name }}</a>
-                        <span v-if="file.status !== 'OK'">{{ file.name }}<template v-if="file.errorMessage"> ({{ file.errorMessage }})</template></span>
-                    </div>
-                    <div class="fr-hint-text">
-                        {{ file.name.split('.').pop().toUpperCase() }} – {{ slotProps.humanStorageSize(file.size) }}
-                        <template v-if="file.status === 'IN_PROGRESS'">
-                            -
-                            <v-icon name="ri-loader-4-line" scale="0.8" animation="spin"></v-icon>
-                            {{ (file.progress * 100).toFixed() }} % -
-                            <button @click.prevent="slotProps.abortUpload(file)">
-                                <v-icon name="ri-close-line" scale="0.8"></v-icon>
-                                {{ $vui.i18n().uploader.abort }}
-                            </button>
-                        </template>
-                        <template v-if="!slotProps.readonly && file.status != 'IN_PROGRESS'">
-                            -
-                            <button @click.prevent="slotProps.removeFile(file)">
-                                <v-icon name="ri-delete-bin-7-line"></v-icon>
-                                {{ $vui.i18n().uploader.remove }}
-                            </button>
-                        </template>
-                    </div>
-                </div>
+                <ul aria-label="Liste des fichiers téléversés" class="list-none">
+                    <li v-for="file in slotProps.files" class="file">
+                        <div :class="{'fr-message--error' : file.status === 'ERROR'}">
+                            <a v-if="file.status === 'OK'"
+                               class="fr-link fr-link--download fr-mr-3v"
+                               th::href="|'${downloadUrl}' + file.fileUri|"
+                               @click="slotProps.downloadFile(file)">
+                                {{ file.name }}
+                                <span class="fr-link__detail">
+                                    {{ file.name.split('.').pop().toUpperCase() }} – {{ slotProps.humanStorageSize(file.size) }}
+                                </span>
+                            </a>
+                            <span v-if="file.status !== 'OK'" class="fr-mr-2v">
+                                    {{ file.name }}
+                                    <template v-if="file.errorMessage"> ({{ file.errorMessage }})</template>
+                                </span>
+                            <template v-if="file.status === 'IN_PROGRESS'">
+                                <v-icon name="ri-loader-4-line" scale="0.8" animation="spin"></v-icon>
+                                {{ (file.progress * 100).toFixed() }} % -
+                                <button @click.prevent="slotProps.abortUpload(file)"
+                                        title="Annuler le téléversement du fichier">
+                                    <v-icon name="ri-close-line" scale="0.7"></v-icon>
+                                    {{ $vui.i18n().uploader.abort }}
+                                </button>
+                            </template>
+                            <template v-if="!slotProps.readonly && file.status != 'IN_PROGRESS'">
+                                <button @click.prevent="slotProps.removeFile(file)"
+                                        :title="'Supprimer le fichier ' + file.name">
+                                    <v-icon name="ri-delete-bin-7-line" scale="0.7"></v-icon>
+                                    {{ $vui.i18n().uploader.remove }}
+                                </button>
+                            </template>
+                        </div>
+                    </li>
+                </ul>
             </template>
         </v-file-upload>
         <div th:v-if="|hasFieldsError('${object}', '${field}', ${rowIndex})|"

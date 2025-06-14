@@ -5,16 +5,17 @@
 	<vu:include-data object="${object}" field="${field}" modifiable="true"/>
 	<vu:include-data object="${list}" field="${myValueField}"/>
 	<vu:include-data object="${list}" field="${myLabelField}"/>
-	<vu:label-edit object="${object}" field="${field}" label="${label}" required="${myRequired}" after_label_slot="after_label_slot" label_attrs="${label_attrs}">
+	<vu:label-edit object="${object}" field="${field}" label="${label}" required="${myRequired}" after_label_slot="after_label_slot" label_attrs="${label_attrs}"
+	               role="radiogroup">
 		<q-option-group
 			th::inline="${inline}"
 		    type="radio"
 		   	th:v-model="|vueData.${object}.${field}|" 
 			th::options="|transformListForSelection('${list}', '${myValueField}', '${myLabelField}', ${filterFunction?:null})|"
-			dense
+			dense role=""
 			th:attr="__${input_attrs}__"
 		 >
-		 <vu:content-slot name="edit_content_slot"/>
+		 	<vu:content-slot name="edit_content_slot"/>
 		 </q-option-group>
 	</vu:label-edit>
 	<input type="hidden" th:name="|vContext[${object}][${field}]|" th:v-bind:value="|vueData.${object}.${field}|" />

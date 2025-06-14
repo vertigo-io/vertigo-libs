@@ -336,7 +336,7 @@ defineExpose({ resetCurrentPage })
           >
             <p class="fr-mb-0 fr-ml-1v"
                :class="{ 'fr-text--sm': isFooterSizeSm }"
-               v-if="showNbRows">{{ rows.length }} résulat(s)</p>
+               v-if="showNbRows">{{ rows.length }} résultat(s)</p>
 
             <div class="flex gap-2 items-center">
               <label

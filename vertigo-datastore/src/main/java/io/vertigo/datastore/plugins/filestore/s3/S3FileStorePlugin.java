@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2025, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,9 @@
  */
 package io.vertigo.datastore.plugins.filestore.s3;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -27,6 +28,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.concurrent.ThreadLocalRandom;
 
 import javax.inject.Inject;
 
@@ -35,10 +37,10 @@ import org.apache.logging.log4j.Logger;
 
 import io.vertigo.commons.transaction.VTransaction;
 import io.vertigo.commons.transaction.VTransactionManager;
-import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.connectors.s3.S3Connector;
 import io.vertigo.core.analytics.AnalyticsManager;
-import io.vertigo.core.daemon.Daemon;
+import io.vertigo.core.analytics.health.HealthChecked;
+import io.vertigo.core.analytics.health.HealthMeasure;
 import io.vertigo.core.daemon.definitions.DaemonDefinition;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VSystemException;
@@ -73,7 +75,7 @@ import io.vertigo.datastore.impl.filestore.model.StreamFile;
 /**
  * Store file data in S3 and metadatas in database.
  *
- * @author skerdudou, xdurand
+ * @author skerdudou, xdurand, mlaroche
  */
 public final class S3FileStorePlugin implements FileStorePlugin, Activeable, SimpleDefinitionProvider {
 
@@ -81,8 +83,6 @@ public final class S3FileStorePlugin implements FileStorePlugin, Activeable, Sim
 
 	private static final String STORE_READ_ONLY = "Store is in read-only mode";
 	private static final int PURGE_MAX_BATCH_SIZE = 1000;
-
-	private static final int PURGE_DEAMON_MIN_PERIODE_SECONDS = 5; //5 seconds minimum
 
 	/**
 	 * List of the storage Dto fields.
@@ -191,10 +191,9 @@ public final class S3FileStorePlugin implements FileStorePlugin, Activeable, Sim
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
 		final List<? extends Definition> definition;
 		if (purgeDelayMinutesOpt.isPresent()) {
-			final int purgePeriodSeconds = Math.max(PURGE_DEAMON_MIN_PERIODE_SECONDS, purgeDelayMinutesOpt.get()) * 60; //
-			definition = Collections.singletonList(new DaemonDefinition(dmnUniqueName, () -> new DeleteOldFilesDaemon(this), purgePeriodSeconds));
+			definition = Collections.singletonList(new DaemonDefinition(dmnUniqueName, () -> this::deleteOldFiles, 5 * 60));
 		} else {
-			definition = Collections.EMPTY_LIST;
+			definition = Collections.emptyList();
 		}
 		return definition;
 	}
@@ -204,7 +203,39 @@ public final class S3FileStorePlugin implements FileStorePlugin, Activeable, Sim
 	 */
 	public void deleteOldFiles() {
 		if (purgeDelayMinutesOpt.isPresent()) {
-			doDeleteOldFiles();
+			randomSleep();
+			//only if purgeDelayMinutesOpt is present
+			final var expirityTime = Instant.now().minusSeconds(purgeDelayMinutesOpt.get() * 60);
+			final Criteria<Entity> criteriaExpired = Criterions.isLessThan(() -> DtoFields.lastModified.name(), expirityTime);
+
+			try (var tr = transactionManager.createCurrentTransaction()) {
+				final DtList<Entity> expiredEntities = getEntityStoreManager().find(storeDataDefinition, criteriaExpired, DtListState.of(PURGE_MAX_BATCH_SIZE));
+
+				if (!expiredEntities.isEmpty()) {
+					LOG.info("{} s3 files has expired and will be deleted", expiredEntities.size());
+
+					final List<String> expiredS3Paths = new ArrayList<>(expiredEntities.size());
+					final List<UID<Entity>> expiredEntitiesUids = new ArrayList<>(expiredEntities.size());
+					for (final Entity entity : expiredEntities) {
+						expiredS3Paths.add(getValue(entity, DtoFields.filePath, String.class));
+						expiredEntitiesUids.add(entity.getUID());
+					}
+
+					tr.addAfterCompletion(new S3ActionDeleteList(bucketName, expiredS3Paths, s3Helper));
+
+					try {
+						getEntityStoreManager().deleteList(expiredEntitiesUids);
+					} catch (final VSystemException e) {
+						if (e.getMessage() != null && e.getMessage().startsWith("Deleted row count mismatch the size of elements in delete by list")) {
+							// don't do anyhting just some log
+							LOG.info("Deleted row count mismatch when deleting expired files in S3, probable cause is that multiple daemon where executed at the same time", e);
+						} else {
+							throw e;
+						}
+					}
+					tr.commit();
+				}
+			}
 		}
 	}
 
@@ -218,21 +249,20 @@ public final class S3FileStorePlugin implements FileStorePlugin, Activeable, Sim
 	@Override
 	public FileInfo read(final FileInfoURI uri) {
 		// récupération de l'objet en base
-		final UID<Entity> dtoUri = createDataObjectURI(uri);
+		final var dtoUri = createDataObjectURI(uri);
 		final DataObject fileInfoDto = getEntityStoreManager().readOne(dtoUri);
 
 		// récupération du fichier
-		final String fileName = getValue(fileInfoDto, DtoFields.fileName, String.class);
-		final String mimeType = getValue(fileInfoDto, DtoFields.mimeType, String.class);
-		final Instant lastModified = getValue(fileInfoDto, DtoFields.lastModified, Instant.class);
-		final Long length = getValue(fileInfoDto, DtoFields.length, Long.class);
-		final String filePath = getValue(fileInfoDto, DtoFields.filePath, String.class);
+		final var fileName = getValue(fileInfoDto, DtoFields.fileName, String.class);
+		final var mimeType = getValue(fileInfoDto, DtoFields.mimeType, String.class);
+		final var lastModified = getValue(fileInfoDto, DtoFields.lastModified, Instant.class);
+		final var length = getValue(fileInfoDto, DtoFields.length, Long.class);
+		final var filePath = getValue(fileInfoDto, DtoFields.filePath, String.class);
 
-		final InputStream readResponse = s3Helper.readObject(bucketName, filePath);
-		final VFile vFile = StreamFile.of(fileName, mimeType, lastModified, length, () -> readResponse);
+		final VFile vFile = StreamFile.of(fileName, mimeType, lastModified, length, () -> s3Helper.readObject(bucketName, filePath));
 
 		// retourne le fileinfo avec le fichier et son URI
-		final S3FileInfo s3FileInfo = new S3FileInfo(uri.getDefinition(), vFile);
+		final var s3FileInfo = new S3FileInfo(uri.getDefinition(), vFile);
 		s3FileInfo.setURIStored(uri);
 		return s3FileInfo;
 	}
@@ -247,9 +277,9 @@ public final class S3FileStorePlugin implements FileStorePlugin, Activeable, Sim
 	}
 
 	private Entity createFileInfoEntity(final FileInfo fileInfo) {
-		final Entity fileInfoDto = createFileInfoEntity(fileInfo.getDefinition());
+		final var fileInfoDto = createFileInfoEntity(fileInfo.getDefinition());
 		//-----
-		final VFile vFile = fileInfo.getVFile();
+		final var vFile = fileInfo.getVFile();
 		setValue(fileInfoDto, DtoFields.fileName, vFile.getFileName());
 		setValue(fileInfoDto, DtoFields.mimeType, vFile.getMimeType());
 		setValue(fileInfoDto, DtoFields.lastModified, vFile.getLastModified());
@@ -262,16 +292,16 @@ public final class S3FileStorePlugin implements FileStorePlugin, Activeable, Sim
 			setIdValue(fileInfoDto, fileInfo.getURI());
 
 			// récupération de l'objet en base pour récupérer le path du fichier et ne pas modifier la base
-			final UID<Entity> dtoUri = createDataObjectURI(fileInfo.getURI());
+			final var dtoUri = createDataObjectURI(fileInfo.getURI());
 			final DataObject fileInfoDtoBase = getEntityStoreManager().readOne(dtoUri);
-			final String pathToSave = getValue(fileInfoDtoBase, DtoFields.filePath, String.class);
+			final var pathToSave = getValue(fileInfoDtoBase, DtoFields.filePath, String.class);
 			setValue(fileInfoDto, DtoFields.filePath, pathToSave);
 		}
 		return fileInfoDto;
 	}
 
 	private void saveFile(final FileInfo fileInfo, final String pathToSave) {
-		try (InputStream inputStream = fileInfo.getVFile().createInputStream()) {
+		try (var inputStream = fileInfo.getVFile().createInputStream()) {
 			getCurrentTransaction().addAfterCompletion(new S3ActionSave(bucketName, pathToSave, inputStream, fileInfo.getVFile().getLength(), useTags, s3Helper));
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e, "Can't read uploaded file.");
@@ -285,19 +315,19 @@ public final class S3FileStorePlugin implements FileStorePlugin, Activeable, Sim
 				.isFalse(readOnly, STORE_READ_ONLY)
 				.isNotNull(fileInfo.getURI() == null, "Only file without any id can be created.");
 		//-----
-		final Entity fileInfoDto = createFileInfoEntity(fileInfo);
+		final var fileInfoDto = createFileInfoEntity(fileInfo);
 		//-----
 		getEntityStoreManager().create(fileInfoDto);
 
 		// cas de la création
-		final Object fileInfoDtoId = DataModelUtil.getId(fileInfoDto);
+		final var fileInfoDtoId = DataModelUtil.getId(fileInfoDto);
 		Assertion.check().isNotNull(fileInfoDtoId, "File's id must be set.");
-		final FileInfoURI uri = createURI(fileInfo.getDefinition(), fileInfoDtoId);
+		final var uri = createURI(fileInfo.getDefinition(), fileInfoDtoId);
 		fileInfo.setURIStored(uri);
 
 		// on met a jour la base
-		final DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy/MM/dd/", Locale.FRANCE);
-		final String pathToSave = format.format(LocalDate.now()) + fileInfoDtoId;
+		final var format = DateTimeFormatter.ofPattern("yyyy/MM/dd/", Locale.FRANCE);
+		final var pathToSave = format.format(LocalDate.now()) + fileInfoDtoId;
 		setValue(fileInfoDto, DtoFields.filePath, pathToSave);
 		//-----
 		getEntityStoreManager().update(fileInfoDto);
@@ -316,11 +346,11 @@ public final class S3FileStorePlugin implements FileStorePlugin, Activeable, Sim
 				.isFalse(readOnly, STORE_READ_ONLY)
 				.isNotNull(fileInfo.getURI() != null, "Only file with an id can be updated.");
 		//-----
-		final Entity fileInfoDto = createFileInfoEntity(fileInfo);
+		final var fileInfoDto = createFileInfoEntity(fileInfo);
 		//-----
 		getEntityStoreManager().update(fileInfoDto);
 
-		final String pathToSave = getValue(fileInfoDto, DtoFields.filePath, String.class);
+		final var pathToSave = getValue(fileInfoDto, DtoFields.filePath, String.class);
 		//-----
 		saveFile(fileInfo, pathToSave);
 	}
@@ -334,10 +364,10 @@ public final class S3FileStorePlugin implements FileStorePlugin, Activeable, Sim
 	public void delete(final FileInfoURI uri) {
 		Assertion.check().isFalse(readOnly, STORE_READ_ONLY);
 
-		final UID<Entity> dtoUri = createDataObjectURI(uri);
+		final var dtoUri = createDataObjectURI(uri);
 		//-----suppression du fichier
 		final DataObject fileInfoDto = getEntityStoreManager().readOne(dtoUri);
-		final String path = getValue(fileInfoDto, DtoFields.filePath, String.class);
+		final var path = getValue(fileInfoDto, DtoFields.filePath, String.class);
 		getCurrentTransaction().addAfterCompletion(new S3ActionDelete(bucketName, path, s3Helper));
 		//-----suppression en base
 		getEntityStoreManager().delete(dtoUri);
@@ -383,8 +413,8 @@ public final class S3FileStorePlugin implements FileStorePlugin, Activeable, Sim
 	 * @return Typed value of the field
 	 */
 	private static <V> V getValue(final DataObject dto, final DtoFields field, final Class<V> valueClass) {
-		final DataDefinition dtDefinition = DataModelUtil.findDataDefinition(dto);
-		final DataField dtField = dtDefinition.getField(field.name());
+		final var dtDefinition = DataModelUtil.findDataDefinition(dto);
+		final var dtField = dtDefinition.getField(field.name());
 		return valueClass.cast(dtField.getDataAccessor().getValue(dto));
 	}
 
@@ -396,12 +426,12 @@ public final class S3FileStorePlugin implements FileStorePlugin, Activeable, Sim
 	 * @param value Value
 	 */
 	private static void setValue(final DataObject dto, final DtoFields field, final Object value) {
-		final DataField dtField = DataModelUtil.findDataDefinition(dto).getField(field.name());
+		final var dtField = DataModelUtil.findDataDefinition(dto).getField(field.name());
 		dtField.getDataAccessor().setValue(dto, value);
 	}
 
 	private static void setIdValue(final DataObject dto, final FileInfoURI uri) {
-		final DataField dtField = DataModelUtil.findDataDefinition(dto).getIdField().get();
+		final var dtField = DataModelUtil.findDataDefinition(dto).getIdField().get();
 		dtField.getDataAccessor().setValue(dto, uri.getKeyAs(dtField.smartTypeDefinition().getJavaClass()));
 	}
 
@@ -414,53 +444,31 @@ public final class S3FileStorePlugin implements FileStorePlugin, Activeable, Sim
 		return transactionManager.getCurrentTransaction();
 	}
 
-	private void doDeleteOldFiles() {
-		//only if purgeDelayMinutesOpt is present
-		final Instant expirityTime = Instant.now().minusSeconds(purgeDelayMinutesOpt.get() * 60);
-		final Criteria<Entity> criteriaExpired = Criterions.isLessThan(() -> DtoFields.lastModified.name(), expirityTime);
-
-		try (VTransactionWritable tr = transactionManager.createCurrentTransaction()) {
-			final DtList<Entity> expiredEntities = getEntityStoreManager().find(storeDataDefinition, criteriaExpired, DtListState.of(PURGE_MAX_BATCH_SIZE));
-
-			if (expiredEntities.isEmpty() == false) {
-				LOG.info("{0} s3 files has expired and will be deleted", expiredEntities.size());
-
-				final List<String> expiredS3Paths = new ArrayList<>();
-				final List<UID<Entity>> expiredEntitiesUids = new ArrayList<>();
-				for (final Entity entity : expiredEntities) {
-					expiredS3Paths.add(getValue(entity, DtoFields.filePath, String.class));
-					expiredEntitiesUids.add(entity.getUID());
-				}
-
-				tr.addAfterCompletion(new S3ActionDeleteList(bucketName, expiredS3Paths, s3Helper));
-
-				getEntityStoreManager().deleteList(expiredEntitiesUids);
-				tr.commit();
-			}
+	/**
+	 * @return HealthMeasure of this plugin
+	 */
+	@HealthChecked(name = "io", feature = "S3FileStore")
+	public HealthMeasure checkIo() {
+		final var healthMeasureBuilder = HealthMeasure.builder();
+		try (var t = transactionManager.createCurrentTransaction()) {
+			final var text = "Lorem ipsum";
+			final var file = StreamFile.of("health", "text/plain", Instant.now(), text.length(), () -> new ByteArrayInputStream(text.getBytes(StandardCharsets.UTF_8)));
+			final var newFi = new S3FileInfo(new FileInfoDefinition("FiHealth", "health"), file);
+			create(newFi); // will be roll back after transaction
+			healthMeasureBuilder.withGreenStatus();
+		} catch (final Exception e) {
+			healthMeasureBuilder.withRedStatus(e.getMessage());
 		}
+		return healthMeasureBuilder.build();
+
 	}
 
-	/**
-	 * Daemon to delete old files.
-	 * @author xdurand
-	 */
-	public static final class DeleteOldFilesDaemon implements Daemon {
-
-		private final S3FileStorePlugin s3FileStorePlugin;
-
-		/**
-		 * @param s3FileStorePlugin This plugin
-		 */
-		public DeleteOldFilesDaemon(final S3FileStorePlugin s3FileStorePlugin) {
-			Assertion.check().isNotNull(s3FileStorePlugin);
-			//------
-			this.s3FileStorePlugin = s3FileStorePlugin;
-		}
-
-		/** {@inheritDoc} */
-		@Override
-		public void run() {
-			s3FileStorePlugin.deleteOldFiles();
+	private static void randomSleep() {
+		try {
+			//sleep random 100-500ms to desynchronized executions
+			Thread.sleep(ThreadLocalRandom.current().nextInt(100, 501)); // between 100 and 500 included);
+		} catch (final InterruptedException e) {
+			Thread.currentThread().interrupt();
 		}
 	}
 

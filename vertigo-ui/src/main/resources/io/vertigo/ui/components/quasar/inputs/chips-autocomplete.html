@@ -14,10 +14,11 @@
 	<q-select th:if="${!myStaticData}"
        	th:v-model="|vueData.${object}.${field}|"
 		th:label="${myLabel}"
+		th::aria-labelledby="|'${myComponentId}_label' + (hasFieldsError('${object}', '${field}', ${rowIndex}) ? ' ${myComponentId}_desc-error' : null)|"
 		th:classappend="|${myRequired?'v-field_'+'_required':''}${after_label_slot!=null?' v-field_'+'_has_after_label':''}|"
 		th:aria-required="${myrequired}"
 		th::error="|hasFieldsError('${object}', '${field}')|"
-		th::error-message="|getErrorMessage('${object}', '${field}')|"
+        th::aria-invalid="|hasFieldsError('${object}', '${field}', ${rowIndex})|"
 		orientation="vertical"
 		multiple
 		hide-dropdown-icon
@@ -32,16 +33,17 @@
         th:@filter="|function (val, update, abort) { searchAutocomplete('${list}', '${myValueField}', '${myValueField}', '${myComponentId}', '${myFilterUrl}', ${myMinQueryLength}, val, update, abort)}|"
         th:attr="__${input_attrs}__"
      >
-     <vu:quasar-label-slot label="${myLabel}" after_label_slot="after_label_slot"/>
+     <vu:quasar-label-slot label="${myLabel}" componentId="${myComponentId}" after_label_slot="after_label_slot"/>
      <vu:content-slot name="edit_content_slot"/>
      </q-select>
      <q-select th:if="${myStaticData}"
        	th:v-model="|vueData.${object}.${field}|"
 		th:label="${myLabel}"
+		th::aria-labelledby="|'${myComponentId}_label' + (hasFieldsError('${object}', '${field}', ${rowIndex}) ? ' ${myComponentId}_desc-error' : null)|"
 		th:classappend="|${myRequired?'v-field_'+'_required':''}${after_label_slot!=null?' v-field_'+'_has_after_label':''}|"
 		th:aria-required="${myrequired}"
 		th::error="|hasFieldsError('${object}', '${field}')|"
-		th::error-message="|getErrorMessage('${object}', '${field}')|"
+        th::aria-invalid="|hasFieldsError('${object}', '${field}', ${rowIndex})|"
 		orientation="vertical"
 		multiple
 		hide-dropdown-icon
@@ -53,7 +55,7 @@
         th::options="|transformListForSelection('${list}', '${myValueField}', '${myValueField}', ${filterFunction?:null})|"
         th:attr="__${input_attrs}__"
      >
-     <vu:quasar-label-slot label="${myLabel}" after_label_slot="after_label_slot"/>
+     <vu:quasar-label-slot label="${myLabel}" componentId="${myComponentId}" after_label_slot="after_label_slot"/>
      <vu:content-slot name="edit_content_slot"/>
      </q-select>
 	<input th:v-for="|id in vueData.${object}.${field}|" type="hidden" th:name="|vContext[${object}][${field}]|" th:v-bind:value="id" />

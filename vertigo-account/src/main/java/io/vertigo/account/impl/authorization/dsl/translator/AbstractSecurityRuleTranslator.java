@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2025, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,6 +51,7 @@ abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTran
 
 	/**
 	 * Specifies the protected entity we are working on
+	 *
 	 * @param securedEntity the entity
 	 * @return this builder
 	 */
@@ -63,6 +64,7 @@ abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTran
 
 	/**
 	 * Set security pattern.
+	 *
 	 * @param securityMultiExpression security parsed expression
 	 * @return this builder
 	 */
@@ -75,6 +77,7 @@ abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTran
 
 	/**
 	 * Set security pattern.
+	 *
 	 * @param securityRule security Pattern (not null, could be empty)
 	 * @return this builder
 	 */
@@ -96,6 +99,7 @@ abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTran
 
 	/**
 	 * Set criteria.
+	 *
 	 * @param userCriteria Criteria
 	 * @return this builder
 	 */
@@ -156,7 +160,7 @@ abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTran
 	}
 
 	protected final Serializable parseFixedValue(final String fieldName, final String stringValue) {
-		if (mySecuredEntity != null) {
+		if (mySecuredEntity != null && stringValue != null) {
 			final DataField field = mySecuredEntity.getEntity().getField(fieldName);
 			Serializable typedValue;
 			switch (field.smartTypeDefinition().getBasicType()) {

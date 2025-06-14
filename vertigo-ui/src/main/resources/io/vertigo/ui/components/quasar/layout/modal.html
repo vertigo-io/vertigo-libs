@@ -20,7 +20,7 @@
 					        th:attr="__${iframe_attrs}__"
 					        th:style="${autoHeight == true ? 'height:100px; opacity:0':''}"
 					        th:@vue:before-mount="|componentStates.${componentId}.loading=true; componentStates.${componentId}.height='${height?:''}';|"
-					        :onload="'VUiPage.modal_iframeLoad(this)'"
+					        @load="(e) => modal_iframeLoad(e.target)"
 					        th:data-auto-height="${autoHeight}"
 					        th:data-component-id="${componentId}"></iframe>
 				</q-card-section>

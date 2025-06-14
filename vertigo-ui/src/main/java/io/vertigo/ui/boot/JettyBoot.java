@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2025, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -113,7 +113,7 @@ public class JettyBoot {
 			final SslContextFactory.Server sslContextFactory = new SslContextFactory.Server();
 			sslContextFactory.setKeyStore(jks);
 			sslContextFactory.setKeyStoreType("PKCS12");
-			sslContextFactory.setCertAlias(jettyBootParams.getSslKeystoreAlias());
+			sslContextFactory.setCertAlias(jettyBootParams.getSslKeystoreAlias()); //Should manage if multiple alias are present ?
 			sslContextFactory.setKeyStorePassword(keyStorePassword);
 			sslContextFactory.setTrustStore(jks);
 			sslContextFactory.setTrustStoreType("PKCS12");

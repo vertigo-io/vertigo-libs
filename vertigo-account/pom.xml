@@ -10,6 +10,7 @@
 	<artifactId>vertigo-account</artifactId>
 	<packaging>jar</packaging>
 	<name>vertigo-account</name>
+	<version>4.4.0-SNAPSHOT</version>
 	
 	<dependencyManagement>
 		<dependencies>

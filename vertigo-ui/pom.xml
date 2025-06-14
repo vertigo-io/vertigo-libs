@@ -40,7 +40,7 @@
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-webmvc</artifactId>
-				<version>6.2.5</version> <!-- need same version as in vertigo-spring-connector-->
+				<version>6.2.8</version> <!-- need same version as in vertigo-spring-connector-->
 			</dependency>
 			<dependency>
 	        	<groupId>org.thymeleaf</groupId>
@@ -154,13 +154,13 @@
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-support</artifactId>
-			<version>4.30.0</version>
+			<version>4.33.0</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-api</artifactId>
-			<version>4.30.0</version>
+			<version>4.33.0</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -179,7 +179,7 @@
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-firefox-driver</artifactId>
-            <version>4.30.0</version>
+            <version>4.33.0</version>
             <scope>test</scope>
         </dependency>
 		
@@ -230,25 +230,25 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
-			<version>2.18.3</version> <!-- version for spring -->
+			<version>2.19.0</version> <!-- version for spring -->
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.dataformat</groupId>
     		<artifactId>jackson-dataformat-smile</artifactId>
-    		<version>2.18.3</version> <!-- version for spring -->
+    		<version>2.19.0</version> <!-- version for spring -->
     		<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.dataformat</groupId>
     		<artifactId>jackson-dataformat-yaml</artifactId>
-    		<version>2.18.3</version> <!-- version for spring -->
+    		<version>2.19.0</version> <!-- version for spring -->
     		<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.dataformat</groupId>
     		<artifactId>jackson-dataformat-cbor</artifactId>
-    		<version>2.18.3</version> <!-- version for spring -->
+    		<version>2.19.0</version> <!-- version for spring -->
     		<scope>test</scope>
 		</dependency>
 		

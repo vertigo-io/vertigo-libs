@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2025, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -155,13 +155,13 @@ public class AuthzAttributeTagProcessor extends AbstractAttributeTagProcessor
 			if (isNeg) {
 				authzAttribut = authzAttribut.substring(1).trim();
 			}
-			if (attributeValue.contains(".")) { //le $ n'est pas discriminant entre les deux modes
-				final int opeIdx = attributeValue.indexOf('$');
+			if (authzAttribut.contains(".")) { //le $ n'est pas discriminant entre les deux modes
+				final int opeIdx = authzAttribut.indexOf('$');
 				Assertion.check().isTrue(opeIdx > 0, "Authz invalid syntax : missing $ in '{0}'. When check object instance, you must provide operation (xxx.myEntityInstance$operation)",
-						attributeValue);
+						authzAttribut);
 
-				final String modelPart = attributeValue.substring(0, opeIdx);
-				final String opePart = attributeValue.substring(opeIdx + 1);
+				final String modelPart = authzAttribut.substring(0, opeIdx);
+				final String opePart = authzAttribut.substring(opeIdx + 1);
 
 				final IStandardExpressionParser expressionParser = StandardExpressions.getExpressionParser(context.getConfiguration());
 				final IStandardExpression expression = expressionParser.parseExpression(context, "${" + modelPart + "}");

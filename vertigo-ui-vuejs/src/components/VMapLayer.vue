@@ -1,8 +1,8 @@
 <template>
     <div :id="id" >
-        <div :id="id+'Popup'">
-            <slot name="card" v-bind:objectDisplayed="objectDisplayed">
-                <div v-if="popupDisplayed" class="popup" >
+        <div :id="id+'Popup'" >
+            <slot v-if="popupDisplayed" name="card" v-bind:objectDisplayed="objectDisplayed">
+                <div class="popup" >
                     {{objectDisplayed[nameField]}}
                 </div>
             </slot>
@@ -11,6 +11,7 @@
 </template>
 <script>
 import * as ol from "ol"
+import Debounce from "lodash.debounce"
 
 export default {
     props : {
@@ -398,18 +399,24 @@ export default {
             }
                 
             // handle refresh if an endPoint is specified
+            this.onMapMoveEndDebounced = Debounce((topLeft, bottomRight) => {
+                if (this.baseUrl) {
+                   this.fetchList({lat:topLeft[0] , lon:topLeft[1]},{lat:bottomRight[0] , lon:bottomRight[1]})
+                }
+                this.$emit('moveend',topLeft, bottomRight)
+            }, 300);
             this.olMap.on('moveend', function(e) {
                 let mapExtent =  e.map.getView().calculateExtent();
                 let wgs84Extent = ol.proj.transformExtent(mapExtent, 'EPSG:3857', 'EPSG:4326');
                 let topLeft = ol.extent.getTopLeft(wgs84Extent);
                 let bottomRight = ol.extent.getBottomRight(wgs84Extent);
-                if (this.baseUrl) {
-                   VUiPage.debounce(() => this.fetchList({lat:topLeft[0] , lon:topLeft[1]},{lat:bottomRight[0] , lon:bottomRight[1]}),300);
-                }
-                VUiPage.debounce(() => this.$emit('moveend',topLeft, bottomRight) , 300);
+                this.onMapMoveEndDebounced(topLeft, bottomRight);
             }
             .bind(this));        
             
+            this.onMapClickDebounced = Debounce((coordinates) => {
+                this.$emit('click',ol.proj.transform(coordinates, 'EPSG:3857', 'EPSG:4326'))
+            }, 300);
             if (this.$props.nameField) {
                 let popup = new ol.Overlay({
                     element: this.$el.querySelector('#'+this.$props.id+'Popup'),
@@ -432,7 +439,7 @@ export default {
                             this.$data.popupDisplayed = true;
                             this.$data.objectDisplayed = feature.get('features')[0].get('innerObject');
                             evt.stopPropagation();
-                            VUiPage.debounce(() =>this.$emit('click',ol.proj.transform(coordinates, 'EPSG:3857', 'EPSG:4326')) , 300);
+                            this.onMapClickDebounced(coordinates);
                         }
                     } else {
                         this.$data.popupDisplayed = false;
@@ -460,7 +467,7 @@ export default {
                     if (feature && feature.get('features') && feature.get('features').length == 1) {
                         let coordinates = feature.getGeometry().getCoordinates();
                         evt.stopPropagation();
-                        VUiPage.debounce(() =>this.$emit('click',ol.proj.transform(coordinates, 'EPSG:3857', 'EPSG:4326')) , 300);
+                        this.onMapClickDebounced(coordinates);
                     }
                   }
                 }.bind(this));
