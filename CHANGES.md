@@ -6,19 +6,52 @@ Running 5.0.0
 [Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-431-to-500)
 more to come :)
 
+
 Release 4.3.1 - 2025/06/13
 ----------------------
-* [UI][Quasar] Improved Accessibility
-* [UI][DSFR] Improved Accessibility
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-430-to-431)
+
+* [UI][Quasar] Improved Accessibility on lots of components
+* [UI][DSFR] Improved Accessibility on lots of components
 * [UI][DSFR] Fix `dsfr-button` inside a `v-for` loop.
 * [UI][DSFR] better facets style
 * [UI][DSFR] Fix pagination on facet selection
+* [Ui][Wysiwyg] Update Tiptap to 2.12.0
+* [Ui][Quasar] Add Reactive components for select, text-field and text-editor (use `th:with="reactive=true"`)
+* [Ui] Fix same script declared twice in head, merged conditions
+* [Ui] Fix regression on text-field inside table-modifiable
+* [Ui] Add additional_defer_libs_slot to vu:head
+* [Ui] Fix vui-before-plugins event, now can be use to extends Quasar.lang
+* [Ui] fix authz processor (fix multiple comma separator entity operation on object in context)
+* [ui-vuejs] fix xss on facets in select mode
+* [ui-vuejs] add optional filtering on httpPostAjax response (`options.updatedKeys`)
 * [Account][Security] Handle comparison between a field and 'null' value
+* [Account] Plugins can be overrided (no more final)
+* [Account] add convenience method for use in assertOr
 * [Vega] Add missing 'webservices.healthcheck' feature
 * [Vega] Add healthCheck readiness (no subcomponents RED)
+* [Vega][RateLimiting] Add whitelist parameter pattern (range or CIDR)
 * [Vega][Json] Don't set null values to object properties if not present in the json (fail if the attribute is a list)
+* [Vega] Fix ResourceResolver api change
 * [Datastore][S3] InputStream in S3FileStorePlugin no longer shared (may lead to corrupt file on subsequent reads)
 * [Datastore][S3] Add health check
+* [datastore] s3FileStorePlugin purge daemon more resilient
+* [datastore] dbFileStorePlugin supports expiryPolicy
+* [DataStore] Better log is error on delete ByList
+* [Datamodel] support up to 60 characters fieldname
+* [Database] Fix InfluxDb filter data
+* update libs
+  - c3p0  0.10.2 -> 0.11.1
+  - ojdbc11  23.7.0.25.01 -> 23.8.0.25.04
+  - postgresql 42.7.5 -> 42.7.7
+  - liquibase 4.31.1 -> 4.32.0
+  - tika 3.1.0 -> 3.2.0
+  - guava 33.4.6-jre -> 33.4.8-jre
+  - spring-webmvc 6.2.5 -> 6.2.8
+  - selenium 4.30.0 -> 4.33.0
+  - jackson 2.18.3 -> 2.19.0
+  - rest-assured 5.5.1 -> 5.5.5
+
 
 
 Release 4.3.0 - 2025/03/27
