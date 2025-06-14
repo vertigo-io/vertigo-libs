@@ -3,8 +3,22 @@ Version history
 
 Running 5.0.0
 ----------------------
-[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-430-to-500)
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-431-to-500)
 more to come :)
+
+Release 4.3.1 - 2025/06/13
+----------------------
+* [UI][Quasar] Improved Accessibility
+* [UI][DSFR] Improved Accessibility
+* [UI][DSFR] Fix `dsfr-button` inside a `v-for` loop.
+* [UI][DSFR] better facets style
+* [UI][DSFR] Fix pagination on facet selection
+* [Account][Security] Handle comparison between a field and 'null' value
+* [Vega] Add missing 'webservices.healthcheck' feature
+* [Vega] Add healthCheck readiness (no subcomponents RED)
+* [Vega][Json] Don't set null values to object properties if not present in the json (fail if the attribute is a list)
+* [Datastore][S3] InputStream in S3FileStorePlugin no longer shared (may lead to corrupt file on subsequent reads)
+* [Datastore][S3] Add health check
 
 
 Release 4.3.0 - 2025/03/27

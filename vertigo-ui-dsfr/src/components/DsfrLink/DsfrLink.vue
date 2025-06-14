@@ -32,7 +32,6 @@ const dsfrIcon = computed(() => typeof props.icon === 'string' && props.icon.sta
       :id="`link-${id}`"
       ref="source"
       :href="href !== '' && !disabled ? href : undefined"
-      :aria-disabled="disabled"
       :class="{
         [`fr-${type}`]: !inline,
         'fr-btn--secondary': secondary && !tertiary,

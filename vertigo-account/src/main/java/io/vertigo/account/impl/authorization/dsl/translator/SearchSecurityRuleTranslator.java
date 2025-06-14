@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2025, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,8 +32,6 @@ import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.data.definitions.DataField;
 
 /**
- *
- *
  * @author npiedeloup
  */
 public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTranslator<SearchSecurityRuleTranslator> {
@@ -125,9 +123,9 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 		}
 	}
 
-	private static void appendSimpleExpression(final StringBuilder query, final String fieldName, final ValueOperator operator, final Serializable userValue, final boolean strict, final boolean mandatory) {
+	private static void appendSimpleExpression(final StringBuilder query, final String fieldName, final ValueOperator operator, final Serializable userValue, final boolean strict,
+			final boolean mandatory) {
 		if (userValue != null && !StringUtil.isBlank(String.valueOf(userValue))) {
-
 			if (mandatory) {
 				query.append(operator == ValueOperator.NEQ ? '-' : '+');
 			} else if (operator == ValueOperator.NEQ) {
@@ -144,19 +142,18 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 				query.append(')');
 			}
 
+		} else //null value need other syntaxe
+		if (operator == ValueOperator.NEQ) {
+			appendSimpleExpression(query, ES_EXISTS_CRITERIA, ValueOperator.EQ, fieldName, false, mandatory);
+		} else if (operator == ValueOperator.EQ) {
+			appendSimpleExpression(query, ES_EXISTS_CRITERIA, ValueOperator.NEQ, fieldName, false, mandatory);
 		} else {
-			//null value need other syntaxe
-			if (operator == ValueOperator.NEQ) {
-				appendSimpleExpression(query, ES_EXISTS_CRITERIA, ValueOperator.EQ, fieldName, false, mandatory);
-			} else if (operator == ValueOperator.EQ) {
-				appendSimpleExpression(query, ES_EXISTS_CRITERIA, ValueOperator.NEQ, fieldName, false, mandatory);
-			} else {
-				query.append(ES_ALWAYS_FALSE);
-			}
+			query.append(ES_ALWAYS_FALSE);
 		}
 	}
 
-	private static void appendSimpleExpression(final StringBuilder query, final String fieldName, final ValueOperator operator, final List<Serializable> userValues, final boolean strict, final boolean mandatory) {
+	private static void appendSimpleExpression(final StringBuilder query, final String fieldName, final ValueOperator operator, final List<Serializable> userValues, final boolean strict,
+			final boolean mandatory) {
 		final boolean useParenthesisAroundValue = userValues.size() > 1;
 		if (!userValues.isEmpty()) {
 			if (mandatory) {
@@ -249,7 +246,8 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 		}
 	}
 
-	private static <K extends Serializable> void appendTreeExpressionValues(final StringBuilder query, final SecurityDimension securityDimension, final ValueOperator operator, final K[] treeKeys, final boolean mandatory) {
+	private static <K extends Serializable> void appendTreeExpressionValues(final StringBuilder query, final SecurityDimension securityDimension, final ValueOperator operator, final K[] treeKeys,
+			final boolean mandatory) {
 		//on vérifie qu'on a bien toutes les clées.
 		final List<String> strDimensionfields = securityDimension.getFields().stream()
 				.map(DataField::name)

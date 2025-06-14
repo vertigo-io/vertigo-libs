@@ -3,20 +3,20 @@
 	th:assert="${title} != null">
 	<div class="col-12">
 		<div th:class="${'q-card bg-white ' + ((withFab!=null && withFab)?'withFab':'')}" th:attr="__${card_attrs}__">
-			<div class="q-card__section" th:attr="__${header_attrs}__">
-				<q-item>
-					<q-item-section>
-					    <h1 class="text-h6 q-ma-none" vu:text="${title?:''}" th:if="${currentBlockLevel == 1}"></h1>
-						<h2 class="text-h6 q-ma-none" vu:text="${title?:''}" th:if="${currentBlockLevel == 2}"></h2>
-						<h3 class="text-h6 q-ma-none" vu:text="${title?:''}" th:if="${currentBlockLevel == 3}"></h3>
-						<h4 class="text-h6 q-ma-none" vu:text="${title?:''}" th:if="${currentBlockLevel == 4}"></h4>
-						<h5 class="text-h6 q-ma-none" vu:text="${title?:''}" th:if="${currentBlockLevel == 5}"></h5>
-						<h6 class="text-h6 q-ma-none" vu:text="${title?:''}" th:if="${currentBlockLevel == 6}"></h6>
-						<div class="text-h6 q-ma-none" vu:text="${title?:''}" th:if="${dontUseHeading == true}" />
-						<div class="text-subtitle2" vu:text="${subtitle?:''}" />
-					</q-item-section>
-					<q-item-section side vu:slot="actions_slot" th:if="${actions_slot != null || icon != null}"><q-icon th:if="${icon != null}" th:name="${icon}"></q-icon></q-item-section>
-				</q-item>
+			<div class="q-card__section q-py-sm q-px-md row no-wrap" th:attr="__${header_attrs}__">
+				<div class="col-grow column justify-center">
+				    <h1 class="text-h6 q-ma-none" vu:text="${title?:''}" th:if="${currentBlockLevel == 1}"></h1>
+					<h2 class="text-h6 q-ma-none" vu:text="${title?:''}" th:if="${currentBlockLevel == 2}"></h2>
+					<h3 class="text-h6 q-ma-none" vu:text="${title?:''}" th:if="${currentBlockLevel == 3}"></h3>
+					<h4 class="text-h6 q-ma-none" vu:text="${title?:''}" th:if="${currentBlockLevel == 4}"></h4>
+					<h5 class="text-h6 q-ma-none" vu:text="${title?:''}" th:if="${currentBlockLevel == 5}"></h5>
+					<h6 class="text-h6 q-ma-none" vu:text="${title?:''}" th:if="${currentBlockLevel == 6}"></h6>
+					<div class="text-h6 q-ma-none" vu:text="${title?:''}" th:if="${dontUseHeading == true}" />
+					<div class="text-subtitle2" vu:text="${subtitle?:''}" th:if="${subtitle != null}" />
+				</div>
+				<div vu:slot="actions_slot" th:if="${actions_slot != null || icon != null}" class="column justify-center q-pl-md flex-end">
+					<q-icon th:if="${icon != null}" th:name="${icon}"></q-icon>
+				</div>
 			</div>
 			<div class="q-separator q-separator--horizontal"></div>
 			<div th:v-if="${loading == null ? null: '!('+ myLoading +')'}" class="q-card__section q-pa-md" th:attr="__${content_attrs}__">

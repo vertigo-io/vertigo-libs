@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2025, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ package io.vertigo.vega.plugins.webservice.servlet;
 import java.lang.ref.WeakReference;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Optional;
 
 import io.vertigo.core.impl.resource.ResourceResolverPlugin;
 import io.vertigo.core.lang.Assertion;
@@ -31,6 +30,7 @@ import jakarta.servlet.ServletContext;
  * @author prahmoune
  */
 public final class ServletResourceResolverPlugin implements ResourceResolverPlugin {
+
 	private static WeakReference<ServletContext> servletContextRef;
 	private final ServletContext servletContext;
 
@@ -54,14 +54,14 @@ public final class ServletResourceResolverPlugin implements ResourceResolverPlug
 
 	/** {@inheritDoc} */
 	@Override
-	public Optional<URL> resolve(final String resource) {
+	public URL resolve(final String resource) {
 		Assertion.check().isNotNull(resource);
 		//-----
 		// 2. On recherche dans le context de la webapp
 		try {
-			return Optional.ofNullable(servletContext.getResource(resource));
+			return servletContext.getResource(resource);
 		} catch (final MalformedURLException e) {
-			return Optional.empty();
+			return null;
 		}
 	}
 }

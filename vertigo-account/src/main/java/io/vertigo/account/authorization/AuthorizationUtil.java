@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2025, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -92,6 +92,11 @@ public final class AuthorizationUtil {
 	public static BooleanSupplier hasAuthorization(final AuthorizationName... authorizationName) {
 		final AuthorizationManager authorizationManager = Node.getNode().getComponentSpace().resolve(AuthorizationManager.class);
 		return () -> authorizationManager.hasAuthorization(authorizationName);
+	}
+	
+	public static <E extends Entity> BooleanSupplier isAuthorized(final E entity, final OperationName<E> operation) {
+		final AuthorizationManager authorizationManager = Node.getNode().getComponentSpace().resolve(AuthorizationManager.class);
+		return () -> authorizationManager.isAuthorized(entity, operation);
 	}
 
 	public static <E extends Entity> AuthorizationCriteria<E> authorizationCriteria(final Class<E> clazz, final OperationName<E> operation) {

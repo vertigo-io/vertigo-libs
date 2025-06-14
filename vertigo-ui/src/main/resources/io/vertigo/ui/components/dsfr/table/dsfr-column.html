@@ -11,7 +11,7 @@
 				   myDisplayField=${field != null ? model.util.resolveDisplayField(list, field) : null},
 				   mySuffix=${model.util.smartTypeUnit(list, field, null)}">
 
-    <th:block th:with="objectKey=${model.vContext['componentStates']['__${componentId}__'].addObjectToList('columns', {'key': columnName, 'field': field, 'label': columnLabel, 'align': columnAlign, 'hideLabel': myHideLabel, 'sortable': (modifiableTable!=null?false:columnSortable)})}"/>
+    <th:block th:with="objectKey=${model.vContext['componentStates']['__${componentId}__'].addObjectToList('columns', {'key': columnName, 'field': field, 'name': columnName, 'label': columnLabel, 'align': columnAlign, 'hideLabel': myHideLabel, 'sortable': (modifiableTable!=null?false:columnSortable)})}"/>
 	<vu:include-data th:if="${myDisplayField != null}" object="${list}" field="${myDisplayField}"/>
 	<vu:include-data th:if="${mySortField != null && mySortField != myDisplayField}" object="${list}" field="${mySortField}"/>
     <template th:v-if="|colKey === '${columnName}'|">

@@ -1,4 +1,4 @@
-<th:block th:fragment="head(title, vueJsVersion, axiosVersion, vuejsDevMode, vuiDevMode, vuiSsr, vertigoUiVersion, useQuasar, quasarVersion, robotoVersion, fontAwesomeVersion, useDsfr, useWysiwyg)" >
+<th:block th:fragment="head(title, vueJsVersion, axiosVersion, vuejsDevMode, vuiDevMode, vuiSsr, vertigoUiVersion, useQuasar, quasarVersion, robotoVersion, fontAwesomeVersion, useDsfr, useWysiwyg, additional_defer_libs_slot)" >
 		<meta charset="utf8">
 		<vu:head-meta
 		    vueJsVersion="${vueJsVersion}"
@@ -12,17 +12,18 @@
 		    robotoVersion="${robotoVersion}"
 		    fontAwesomeVersion="${fontAwesomeVersion}"
 		    useDsfr="${useDsfr}"
-		    useWysiwyg="${useWysiwyg}"/>
+		    useWysiwyg="${useWysiwyg}"
+		    additional_defer_libs_slot="${additional_defer_libs_slot}"/>
 		<vu:content/>
 		<title vu:text="${title}"></title>
 	</head>
 </th:block>
 
-<th:block th:fragment="head-meta(vueJsVersion, axiosVersion, vuejsDevMode, vuiDevMode, vuiSsr, vertigoUiVersion, useQuasar, quasarVersion, onlyDsfrStyle, robotoVersion, fontAwesomeVersion, useDsfr, useWysiwyg)"
+<th:block th:fragment="head-meta(vueJsVersion, axiosVersion, vuejsDevMode, vuiDevMode, vuiSsr, vertigoUiVersion, useQuasar, quasarVersion, onlyDsfrStyle, robotoVersion, fontAwesomeVersion, useDsfr, useWysiwyg, additional_defer_libs_slot)"
         th:with="isVuiDevMode=${vuiDevMode != null ? vuiDevMode : false}, 
                  isVuejsDevMode=${vuejsDevMode != null ? vuejsDevMode : false},
                  isVuiSsr=${vuiSsr != null ? vuiSsr : false},
-                 myVueJsVersion=${vueJsVersion?:'3.5.13'}, myVertigoUiVersion=${vertigoUiVersion?:'4.2.0'},
+                 myVueJsVersion=${vueJsVersion?:'3.5.13'}, myVertigoUiVersion=${vertigoUiVersion?:'4.3.0'},
                  myAxiosVersion=${axiosVersion?:'1.8.4'},
                  myUseQuasar=${useQuasar ?: true}, myQuasarVersion=${quasarVersion?:'2.18.1'}, myOnlyDsfrStyle=${onlyDsfrStyle?:false},
                  myRobotoVersion=${robotoVersion?:'47'},
@@ -48,7 +49,7 @@
 
 	<!--/* Wysiwyg (with tiptap editor) */-->
 	<th:block th:if="${useWysiwyg}">
-		<link th:href="@{/vertigo-ui/static/js/wysiwyg/style.css}" rel="stylesheet" type="text/css"/>
+		<link th:href="@{/vertigo-ui/static/js/wysiwyg/vertigo-wysiwyg.css}" rel="stylesheet" type="text/css"/>
 		<script th:src="@{/vertigo-ui/static/js/wysiwyg/vertigo-wysiwyg.umd.js}"></script>
 	</th:block>
 
@@ -72,11 +73,12 @@
 	    <script th:if="${isVuejsDevMode}" defer th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/quasar@__${myQuasarVersion}__/dist/quasar.umd.js}"></script>
 	    <script defer th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/quasar@__${myQuasarVersion}__/dist/lang/__${model.util.getCurrentLocalePrefixForQuasar()}__.umd.prod.js}"></script>
 	</th:block>
+	
+	<vu:content-slot name="additional_defer_libs_slot"/>
     
     <!--/* Vertigo UI UMD */-->
 	<link th:href="@{/vertigo-ui/static/css/vertigo-ui.css?v=__${myVertigoUiVersion}__}" rel="stylesheet" type="text/css"/>
-    <script th:if="${!isVuiDevMode && !isVuejsDevMode}" defer th:src="@{/vertigo-ui/static/js/vertigo-ui.umd.js?v=__${myVertigoUiVersion}__}"></script>
-    <script th:if="${!isVuiDevMode && isVuejsDevMode}" defer th:src="@{/vertigo-ui/static/js/vertigo-ui.umd.js?v=__${myVertigoUiVersion}__}"></script>
+    <script th:if="${!isVuiDevMode}" defer th:src="@{/vertigo-ui/static/js/vertigo-ui.umd.js?v=__${myVertigoUiVersion}__}"></script>
     
 	<script th:if="${isVuiDevMode}" defer type="module" src="http://localhost:3000/@vite/client"></script>
 	<script th:if="${isVuiDevMode}" defer type="module" src="http://localhost:3000/src/main.js"></script>

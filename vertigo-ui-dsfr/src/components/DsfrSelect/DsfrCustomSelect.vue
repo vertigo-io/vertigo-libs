@@ -101,6 +101,7 @@ const convertString = function (e) {
     >
       <option
           :selected="!options.some(option => typeof option !== 'object' || option === null ? option === modelValue : option.value === modelValue)"
+          value=""
           disabled
           hidden
       >

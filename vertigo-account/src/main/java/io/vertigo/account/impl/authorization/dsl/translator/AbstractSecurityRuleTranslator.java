@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2025, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,6 +37,7 @@ import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.data.definitions.DataField;
 
 abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTranslator<S>> {
+
 	private static final Pattern BEGIN_LINE_TRIM_PATTERN = Pattern.compile("^\\s+");
 	private static final Pattern END_LINE_TRIM_PATTERN = Pattern.compile("\\s+$");
 	private static final Pattern MULTIPLE_WHITESPACE_PATTERN = Pattern.compile("\\s+");
@@ -50,18 +51,20 @@ abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTran
 
 	/**
 	 * Specifies the protected entity we are working on
+	 *
 	 * @param securedEntity the entity
 	 * @return this builder
 	 */
 	public S on(final SecuredEntity securedEntity) {
 		Assertion.check().isNotNull(securedEntity);
 		//-----
-		this.mySecuredEntity = securedEntity;
+		mySecuredEntity = securedEntity;
 		return (S) this;
 	}
 
 	/**
 	 * Set security pattern.
+	 *
 	 * @param securityMultiExpression security parsed expression
 	 * @return this builder
 	 */
@@ -74,6 +77,7 @@ abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTran
 
 	/**
 	 * Set security pattern.
+	 *
 	 * @param securityRule security Pattern (not null, could be empty)
 	 * @return this builder
 	 */
@@ -95,6 +99,7 @@ abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTran
 
 	/**
 	 * Set criteria.
+	 *
 	 * @param userCriteria Criteria
 	 * @return this builder
 	 */
@@ -155,7 +160,7 @@ abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTran
 	}
 
 	protected final Serializable parseFixedValue(final String fieldName, final String stringValue) {
-		if (mySecuredEntity != null) {
+		if (mySecuredEntity != null && stringValue != null) {
 			final DataField field = mySecuredEntity.getEntity().getField(fieldName);
 			Serializable typedValue;
 			switch (field.smartTypeDefinition().getBasicType()) {
@@ -163,7 +168,8 @@ abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTran
 					typedValue = new BigDecimal(stringValue);
 					break;
 				case Boolean:
-					Assertion.check().isTrue("true".equalsIgnoreCase(stringValue) || "false".equalsIgnoreCase(stringValue), "Fixed boolean value rule only support true or false value ({0})", stringValue);
+					Assertion.check().isTrue("true".equalsIgnoreCase(stringValue) || "false".equalsIgnoreCase(stringValue), "Fixed boolean value rule only support true or false value ({0})",
+							stringValue);
 					typedValue = Boolean.valueOf(stringValue);
 					break;
 				case Double:

@@ -32,11 +32,11 @@
 
 <th:block th:fragment="dsfr-header-nav-item(label, url, active)">
     <th:block th:unless="${menu}">
-        <th:block th:attr="o=${model.vContext['componentStates']['dsfrHeader'].addObjectToList('navItems', {'text': label, 'to': url, 'setActive': active})}"/>
+        <th:block th:attr="o=${model.vContext['componentStates']['dsfrHeader'].addObjectToList('navItems', {'text': label, 'to': url, 'data-set-active': active})}"/>
     </th:block>
     <th:block th:if="${menu}">
         <th:block
-                th:attr="o=${model.vContext['componentStates']['dsfrHeader'].getLastObjectFromList('navItems').addObjectToList('links', {'text': label, 'to': url, 'setActive': active})}"/>
+                th:attr="o=${model.vContext['componentStates']['dsfrHeader'].getLastObjectFromList('navItems').addObjectToList('links', {'text': label, 'to': url, 'data-set-active': active})}"/>
     </th:block>
 </th:block>
 

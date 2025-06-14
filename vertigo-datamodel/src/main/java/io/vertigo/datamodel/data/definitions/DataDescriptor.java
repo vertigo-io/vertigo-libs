@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2025, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ public abstract class DataDescriptor {
 	private final SmartTypeDefinition smartTypeDefinition;
 	private final Cardinality cardinality;
 
-	private static final int NAME_MAX_LENGTH = 30;
+	private static final int NAME_MAX_LENGTH = 60;
 
 	protected DataDescriptor(
 			final String name,
@@ -87,7 +87,7 @@ public abstract class DataDescriptor {
 	 * @param value the value
 	 */
 	public final void checkType(final Object value) {
-		final SmartTypeManager smartTypeManager = Node.getNode().getComponentSpace().resolve(SmartTypeManager.class);
+		final var smartTypeManager = Node.getNode().getComponentSpace().resolve(SmartTypeManager.class);
 		smartTypeManager.checkType(smartTypeDefinition(), cardinality(), value);
 	}
 
@@ -98,7 +98,7 @@ public abstract class DataDescriptor {
 	 * @throws ConstraintException
 	 */
 	public final void validate(final Object value) throws ConstraintException {
-		final SmartTypeManager smartTypeManager = Node.getNode().getComponentSpace().resolve(SmartTypeManager.class);
+		final var smartTypeManager = Node.getNode().getComponentSpace().resolve(SmartTypeManager.class);
 		smartTypeManager.validate(smartTypeDefinition(), cardinality(), value);
 	}
 }

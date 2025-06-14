@@ -21,11 +21,22 @@
 	      
 	<input type="hidden" th::name="${model.util.contextKey(object, field, rowIndex)}" th::value="${model.util.vueDataKey(object, field, rowIndex)}"  />
 </th:block>
-<th:block th:fragment="text-editor-read(object, field, showErrors, edit_content_slot, input_attrs)" 
-	vu:alias="text-editor" vu:selector="${viewMode=='read'}"
+<th:block th:fragment="text-editor-read(object, field, rowIndex, showErrors, edit_content_slot, input_attrs)" 
+	vu:alias="text-editor" vu:selector="${viewMode=='read' && reactive!=true}"
 	th:assert="${object} != null and ${field} != null" >
 	
 	<div class="texte-riche" >
 		<div v-pre th:utext="${__${model.util.contextGet(object, field, rowIndex)}__}" th:attr="__${input_attrs}__"></div>
+	</div>
+</th:block>
+
+<th:block th:fragment="text-editor-read-reactive(object, field, rowIndex, showErrors, edit_content_slot, input_attrs)" 
+	vu:alias="text-editor" vu:selector="${viewMode=='read' && reactive==true}"
+	th:assert="${object} != null and ${field} != null" >
+	
+	<vu:include-data object="${object}" field="${field}"/>
+	
+	<div class="texte-riche" >
+		<span th:v-html="${model.util.vueDataKey(object, field, rowIndex)}"></span>
 	</div>
 </th:block>

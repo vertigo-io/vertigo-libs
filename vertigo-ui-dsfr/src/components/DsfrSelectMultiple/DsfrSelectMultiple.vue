@@ -24,6 +24,7 @@ const {
 const props = withDefaults(defineProps<DsfrSelectMultipleProps>(), {
   id: () => useRandomId("select-multiple"),
   options: () => [],
+  modelValue: () => [],
   label: '',
   name: undefined,
   description: undefined,
@@ -36,7 +37,6 @@ const props = withDefaults(defineProps<DsfrSelectMultipleProps>(), {
 })
 
 const expanded = ref(false)
-const modelValue = defineModel({default: []})
 const localOptions = ref(props.options)
 
 watch(expanded, (newValue, oldValue) => {
@@ -58,6 +58,9 @@ const container = ref(null)
 const button = ref(null)
 const filter = ref(null)
 const filterValue = ref('')
+
+// Emits
+const emit = defineEmits(['update:model-value', 'blur']);
 
 // Computed
 
@@ -101,6 +104,7 @@ let selectAll = function () {
     const unduplicatedOptions = localOptions.value.filter(o => !props.modelValue.includes(o.value));
     unduplicatedOptions.forEach((opt) => props.modelValue.push(opt.value));
   }
+  emit('update:model-value', props.modelValue);
 }
 
 let filterFn = function (event) {
@@ -193,6 +197,7 @@ const focusItemUp = (event) => focusNextItem("up");
 
 const handleTab = (e) => {
   if (!expanded.value) {
+    emit('blur');
     return
   }
 
@@ -251,19 +256,22 @@ let setFocusByFirstCharacter = (event) => {
 let handleFocusOut = (event) => {
   if (!container.value.contains(event.target)) {
     expanded.value = false;
+    emit('blur');
   }
 }
 
 let toggleOption = (event, value) => {
-  if (modelValue.value.includes(value)) {
-    modelValue.value.splice(modelValue.value.indexOf(value), 1);
+  if (props.modelValue.includes(value)) {
+    props.modelValue.splice(props.modelValue.indexOf(value), 1);
   } else {
-    modelValue.value.push(value);
+    props.modelValue.push(value);
     if (localOptions.value.length === 1) {
       filterValue.value = "";
       localOptions.value = props.options;
     }
   }
+
+  emit('update:model-value', props.modelValue);
 }
 
 </script>
@@ -276,9 +284,8 @@ let toggleOption = (event, value) => {
       :class="{ [`fr-select-group--${messageType}`]: message !== ''}"
       v-bind="$attrs"
   >
-    <label
-        class="fr-label"
-        :for="id"
+    <p
+        class="fr-label fr-mb-0"
         :id="`${id}_label`"
     >
       <slot name="label">
@@ -294,7 +301,7 @@ let toggleOption = (event, value) => {
       <span
           v-if="description"
           class="fr-hint-text">{{ description }}</span>
-    </label>
+    </p>
 
     <div
         :id="id"
@@ -302,12 +309,12 @@ let toggleOption = (event, value) => {
         class="fr-input fr-select--menu flex"
         @click="expanded = !expanded"
         @keydown="handleDivKeypress"
-        :value="selectionDisplay"
         tabindex="0"
         aria-autocomplete="none"
         role="combobox"
         :aria-expanded="expanded"
         aria-haspopup="dialog"
+        :aria-describedby="`${id}_label`"
         :aria-controls="`${id}_dialog`"
         :aria-disabled="disabled"
         :aria-required="required"
@@ -367,9 +374,9 @@ let toggleOption = (event, value) => {
             role="option"
             @keydown.space.prevent="(e) => toggleOption(e, option.value)"
             @click="(e) => toggleOption(e, option.value)"
-            :aria-selected="modelValue.includes(option.value)">
+            :aria-selected="props.modelValue.includes(option.value)">
           <input :data-id="option.value" type="hidden" class="" tabindex="-1"
-                 :value="option.value" v-model="modelValue">
+                 :value="option.value" v-model="props.modelValue">
           <span>
             {{ option.text }}
           </span>

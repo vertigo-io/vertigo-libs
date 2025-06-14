@@ -8,14 +8,15 @@
 	<vu:include-data object="${list}" field="${myValueField}"/>
 	<vu:include-data object="${list}" field="${myLabelField}"/>
 	<vu:label-edit object="${object}" field="${field}" label="${label}" required="${myRequired}"
-				   after_label_slot="after_label_slot" label_attrs="${label_attrs}">
+				   after_label_slot="after_label_slot" label_attrs="${label_attrs}"
+				   role="group">
 		<q-option-group
 			th:name="|vContext[${object}][${field}]|"
 			th::inline="${inline}"
 		    type="checkbox"
 		   	th:v-model="|vueData.${object}.${field}|" 
 			th::options="|transformListForSelection('${list}', '${myValueField}', '${myLabelField}', ${filterFunction?:null})|"
-			dense
+			dense role=""
 			th:attr="__${input_attrs}__"
 		 >
 		 <vu:content-slot name="edit_content_slot"/>

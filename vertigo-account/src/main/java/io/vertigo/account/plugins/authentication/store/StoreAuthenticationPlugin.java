@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2025, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,8 +48,8 @@ public class StoreAuthenticationPlugin implements AuthenticationPlugin, Activeab
 	private final String userLoginField;
 	private final String userPasswordField;
 	private final String userTokenIdField;
-	private DataDefinition userCredentialDefinition;
-	private UsernamePasswordAuthenticationToken defaultUserTrustedCredential;
+	protected DataDefinition userCredentialDefinition;
+	protected UsernamePasswordAuthenticationToken defaultUserTrustedCredential;
 
 	/**
 	 * Constructor.
@@ -102,13 +102,10 @@ public class StoreAuthenticationPlugin implements AuthenticationPlugin, Activeab
 				final String trustedEncodedPassword = (String) userCredentialDefinition.getField(userPasswordField).getDataAccessor().getValue(results.get(0));
 				trustedAuthenticationToken = new UsernamePasswordAuthenticationToken(token.getPrincipal(), trustedEncodedPassword);
 			}
+		} else if (results.isEmpty()) {
+			trustedAuthenticationToken = defaultUserTrustedCredential;
 		} else {
-			if (results.isEmpty()) {
-				trustedAuthenticationToken = defaultUserTrustedCredential;
-			} else {
-				trustedAuthenticationToken = new UsernameAuthenticationToken(token.getPrincipal());
-			}
-
+			trustedAuthenticationToken = new UsernameAuthenticationToken(token.getPrincipal());
 		}
 		//may ensure, that valid or invalid login took the same time, so we don't assert no result here
 		if (token.match(trustedAuthenticationToken) //tokens match
