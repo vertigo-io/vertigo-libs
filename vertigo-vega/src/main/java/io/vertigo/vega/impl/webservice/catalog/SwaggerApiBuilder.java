@@ -211,7 +211,8 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 		if (!webServiceDefinition.getWebServiceParams().isEmpty()) {
 			responses.put("422", createResponseObject("Unprocessable entity : validations or business error", UiMessageStack.class, Collections.emptySet(), Collections.emptySet(), headers));
 		}
-		responses.put("429", createResponseObject("Too many request : anti spam security (must wait for next time window)", ErrorMessage.class, Collections.emptySet(), Collections.emptySet(), headers));
+		responses.put("429",
+				createResponseObject("Too many request : anti spam security (must wait for next time window)", ErrorMessage.class, Collections.emptySet(), Collections.emptySet(), headers));
 		responses.put("500", createResponseObject("Internal server error", ErrorMessage.class, Collections.emptySet(), Collections.emptySet(), headers));
 		return responses;
 	}
@@ -229,6 +230,7 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 	 * @author npiedeloup
 	 */
 	static final class ErrorMessage {
+
 		private final List<String> globalErrors = Collections.emptyList();
 
 		/**
@@ -239,7 +241,8 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 		}
 	}
 
-	private Map<String, Object> createResponseObject(final String description, final Type returnType, final Set<String> includedFields, final Set<String> excludedFields, final Map<String, Object> headers) {
+	private Map<String, Object> createResponseObject(final String description, final Type returnType, final Set<String> includedFields, final Set<String> excludedFields,
+			final Map<String, Object> headers) {
 		final Map<String, Object> response = new LinkedHashMap<>();
 		response.put(DESCRIPTION, description);
 		putIfNotEmpty(response, SCHEMA, createOptionalSchemaObject(returnType, includedFields, excludedFields).orElse(null)); //return type could be void
@@ -345,7 +348,11 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 		if (includedFields.isEmpty() && excludedFields.isEmpty()) {
 			return false;
 		}
-		if (!includedFields.isEmpty()) {
+		//on ne garde les includedFields qui n'ont pas de .
+		final var currentIncludedFields = includedFields.stream()
+				.filter(field -> !field.contains("."))
+				.collect(Collectors.toSet());
+		if (!currentIncludedFields.isEmpty()) {
 			return !includedFields.contains(fieldName);
 		}
 		return excludedFields.contains(fieldName);
@@ -367,6 +374,9 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 		for (final Field field : objectClass.getDeclaredFields()) {
 			if ((field.getModifiers() & (Modifier.STATIC | Modifier.TRANSIENT | 0x1000)) == 0) { //0x1000 is for synthetic field (excludes)
 				final String fieldName = field.getName();
+				if (isExcludedField(fieldName, includedFields, excludedFields)) {
+					continue;
+				}
 				final Map<String, Object> fieldSchema = obtainFieldSchema(field, parameterClass, subFilter(fieldName, includedFields), subFilter(fieldName, excludedFields), requireds);
 				properties.put(field.getName(), fieldSchema);
 			}
@@ -613,6 +623,7 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 	}
 
 	private static final class CustomParameterizedType implements ParameterizedType {
+
 		private final Type fieldType;
 		private final Type[] typeArguments;
 
