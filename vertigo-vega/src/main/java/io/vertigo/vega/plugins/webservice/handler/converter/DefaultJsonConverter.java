@@ -53,7 +53,7 @@ public final class DefaultJsonConverter implements JsonConverter {
 		return !VFile.class.isAssignableFrom(paramClass);
 	}
 
-	/** {@inheritDoc}*/
+	/** {@inheritDoc} */
 	@Override
 	public void populateWebServiceCallContext(final Object input, final WebServiceParam webServiceParam, final WebServiceCallContext routeContext) {
 		Assertion.check()
@@ -65,7 +65,7 @@ public final class DefaultJsonConverter implements JsonConverter {
 		final Class<?> paramClass = webServiceParam.getType();
 		final Object value;
 		if (input instanceof String) {
-			value = jsonReaderEngine.fromJson((String) input, webServiceParam.getGenericType());
+			value = jsonReaderEngine.fromJson((String) input, webServiceParam.getGenericType(), webServiceParam.getIncludedFields(), webServiceParam.getExcludedFields());
 		} else if (input instanceof UiContext) {
 			value = ((UiContext) input).get(webServiceParam.getName());
 		} else {
