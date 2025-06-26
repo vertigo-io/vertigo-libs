@@ -54,6 +54,7 @@ import io.vertigo.vega.webservice.data.ws.ContactsSecuredWebServices;
 import io.vertigo.vega.webservice.data.ws.ContactsWebServices;
 import io.vertigo.vega.webservice.data.ws.FileDownloadWebServices;
 import io.vertigo.vega.webservice.data.ws.LoginSecuredWebServices;
+import io.vertigo.vega.webservice.data.ws.PojoTestWebServices;
 import io.vertigo.vega.webservice.data.ws.SearchTestWebServices;
 import io.vertigo.vega.webservice.data.ws.SimplerTestWebServices;
 import io.vertigo.vega.webservice.data.ws.SmartTypesTestWebServices;
@@ -61,6 +62,7 @@ import io.vertigo.vega.webservice.data.ws.ValidationsTestWebServices;
 import io.vertigo.vega.webservice.data.ws.client.SimplerClientTestWebServices;
 
 public final class MyNodeConfig {
+
 	public static final int WS_PORT = 8088;
 
 	public static final class DtDefinitions implements Iterable<Class<?>> {
@@ -100,6 +102,7 @@ public final class MyNodeConfig {
 				.addComponent(CommonWebServices.class)
 				.addComponent(ContactsWebServices.class)
 				.addComponent(ContactsSecuredWebServices.class)
+				.addComponent(PojoTestWebServices.class)
 				.addComponent(LoginSecuredWebServices.class)
 				.addComponent(ApiKeyWebServices.class)
 				.addComponent(SimplerTestWebServices.class)
