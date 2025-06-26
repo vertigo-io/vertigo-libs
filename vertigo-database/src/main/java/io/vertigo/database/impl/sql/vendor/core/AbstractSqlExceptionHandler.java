@@ -41,6 +41,7 @@ import io.vertigo.database.sql.vendor.SqlExceptionHandler;
  * @author npiedeloup, evernat
  */
 public abstract class AbstractSqlExceptionHandler implements SqlExceptionHandler {
+
 	private static final int ERROR_CODE_LENGTH = 6;
 	private static final Logger LOGGER = LogManager.getLogger(AbstractSqlExceptionHandler.class);
 
@@ -104,6 +105,7 @@ public abstract class AbstractSqlExceptionHandler implements SqlExceptionHandler
 		final LocaleMessageText userContraintMessageText = LocaleMessageText.ofDefaultMsg(defaultConstraintMsg, constraintKey);
 		final VUserException constraintException = new VUserException(userContraintMessageText);
 		constraintException.initCause(sqle);
+		LOGGER.info("Constraint violation : '{}', translated to VUserException '{}'", constraintName, userContraintMessageText.getDisplay());
 		return constraintException;
 	}
 
@@ -131,6 +133,7 @@ public abstract class AbstractSqlExceptionHandler implements SqlExceptionHandler
 	}
 
 	private static final class SQLConstraintMessageKey implements LocaleMessageKey {
+
 		private final String constraintName;
 		private static final long serialVersionUID = -3457399434625437700L;
 
