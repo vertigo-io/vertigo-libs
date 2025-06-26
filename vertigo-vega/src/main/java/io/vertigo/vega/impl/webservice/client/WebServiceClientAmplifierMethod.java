@@ -160,11 +160,11 @@ public final class WebServiceClientAmplifierMethod implements AmplifierMethod {
 	}
 
 	private Map convertErrorFromJson(final String json, final Type type) {
-		return jsonReaderEngine.fromJson(json, type);
+		return jsonReaderEngine.fromJson(json, type, Collections.emptySet(), Collections.emptySet());
 	}
 
 	private Object convertResultFromJson(final String json, final Type returnType) {
-		return jsonReaderEngine.fromJson(json, returnType);
+		return jsonReaderEngine.fromJson(json, returnType, Collections.emptySet(), Collections.emptySet());
 	}
 
 	private WebServiceProxyAnnotation obtainWebServiceProxyAnnotation(final Method method) {

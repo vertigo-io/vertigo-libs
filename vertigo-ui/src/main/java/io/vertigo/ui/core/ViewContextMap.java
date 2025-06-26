@@ -56,6 +56,7 @@ import io.vertigo.vega.webservice.validation.ValidationUserException;
  * @author npiedeloup
  */
 public final class ViewContextMap extends HashMap<String, Serializable> {
+
 	private static final long serialVersionUID = 2850788652438173312L;
 
 	/** Clée de l'id de context dans le context. */
@@ -97,13 +98,13 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 		final Type typeOfKey = typesByKey.get(key);
 		if (typeOfKey != null) {
 			if (o instanceof String) {
-				o = jsonEngine.fromJson((String) o, typeOfKey);
+				o = jsonEngine.fromJson((String) o, typeOfKey, Collections.emptySet(), Collections.emptySet());
 			} else if (o instanceof String[]) {
 				final String concat = Arrays.stream((String[]) o)
 						.filter(v -> !v.isEmpty()) //empty html input means : no value; there are use to send removed value
 						.map(v -> "\"" + v + "\"")
 						.collect(Collectors.joining(",", "[", "]"));
-				o = jsonEngine.fromJson(concat, typeOfKey);
+				o = jsonEngine.fromJson(concat, typeOfKey, Collections.emptySet(), Collections.emptySet());
 			}
 		}
 		return o;
