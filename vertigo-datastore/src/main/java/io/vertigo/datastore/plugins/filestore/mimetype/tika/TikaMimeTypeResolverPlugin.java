@@ -60,7 +60,7 @@ public class TikaMimeTypeResolverPlugin implements MimeTypeResolverPlugin {
 					.getBaseType()
 					.toString();
 			if (!mimeTypeFileName.equals(realMimeType)) {
-				throw new VSystemException("Incoherent mimeType.");
+				throw new VSystemException("Incoherent mimeType. '{0}' detected by fileName, '{1}' detected by content.", mimeTypeFileName, realMimeType);
 			}
 			return Optional.of(realMimeType);
 		} catch (final IOException e) {
