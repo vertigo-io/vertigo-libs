@@ -4,6 +4,8 @@ Version history
 Running 5.0.0
 ----------------------
 [Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-431-to-500)
+* [UI][DSFR] Add `noneDisplayed` option to `vu:dsfr-select` component
+
 more to come :)
 
 Release 4.3.1 - 2025/06/13
