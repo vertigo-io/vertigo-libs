@@ -53,6 +53,7 @@ public class ListVAccessor<E extends Entity> implements Serializable {
 	private final String roleName;
 	private DtList<E> value;
 	private final DefinitionId<DataDefinition> targetDefinitionReference;
+	DefinitionId<DataDefinition> dataDefinitionReference;
 
 	/**
 	 * Constructor.
@@ -68,22 +69,23 @@ public class ListVAccessor<E extends Entity> implements Serializable {
 		this.entity = entity;
 		this.roleName = roleName;
 		//---
-		final AssociationDefinition associationDefinition = Node.getNode().getDefinitionSpace().resolve(associationDefinitionName, AssociationDefinition.class);
+		final var associationDefinition = Node.getNode().getDefinitionSpace().resolve(associationDefinitionName, AssociationDefinition.class);
 		this.associationDefinitionReference = associationDefinition.id();
-		final DataDefinition targetDefinition = Stream.of(associationDefinition.getAssociationNodeA(), associationDefinition.getAssociationNodeB())
+		final var targetDefinition = Stream.of(associationDefinition.getAssociationNodeA(), associationDefinition.getAssociationNodeB())
 				.filter(associationNode -> roleName.equals(associationNode.getRole()))
 				.findFirst()
 				.orElseThrow(() -> new VSystemException("Unable to find association node with role '{1}' on association '{0}'", associationDefinitionName, roleName))
 				.getDataDefinition();
 		//---
 		targetDefinitionReference = targetDefinition.id();
+		dataDefinitionReference = associationDefinition.getAssociationNodeA().getRole().equals(roleName) ? associationDefinition.getAssociationNodeB().getDataDefinition().id() : associationDefinition.getAssociationNodeA().getDataDefinition().id();
 	}
 
 	/**
 	 * @return the entity uri
 	 */
 	public final <A extends DtListURIForAssociation> A getDtListURI() {
-		final AssociationDefinition associationDefinition = associationDefinitionReference.get();
+		final var associationDefinition = associationDefinitionReference.get();
 		if (associationDefinition instanceof final AssociationSimpleDefinition associationSimpleDefinition) {
 			return (A) new DtListURIForSimpleAssociation(associationSimpleDefinition, entity.getUID(), roleName);
 		} else if (associationDefinition instanceof final AssociationNNDefinition associationNNDefinition) {
@@ -132,7 +134,9 @@ public class ListVAccessor<E extends Entity> implements Serializable {
 	}
 
 	protected UID<E> getSourceUID() {
-		return entity.getUID();
+		final var idAccessor = dataDefinitionReference.get().getIdField().get().getDataAccessor();
+		final var id = idAccessor.getValue(entity);
+		return id == null ? null : entity.getUID();
 	}
 
 	protected DefinitionId<DataDefinition> getTargetDefinitionReference() {
