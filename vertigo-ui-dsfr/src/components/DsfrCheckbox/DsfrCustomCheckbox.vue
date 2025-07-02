@@ -24,9 +24,11 @@ const props = withDefaults(defineProps<DsfrCheckboxProps>(), {
   errorMessage: '',
   validMessage: '',
   label: '',
+  readonlyOpacity: 0.75,
 })
 
 const message = computed(() => props.errorMessage || props.validMessage)
+const messageId = computed(() => message.value ? useRandomId('message', 'checkbox') : undefined)
 
 const additionalMessageClass = computed(() => props.errorMessage ? 'fr-error-text' : 'fr-valid-text')
 const modelValue = defineModel()
@@ -35,7 +37,7 @@ const modelValue = defineModel()
 <template>
   <div
       class="fr-fieldset__element"
-      :class="{ 'fr-fieldset__element--inline': inline }"
+      :class="{ 'fr-fieldset__element--inline': inline, readonly }"
   >
     <div
         class="fr-checkbox-group"
@@ -56,6 +58,8 @@ const modelValue = defineModel()
           v-bind="$attrs"
           :data-testid="`input-checkbox-${id}`"
           :data-test="`input-checkbox-${id}`"
+          :tabindex="readonly ? -1 : undefined"
+          :aria-describedby="messageId"
       >
       <label
           :for="id"
@@ -84,6 +88,7 @@ const modelValue = defineModel()
       </label>
       <div
           v-if="message"
+          :id="messageId"
           class="fr-messages-group"
           aria-live="assertive"
           role="alert"
@@ -98,3 +103,11 @@ const modelValue = defineModel()
     </div>
   </div>
 </template>
+
+<style scoped>
+.fr-fieldset__element.readonly {
+  pointer-events: none;
+  cursor: not-allowed;
+  opacity: v-bind('readonlyOpacity');
+}
+</style>

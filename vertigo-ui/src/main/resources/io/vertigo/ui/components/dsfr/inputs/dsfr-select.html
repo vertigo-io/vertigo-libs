@@ -1,4 +1,4 @@
-<th:block th:fragment="dsfr-select-edit(object, field, list, rowIndex, label, valueField, labelField, noneLabel, filterFunction, required, input_attrs)"
+<th:block th:fragment="dsfr-select-edit(object, field, list, rowIndex, label, valueField, labelField, noneDisplayed, noneLabel, filterFunction, required, input_attrs)"
 		  vu:alias="dsfr-select"
 		  vu:selector="${viewMode=='edit' && (readonly==null || !readonly)}"
 		  th:assert="${object} != null and ${field} != null and ${list} != null"
@@ -7,6 +7,7 @@
 	  			   myLabelField=${labelField != null ? labelField : model.util.getDisplayField(list)},
 	  			   myLabel=${modifiableTable!=null?null:label?:model.util.label(object + '.' + field)},
 	  			   myNoneLabel=${noneLabel?:''},
+	  			   myNoneDisplayed=${noneDisplayed?:false},
       			   myRequired=${required != null ? required : model.util.required(object + '.' + field)}">
 	<vu:include-data object="${object}" field="${field}" modifiable="true"/>
 	<vu:include-data object="${list}" field="${myValueField}"/>
@@ -17,10 +18,12 @@
 	<dsfr-custom-select
 			th:required="${myRequired}"
 			th:label="${myLabel}"
-			th::options="|dsfrTransformListForSelection('${list}', '${myValueField}', '${myLabelField}', '${myNoneLabel}', ${filterFunction?:null})|"
+			th::options="|dsfrTransformListForSelection('${list}', '${myValueField}', '${myLabelField}', ${filterFunction?:null})|"
 			th::name="${model.util.contextKey(object, field, rowIndex)}"
 			th:v-model="${model.util.vueDataKey(object, field, rowIndex)}"
 			th::error-message="|getErrorMessage('${object}', '${field}', ${rowIndex})|"
+			th::show-unselected="${myNoneDisplayed}"
+			th:default-unselected-text="${myNoneLabel?: 'Sélectionner une option'}"
 			th:attr="__${input_attrs}__">
 		<vu:content/>
 	</dsfr-custom-select>

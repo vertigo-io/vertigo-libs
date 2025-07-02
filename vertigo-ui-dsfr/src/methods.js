@@ -1,4 +1,4 @@
-import { format, parse } from 'date-fns'
+import {format, parse} from 'date-fns'
 
 export default {
     dsfrDecodeDate: function (value, formatDate) {
@@ -38,15 +38,14 @@ export default {
         }
         return rawList
     },
-    dsfrTransformListForSelection: function (list, valueField, labelField, nullText, filterFunction, searchValue) {
+    dsfrTransformListForSelection: function (list, valueField, labelField, filterFunction, searchValue) {
         let rawList = this._searchAndFilterList(list, valueField, labelField, filterFunction, searchValue);
-        let result = rawList.map(function (object) {
-            return {value: object[valueField], text: object[labelField].toString()} // a label is always a string
+        return rawList.map(function (object) {
+            return {
+                value: object[valueField],
+                text: object[labelField].toString()
+            } // a label is always a string
         });
-        if (nullText !== undefined && nullText !== null && nullText !== '') {
-            result.unshift({value: '', text: nullText});
-        }
-        return result;
     },
     dsfrTransformListForRadio: function (list, valueField, labelField, disabledField, hintField, filterFunction, searchValue) {
         let rawList = this._searchAndFilterList(list, valueField, labelField, filterFunction, searchValue);
