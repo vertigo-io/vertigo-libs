@@ -24,6 +24,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.config.Configurator;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -62,6 +64,10 @@ public class TestUi {
 	}
 
 	private static void startServer(final boolean join) throws IOException, Exception {
+		// Manually set log levels independently of "normal" test logs
+		Configurator.setLevel("sql", Level.INFO);
+		Configurator.setLevel("io.vertigo", Level.INFO);
+
 		final var jettyBootParamsBuilder = JettyBootParams.builder("testWebApp/", TestVSpringWebApplicationInitializer.class)
 				.withContextPath("/test")
 				.noSsl()
