@@ -133,15 +133,6 @@
 			<artifactId>log4j-slf4j2-impl</artifactId>
 			<scope>test</scope>
 		</dependency>
-		
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-params</artifactId>
-			<version>5.11.4</version>
-			<scope>test</scope>
-		</dependency>
-		
-
 
 		<!-- For Rest Webservice testing -->
 		<dependency>
