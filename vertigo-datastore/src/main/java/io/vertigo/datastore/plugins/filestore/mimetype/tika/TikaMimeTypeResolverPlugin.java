@@ -29,9 +29,12 @@ import org.apache.tika.exception.TikaException;
 import org.apache.tika.io.TikaInputStream;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.metadata.TikaCoreProperties;
+import org.xml.sax.SAXException;
 
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.lang.WrappedException;
+import io.vertigo.core.param.ParamValue;
+import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.datastore.impl.filestore.MimeTypeResolverPlugin;
 
@@ -41,10 +44,15 @@ public class TikaMimeTypeResolverPlugin implements MimeTypeResolverPlugin {
 	private final TikaConfig tika;
 
 	@Inject
-	public TikaMimeTypeResolverPlugin() {
+	public TikaMimeTypeResolverPlugin(final ResourceManager resourceManager,
+			@ParamValue("tikaConfigResource") final Optional<String> tikaConfigResource) {
 		try {
-			tika = new TikaConfig();
-		} catch (TikaException | IOException e) {
+			if (tikaConfigResource.isPresent()) {
+				tika = new TikaConfig(resourceManager.resolve(tikaConfigResource.get()));
+			} else {
+				tika = new TikaConfig();
+			}
+		} catch (TikaException | IOException | SAXException e) {
 			throw WrappedException.wrap(e);
 		}
 	}
