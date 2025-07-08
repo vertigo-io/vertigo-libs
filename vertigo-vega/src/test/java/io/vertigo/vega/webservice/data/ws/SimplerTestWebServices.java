@@ -306,6 +306,13 @@ public final class SimplerTestWebServices implements WebServices {
 				//400
 				throw new VUserException("Name is mandatory");
 			}
+			contact.setInputValue("conId", contact.getSingleInputValue("conId"));
+			final var inputConId = contact.getLong("conId");
+			contact.setInputValue("conId", String.valueOf(inputConId));
+
+			contact.setInputValue("birthday", contact.getSingleInputValue("birthday"));
+			final var inputBirthday = contact.getLocalDate("birthday");
+			contact.setInputValue("birthday", String.valueOf(inputBirthday));
 		}
 		return "OK : received " + myList.size() + " contacts";
 	}
