@@ -8,8 +8,31 @@ Running 5.0.0
 
 more to come :)
 
+
+Release 4.3.2 - 2025/07/09
+----------------------
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-431-to-432)
+
+* [Ui] Fix missing version in head.html
+* [Ui] Fix table-modifiable header when empty
+* [Vega] Add excluded/included fields to Json methods (**so for POJO**, in swagger too)
+* [Vega] Fix SwaggerApi builder for using raw Collections type in WS signature (ex; List, Set, etc..)
+* [Vega] VegaJavalinFilter is an abstract filter (ability to excluse urls)
+* [Vega] Update jdoc rateLimiting
+* [dataBase] Add better message for sql constraint violation
+* [database] Fix generated keys mode (index is 1 based)
+* [datastore][Tika] Improved log on incoherent mimetype
+* [datastore][Tika] Add optional config file (eg to add zero file size detection)
+* [datastore] fix TwoTableFileStorePlugin
+* [dsfr-ui] Improve accessibility and slots usage in DsfrCustomHeader; enhance DsfrSelect with new noneDisplayed support; update vue-dsfr
+* [datamodel] Fix ListVAccessor getSourceUID that might be null
+* [libs] Move resources files to java/main/resources
+
+
 Release 4.3.1 - 2025/06/13
 ----------------------
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-430-to-431)
+
 * [UI][Quasar] Improved Accessibility
 * [UI][DSFR] Improved Accessibility
 * [UI][DSFR] Fix `dsfr-button` inside a `v-for` loop.
