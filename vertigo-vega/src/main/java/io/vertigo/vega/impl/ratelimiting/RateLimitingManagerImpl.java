@@ -36,7 +36,23 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
- * Filtre de limitation des appels par IP.
+ * Component is responsible for managing rate-limiting functionality in the application.
+ * It ensures that requests from users or IPs are controlled based on predefined limits to prevent abuse and maintain system stability.
+ * Key Features
+ *
+ * Rate Limiting:
+ * - Limits the number of requests per time window (windowSeconds).
+ * - Supports daily rate limits (maxDayRequests).
+ * Modes of Operation:
+ * - nothing: Rate limiting is inactive.
+ * - logOnly: Logs requests exceeding the limit.
+ * - reject: Rejects requests exceeding the limit with an error response.
+ * - banish: Temporarily bans users/IPs exceeding the limit.
+ *
+ * Headers: Adds rate-limiting headers (X-Rate-Limit-Limit, X-Rate-Limit-Remaining, X-Rate-Limit-Reset) to responses for transparency.
+ * IP Whitelisting: Allows specific IPs to bypass rate-limiting checks.
+ * Banishment: Temporarily bans users/IPs exceeding limits, with configurable ban duration and multiplier for repeat offenders.
+ * Analytics Integration: Tracks rate-limiting events using the AnalyticsManager.
  *
  * @author npiedeloup
  */
@@ -91,6 +107,25 @@ public final class RateLimitingManagerImpl implements RateLimitingManager {
 
 	private final IpWhitelistHelper ipWhitelistHelper;
 
+	/**
+	 * Constructor.
+	 *
+	 * @param windowSeconds Time window for rate limiting (default: 5 minutes).
+	 * @param maxRequests Maximum requests allowed per window (default: 150).
+	 * @param maxDayRequests Maximum requests allowed per day.
+	 * @param errorCode HTTP error code to return when rate limit is exceeded (default: 429 - TOO_MANY_REQUESTS).
+	 * @param overRateLimitMode Mode of operation when rate limit is exceeded (default: reject).
+	 * @param insertHeaders Whether to include rate-limiting headers in responses.
+	 * @param useForwardedFor Use X-Forwarded-For header for IP detection.
+	 * @param useHeaderUserIp Use a custom header for IP detection.
+	 * @param useUserIp Use user IP or session ID for rate-limiting.
+	 * @param logEveryXRequests Number of requests after which to log rate limit exceedances (default: 100).
+	 * @param banishSeconds Initial ban duration (default: 30 minutes).
+	 * @param banishRepeaterMult Multiplier for repeat offenders (default: 2).
+	 * @param maxBanishSeconds Maximum ban duration (default: 7 days).
+	 * @param banishMessage Message returned when a user is banished (default: based on maxRequestsPerMinutes).
+	 * @param whiteListUsers Comma-separated list of IPs to whitelist from rate limiting.
+	 */
 	@Inject
 	public RateLimitingManagerImpl(
 			@ParamValue("windowSeconds") final Optional<Integer> windowSeconds,
@@ -289,7 +324,7 @@ public final class RateLimitingManagerImpl implements RateLimitingManager {
 	}
 
 	private String obtainUserKey(final HttpServletRequest request) {
-		final var userIp = useUserIp ? obtainUserIp(request) : Optional.<String> empty();
+		final var userIp = useUserIp ? obtainUserIp(request) : Optional.<String>empty();
 
 		final var userSessionId = obtainSessionId(request);
 
