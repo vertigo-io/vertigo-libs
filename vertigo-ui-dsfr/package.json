@@ -1,7 +1,7 @@
 {
   "name": "vertigo-dsfr",
-  "version": "4.3.2",
-  "private": true,
+  "version": "4.3.3",
+  "private": false,
   "type": "module",
   "scripts": {
     "dev": "vite --port 3001",
