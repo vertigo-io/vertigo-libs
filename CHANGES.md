@@ -4,17 +4,17 @@ Version history
 Running 5.0.0
 ----------------------
 [Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-431-to-500)
-* [UI][DSFR] Add `noneDisplayed` option to `vu:dsfr-select` component
 
 more to come :)
 
 
-Release 4.3.2 - 2025/07/09
+Release 4.3.2 - 2025/07/10
 ----------------------
 [Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-431-to-432)
 
 * [Ui] Fix missing version in head.html
 * [Ui] Fix table-modifiable header when empty
+* [UI][DSFR] Add `noneDisplayed` option to `vu:dsfr-select` component
 * [Vega] Add excluded/included fields to Json methods (**so for POJO**, in swagger too)
 * [Vega] Fix SwaggerApi builder for using raw Collections type in WS signature (ex; List, Set, etc..)
 * [Vega] VegaJavalinFilter is an abstract filter (ability to excluse urls)
