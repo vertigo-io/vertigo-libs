@@ -73,26 +73,26 @@ public final class PegRulesHtmlRenderer {
 			if (!namedRules.containsKey(depth)) {
 				namedRules.put(depth, new LinkedHashMap<>());
 			}
-			if (rule instanceof PegChoiceRule) {
-				choice((PegChoiceRule) rule);
-			} else if (rule instanceof PegManyRule) {
-				many((PegManyRule<?>) rule);
-			} else if (rule instanceof PegGrammarRule) {
-				grammar((PegGrammarRule<?>) rule);
-				detectGrammar(((PegGrammarRule<?>) rule).getRule()); //on calcul la grammaire en dessous
-			} else if (rule instanceof PegOptionalRule) {
-				optional((PegOptionalRule<?>) rule);
-			} else if (rule instanceof PegSequenceRule) {
-				sequence((PegSequenceRule) rule);
-			} else if (rule instanceof PegTermRule) {
-				term((PegTermRule) rule);
-			} else if (rule instanceof PegWhiteSpaceRule) {
-				whiteSpace((PegWhiteSpaceRule) rule);
-			} else if (rule instanceof PegWordRule) {
-				word((PegWordRule) rule);
-			} else if (rule instanceof PegAbstractRule) {
-				detectGrammar(((PegAbstractRule<?, ?>) rule).getMainRule()); //on calcul la grammaire en dessous, avant de l'associer à cette règle
-				populateGramar(rule, readGramar(((PegAbstractRule<?, ?>) rule).getMainRule()));
+			if (rule instanceof PegChoiceRule r) {
+				choice(r);
+			} else if (rule instanceof PegManyRule r) {
+				many(r);
+			} else if (rule instanceof PegGrammarRule r) {
+				grammar(r);
+				detectGrammar((r).getRule()); //on calcul la grammaire en dessous
+			} else if (rule instanceof PegOptionalRule r) {
+				optional(r);
+			} else if (rule instanceof PegSequenceRule r) {
+				sequence(r);
+			} else if (rule instanceof PegTermRule r) {
+				term(r);
+			} else if (rule instanceof PegWhiteSpaceRule r) {
+				whiteSpace(r);
+			} else if (rule instanceof PegWordRule r) {
+				word(r);
+			} else if (rule instanceof PegAbstractRule r) {
+				detectGrammar((r).getMainRule()); //on calcul la grammaire en dessous, avant de l'associer à cette règle
+				populateGramar(rule, readGramar((r).getMainRule()));
 			} else {
 				populateGramar(rule, rule.getExpression());
 			}
