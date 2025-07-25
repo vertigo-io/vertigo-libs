@@ -68,20 +68,11 @@ public final class VegaUiMessageStack implements UiMessageStack {
 	@Override
 	public void addGlobalMessage(final Level level, final String message) {
 		switch (level) {
-			case ERROR:
-				globalErrors.add(message);
-				break;
-			case WARNING:
-				globalWarnings.add(message);
-				break;
-			case INFO:
-				globalInfos.add(message);
-				break;
-			case SUCCESS:
-				globalSuccess.add(message);
-				break;
-			default:
-				throw new UnsupportedOperationException("Unknowned level");
+			case ERROR -> globalErrors.add(message);
+			case WARNING -> globalWarnings.add(message);
+			case INFO -> globalInfos.add(message);
+			case SUCCESS -> globalSuccess.add(message);
+			default -> throw new UnsupportedOperationException("Unknowned level");
 		}
 	}
 

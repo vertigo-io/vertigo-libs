@@ -157,26 +157,16 @@ final class Criterion<D extends DataObject> extends Criteria<D> {
 
 	/**same as DtListPatternFilterUtil*/
 	private static Serializable valueOf(final BasicType dataType, final String stringValue) {
-		switch (dataType) {
-			case Integer:
-				return Integer.valueOf(stringValue);
-			case Long:
-				return Long.valueOf(stringValue);
-			case BigDecimal:
-				return new BigDecimal(stringValue);
-			case Double:
-				return Double.valueOf(stringValue);
-			case LocalDate:
-				return DateUtil.parseToLocalDate(stringValue, DATE_PATTERN);
-			case Instant:
-				return DateUtil.parseToInstant(stringValue, INSTANT_PATTERN);
-			case Boolean:
-				return Boolean.valueOf(stringValue);
-			case String:
-				return stringValue;
-			case DataStream:
-			default:
-				throw new IllegalArgumentException("Type de données non comparable : " + dataType.name());
-		}
+		return switch (dataType) {
+			case Integer -> Integer.valueOf(stringValue);
+			case Long -> Long.valueOf(stringValue);
+			case BigDecimal -> new BigDecimal(stringValue);
+			case Double -> Double.valueOf(stringValue);
+			case LocalDate -> DateUtil.parseToLocalDate(stringValue, DATE_PATTERN);
+			case Instant -> DateUtil.parseToInstant(stringValue, INSTANT_PATTERN);
+			case Boolean -> Boolean.valueOf(stringValue);
+			case String -> stringValue;
+			case DataStream -> throw new IllegalArgumentException("Type de données non comparable : " + dataType.name());
+		};
 	}
 }

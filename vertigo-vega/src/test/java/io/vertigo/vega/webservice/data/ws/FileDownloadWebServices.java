@@ -81,20 +81,14 @@ public final class FileDownloadWebServices implements WebServices {
 	}
 
 	private static String generateSpecialChars(final Integer id) {
-		switch (id) {
-			case 1:
-				return "ÔÙæóñ";
-			case 2:
-				return "µ°«/";
-			case 3:
-				return "ÔÙæ óñµ°«/";
-			case 4:
-				return "€;_~";
-			case 5:
-				return "你好abcABCæøåÆØÅäöüïëêîâéíáóúýñ½§!#¤%&()=`@£$€{[]}+´¨^~'-_,;";
-			default:
-				return "";
-		}
+		return switch (id) {
+			case 1 -> "ÔÙæóñ";
+			case 2 -> "µ°«/";
+			case 3 -> "ÔÙæ óñµ°«/";
+			case 4 -> "€;_~";
+			case 5 -> "你好abcABCæøåÆØÅäöüïëêîâéíáóúýñ½§!#¤%&()=`@£$€{[]}+´¨^~'-_,;";
+			default -> "";
+		};
 	}
 
 	private static Path asPath(final URL url) {

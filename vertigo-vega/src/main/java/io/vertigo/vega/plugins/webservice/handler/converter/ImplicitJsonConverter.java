@@ -54,16 +54,12 @@ public final class ImplicitJsonConverter implements JsonConverter, JsonSerialize
 	}
 
 	private static Object readImplicitValue(final HttpServletRequest request, final WebServiceParam webServiceParam, final WebServiceCallContext routeContext) {
-		switch (ImplicitParam.valueOf(webServiceParam.getName())) {
-			case UiMessageStack:
-				return routeContext.getUiMessageStack();
-			case Request:
-				return request;
-			case Response:
-				return routeContext.getResponse();
-			default:
-				throw new IllegalArgumentException("ImplicitParam : " + webServiceParam.getName());
-		}
+		return switch (ImplicitParam.valueOf(webServiceParam.getName())) {
+			case UiMessageStack -> routeContext.getUiMessageStack();
+			case Request -> request;
+			case Response -> routeContext.getResponse();
+			default -> throw new IllegalArgumentException("ImplicitParam : " + webServiceParam.getName());
+		};
 	}
 
 	/** {@inheritDoc} */

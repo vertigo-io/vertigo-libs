@@ -79,14 +79,11 @@ public final class DtListPatternFilterUtil {
 		Assertion.check().isTrue(dtField.smartTypeDefinition().getScope().isBasicType(), "Only primitive types can be used in pattern");
 		final BasicType dataType = dtField.smartTypeDefinition().getBasicType();
 
-		switch (filterPattern) {
-			case Range:
-				return createDtListRangeFilter(parsedFilter, fieldName, dataType);
-			case Term:
-				return createDtListTermFilter(parsedFilter, fieldName, dataType);
-			default:
-				throw new VSystemException("La chaine de filtrage: {0} , ne respecte pas la syntaxe {1}.", parsedFilter[0], filterPattern.getPattern().pattern());
-		}
+		return switch (filterPattern) {
+			case Range -> createDtListRangeFilter(parsedFilter, fieldName, dataType);
+			case Term -> createDtListTermFilter(parsedFilter, fieldName, dataType);
+			default -> throw new VSystemException("La chaine de filtrage: {0} , ne respecte pas la syntaxe {1}.", parsedFilter[0], filterPattern.getPattern().pattern());
+		};
 	}
 
 	/**
@@ -152,25 +149,15 @@ public final class DtListPatternFilterUtil {
 
 	/** Same as Criterion. */
 	private static Serializable valueOf(final BasicType dataType, final String stringValue) {
-		switch (dataType) {
-			case Integer:
-				return Integer.valueOf(stringValue);
-			case Long:
-				return Long.valueOf(stringValue);
-			case BigDecimal:
-				return new BigDecimal(stringValue);
-			case Double:
-				return Double.valueOf(stringValue);
-			case LocalDate:
-				return DateUtil.parseToLocalDate(stringValue, DATE_PATTERN);
-			case Instant:
-				return DateUtil.parseToInstant(stringValue, DATE_PATTERN);
-			case String:
-				return stringValue;
-			case Boolean:
-			case DataStream:
-			default:
-				throw new IllegalArgumentException("Type de données non comparable : " + dataType.name());
-		}
+		return switch (dataType) {
+			case Integer -> Integer.valueOf(stringValue);
+			case Long -> Long.valueOf(stringValue);
+			case BigDecimal -> new BigDecimal(stringValue);
+			case Double -> Double.valueOf(stringValue);
+			case LocalDate -> DateUtil.parseToLocalDate(stringValue, DATE_PATTERN);
+			case Instant -> DateUtil.parseToInstant(stringValue, DATE_PATTERN);
+			case String -> stringValue;
+			case Boolean, DataStream -> throw new IllegalArgumentException("Type de données non comparable : " + dataType.name());
+		};
 	}
 }

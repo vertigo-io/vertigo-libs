@@ -20,9 +20,9 @@ package io.vertigo.commons.peg;
 import java.util.List;
 
 import io.vertigo.commons.peg.rule.PegAbstractRule;
-import io.vertigo.commons.peg.rule.PegWordRuleMode;
 import io.vertigo.commons.peg.rule.PegRule;
 import io.vertigo.commons.peg.rule.PegRules;
+import io.vertigo.commons.peg.rule.PegWordRuleMode;
 
 final class CalculatorRule extends PegAbstractRule<Integer, List<Object>> {
 
@@ -55,17 +55,12 @@ final class CalculatorRule extends PegAbstractRule<Integer, List<Object>> {
 		final Integer a = Integer.parseInt((String) parsing.get(0));
 		final Integer b = Integer.parseInt((String) parsing.get(4));
 		final PegChoice tuple = (PegChoice) parsing.get(2);
-		switch (tuple.choiceIndex()) {
-			case 0:
-				return a * b;
-			case 1:
-				return a / b;
-			case 2:
-				return a + b;
-			case 3:
-				return a - b;
-			default:
-				throw new IllegalStateException();
-		}
+		return switch (tuple.choiceIndex()) {
+			case 0 -> a * b;
+			case 1 -> a / b;
+			case 2 -> a + b;
+			case 3 -> a - b;
+			default -> throw new IllegalStateException();
+		};
 	}
 }

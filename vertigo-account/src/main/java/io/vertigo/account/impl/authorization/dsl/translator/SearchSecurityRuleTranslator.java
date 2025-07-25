@@ -373,21 +373,14 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 	}
 
 	private static String toOperator(final ValueOperator operator) {
-		switch (operator) {
-			case GT:
-				return ">";
-			case GTE:
-				return ">=";
-			case LT:
-				return "<";
-			case LTE:
-				return "<=";
-			case EQ:
-			case NEQ:
-				return "";
-			default:
-				throw new IllegalArgumentException("Operator not supported " + operator.name());
-		}
+		return switch (operator) {
+			case GT -> ">";
+			case GTE -> ">=";
+			case LT -> "<";
+			case LTE -> "<=";
+			case EQ, NEQ -> "";
+			default -> throw new IllegalArgumentException("Operator not supported " + operator.name());
+		};
 	}
 
 }

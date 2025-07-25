@@ -72,23 +72,12 @@ public final class JavalinWebServerPlugin implements WebServerPlugin {
 			final String routePath = convertJaxRsPathToJavalin(apiPrefix.orElse("") + webServiceDefinition.getPath());
 			final JavalinRouteHandler javalinRouteHandler = new JavalinRouteHandler(webServiceDefinition, handlerChain);
 			switch (webServiceDefinition.getVerb()) {
-				case Get:
-					javalinApp.get(routePath, javalinRouteHandler);
-					break;
-				case Post:
-					javalinApp.post(routePath, javalinRouteHandler);
-					break;
-				case Put:
-					javalinApp.put(routePath, javalinRouteHandler);
-					break;
-				case Patch:
-					javalinApp.patch(routePath, javalinRouteHandler);
-					break;
-				case Delete:
-					javalinApp.delete(routePath, javalinRouteHandler);
-					break;
-				default:
-					throw new UnsupportedOperationException();
+				case Get -> javalinApp.get(routePath, javalinRouteHandler);
+				case Post -> javalinApp.post(routePath, javalinRouteHandler);
+				case Put -> javalinApp.put(routePath, javalinRouteHandler);
+				case Patch -> javalinApp.patch(routePath, javalinRouteHandler);
+				case Delete -> javalinApp.delete(routePath, javalinRouteHandler);
+				default -> throw new UnsupportedOperationException();
 			}
 			corsProtected = corsProtected || webServiceDefinition.isCorsProtected();
 		}

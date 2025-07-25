@@ -127,18 +127,13 @@ public class FormatterNumber implements Formatter {
 			 * Cela pour utiliser le Number.valueOf plutot que le parse de NumberFormat.
 			 */
 			sValue = cleanStringNumber(sValue, decimalFormatSymbols);
-			switch (dataType) {
-				case BigDecimal:
-					return new BigDecimal(sValue);
-				case Double:
-					return Double.valueOf(sValue);
-				case Integer:
-					return toInteger(sValue);
-				case Long:
-					return Long.valueOf(sValue);
-				default:
-					throw new IllegalArgumentException("Type unsupported : " + dataType);
-			}
+			return switch (dataType) {
+				case BigDecimal -> new BigDecimal(sValue);
+				case Double -> Double.valueOf(sValue);
+				case Integer -> toInteger(sValue);
+				case Long -> Long.valueOf(sValue);
+				default -> throw new IllegalArgumentException("Type unsupported : " + dataType);
+			};
 		} catch (final NumberFormatException e) {
 			// cas des erreurs sur les formats de nombre
 			throw (FormatterException) new FormatterException(Resources.DYNAMOX_NUMBER_NOT_FORMATTED)

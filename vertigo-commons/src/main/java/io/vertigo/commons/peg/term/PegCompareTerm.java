@@ -80,23 +80,15 @@ public enum PegCompareTerm implements PegTerm {
 			throw new PegParsingValueException("Type '" + leftResolved.getClass() + "' not supported");
 		}
 
-		switch (operator) {
-			case LTE:
-				return compareResult <= 0;
-			case GTE:
-				return compareResult >= 0;
-			case NEQ:
-				return compareResult != 0;
-			case EQ:
-				return compareResult == 0;
-			case LT:
-				return compareResult < 0;
-			case GT:
-				return compareResult > 0;
-			default:
-				throw new PegParsingValueException("Operator '" + operator.str + "' not supported");
-		}
-
+		return switch (operator) {
+			case LTE -> compareResult <= 0;
+			case GTE -> compareResult >= 0;
+			case NEQ -> compareResult != 0;
+			case EQ -> compareResult == 0;
+			case LT -> compareResult < 0;
+			case GT -> compareResult > 0;
+			default -> throw new PegParsingValueException("Operator '" + operator.str + "' not supported");
+		};
 	}
 
 	private static Object convertIntegersToLong(final Object o) {

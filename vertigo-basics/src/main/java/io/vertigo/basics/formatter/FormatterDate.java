@@ -94,14 +94,11 @@ public final class FormatterDate implements Formatter {
 		if (objValue == null) {
 			return ""; //Affichage d'une date non renseignée;
 		}
-		switch (dataType) {
-			case LocalDate:
-				return localDateToString((LocalDate) objValue, patterns.get(0));
-			case Instant:
-				return instantToString((Instant) objValue, patterns.get(0));
-			default:
-				throw new IllegalStateException();
-		}
+		return switch (dataType) {
+			case LocalDate -> localDateToString((LocalDate) objValue, patterns.get(0));
+			case Instant -> instantToString((Instant) objValue, patterns.get(0));
+			default -> throw new IllegalStateException();
+		};
 	}
 
 	/** {@inheritDoc} */
@@ -113,14 +110,11 @@ public final class FormatterDate implements Formatter {
 			return null;
 		}
 		final String sValue = strValue.trim();
-		switch (dataType) {
-			case LocalDate:
-				return applyStringToObject(sValue, FormatterDate::doStringToLocalDate);
-			case Instant:
-				return applyStringToObject(sValue, FormatterDate::doStringToInstant);
-			default:
-				throw new IllegalStateException();
-		}
+		return switch (dataType) {
+			case LocalDate -> applyStringToObject(sValue, FormatterDate::doStringToLocalDate);
+			case Instant -> applyStringToObject(sValue, FormatterDate::doStringToInstant);
+			default -> throw new IllegalStateException();
+		};
 	}
 
 	/*
