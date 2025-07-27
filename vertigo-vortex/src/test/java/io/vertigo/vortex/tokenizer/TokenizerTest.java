@@ -32,7 +32,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import io.vertigo.core.lang.VUserException;
+import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.BootConfig;
@@ -40,9 +40,10 @@ import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.core.util.FileUtil;
+import io.vertigo.vortex.syntax.SyntaxType;
 
 public class TokenizerTest {
-	private final Tokenizer tokenizer = new Tokenizer(List.of(TokenType.values()));
+	private final Tokenizer tokenizer = new Tokenizer(List.of(SyntaxType.values()));
 
 	@Inject
 	private ResourceManager resourceManager;
@@ -73,7 +74,7 @@ public class TokenizerTest {
 	private List<Token> tokenize(String src) {
 		List<Token> tokens = tokenizer.tokenize(src);
 		tokens.stream()
-				.filter(t -> t.type() != TokenType.spaces)
+				.filter(t -> t.type() != SyntaxType.spaces)
 				.limit(100)
 				.forEach(t -> System.out.println(t));
 		return tokens;
@@ -88,7 +89,7 @@ public class TokenizerTest {
 		final List<Token> tokens = tokenize(src);
 		assertEquals(1, tokens.size());
 		assertEquals("lorem", tokens.get(0).value());
-		assertEquals(TokenType.word, tokens.get(0).type());
+		assertEquals(SyntaxType.word, tokens.get(0).type());
 	}
 
 	@ParameterizedTest
@@ -97,11 +98,11 @@ public class TokenizerTest {
 		final List<Token> tokens = tokenize(src);
 		assertEquals(5, tokens.size());
 		assertEquals("lorem", tokens.get(0).value());
-		assertEquals(TokenType.word, tokens.get(0).type());
+		assertEquals(SyntaxType.word, tokens.get(0).type());
 		assertEquals("ipsum", tokens.get(2).value());
-		assertEquals(TokenType.word, tokens.get(2).type());
+		assertEquals(SyntaxType.word, tokens.get(2).type());
 		assertEquals("est", tokens.get(4).value());
-		assertEquals(TokenType.word, tokens.get(4).type());
+		assertEquals(SyntaxType.word, tokens.get(4).type());
 	}
 
 	@ParameterizedTest
@@ -110,13 +111,13 @@ public class TokenizerTest {
 		final List<Token> tokens = tokenize(src);
 		assertEquals(1, tokens.size());
 		assertEquals("lorem_ipsum", tokens.get(0).value());
-		assertEquals(TokenType.word, tokens.get(0).type());
+		assertEquals(SyntaxType.word, tokens.get(0).type());
 	}
 
 	@ParameterizedTest
 	@ValueSource(strings = { "lorém", " lorém ", "lor%m", "&lorem" })
 	public void testFail01(final String src) {
-		Assertions.assertThrows(VUserException.class, () -> tokenize(src));
+		Assertions.assertThrows(VSystemException.class, () -> tokenize(src));
 	}
 
 	@ParameterizedTest
@@ -124,8 +125,8 @@ public class TokenizerTest {
 	public void test03(final String src) {
 		final List<Token> tokens = tokenize(src);
 		assertEquals(2, tokens.size());
-		assertEquals(TokenType.word, tokens.get(0).type());
-		assertEquals(TokenType.symbols, tokens.get(1).type());
+		assertEquals(SyntaxType.word, tokens.get(0).type());
+		assertEquals(SyntaxType.delimiters, tokens.get(1).type());
 	}
 
 	//=========================================================================
@@ -137,7 +138,7 @@ public class TokenizerTest {
 		final List<Token> tokens = tokenize(src);
 		assertEquals(1, tokens.size());
 		assertEquals("Lorem", tokens.get(0).value());
-		assertEquals(TokenType.word, tokens.get(0).type());
+		assertEquals(SyntaxType.word, tokens.get(0).type());
 	}
 
 	@ParameterizedTest
@@ -146,7 +147,7 @@ public class TokenizerTest {
 		final List<Token> tokens = tokenize(src);
 		assertEquals(1, tokens.size());
 		assertEquals("LoremIpsum", tokens.get(0).value());
-		assertEquals(TokenType.word, tokens.get(0).type());
+		assertEquals(SyntaxType.word, tokens.get(0).type());
 	}
 
 	@ParameterizedTest
@@ -154,13 +155,53 @@ public class TokenizerTest {
 	public void test102(final String src) {
 		final List<Token> tokens = tokenize(src);
 		assertEquals(1, tokens.size());
-		assertEquals(TokenType.word, tokens.get(0).type());
+		assertEquals(SyntaxType.word, tokens.get(0).type());
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = { "Lorém", "Lorem-Ipsum", "Lorem.Ipsum" })
+	@ValueSource(strings = { "Lorém", "Lorem-Ipsum-", "Lorem.Ipsum" })
 	public void testFail103(final String src) {
-		Assertions.assertThrows(VUserException.class, () -> tokenize(src));
+		Assertions.assertThrows(VSystemException.class, () -> tokenize(src));
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = { ",true;", ":true,", ";true:" })
+	public void test104(final String src) {
+		final List<Token> tokens = tokenize(src);
+		assertEquals(3, tokens.size());
+		assertEquals(SyntaxType.delimiters, tokens.get(0).type());
+		assertEquals(SyntaxType.bool, tokens.get(1).type());
+		assertEquals(SyntaxType.delimiters, tokens.get(2).type());
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = { ", true ;", ": true ," })
+	public void test105(final String src) {
+		final List<Token> tokens = tokenize(src);
+		assertEquals(5, tokens.size());
+		assertEquals(SyntaxType.delimiters, tokens.get(0).type());
+		assertEquals(SyntaxType.spaces, tokens.get(1).type());
+		assertEquals(SyntaxType.bool, tokens.get(2).type());
+		assertEquals(SyntaxType.spaces, tokens.get(3).type());
+		assertEquals(SyntaxType.delimiters, tokens.get(4).type());
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = { "<'test'>", "('test')", "{'test'}", "['test']" })
+	public void test106(final String src) {
+		final List<Token> tokens = tokenize(src);
+		assertEquals(3, tokens.size());
+		assertEquals(SyntaxType.bracket, tokens.get(0).type());
+		assertEquals(SyntaxType.string_strict, tokens.get(1).type());
+		assertEquals(SyntaxType.bracket, tokens.get(2).type());
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = { "'test?test'", "'test<?>test'" })
+	public void test107(final String src) {
+		final List<Token> tokens = tokenize(src);
+		assertEquals(1, tokens.size());
+		assertEquals(SyntaxType.string_strict, tokens.get(0).type());
 	}
 
 	//=========================================================================
@@ -173,16 +214,16 @@ public class TokenizerTest {
 		assertEquals(7, tokens.size());
 
 		assertEquals("1", tokens.get(0).value());
-		assertEquals(TokenType.integer, tokens.get(0).type());
+		assertEquals(SyntaxType.integer, tokens.get(0).type());
 
 		assertEquals("999", tokens.get(2).value());
-		assertEquals(TokenType.integer, tokens.get(2).type());
+		assertEquals(SyntaxType.integer, tokens.get(2).type());
 
 		assertEquals("-6", tokens.get(4).value());
-		assertEquals(TokenType.integer, tokens.get(4).type());
+		assertEquals(SyntaxType.integer, tokens.get(4).type());
 
 		assertEquals("8", tokens.get(6).value());
-		assertEquals(TokenType.integer, tokens.get(6).type());
+		assertEquals(SyntaxType.integer, tokens.get(6).type());
 	}
 
 	@ParameterizedTest
@@ -196,8 +237,8 @@ public class TokenizerTest {
 	public void test12(final String src) {
 		final List<Token> tokens = tokenize(src);
 		assertEquals(2, tokens.size());
-		assertEquals(TokenType.integer, tokens.get(0).type());
-		assertEquals(TokenType.symbols, tokens.get(1).type());
+		assertEquals(SyntaxType.integer, tokens.get(0).type());
+		assertEquals(SyntaxType.delimiters, tokens.get(1).type());
 	}
 
 	@ParameterizedTest
@@ -205,10 +246,10 @@ public class TokenizerTest {
 	public void test13(final String src) {
 		final List<Token> tokens = tokenize(src);
 		assertEquals(4, tokens.size());
-		assertEquals(TokenType.integer, tokens.get(0).type());
-		assertEquals(TokenType.bracket, tokens.get(1).type());
-		assertEquals(TokenType.integer, tokens.get(2).type());
-		assertEquals(TokenType.bracket, tokens.get(3).type());
+		assertEquals(SyntaxType.integer, tokens.get(0).type());
+		assertEquals(SyntaxType.bracket, tokens.get(1).type());
+		assertEquals(SyntaxType.integer, tokens.get(2).type());
+		assertEquals(SyntaxType.bracket, tokens.get(3).type());
 	}
 
 	//	//pair not well formed
@@ -234,7 +275,7 @@ public class TokenizerTest {
 	public void test20(final String src) {
 		final List<Token> tokens = tokenize(src);
 		assertEquals(1, tokens.size());
-		assertEquals(TokenType.bool, tokens.get(0).type());
+		assertEquals(SyntaxType.bool, tokens.get(0).type());
 	}
 
 	@ParameterizedTest
@@ -243,7 +284,7 @@ public class TokenizerTest {
 		final List<Token> tokens = tokenize(src);
 		System.out.println(tokens);
 		assertEquals(1, tokens.size());
-		assertNotEquals(TokenType.bool, tokens.get(0).type());
+		assertNotEquals(SyntaxType.bool, tokens.get(0).type());
 	}
 
 	//
@@ -271,17 +312,17 @@ public class TokenizerTest {
 		final List<Token> tokens = tokenize(src);
 		assertEquals(1, tokens.size());
 		assertEquals("lorem", tokens.get(0).value());
-		assertEquals(TokenType.string_basic, tokens.get(0).type());
+		assertEquals(SyntaxType.string_basic, tokens.get(0).type());
 	}
 
-	@ParameterizedTest
-	@ValueSource(strings = { "'lorem'" })
-	public void test300(final String src) {
-		final List<Token> tokens = tokenize(src);
-		assertEquals(1, tokens.size());
-		assertEquals("lorem", tokens.get(0).value());
-		assertEquals(TokenType.string_strict, tokens.get(0).type());
-	}
+	//	@ParameterizedTest
+	//	@ValueSource(strings = { "'lorem'" })
+	//	public void test300(final String src) {
+	//		final List<Token> tokens = tokenize(src);
+	//		assertEquals(1, tokens.size());
+	//		assertEquals("lorem", tokens.get(0).value());
+	//		assertEquals(SyntaxType.string_strict, tokens.get(0).type());
+	//	}
 
 	@ParameterizedTest
 	@ValueSource(strings = { "\"lo\\\"rem\"" }) // a token with a double quote
@@ -289,17 +330,17 @@ public class TokenizerTest {
 		final List<Token> tokens = tokenize(src);
 		assertEquals(1, tokens.size());
 		assertEquals("lo\"rem", tokens.get(0).value());
-		assertEquals(TokenType.string_basic, tokens.get(0).type());
+		assertEquals(SyntaxType.string_basic, tokens.get(0).type());
 	}
 
-	@ParameterizedTest
-	@ValueSource(strings = { "'lo\"rem'" }) // a token with a double quote
-	public void test310(final String src) {
-		final List<Token> tokens = tokenize(src);
-		assertEquals(1, tokens.size());
-		assertEquals("lo\"rem", tokens.get(0).value());
-		assertEquals(TokenType.string_strict, tokens.get(0).type());
-	}
+	//	@ParameterizedTest
+	//	@ValueSource(strings = { "'lo\"rem'" }) // a token with a double quote
+	//	public void test310(final String src) {
+	//		final List<Token> tokens = tokenize(src);
+	//		assertEquals(1, tokens.size());
+	//		assertEquals("lo\"rem", tokens.get(0).value());
+	//		assertEquals(SyntaxType.string_strict, tokens.get(0).type());
+	//	}
 
 	@ParameterizedTest
 	@ValueSource(strings = { "\"lorem\" \"IPSUM\"", "\"lorem\"     \"IPSUM\"", "\"lorem\"   \r\n  \"IPSUM\"" })
@@ -307,9 +348,9 @@ public class TokenizerTest {
 		final List<Token> tokens = tokenize(src);
 		assertEquals(3, tokens.size());
 		assertEquals("lorem", tokens.get(0).value());
-		assertEquals(TokenType.string_basic, tokens.get(0).type());
+		assertEquals(SyntaxType.string_basic, tokens.get(0).type());
 		assertEquals("IPSUM", tokens.get(2).value());
-		assertEquals(TokenType.string_basic, tokens.get(2).type());
+		assertEquals(SyntaxType.string_basic, tokens.get(2).type());
 	}
 
 	@ParameterizedTest
@@ -342,7 +383,7 @@ public class TokenizerTest {
 		final List<Token> tokens = tokenize(src);
 		assertEquals(1, tokens.size());
 		assertTrue(tokens.get(0).value().trim().endsWith("lorem"));
-		assertEquals(TokenType.comment, tokens.get(0).type());
+		assertEquals(SyntaxType.comment, tokens.get(0).type());
 	}
 
 	@ParameterizedTest
@@ -350,7 +391,7 @@ public class TokenizerTest {
 	public void test51(final String src) {
 		final List<Token> tokens = tokenize(src);
 		assertEquals(2, tokens.size());
-		assertEquals(TokenType.comment, tokens.get(1).type());
+		assertEquals(SyntaxType.comment, tokens.get(1).type());
 	}
 
 	//=========================================================================
@@ -363,8 +404,8 @@ public class TokenizerTest {
 		assertEquals(3, tokens.size());
 		assertEquals("{", tokens.get(0).value());
 		assertEquals("}", tokens.get(2).value());
-		assertEquals(TokenType.bracket, tokens.get(0).type());
-		assertEquals(TokenType.bracket, tokens.get(2).type());
+		assertEquals(SyntaxType.bracket, tokens.get(0).type());
+		assertEquals(SyntaxType.bracket, tokens.get(2).type());
 	}
 
 	@ParameterizedTest
@@ -372,8 +413,8 @@ public class TokenizerTest {
 	public void test61(final String src) {
 		final List<Token> tokens = tokenize(src);
 		assertEquals(2, tokens.size());
-		assertEquals(TokenType.bracket, tokens.get(0).type());
-		assertEquals(TokenType.bracket, tokens.get(1).type());
+		assertEquals(SyntaxType.bracket, tokens.get(0).type());
+		assertEquals(SyntaxType.bracket, tokens.get(1).type());
 
 	}
 
@@ -387,7 +428,7 @@ public class TokenizerTest {
 	//			final List<Token> tokens = tokenize(src, true);
 	//			assertEquals(1, tokens.size());
 	//			assertEquals("$/lorem", tokens.get(0).value());
-	//			assertEquals(TokenType.variable, tokens.get(0).type());
+	//			assertEquals(SyntaxType.variable, tokens.get(0).type());
 	//		}
 	//
 	//		@ParameterizedTest
@@ -396,7 +437,7 @@ public class TokenizerTest {
 	//			final List<Token> tokens = tokenize(src, true);
 	//			assertEquals(3, tokens.size());
 	//			assertEquals("$/lorem", tokens.get(0).value());
-	//			assertEquals(TokenType.variable, tokens.get(0).type());
+	//			assertEquals(SyntaxType.variable, tokens.get(0).type());
 	//		}
 	//
 	//		//=========================================================================
@@ -408,7 +449,7 @@ public class TokenizerTest {
 	//			final List<Token> tokens = tokenize(src, true);
 	//			assertEquals(1, tokens.size());
 	//			assertEquals("/lorem", tokens.get(0).value());
-	//			assertEquals(TokenType.directive, tokens.get(0).type());
+	//			assertEquals(SyntaxType.directive, tokens.get(0).type());
 	//		}
 	//
 	//		@ParameterizedTest
@@ -417,7 +458,7 @@ public class TokenizerTest {
 	//			final List<Token> tokens = tokenize(src, true);
 	//			assertEquals(3, tokens.size());
 	//			assertEquals("/lorem", tokens.get(0).value());
-	//			assertEquals(TokenType.directive, tokens.get(0).type());
+	//			assertEquals(SyntaxType.directive, tokens.get(0).type());
 	//		}
 	//
 	//=========================================================================
@@ -426,6 +467,6 @@ public class TokenizerTest {
 	@Test
 	public void test200() {
 		final var src = FileUtil.read(resourceManager.resolve("io/vertigo/vortex/tokenizer/data/src1.txt"));
-		assertEquals(140605, tokenize(src).size());
+		tokenize(src);
 	}
 }

@@ -63,20 +63,21 @@ import io.vertigo.core.lang.VSystemException;
  * 		- must end with [a-z]
  * 		- must be declared in a single line
  * 
- * 		- ex : toto 		# is a keyword
- * 		- ex : toto-titi	# is a keyword
- * 		- ex : toto-		# is NOT a valid keyword
- * 		- ex : true 		# is NOT a keyword but a boolean
+ * 		- ex : user-profile-section, feature-x, data-service, name, required
+ * 		- ex : name 				# is a keyword
+ * 		- ex : user-profile-section	# is a keyword
+ * 		- ex : toto-				# is NOT a valid keyword
+ * 		- ex : true 				# is NOT a keyword but a boolean
  *  ____________________________________________________________________________________
  * Identifiers : 
- * 		- keywords use upper camel case syntax 
+ * 		- identifiers use upper camel case syntax 
  * 		- identifiers are used to identify a structure 
  * 		- identifiers are case sensitive
  * 		- begins with [A-Z]
  * 		- contains [a-z] or [A-Z] or [0-9]
  * 		- must be declared in a single line
  * 
- * 		- ex : Toto 	# is an identifier
+ * 		- ex : Name 	# is an identifier
  * 		- ex : TotoTiti # is an identifier
  * 		- ex : Toto12 	# is an identifier
  *  ____________________________________________________________________________________
@@ -154,26 +155,33 @@ public final class Tokenizer {
 	public Tokenizer(List<TokenType> tokenTypes) {
 		Assertion.check().isNotNull(tokenTypes);
 		//---
-		this.tokenTypes = tokenTypes;
+		this.tokenTypes = List.copyOf(tokenTypes);
 	}
 
+	/*
+	 * Here is where the src is split into tokens using aggregration of pattern
+	 */
 	public List<Token> tokenize(final String src) {
 		final List<Token> tokens = new ArrayList<>();
-		final Matcher matcher = TokenType.spaces.pattern.matcher(src);
+		Matcher matcher = null;
 		for (int pos = 0; pos < src.length();) {
 			boolean match = false;
 			for (TokenType tokenType : tokenTypes) {
+				if (matcher == null) {
+					matcher = tokenType.getPattern().matcher(src);
+				}
 				matcher
 						//we have to set the pattern 
-						.usePattern(tokenType.pattern)
+						.usePattern(tokenType.getPattern())
 						//we have to set the region 
 						.region(pos, src.length());
 				if (matcher.lookingAt()) {
 					match = true;
 					String tok = matcher.group();
-					tokens.add(new Token(tokenType, tok, pos));
+					tokens.add(new Token(tokenType, tokenType.extract(tok), pos));
 					pos = matcher.end();
 					break;
+
 				}
 			}
 			if (!match)

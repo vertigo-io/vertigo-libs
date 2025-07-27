@@ -25,31 +25,8 @@ public record Token(TokenType type, String value, int start) {
 		Assertion.check()
 				.isNotNull(type)
 				.isNotNull(value);
-		switch (type) {
-			// we have to remove the " or """ or ' or '''
-			case string_basic:
-				this.value = value
-						.substring(1, value.length() - 1)
-						.replace("\\\\", "\\") //   // -> /
-						.replace("\\\"", "\""); //  /" -> "
-				break;
-			case string_basic_multi_line:
-				this.value = value
-						.substring(3, value.length() - 3)
-						.replace("\\\\", "\\") //   // -> /
-						.replace("\\\"", "\""); //  /" -> "
-				break;
-			case string_strict:
-				this.value = value
-						.substring(1, value.length() - 1);
-				break;
-			case string_strict_multi_line:
-				this.value = value
-						.substring(3, value.length() - 3);
-				break;
-			default:
-				this.value = value;
-		}
+		//---
+		this.value = value;
 		this.type = type;
 		this.start = start;
 	}
