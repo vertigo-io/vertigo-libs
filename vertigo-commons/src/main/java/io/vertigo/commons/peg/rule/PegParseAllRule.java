@@ -58,10 +58,10 @@ final class PegParseAllRule<O> implements PegRule<O> {
 		try {
 			final PegResult<O> cursor = innerRule
 					.parse(text, index);
-			index = cursor.getIndex();
-			result = cursor.getValue();
+			index = cursor.index();
+			result = cursor.value();
 			if (index < text.length()) {
-				throw new PegNoMatchFoundException(text, start, cursor.getBestUncompleteRule().orElse(null), "Can't parse whole input (parse until {0})", index);
+				throw new PegNoMatchFoundException(text, start, cursor.bestUncompleteRule().orElse(null), "Can't parse whole input (parse until {0})", index);
 			}
 
 		} catch (final PegNoMatchFoundException e) {

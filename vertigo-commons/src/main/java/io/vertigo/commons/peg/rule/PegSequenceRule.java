@@ -77,10 +77,10 @@ final class PegSequenceRule implements PegRule<List<Object>> {
 			for (final PegRule<?> rule : rules) {
 				final PegResult<?> cursor = rule
 						.parse(text, index);
-				index = cursor.getIndex();
-				results.add(cursor.getValue());
-				if (cursor.getBestUncompleteRule().isPresent()) {
-					best = PegNoMatchFoundException.keepBestUncompleteRule(cursor.getBestUncompleteRule().get(), best);
+				index = cursor.index();
+				results.add(cursor.value());
+				if (cursor.bestUncompleteRule().isPresent()) {
+					best = PegNoMatchFoundException.keepBestUncompleteRule(cursor.bestUncompleteRule().get(), best);
 				}
 			}
 		} catch (final PegNoMatchFoundException e) {

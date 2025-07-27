@@ -74,10 +74,10 @@ public abstract class PegAbstractRule<R, M> implements PegRule<R> {
 	public final PegResult<R> parse(final String text, final int start) throws PegNoMatchFoundException {
 		final PegResult<M> parserCursor = getMainRule()
 				.parse(text, start);
-		final int end = parserCursor.getIndex();
+		final int end = parserCursor.index();
 		//---
-		final R result = handle(parserCursor.getValue());
+		final R result = handle(parserCursor.value());
 		//---
-		return new PegResult<>(end, result, parserCursor.getBestUncompleteRule().orElse(null));
+		return new PegResult<R>(end, result, parserCursor.bestUncompleteRule().orElse(null));
 	}
 }

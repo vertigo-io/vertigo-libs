@@ -48,7 +48,7 @@ class PegOperationRule<A, B extends Enum<B> & PegOperatorTerm<A>> implements Peg
 		final var mainResult = mainRule.parse(text, start);
 
 		try {
-			return new PegResult<>(mainResult.getIndex(), mainResult.getValue().apply(PegSolverFunction.identity()));
+			return new PegResult<>(mainResult.index(), mainResult.value().apply(PegSolverFunction.identity()));
 		} catch (final PegParsingValueException e) {
 			throw new PegNoMatchFoundException(text, start, null, e.getMessage());
 		}

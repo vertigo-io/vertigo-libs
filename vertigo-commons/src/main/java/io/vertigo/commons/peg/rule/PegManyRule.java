@@ -89,16 +89,16 @@ final class PegManyRule<R> implements PegRule<List<R>> {
 
 				final PegResult<R> parserCursor = getRule()
 						.parse(text, index);
-				index = parserCursor.getIndex();
+				index = parserCursor.index();
 				PegLogger.found("MANY", "m" + i, prevIndex, index, text, getRule());
 
-				if (parserCursor.getBestUncompleteRule().isPresent()) {
-					best = PegNoMatchFoundException.keepBestUncompleteRule(parserCursor.getBestUncompleteRule().get(), best);
+				if (parserCursor.bestUncompleteRule().isPresent()) {
+					best = PegNoMatchFoundException.keepBestUncompleteRule(parserCursor.bestUncompleteRule().get(), best);
 				}
 
 				if (index > prevIndex) {
 					//cela signifie que l'index n a pas avancé, on sort
-					results.add(parserCursor.getValue());
+					results.add(parserCursor.value());
 				}
 			}
 		} catch (final PegNoMatchFoundException e) {

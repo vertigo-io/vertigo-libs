@@ -61,8 +61,8 @@ final class PegOptionalRule<R> implements PegRule<Optional<R>> {
 	public PegResult<Optional<R>> parse(final String text, final int start) throws PegNoMatchFoundException {
 		try {
 			final PegResult<R> result = rule.parse(text, start);
-			final Optional<R> option = Optional.ofNullable(result.getValue());
-			return new PegResult<>(result.getIndex(), option, result.getBestUncompleteRule().orElse(null));
+			final Optional<R> option = Optional.ofNullable(result.value());
+			return new PegResult<>(result.index(), option, result.bestUncompleteRule().orElse(null));
 		} catch (final PegNoMatchFoundException e) {
 			//As the rule is optional, if we found nothing then the index doesn't move and no exception is thrown.
 			return new PegResult<>(start, Optional.empty(), e);

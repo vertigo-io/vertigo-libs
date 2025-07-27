@@ -29,59 +29,21 @@ import io.vertigo.core.lang.Assertion;
  * @author pchretien
  * @param <R> the type of the Result Object
  */
-public final class PegResult<R> {
-	private final int index;
-	private final R value;
-	private final Optional<PegNoMatchFoundException> bestUncompleteRule;
+public record PegResult<R>(
+		int index,
+		R value,
+		Optional<PegNoMatchFoundException> bestUncompleteRule) {
 
-	/**
-	 * Constructor.
-	 *
-	 * @param index
-	 * @param result
-	 */
+	public PegResult {
+		Assertion.check().isNotNull(value);
+		Assertion.check().isNotNull(bestUncompleteRule);
+	}
+
 	public PegResult(final int index, final R result) {
-		Assertion.check().isNotNull(result);
-		//---
-		this.index = index;
-		this.value = result;
-		this.bestUncompleteRule = Optional.empty();
+		this(index, result, Optional.empty());
 	}
 
-	/**
-	 * Constructor.
-	 *
-	 * @param index
-	 * @param result
-	 * @param bestUncompleteRule
-	 */
 	public PegResult(final int index, final R result, final PegNoMatchFoundException bestUncompleteRule) {
-		Assertion.check().isNotNull(result);
-		//---
-		this.index = index;
-		this.value = result;
-		this.bestUncompleteRule = Optional.ofNullable(bestUncompleteRule);
+		this(index, result, Optional.ofNullable(bestUncompleteRule));
 	}
-
-	/**
-	 * @return Index
-	 */
-	public int getIndex() {
-		return index;
-	}
-
-	/**
-	 * @return the result value
-	 */
-	public R getValue() {
-		return value;
-	}
-
-	/**
-	 * @return the best Uncomplete Rule
-	 */
-	public Optional<PegNoMatchFoundException> getBestUncompleteRule() {
-		return bestUncompleteRule;
-	}
-
 }

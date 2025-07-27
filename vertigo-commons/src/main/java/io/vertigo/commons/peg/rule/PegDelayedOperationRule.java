@@ -90,8 +90,8 @@ class PegDelayedOperationRule<A, B extends Enum<B> & PegOperatorTerm<R>, R> impl
 			if (state == 0) {
 				final PegResult<PegChoice> result = state0Rule.parse(text, index); // can throw PegNoMatchFoundException if operand rule is not respected
 
-				index = result.getIndex();
-				final var value = result.getValue().value();
+				index = result.index();
+				final var value = result.value().value();
 
 				if (value instanceof Dummy) {
 					// ignore spaces
@@ -117,8 +117,8 @@ class PegDelayedOperationRule<A, B extends Enum<B> & PegOperatorTerm<R>, R> impl
 					}
 				}
 
-				index = result.getIndex();
-				final var value = result.getValue().value();
+				index = result.index();
+				final var value = result.value().value();
 
 				if (value instanceof Dummy) {
 					// ignore spaces

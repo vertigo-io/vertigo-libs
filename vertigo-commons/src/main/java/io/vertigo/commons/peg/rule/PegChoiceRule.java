@@ -72,9 +72,9 @@ final class PegChoiceRule implements PegRule<PegChoice> {
 			try {
 				PegLogger.look("CHOICE", "c" + choiceIndex, start, getRules().get(choiceIndex));
 				final PegResult<?> parserCursor = getRules().get(choiceIndex).parse(text, start);
-				final int end = parserCursor.getIndex();
-				if (parserCursor.getBestUncompleteRule().isPresent()) {
-					best = PegNoMatchFoundException.keepBestUncompleteRule(parserCursor.getBestUncompleteRule().get(), best);
+				final int end = parserCursor.index();
+				if (parserCursor.bestUncompleteRule().isPresent()) {
+					best = PegNoMatchFoundException.keepBestUncompleteRule(parserCursor.bestUncompleteRule().get(), best);
 				}
 				/*
 				 // SKE: A débattre, refuser un choix valide si un choix précédent invalide à été plus loin me semble une mauvaise approche
@@ -86,7 +86,7 @@ final class PegChoiceRule implements PegRule<PegChoice> {
 				}
 				*/
 				PegLogger.found("CHOICE", "c" + choiceIndex, start, end, text, getRules().get(choiceIndex));
-				final PegChoice value = new PegChoice(choiceIndex, parserCursor.getValue());
+				final PegChoice value = new PegChoice(choiceIndex, parserCursor.value());
 				return new PegResult<>(end, value, best);
 			} catch (final PegNoMatchFoundException e) {
 				//Tant que l'on a des erreurs sur l'évaluation des règles

@@ -60,7 +60,7 @@ final class PegWhiteSpaceRule implements PegRule<Dummy> {
 		int index = start;
 		index = rule
 				.parse(text, index)
-				.getIndex();
+				.index();
 
 		//Suppression des commentaires  /*xxxxxxxxxxxxxxx*/
 		while (text.length() > index + 2 && "/*".equals(text.substring(index, index + 2))) {
@@ -72,7 +72,7 @@ final class PegWhiteSpaceRule implements PegRule<Dummy> {
 			}
 			index += 2;
 			//On supprime les blancs
-			index = rule.parse(text, index).getIndex();
+			index = rule.parse(text, index).index();
 		}
 		return new PegResult<>(index, Dummy.INSTANCE);
 	}

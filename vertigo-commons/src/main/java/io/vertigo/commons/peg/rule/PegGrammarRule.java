@@ -101,7 +101,7 @@ final class PegGrammarRule<R> implements PegRule<R> {
 		try {
 			PegLogger.look("NAME", ruleName, start, mainRule);
 			final PegResult<R> result = mainRule.parse(text, start);
-			PegLogger.found("NAME", ruleName, start, result.getIndex(), text, mainRule);
+			PegLogger.found("NAME", ruleName, start, result.index(), text, mainRule);
 			return result;
 		} catch (final PegNoMatchFoundException e) {
 			PegLogger.miss("NAME", ruleName, start, mainRule);

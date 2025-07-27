@@ -37,22 +37,22 @@ public class CalculatorTest {
 	@Test
 	public void testCalculatorRule() throws PegNoMatchFoundException {
 		final var result = CALCULATOR_RULE.parse("2*3");
-		Assertions.assertEquals(6, result.getValue());
+		Assertions.assertEquals(6, result.value());
 
 		final var result2 = CALCULATOR_RULE.parse("2+2*3");
-		Assertions.assertEquals(8, result2.getValue());
+		Assertions.assertEquals(8, result2.value());
 
 		final var result3 = CALCULATOR_RULE.parse("2*3+2");
-		Assertions.assertEquals(8, result3.getValue());
+		Assertions.assertEquals(8, result3.value());
 
 		final var result4 = CALCULATOR_RULE.parse("(2+2)*3");
-		Assertions.assertEquals(12, result4.getValue());
+		Assertions.assertEquals(12, result4.value());
 
 		final var result5 = CALCULATOR_RULE.parse("121 /   11 ");
-		Assertions.assertEquals(11, result5.getValue());
+		Assertions.assertEquals(11, result5.value());
 
 		final var result6 = CALCULATOR_RULE.parse("10-4-6");
-		Assertions.assertEquals(0, result6.getValue());
+		Assertions.assertEquals(0, result6.value());
 	}
 
 	@Test

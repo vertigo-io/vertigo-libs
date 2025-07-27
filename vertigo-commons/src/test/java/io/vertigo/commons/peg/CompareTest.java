@@ -60,9 +60,9 @@ public class CompareTest {
 
 	@Test
 	public void testComparisonRule() throws PegNoMatchFoundException, PegParsingValueException {
-		Assertions.assertTrue(RULE.parse("5*3 > 12").getValue().apply(TERM_PARSER));
+		Assertions.assertTrue(RULE.parse("5*3 > 12").value().apply(TERM_PARSER));
 
-		Assertions.assertFalse(RULE.parse("5*3 >= 3 * (3+2) +1").getValue().apply(TERM_PARSER));
+		Assertions.assertFalse(RULE.parse("5*3 >= 3 * (3+2) +1").value().apply(TERM_PARSER));
 	}
 
 	@Test

@@ -45,7 +45,7 @@ class PegComparisonRule implements PegRule<Boolean> {
 		final var mainResult = mainRule.parse(text, start);
 
 		try {
-			return new PegResult<>(mainResult.getIndex(), mainResult.getValue().apply(f -> f));
+			return new PegResult<>(mainResult.index(), mainResult.value().apply(f -> f));
 		} catch (final PegParsingValueException e) {
 			throw new PegNoMatchFoundException(text, start, null, e.getMessage());
 		}

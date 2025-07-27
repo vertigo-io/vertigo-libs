@@ -80,14 +80,14 @@ public final class ParserTest {
 		final PegResult<String> cursor = HELLO
 				.parse("hello");
 		//On vérifie que l'on a trouvé la chaine "hello"
-		assertEquals("hello".length(), cursor.getIndex());
-		assertEquals("hello", cursor.getValue());
+		assertEquals("hello".length(), cursor.index());
+		assertEquals("hello", cursor.value());
 		//---
 		final PegResult<String> cursor2 = HELLO
 				.parse("hello, my name is");
 		//On vérifie que l'on a trouvé la chaine "hello"
-		assertEquals("hello".length(), cursor2.getIndex());
-		assertEquals("hello", cursor2.getValue());
+		assertEquals("hello".length(), cursor2.index());
+		assertEquals("hello", cursor2.value());
 	}
 
 	@Test
@@ -95,14 +95,14 @@ public final class ParserTest {
 		final PegResult<List<Object>> cursor = HELLO_PROPERTY
 				.parse("hello \\\"mister\\\"");
 		//On vérifie que l'on a trouvé la chaine "mister"
-		assertEquals("hello \\\"mister\\\"".length(), cursor.getIndex());
-		assertEquals("\"mister\"", cursor.getValue().get(2));
+		assertEquals("hello \\\"mister\\\"".length(), cursor.index());
+		assertEquals("\"mister\"", cursor.value().get(2));
 
 		final PegResult<List<Object>> cursor2 = HELLO_PROPERTY
 				.parse("hello mister\\\\truc\\\"hello\\\"");
 		//On vérifie que l'on a trouvé la chaine "mister"
-		assertEquals("hello mister\\\\truc\\\"hello\\\"".length(), cursor2.getIndex());
-		assertEquals("mister\\truc\"hello\"", cursor2.getValue().get(2));
+		assertEquals("hello mister\\\\truc\\\"hello\\\"".length(), cursor2.index());
+		assertEquals("mister\\truc\"hello\"", cursor2.value().get(2));
 
 	}
 
@@ -118,16 +118,16 @@ public final class ParserTest {
 		final PegResult<List<Object>> cursor = HELLO_WORLD
 				.parse("hello worlds");
 		//On vérifie que l'on a trouvé la chaine "hello world"
-		assertEquals("hello world".length(), cursor.getIndex());
-		assertEquals("hello", cursor.getValue().get(0));
-		assertEquals("world", cursor.getValue().get(2));
+		assertEquals("hello world".length(), cursor.index());
+		assertEquals("hello", cursor.value().get(0));
+		assertEquals("world", cursor.value().get(2));
 
 		final PegResult<List<Object>> cursor2 = HELLO_WORLD
 				.parse("hello world, my name is");
 		//On vérifie que l'on a trouvé la chaine "hello world"
-		assertEquals("hello world".length(), cursor2.getIndex());
-		assertEquals("hello", cursor2.getValue().get(0));
-		assertEquals("world", cursor2.getValue().get(2));
+		assertEquals("hello world".length(), cursor2.index());
+		assertEquals("hello", cursor2.value().get(0));
+		assertEquals("world", cursor2.value().get(2));
 	}
 
 	@Test
@@ -141,13 +141,13 @@ public final class ParserTest {
 	public void testFirstOf() throws PegNoMatchFoundException {
 		final PegChoice choice = WORLD_MUSIC
 				.parse("world")
-				.getValue();
+				.value();
 		//On vérifie que l'on a trouvé la chaine "world" qui correspond au cas 0
 		assertEquals(0, choice.choiceIndex());
 		assertEquals("world", choice.value());
 		//---
 		final PegChoice choice2 = WORLD_MUSIC
-				.parse("music").getValue();
+				.parse("music").value();
 		//On vérifie que l'on a trouvé la chaine "music" qui correspond au cas 1
 		assertEquals(1, choice2.choiceIndex());
 		assertEquals("music", choice2.value());
@@ -172,7 +172,7 @@ public final class ParserTest {
 	public void testChoice() throws PegNoMatchFoundException {
 		final PegChoice choice = PegRules.choice(HELLO)
 				.parse("hello")
-				.getValue();
+				.value();
 		assertEquals("hello", choice.value());
 	}
 
@@ -181,14 +181,14 @@ public final class ParserTest {
 		final PegResult<List<Object>> cursor = HELLO_WORLD_MUSIC
 				.parse("hello world, my name");
 		//On vérifie que l'on a trouvé la chaine "world" qui correspond au cas 0
-		final PegChoice choice = (PegChoice) cursor.getValue().get(2);
+		final PegChoice choice = (PegChoice) cursor.value().get(2);
 		assertEquals(0, choice.choiceIndex());
 		assertEquals("world", choice.value());
 		//---
 		final PegResult<List<Object>> cursor2 = HELLO_WORLD_MUSIC
 				.parse("hello music, my name");
 		//On vérifie que l'on a trouvé la chaine "music" qui correspond au cas 1
-		final PegChoice choice2 = (PegChoice) cursor2.getValue().get(2);
+		final PegChoice choice2 = (PegChoice) cursor2.value().get(2);
 		assertEquals(1, choice2.choiceIndex());
 		assertEquals("music", choice2.value());
 	}
@@ -197,12 +197,12 @@ public final class ParserTest {
 	public void testOption() throws PegNoMatchFoundException {
 		final PegResult<List<Object>> cursor = HELLO_WORLD_FROM
 				.parse("hello world bla bla");
-		final Optional<List> from = (Optional<List>) cursor.getValue().get(3);
+		final Optional<List> from = (Optional<List>) cursor.value().get(3);
 		assertFalse(from.isPresent());
 		//---
 		final PegResult<List<Object>> cursor2 = HELLO_WORLD_FROM
 				.parse("hello world from mars");
-		final Optional<List> from2 = (Optional<List>) cursor2.getValue().get(3);
+		final Optional<List> from2 = (Optional<List>) cursor2.value().get(3);
 		assertTrue(from2.isPresent());
 		assertEquals("mars", from2.get().get(3));
 	}
@@ -212,7 +212,7 @@ public final class ParserTest {
 		final PegResult<List<Object>> cursor = HELLO_WORLD_FROM
 				.parse("hello world from ");
 
-		final Optional<List> from = (Optional<List>) cursor.getValue().get(3);
+		final Optional<List> from = (Optional<List>) cursor.value().get(3);
 		assertFalse(from.isPresent()); //pas d'exception NotFound
 	}
 
@@ -220,7 +220,7 @@ public final class ParserTest {
 	public void testMany() throws PegNoMatchFoundException {
 		List results = MANY_AB
 				.parse("")
-				.getValue();
+				.value();
 		assertEquals(0, results.size());
 		//-
 		//		end = parser.parse("a");
@@ -229,21 +229,21 @@ public final class ParserTest {
 		//-
 		results = MANY_AB
 				.parse("ab")
-				.getValue();
+				.value();
 		assertEquals(1, results.size());
 		//-
 		results = MANY_AB
 				.parse("abc")
-				.getValue();
+				.value();
 		assertEquals(1, results.size());
 		results = MANY_AB
 				.parse("aba")
-				.getValue();
+				.value();
 		assertEquals(1, results.size());
 		//-
 		results = MANY_AB
 				.parse("abababab")
-				.getValue();
+				.value();
 		assertEquals(4, results.size());
 		assertEquals("ab", results.get(0));
 		assertEquals("ab", results.get(1));
@@ -270,7 +270,7 @@ public final class ParserTest {
 	public void testManyFail2() throws PegNoMatchFoundException {
 		final List results = MANY_AB
 				.parse("abc")
-				.getValue();
+				.value();
 		assertEquals(1, results.size());
 		assertEquals("ab", results.get(0));
 	}
@@ -288,17 +288,17 @@ public final class ParserTest {
 		//-
 		List results = MANY_AB_MORE
 				.parse("ab")
-				.getValue();
+				.value();
 		assertEquals(1, results.size());
 		//-
 		results = MANY_AB_MORE
 				.parse("abc")
-				.getValue();
+				.value();
 		assertEquals(1, results.size());
 		//-
 		results = MANY_AB_MORE
 				.parse("abababab")
-				.getValue();
+				.value();
 
 		assertEquals(4, results.size());
 		assertEquals("ab", results.get(0));
@@ -330,7 +330,7 @@ public final class ParserTest {
 	void testParseAll() throws PegNoMatchFoundException {
 		final PegRule<List<Object>> rule = PegRules.parseAll(HELLO_WORLD);
 		final var cursor = rule.parse("hello world");
-		assertEquals(11, cursor.getIndex());
+		assertEquals(11, cursor.index());
 
 		final PegNoMatchFoundException ex = Assertions.assertThrows(PegNoMatchFoundException.class, () -> rule.parse("hello world, my name"));
 		assertEquals(0, ex.getIndex());
@@ -384,8 +384,8 @@ public final class ParserTest {
 		System.out.println("======================================");
 		System.out.println("text  : " + text);
 		System.out.println("Règle : " + rule.getExpression());
-		System.out.println("  reste     :" + text.substring(cursor.getIndex()));
-		System.out.println("  elements  :" + cursor.getValue());
+		System.out.println("  reste     :" + text.substring(cursor.index()));
+		System.out.println("  elements  :" + cursor.value());
 	}
 
 	private PegNoMatchFoundException rootCause(final PegNoMatchFoundException e) {

@@ -32,16 +32,16 @@ public class OperatorTest {
 	@Test
 	public void testBooleanRule() throws PegNoMatchFoundException {
 		final var result = BOOLEAN_RULE.parse("true or false AND false");
-		Assertions.assertTrue(result.getValue());
+		Assertions.assertTrue(result.value());
 
 		final var result2 = BOOLEAN_RULE.parse("false  and false or true");
-		Assertions.assertTrue(result2.getValue());
+		Assertions.assertTrue(result2.value());
 
 		final var result3 = BOOLEAN_RULE.parse("(true or false) AND false");
-		Assertions.assertFalse(result3.getValue());
+		Assertions.assertFalse(result3.value());
 
 		final var result4 = BOOLEAN_RULE.parse("(true or (false or false and true)) AND (false or false) and true");
-		Assertions.assertFalse(result4.getValue());
+		Assertions.assertFalse(result4.value());
 	}
 
 	@Test
@@ -83,12 +83,12 @@ public class OperatorTest {
 	@Test
 	public void testLax() throws PegNoMatchFoundException {
 		final var result = BOOLEAN_RULE_LAX.parse("true or false AND false 42");
-		Assertions.assertEquals(23, result.getIndex());
-		Assertions.assertTrue(result.getValue());
+		Assertions.assertEquals(23, result.index());
+		Assertions.assertTrue(result.value());
 
 		final var result2 = BOOLEAN_RULE_LAX.parse("true or false AND false)");
-		Assertions.assertEquals(23, result2.getIndex());
-		Assertions.assertTrue(result2.getValue());
+		Assertions.assertEquals(23, result2.index());
+		Assertions.assertTrue(result2.value());
 	}
 
 	private static class TermRule extends PegAbstractRule<Boolean, PegChoice> {
