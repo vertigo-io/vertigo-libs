@@ -35,7 +35,7 @@ public final class PegLogger {
 		}
 		tabs++;
 		final String tabStr = String.format("%" + tabs * 4 + "s", "");
-		System.out.println(tabStr + "Look  " + category + " " + ruleName + " @" + start + " : " + rule.getClass().getSimpleName() + "@" + System.identityHashCode(rule));
+		println(tabStr + "Look  " + category + " " + ruleName + " @" + start + " : " + rule.getClass().getSimpleName() + "@" + System.identityHashCode(rule));
 	}
 
 	public static void log(final String message) {
@@ -43,7 +43,7 @@ public final class PegLogger {
 			return;
 		}
 		final String tabStr = String.format("%" + tabs * 4 + "s", "");
-		System.out.println(tabStr + message);
+		println(tabStr + message);
 	}
 
 	public static void found(final String category, final String ruleName, final int start, final int end, final String text, final PegRule<?> rule) {
@@ -52,7 +52,7 @@ public final class PegLogger {
 		}
 		final String tabStr = String.format("%" + tabs * 4 + "s", "");
 		tabs--;
-		System.out.println(tabStr + "Found  " + category + " " + ruleName + " @" + start + "-" + end + " '" + text.substring(start, end) + "' : " + rule.getClass().getSimpleName() + "@" + System.identityHashCode(rule));
+		println(tabStr + "Found  " + category + " " + ruleName + " @" + start + "-" + end + " '" + text.substring(start, end) + "' : " + rule.getClass().getSimpleName() + "@" + System.identityHashCode(rule));
 	}
 
 	public static void miss(final String category, final String ruleName, final int start, final PegRule<?> rule) {
@@ -61,7 +61,11 @@ public final class PegLogger {
 		}
 		final String tabStr = String.format("%" + tabs * 4 + "s", "");
 		tabs--;
-		System.out.println(tabStr + "Miss  " + category + " " + ruleName + " @" + start + " : " + rule.getClass().getSimpleName() + "@" + System.identityHashCode(rule));
+		println(tabStr + "Miss  " + category + " " + ruleName + " @" + start + " : " + rule.getClass().getSimpleName() + "@" + System.identityHashCode(rule));
+	}
+
+	private static void println(String s) {
+		System.out.println(s);
 	}
 
 }
