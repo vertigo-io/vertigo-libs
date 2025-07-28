@@ -25,7 +25,6 @@
 		<module>vertigo-vega</module>
 		<module>vertigo-ui</module>
 		<module>vertigo-basics</module>
-		<!-- module>vertigo-vortex</module NOT RELEASED YET -->
 	</modules>
 
 	<scm>
