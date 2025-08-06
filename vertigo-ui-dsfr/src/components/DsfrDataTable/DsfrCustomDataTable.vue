@@ -182,7 +182,7 @@ function resetCurrentPage() {
   currentPage.value = 0
 }
 
-defineExpose({ resetCurrentPage })
+defineExpose({resetCurrentPage})
 
 </script>
 
@@ -246,15 +246,20 @@ defineExpose({ resetCurrentPage })
                   </slot>
 
                   <span
-                      v-if="sortedBy !== ((header as DsfrDataTableHeaderCellObject).key ?? header) && (sortableRows === true || (Array.isArray(sortableRows) && sortableRows.includes((header as DsfrDataTableHeaderCellObject).key ?? header)))">
-                      <VIcon
-                          name="ri-sort-asc"
-                          color="var(--grey-625-425)"
-                      />
-                    </span>
+                    v-if="sortedBy !== ((header as DsfrDataTableHeaderCellObject).key ?? header) && (sortableRows === true || (Array.isArray(sortableRows) && sortableRows.includes((header as DsfrDataTableHeaderCellObject).key ?? header)))">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"
+                         color="var(--grey-625-425)">
+                      <path fill="currentColor" d="m19 3l4 5h-3v12h-2V8h-3zm-5 15v2H3v-2zm0-7v2H3v-2zm-2-7v2H3V4z"/>
+                    </svg>
+                  </span>
                   <span v-else-if="sortedBy === ((header as DsfrDataTableHeaderCellObject).key ?? header)">
-                      <VIcon :name="sortedDesc ? 'ri-sort-desc' : 'ri-sort-asc'"/>
-                    </span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" v-if="sortedDesc">
+                      <path fill="currentColor" d="M20 4v12h3l-4 5l-4-5h3V4zm-8 14v2H3v-2zm2-7v2H3v-2zm0-7v2H3V4z"/>
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" v-else>
+                      <path fill="currentColor" d="m19 3l4 5h-3v12h-2V8h-3zm-5 15v2H3v-2zm0-7v2H3v-2zm-2-7v2H3V4z"/>
+                    </svg>
+                  </span>
                 </div>
               </th>
             </tr>
@@ -414,5 +419,11 @@ defineExpose({ resetCurrentPage })
   display: flex;
   justify-content: space-between;
   cursor: pointer;
+}
+
+.sortable-header svg {
+  font-size: 1.2rem;
+  vertical-align: -0.2em;
+  display: inline-block;
 }
 </style>
