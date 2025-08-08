@@ -55,11 +55,13 @@ import io.vertigo.vega.webservice.validation.UiMessageStack;
 
 /**
  * Swagger WebService to list services published.
+ *
  * @see "https://github.com/wordnik/swagger-spec/blob/master/versions/2.0.md"
  * @author npiedeloup (22 juil. 2014 11:12:02)
  */
 public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 
+	private static final String REF_HASH_SEPARATOR = "_";
 	private static final String REQUIRED = "required";
 
 	private static final String SCHEMA = "schema";
@@ -170,7 +172,7 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 			description.append("<br/>");
 		}
 		putIfNotEmpty(operation, DESCRIPTION, description.toString());
-		operation.put("operationId", webServiceDefinition.getName());
+		operation.put("operationId", webServiceDefinition.getName()); //operationId must be unique, and it url encoded when needed
 		putIfNotEmpty(operation, "consumes", createConsumesArray(webServiceDefinition));
 		putIfNotEmpty(operation, "parameters", createParametersArray(webServiceDefinition));
 		putIfNotEmpty(operation, "responses", createResponsesObject(webServiceDefinition));
@@ -205,7 +207,7 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 		if (webServiceDefinition.isNeedAuthentification()) {
 			//webServiceDefinition.isNeedSession() don't mean that session is mandatory, it just say to create a session
 			responses.put("401", createResponseObject("Unauthorized : no valid session", ErrorMessage.class, Collections.emptySet(), Collections.emptySet(), headers));
-			responses.put("403", createResponseObject("Forbidden : not enought rights", ErrorMessage.class, Collections.emptySet(), Collections.emptySet(), headers));
+			responses.put("403", createResponseObject("Forbidden : not enough rights", ErrorMessage.class, Collections.emptySet(), Collections.emptySet(), headers));
 		}
 		if (!webServiceDefinition.getWebServiceParams().isEmpty()) {
 			responses.put("422", createResponseObject("Unprocessable entity : validations or business error", UiMessageStack.class, Collections.emptySet(), Collections.emptySet(), headers));
@@ -226,6 +228,7 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 
 	/**
 	 * ErrorMessage for json conversion.
+	 *
 	 * @author npiedeloup
 	 */
 	static final class ErrorMessage {
@@ -311,7 +314,7 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 		}
 		final var sb = "+(" + includedFields + ")" +
 				"-(" + excludedFields + ")";
-		return "$" + sb.hashCode();
+		return REF_HASH_SEPARATOR + sb.hashCode();
 	}
 
 	private void appendPropertiesDtObject(final Map<String, Object> entity, final Class<? extends DataObject> objectClass, final Set<String> includedFields, final Set<String> excludedFields) {
@@ -438,7 +441,7 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 		}
 		if (!bodyParameter.isEmpty()) {
 			final var splittedDefinitionName = webServiceDefinition.getName().split("\\$");
-			final var bodyName = splittedDefinitionName[0].replaceAll("_+", "_") + "Body" + "$" + splittedDefinitionName[1];
+			final var bodyName = splittedDefinitionName[0].replaceAll("_+", "_") + "Body" + REF_HASH_SEPARATOR + splittedDefinitionName[1];
 			final var compositeSchema = (Map<String, Object>) bodyParameter.get(SCHEMA);
 			bodyParameter.put(SCHEMA, Collections.singletonMap("$ref", "#/definitions/" + bodyName));
 			final Map<String, Object> bodyDefinition = new LinkedHashMap<>();

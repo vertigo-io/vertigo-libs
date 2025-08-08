@@ -17,6 +17,7 @@
  */
 package io.vertigo.vega.webservice.definitions;
 
+import java.io.File;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,6 +29,7 @@ import java.util.Set;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
 import io.vertigo.core.util.StringUtil;
+import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.vega.webservice.definitions.WebServiceDefinition.Verb;
 
 /**
@@ -58,6 +60,7 @@ public final class WebServiceDefinitionBuilder implements Builder<WebServiceDefi
 
 	/**
 	 * Constructeur.
+	 *
 	 * @param method Method to bind to this webService
 	 */
 	WebServiceDefinitionBuilder(final Method method) {
@@ -142,9 +145,11 @@ public final class WebServiceDefinitionBuilder implements Builder<WebServiceDefi
 		Assertion.check()
 				.isNull(myVerb, "A verb is already specified on {0}.{1} ({2})", myMethod.getDeclaringClass().getSimpleName(), myMethod.getName(), myVerb)
 				.when(StringUtil.isBlank(myPathPrefix), () -> Assertion.check()
-						.isFalse(StringUtil.isBlank(path), "Route path must be specified on {0}.{1} (at least you should defined a pathPrefix)", myMethod.getDeclaringClass().getSimpleName(), myMethod.getName()))
+						.isFalse(StringUtil.isBlank(path), "Route path must be specified on {0}.{1} (at least you should defined a pathPrefix)", myMethod.getDeclaringClass().getSimpleName(),
+								myMethod.getName()))
 				.when(!StringUtil.isBlank(path), () -> Assertion.check()
-						.isTrue(path.startsWith("/"), "Route path must be empty (then use pathPrefix) or starts with / (on {0}.{1})", myMethod.getDeclaringClass().getSimpleName(), myMethod.getName()));
+						.isTrue(path.startsWith("/"), "Route path must be empty (then use pathPrefix) or starts with / (on {0}.{1})", myMethod.getDeclaringClass().getSimpleName(),
+								myMethod.getName()));
 		//---
 		myVerb = verb;
 		myPath = path;
@@ -288,8 +293,11 @@ public final class WebServiceDefinitionBuilder implements Builder<WebServiceDefi
 		return this;
 	}
 
-	private static String computeAcceptedType() {
+	private String computeAcceptedType() {
 		//AcceptedType is from client view : it's return type, not input type
+		if (myWebServiceParams.stream().anyMatch(param -> param.getType().isAssignableFrom(VFile.class) || param.getType().isAssignableFrom(File.class))) {
+			return "multipart/form-data";
+		}
 		return "*/*";
 	}
 
