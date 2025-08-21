@@ -542,35 +542,35 @@ public abstract class AbstractSqlManagerTest {
 		//On crée les données
 		createDatas();
 		//----
-		StringBuilder stringBuilder = new StringBuilder("select * from MOVIE");
+		StringBuilder stringBuilder = new StringBuilder("select * from movie");
 		getDialect().appendListState(stringBuilder, null, 0, "title", false);
 		final String querySortAsc = stringBuilder.toString();
 		final List<Movie> resultSortAsc = executeQuery(Movie.class, querySortAsc, null);
 		Assertions.assertEquals(3, resultSortAsc.size());
 		Assertions.assertEquals("citizen kane", resultSortAsc.get(0).getTitle());
 
-		stringBuilder = new StringBuilder("select * from MOVIE");
+		stringBuilder = new StringBuilder("select * from movie");
 		getDialect().appendListState(stringBuilder, null, 0, "title", true);
 		final String querySortDesc = stringBuilder.toString();
 		final List<Movie> resultSortDesc = executeQuery(Movie.class, querySortDesc, null);
 		Assertions.assertEquals(3, resultSortDesc.size());
 		Assertions.assertEquals("vertigo", resultSortDesc.get(0).getTitle());
 
-		stringBuilder = new StringBuilder("select * from MOVIE");
+		stringBuilder = new StringBuilder("select * from movie");
 		getDialect().appendListState(stringBuilder, 2, 0, null, false);
 		final String queryMaxRows = stringBuilder.toString();
 
 		final List<Movie> resultMaxRows = executeQuery(Movie.class, queryMaxRows, null);
 		Assertions.assertEquals(2, resultMaxRows.size());
 
-		stringBuilder = new StringBuilder("select * from MOVIE where 1=1");
+		stringBuilder = new StringBuilder("select * from movie where 1=1");
 		getDialect().appendListState(stringBuilder, 2, 0, null, false);
 		final String queryMaxRows2 = stringBuilder.toString();
 
 		final List<Movie> resultMaxRows2 = executeQuery(Movie.class, queryMaxRows2, null);
 		Assertions.assertEquals(2, resultMaxRows2.size());
 
-		stringBuilder = new StringBuilder("select * from MOVIE");
+		stringBuilder = new StringBuilder("select * from movie");
 		getDialect().appendListState(stringBuilder, null, 1, null, false);
 		final String querySkipRows = stringBuilder.toString();
 		final List<Movie> resultSkipRows = executeQuery(Movie.class, querySkipRows, null);
