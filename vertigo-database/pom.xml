@@ -10,6 +10,7 @@
 	<artifactId>vertigo-database</artifactId>
 	<packaging>jar</packaging>
 	<name>vertigo-database</name>
+	<version>4.3.3-SNAPSHOT</version>
 
 	<dependencyManagement>
 		<dependencies>
@@ -41,7 +42,7 @@
 			<dependency>
 				<groupId>io.vertigo</groupId>
 				<artifactId>vertigo-commons</artifactId>
-				<version>${project.version}</version>
+				<version>${vertigo.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -52,7 +53,7 @@
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-commons</artifactId>
-			<version>${project.version}</version>
+			<version>${vertigo.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.vertigo</groupId>
