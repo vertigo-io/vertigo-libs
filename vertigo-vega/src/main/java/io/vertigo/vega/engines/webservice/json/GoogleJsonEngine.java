@@ -94,7 +94,8 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 		V1(FacetedQueryResultJsonSerializerV1.class), //first api
 		V2(FacetedQueryResultJsonSerializerV2.class), //with array instead of object
 		V3(FacetedQueryResultJsonSerializerV3.class), //with code label, count on facets
-		V4(FacetedQueryResultJsonSerializerV4.class); //with highlights and code, label for facet
+		V4(FacetedQueryResultJsonSerializerV4.class), //with highlights and code, label for facet
+		V5(FacetedQueryResultJsonSerializerV5.class); //with isMultiSelectable on facets
 
 		private final Class<? extends JsonSerializer<FacetedQueryResult<?, ?>>> jsonSerializerClass;
 
