@@ -117,7 +117,7 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 		//---
 		this.smartTypeManager = smartTypeManager;
 		serializeNulls = serializeNullsOpt.orElse(true);
-		searchApiVersion = SearchApiVersion.valueOf(searchApiVersionStr.orElse(SearchApiVersion.V4.name()));
+		searchApiVersion = SearchApiVersion.valueOf(searchApiVersionStr.orElse(SearchApiVersion.V5.name()));
 	}
 
 	@Override
