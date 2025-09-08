@@ -69,8 +69,8 @@
                     </vu:grid-cell>
                     
                     <vu:grid-cell>
-                        <vu:fileupload-dropzone key="myFilesUris">
-                            <vu:fileupload label="Upload file" th:url="'@{/commons/upload}'" key="myFilesUris1" multiple />           
+                        <vu:fileupload-dropzone fileComponentId="uploader_myFilesUris1">
+                            <vu:fileupload label="Upload file" th:url="'@{/commons/upload}'" key="myFilesUris1" componentId="uploader_myFilesUris1" multiple />           
                         </vu:fileupload-dropzone>
                     </vu:grid-cell>                
                     <vu:fileupload-simple label="Simple upload file" th:url="'@{/commons/upload}'" key="myFilesUris3" multiple/>                            

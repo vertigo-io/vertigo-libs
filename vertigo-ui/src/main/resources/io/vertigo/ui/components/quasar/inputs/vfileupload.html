@@ -38,9 +38,9 @@
             th:attr="__${uploader_attrs}__"></v-file-upload>
 </th:block>
 
-<th:block th:fragment="v-fileupload-dropzone(key, dropzone_attrs)" 
-    th:assert="${key} != null"
-    th:with="myComponentId='uploader_'+${key}+'_drop',fileComponentId='uploader_'+${key}"
+<th:block th:fragment="v-fileupload-dropzone(fileComponentId, dropzone_attrs)" 
+    th:assert="${fileComponentId} != null"
+    th:with="myComponentId=${model.util.generateComponentUID('uploader_drop', fileComponentId, null, null)}"
     th:attr="objectKey=${model.vContext['componentStates'].addComponentState(myComponentId).addPrimitive('dragover',false)}" >
         <div class="dropzone-area" 
             th:@dragenter.prevent="|uploader_dragenter('${myComponentId}')|"

@@ -7,6 +7,14 @@ Running 5.0.0
 
 more to come :)
 
+Release 4.3.3 - 
+----------------------
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-432-to-433)
+
+* [Ui] `vu:fileupload` : Add `maxFileSize` (MB), `maxTotalSize` (MB), `maxFiles` and `accept` attributes
+* [Ui] `vu:fileupload` : Fix displayed total file size after page reloading
+* [Ui] `vu:fileupload-dropzone` and `vu:v-fileupload-dropzone` : Fix : Change `key` attribute for `fileComponentId` attribute (referencing uploader `componentId` attribute)
+
 
 Release 4.3.2 - 2025/07/10
 ----------------------
