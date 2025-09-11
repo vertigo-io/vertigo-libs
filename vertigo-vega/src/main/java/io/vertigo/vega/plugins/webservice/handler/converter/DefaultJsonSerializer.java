@@ -44,6 +44,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Default JsonConverter.
+ *
  * @author npiedeloup
  */
 public final class DefaultJsonSerializer implements JsonSerializer {
@@ -121,6 +122,7 @@ public final class DefaultJsonSerializer implements JsonSerializer {
 
 		/**
 		 * constructor.
+		 *
 		 * @param encoderType encoderType
 		 * @param meta has meta
 		 * @param entityName entityName
@@ -253,12 +255,8 @@ public final class DefaultJsonSerializer implements JsonSerializer {
 		} else if (value instanceof ExtendedObject<?>) {
 			final ExtendedObject<?> extendedObject = (ExtendedObject<?>) value;
 			return toJson(extendedObject.getInnerObject(), extendedObject, webServiceDefinition.getIncludedFields(), webServiceDefinition.getExcludedFields());
-		} else if (value instanceof Object) {
-			return toJson(value, Collections.emptyMap(), webServiceDefinition.getIncludedFields(), webServiceDefinition.getExcludedFields());
 		} else {
-			Assertion.check().isTrue(webServiceDefinition.getIncludedFields().isEmpty() && webServiceDefinition.getExcludedFields().isEmpty(),
-					"IncludedFields and ExcludedFields aren't supported for this object type: {0}, on WebService {1}", value.getClass().getSimpleName(), webServiceDefinition.getMethod());
-			return jsonWriterEngine.toJson(value);
+			return toJson(value, Collections.emptyMap(), webServiceDefinition.getIncludedFields(), webServiceDefinition.getExcludedFields());
 		}
 	}
 
