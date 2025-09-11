@@ -4,6 +4,13 @@ Version history
 Running 5.0.0
 ----------------------
 [Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-431-to-500)
+
+* **[Vega] ContentSecurityPolicyFilter ${..} are now resolved by the paramManager. Old syntax must be updated :**
+  - `${cspFrameAncestor}` => `${CSP_FRAME_ANCESTOR}`
+  - `${cspParam1}` => `${CSP_PARAM1}`
+  - `${cspParam2}` => `${CSP_PARAM2}`
+  - `${cspParam3}` => `${CSP_PARAM3}`
+
 more to come :)
 
 Release 4.3.1 - 2025/06/13

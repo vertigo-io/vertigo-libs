@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
+import java.util.regex.Pattern;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Node;
@@ -47,14 +48,6 @@ public final class ContentSecurityPolicyFilter extends AbstractFilter {
 	public static final String NONCE_ATTRIBUTE_NAME = "nonce";
 	private static final String NONCE_PATTERN = "${nonce}";
 	private static final String COMPATIBILITY_HEADERS_ATTRIBUTE_NAME = "compatibilityHeaders";
-	private static final String FRAME_ANCESTOR_PATTERN = "${cspFrameAncestor}";
-	private static final String FRAME_ANCESTOR_PARAM_NAME = "CSP_FRAME_ANCESTOR";
-	private static final String CSP_PARAM1_PATTERN = "${cspParam1}";
-	private static final String CSP_PARAM1_PARAM_NAME = "CSP_PARAM1";
-	private static final String CSP_PARAM2_PATTERN = "${cspParam2}";
-	private static final String CSP_PARAM2_PARAM_NAME = "CSP_PARAM2";
-	private static final String CSP_PARAM3_PATTERN = "${cspParam3}";
-	private static final String CSP_PARAM3_PARAM_NAME = "CSP_PARAM3";
 	private static final String REPORT_WS_PARAM_NAME = "CSP_REPORT_WS_URI";
 
 	private String cspPattern;
@@ -72,19 +65,20 @@ public final class ContentSecurityPolicyFilter extends AbstractFilter {
 		srnd = useNonce ? new SecureRandom() : null;
 
 		final ParamManager paramManager = Node.getNode().getComponentSpace().resolve(ParamManager.class);
-		//String.replace : => est équivalent à replaceAll sans regexp (et remplace bien toutes les occurences)
-		cspPattern = cspPattern
-				.replace(FRAME_ANCESTOR_PATTERN, paramManager.getOptionalParam(FRAME_ANCESTOR_PARAM_NAME).map(Param::getValue).orElse(""))
-				.replace(CSP_PARAM1_PATTERN, paramManager.getOptionalParam(CSP_PARAM1_PARAM_NAME).map(Param::getValue).orElse(""))
-				.replace(CSP_PARAM2_PATTERN, paramManager.getOptionalParam(CSP_PARAM2_PARAM_NAME).map(Param::getValue).orElse(""))
-				.replace(CSP_PARAM3_PATTERN, paramManager.getOptionalParam(CSP_PARAM3_PARAM_NAME).map(Param::getValue).orElse(""));
+
+		// Replace all occurrences of ${xxx} with the value of the corresponding parameter from Vertigo's paramManager (or "" if not defined)
+		final Pattern pattern = Pattern.compile("\\$\\{([^}]+)\\}");
+		cspPattern = pattern.matcher(cspPattern).replaceAll(matchResult -> {
+			final String paramName = matchResult.group(1);
+			return paramManager.getOptionalParam(paramName).map(Param::getValue).orElse("");
+		});
 
 		final Optional<Param> reportUri = paramManager.getOptionalParam(REPORT_WS_PARAM_NAME);
 		if (reportUri.isPresent() && !reportUri.get().getValue().isBlank()) {
 			cspPattern += " report-uri " + reportUri.get().getValue();
 		}
 
-		//minify de la csp car il semble que les \n soient mal interprétés
+		// Minify the CSP because it seems that \n are misinterpreted
 		cspPattern = cspPattern.replaceAll("[\n\r\\s]+", " ");
 
 		final String compatibilityHeadersParam = filterConfig.getInitParameter(COMPATIBILITY_HEADERS_ATTRIBUTE_NAME);
@@ -117,7 +111,7 @@ public final class ContentSecurityPolicyFilter extends AbstractFilter {
 			//nonce = UUID.randomUUID().toString(); //UUID contains - badly parsed by some tool
 			cspToApply = cspToApply.replace(NONCE_PATTERN, nonce);
 		}
-		request.setAttribute("nonce", nonce);
+		request.setAttribute(NONCE_ATTRIBUTE_NAME, nonce);
 		response.setHeader("Content-Security-Policy", cspToApply);
 		compatibilityHeaders.forEach(response::setHeader);
 
