@@ -10714,7 +10714,7 @@ const Sh = /* @__PURE__ */ Se(ph, [["render", Bh], ["__scopeId", "data-v-628fafb
               xmlns: "http://www.w3.org/2000/svg",
               "aria-hidden": "true",
               role: "img",
-              class: "vicon vicon-spin iconify iconify--local",
+              class: "vicon iconify iconify--local",
               width: "1em",
               height: "1em",
               viewBox: "0 0 24 24"
@@ -10811,7 +10811,7 @@ const Sh = /* @__PURE__ */ Se(ph, [["render", Bh], ["__scopeId", "data-v-628fafb
       }, b(B.value), 11, rb)) : y("", !0)
     ], 64));
   }
-}), sb = /* @__PURE__ */ Se(lb, [["__scopeId", "data-v-5a486ba9"]]), ob = ["id", "onKeydown", "aria-disabled", "aria-controls", "aria-expanded"], ib = ["id", "aria-labelledby", "onKeydown"], ub = {
+}), sb = /* @__PURE__ */ Se(lb, [["__scopeId", "data-v-c0307d95"]]), ob = ["id", "onKeydown", "aria-disabled", "aria-controls", "aria-expanded"], ib = ["id", "aria-labelledby", "onKeydown"], ub = {
   key: 0,
   class: "fr-label fr-mb-0"
 }, db = {
