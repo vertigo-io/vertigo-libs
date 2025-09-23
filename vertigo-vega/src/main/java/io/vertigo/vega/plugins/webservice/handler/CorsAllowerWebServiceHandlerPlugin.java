@@ -103,7 +103,7 @@ public final class CorsAllowerWebServiceHandlerPlugin implements WebServiceHandl
 				throw new VSecurityException(LocaleMessageText.of("Invalid CORS Access (Origin:{0}, Method:{1})", origin, method));
 			}
 		}
-		response.addHeader("Access-Control-Allow-Origin", originCORSFilter);
+		response.addHeader("Access-Control-Allow-Origin", origin); // Access-Control-Allow-Origin only allows one origin so we put the current one (we checked it is allowed before)
 		response.addHeader("Access-Control-Allow-Methods", methodCORSFilter);
 		response.addHeader("Access-Control-Allow-Headers", DEFAULT_ALLOW_HEADERS_CORS_FILTER);
 		response.addHeader("Access-Control-Expose-Headers", DEFAULT_EXPOSED_HEADERS_CORS_FILTER);

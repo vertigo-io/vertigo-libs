@@ -14,6 +14,7 @@ Release 4.3.3 -
 * [Ui] `vu:fileupload` : Add `maxFileSize` (MB), `maxTotalSize` (MB), `maxFiles` and `accept` attributes
 * [Ui] `vu:fileupload` : Fix displayed total file size after page reloading
 * [Ui] `vu:fileupload-dropzone` and `vu:v-fileupload-dropzone` : Fix : Change `key` attribute for `fileComponentId` attribute (referencing uploader `componentId` attribute)
+* [Vega] Fix `originCORSFilter` parameter.
 
 
 Release 4.3.2 - 2025/07/10
