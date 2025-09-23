@@ -93,20 +93,19 @@ public final class CorsAllowerWebServiceHandlerPlugin implements WebServiceHandl
 	 */
 	public void putCorsResponseHeaders(final HttpServletRequest request, final HttpServletResponse response) {
 		/** @see "https://www.owasp.org/index.php/CORS_OriginHeaderScrutiny" */
-		/* Step 1 : Check that we have only one and non empty instance of the "Origin" header */
 		final String origin = request.getHeader(REQUEST_HEADER_ORIGIN);
-		if (origin != null) {
+		if (origin != null) { // CORS request
 			final String method = request.getMethod();
 			if (!isAllowed(origin, originCORSFiltersSet) || !isAllowed(method, methodCORSFiltersSet)) {
 				response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 				response.resetBuffer();
 				throw new VSecurityException(LocaleMessageText.of("Invalid CORS Access (Origin:{0}, Method:{1})", origin, method));
 			}
+			response.addHeader("Access-Control-Allow-Origin", origin); // Access-Control-Allow-Origin only allows one origin so we put the current one (we checked it is allowed before)
+			response.addHeader("Access-Control-Allow-Methods", methodCORSFilter);
+			response.addHeader("Access-Control-Allow-Headers", DEFAULT_ALLOW_HEADERS_CORS_FILTER);
+			response.addHeader("Access-Control-Expose-Headers", DEFAULT_EXPOSED_HEADERS_CORS_FILTER);
 		}
-		response.addHeader("Access-Control-Allow-Origin", origin); // Access-Control-Allow-Origin only allows one origin so we put the current one (we checked it is allowed before)
-		response.addHeader("Access-Control-Allow-Methods", methodCORSFilter);
-		response.addHeader("Access-Control-Allow-Headers", DEFAULT_ALLOW_HEADERS_CORS_FILTER);
-		response.addHeader("Access-Control-Expose-Headers", DEFAULT_EXPOSED_HEADERS_CORS_FILTER);
 	}
 
 	private static boolean isAllowed(final String currentValue, final Set<String> allowedValues) {
