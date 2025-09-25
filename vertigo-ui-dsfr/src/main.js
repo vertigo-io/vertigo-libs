@@ -21,6 +21,7 @@ import DsfrCustomHeaderMenuLinks from "@/components/DsfrHeader/DsfrCustomHeaderM
 import DsfrCustomDataTable from "@/components/DsfrDataTable/DsfrCustomDataTable.vue";
 import DsfrCustomCheckbox from "@/components/DsfrCheckbox/DsfrCustomCheckbox.vue";
 import DsfrCustomSelect from "@/components/DsfrSelect/DsfrCustomSelect.vue";
+import DsfrCustomPagination from "@/components/DsfrDataTable/DsfrCustomPagination.vue";
 
 import DsfrButtonTooltip from "@/components/DsfrTooltip/DsfrButtonTooltip.vue";
 import DsfrLinkTooltip from "@/components/DsfrTooltip/DsfrLinkTooltip.vue";
@@ -49,6 +50,7 @@ var DSFR = {
         vueApp.component('DsfrCustomHeader', DsfrCustomHeader)
         vueApp.component('DsfrCustomHeaderMenuLinks', DsfrCustomHeaderMenuLinks)
         vueApp.component('DsfrCustomDataTable', DsfrCustomDataTable)
+        vueApp.component('DsfrCustomPagination', DsfrCustomPagination)
         vueApp.component('DsfrCustomCheckbox', DsfrCustomCheckbox)
         vueApp.component('DsfrCustomSelect', DsfrCustomSelect)
 

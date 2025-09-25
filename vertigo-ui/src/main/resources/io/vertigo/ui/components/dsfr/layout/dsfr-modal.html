@@ -27,7 +27,7 @@
                         </svg>
                     </div>
                     <iframe th:v-bind:src="|componentStates.${componentId}.srcUrl|"
-                            th:style="${autoHeight == true ? 'height:100px; opacity:0':''}"
+                            th:style="${autoHeight == true ? 'height:100px; opacity:0':''}" tabindex="0"
                             th:@vue:before-mount="|componentStates.${componentId}.loading=true; componentStates.${componentId}.height='${height?:''}';|"
                             @load="(e) => modal_iframeLoad(e.target)"
                             th:data-auto-height="${autoHeight}"

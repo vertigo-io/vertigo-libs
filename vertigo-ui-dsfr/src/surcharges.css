@@ -131,6 +131,11 @@ td p {
     position: absolute;
 }
 
+/* Évite de le gras pour le contenu des tooltips des tableaux */
+th .fr-tooltip {
+    font-weight: normal;
+}
+
 /* */
 div.fr-menu {
     width: fit-content;
