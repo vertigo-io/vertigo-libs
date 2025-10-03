@@ -1,4 +1,5 @@
-import {format, parse} from 'date-fns'
+import { format, parse} from 'date-fns'
+import { useScheme } from '@gouvminint/vue-dsfr'
 
 export default {
     dsfrDecodeDate: function (value, formatDate) {
@@ -16,6 +17,7 @@ export default {
     dsfrSearch: function(contextKey) {
         return this.search(contextKey, 0);
     },
+    useScheme,
     dsfrDecodeDateTime: function (value, formatDate) {
         if (value === "") {
             return value;
@@ -80,6 +82,7 @@ export default {
                 return response.data.map((object) => ({
                     value: object[valueField],
                     label: object[labelField].toString(), // A label is always a string
+                    object
                 }));
             })
             .catch(() => {

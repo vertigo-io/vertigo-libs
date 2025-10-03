@@ -33,6 +33,11 @@ import './utils.css'
 import './surcharges.css'
 import './vertigo-ui-dsfr.css'
 
+import { addCollection } from '@iconify/vue';
+import ri from '@iconify-json/ri/icons.json';
+
+addCollection(ri);
+
 var DSFR = {
     install: function (vueApp, options) {
         vueApp.use(VueDsfr)

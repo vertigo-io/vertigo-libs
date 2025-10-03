@@ -11,6 +11,7 @@
   "dependencies": {
     "@gouvfr/dsfr": "^1.12.1",
     "@gouvminint/vue-dsfr": "^8.6.0",
+    "@iconify-json/ri": "^1.2.3",
     "@trevoreyre/autocomplete": "^3.0.3",
     "@trevoreyre/autocomplete-vue": "^3.0.3",
     "date-fns": "^4.1.0",
