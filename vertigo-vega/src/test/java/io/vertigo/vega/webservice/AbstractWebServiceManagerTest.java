@@ -53,6 +53,7 @@ import io.restassured.specification.ResponseSpecification;
 import io.vertigo.core.lang.MapBuilder;
 
 abstract class AbstractWebServiceManagerTest {
+
 	private static final Logger LOG = LogManager.getLogger(AbstractWebServiceManagerTest.class);
 
 	private static final String HEADER_ACCESS_TOKEN = "x-access-token";
@@ -1736,9 +1737,9 @@ abstract class AbstractWebServiceManagerTest {
 	@Test
 	public void testDownloadFileContentType() throws UnsupportedEncodingException {
 		final String[] expectedSimpleNames = { "image0.png", "image1ÔÙæóñ.png", "image2µ°«_.png", "image3ÔÙæ%20óñµ°«_.png", "image4 __~.png",
-				"image5  abcABCæøåÆØÅäöüïëêîâéíáóúýñ½§!#¤%&()=`@£$ {[]}+´¨^~'-_,_.png" };
+				"image5  abcABCæøåÆØÅäöüïëêîâéíáóúýñ½§!#¤%&()=`@£$ _[]_+´¨^~'-_,_.png" };
 		final String[] expectedEncodedNames = { "image0.png", "image1ÔÙæóñ.png", "image2µ°«_.png", "image3ÔÙæ óñµ°«_.png", "image4€__~.png",
-				"image5你好abcABCæøåÆØÅäöüïëêîâéíáóúýñ½§!#¤%&()=`@£$€{[]}+´¨^~'-_,_.png" };
+				"image5你好abcABCæøåÆØÅäöüïëêîâéíáóúýñ½§!#¤%&()=`@£$€_[]_+´¨^~'-_,_.png" };
 
 		for (int id = 0; id < expectedSimpleNames.length; id++) {
 			final String expectedSimpleName = expectedSimpleNames[id];
@@ -2024,7 +2025,7 @@ abstract class AbstractWebServiceManagerTest {
 				.statusCode(HttpStatus.SC_OK)
 				.body("list", Matchers.hasSize(Matchers.greaterThanOrEqualTo(10)))
 				.body("list.get(0).address", Matchers.nullValue())
-				.body("highlight", Matchers.nullValue())
+				.body("highlights", Matchers.nullValue())
 				.body("facets.get(1).code", Matchers.equalTo("FctBirthday"))
 				.body("facets.get(1).values.get(0).code", Matchers.equalTo("r1"))
 				.body("facets.get(1).values.get(0).count", Matchers.equalTo(5))
@@ -2043,7 +2044,7 @@ abstract class AbstractWebServiceManagerTest {
 				.statusCode(HttpStatus.SC_OK)
 				.body("list", Matchers.hasSize(2))
 				.body("totalCount", Matchers.equalTo(2))
-				.body("facets.get(0).values", Matchers.hasSize(1))
+				.body("facets.get(0).values", Matchers.hasSize(10)) //FctHonorificCode declared as facet multiple : it show all possibles facetValues for other criteria
 				.when()
 				.post("/search/facetedResult");
 
@@ -2077,7 +2078,7 @@ abstract class AbstractWebServiceManagerTest {
 				.statusCode(HttpStatus.SC_OK)
 				.body("list", Matchers.hasSize(1))
 				.body("totalCount", Matchers.equalTo(1))
-				.body("facets.get(0).values", Matchers.hasSize(1))
+				.body("facets.get(0).values", Matchers.hasSize(6)) //FctHonorificCode declared as facet multiple : it show all possibles facetValues for other criteria
 				.when()
 				.post("/search/facetedResult");
 
@@ -2089,7 +2090,7 @@ abstract class AbstractWebServiceManagerTest {
 				.statusCode(HttpStatus.SC_OK)
 				.body("list", Matchers.hasSize(2))
 				.body("totalCount", Matchers.equalTo(2))
-				.body("facets.get(0).values", Matchers.hasSize(2))
+				.body("facets.get(0).values", Matchers.hasSize(6))//FctHonorificCode declared as facet multiple : it show all possibles facetValues for other criteria
 				.when()
 				.post("/search/facetedResult");
 	}
@@ -2157,7 +2158,7 @@ abstract class AbstractWebServiceManagerTest {
 				.statusCode(HttpStatus.SC_OK)
 				.body("groups", Matchers.hasSize(2))
 				.body("totalCount", Matchers.equalTo(2))
-				.body("facets.get(0).values", Matchers.hasSize(2))
+				.body("facets.get(0).values", Matchers.hasSize(6)) //FctHonorificCode declared as facet multiple : it show all possibles facetValues for other criteria
 				.when()
 				.post("/search/facetedClusteredResult");
 	}

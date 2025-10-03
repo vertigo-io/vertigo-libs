@@ -35,17 +35,17 @@ import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Handler of Cross-Origin Resource Sharing (CORS).
+ *
  * @see "https://www.owasp.org/index.php/CORS_OriginHeaderScrutiny"
  * @author npiedeloup
  */
 public final class CorsAllowerWebServiceHandlerPlugin implements WebServiceHandlerPlugin {
 
-	/** Stack index of the handler for sorting at startup**/
+	/** Stack index of the handler for sorting at startup **/
 	public static final int STACK_INDEX = 20;
 
 	private static final String REQUEST_HEADER_ORIGIN = "Origin";
 
-	private static final String DEFAULT_ALLOW_ORIGIN_CORS_FILTER = "*";
 	private static final String DEFAULT_ALLOW_METHODS_CORS_FILTER = "GET, POST, DELETE, PUT, OPTIONS"; // may use *
 	private static final String DEFAULT_ALLOW_HEADERS_CORS_FILTER = "Content-Type, Cache-Control, X-Requested-With"; // may use *
 	private static final String DEFAULT_EXPOSED_HEADERS_CORS_FILTER = "Content-Type, listServerToken, content-length, x-total-count, x-access-token"; // may use *
@@ -61,9 +61,9 @@ public final class CorsAllowerWebServiceHandlerPlugin implements WebServiceHandl
 	 */
 	@Inject
 	public CorsAllowerWebServiceHandlerPlugin(
-			@ParamValue("originCORSFilter") final Optional<String> originCORSFilter,
+			@ParamValue("originCORSFilter") final String originCORSFilter,
 			@ParamValue("methodCORSFilter") final Optional<String> methodCORSFilter) {
-		this.originCORSFilter = originCORSFilter.orElse(DEFAULT_ALLOW_ORIGIN_CORS_FILTER);
+		this.originCORSFilter = originCORSFilter;
 		this.methodCORSFilter = methodCORSFilter.orElse(DEFAULT_ALLOW_METHODS_CORS_FILTER);
 		originCORSFiltersSet = parseStringToSet(this.originCORSFilter);
 		methodCORSFiltersSet = parseStringToSet(this.methodCORSFilter);
@@ -93,20 +93,19 @@ public final class CorsAllowerWebServiceHandlerPlugin implements WebServiceHandl
 	 */
 	public void putCorsResponseHeaders(final HttpServletRequest request, final HttpServletResponse response) {
 		/** @see "https://www.owasp.org/index.php/CORS_OriginHeaderScrutiny" */
-		/* Step 1 : Check that we have only one and non empty instance of the "Origin" header */
 		final String origin = request.getHeader(REQUEST_HEADER_ORIGIN);
-		if (origin != null) {
+		if (origin != null) { // CORS request
 			final String method = request.getMethod();
 			if (!isAllowed(origin, originCORSFiltersSet) || !isAllowed(method, methodCORSFiltersSet)) {
 				response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 				response.resetBuffer();
 				throw new VSecurityException(LocaleMessageText.of("Invalid CORS Access (Origin:{0}, Method:{1})", origin, method));
 			}
+			response.addHeader("Access-Control-Allow-Origin", origin); // Access-Control-Allow-Origin only allows one origin so we put the current one (we checked it is allowed before)
+			response.addHeader("Access-Control-Allow-Methods", methodCORSFilter);
+			response.addHeader("Access-Control-Allow-Headers", DEFAULT_ALLOW_HEADERS_CORS_FILTER);
+			response.addHeader("Access-Control-Expose-Headers", DEFAULT_EXPOSED_HEADERS_CORS_FILTER);
 		}
-		response.addHeader("Access-Control-Allow-Origin", originCORSFilter);
-		response.addHeader("Access-Control-Allow-Methods", methodCORSFilter);
-		response.addHeader("Access-Control-Allow-Headers", DEFAULT_ALLOW_HEADERS_CORS_FILTER);
-		response.addHeader("Access-Control-Expose-Headers", DEFAULT_EXPOSED_HEADERS_CORS_FILTER);
 	}
 
 	private static boolean isAllowed(final String currentValue, final Set<String> allowedValues) {

@@ -73,9 +73,11 @@ public interface JsonEngine extends Component {
 	 * @param <D> Object type
 	 * @param json Json string
 	 * @param paramType Object type
+	 * @param includedFields Set of fields to include (empty means all fields include)
+	 * @param excludedFields Set of fields to exclude
 	 * @return Object filled with json typed data
 	 */
-	<D> D fromJson(String json, Type paramType);
+	<D> D fromJson(String json, Type paramType, final Set<String> includedFields, Set<String> excludedFields);
 
 	/**
 	 * Standard convert Json to object.
@@ -127,7 +129,7 @@ public interface JsonEngine extends Component {
 	 */
 	<D extends DataObject> UiListDelta<D> uiListDeltaFromJson(String json, Type paramType);
 
-	/**	
+	/**
 	 * Specific convertion Json to UiList.
 	 * @param <D> Object type
 	 * @param json Json string

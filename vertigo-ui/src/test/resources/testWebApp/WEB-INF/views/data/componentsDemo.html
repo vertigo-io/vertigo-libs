@@ -69,8 +69,8 @@
                     </vu:grid-cell>
                     
                     <vu:grid-cell>
-                        <vu:fileupload-dropzone key="myFilesUris">
-                            <vu:fileupload label="Upload file" th:url="'@{/commons/upload}'" key="myFilesUris1" multiple />           
+                        <vu:fileupload-dropzone fileComponentId="uploader_myFilesUris1">
+                            <vu:fileupload label="Upload file" th:url="'@{/commons/upload}'" key="myFilesUris1" componentId="uploader_myFilesUris1" multiple />           
                         </vu:fileupload-dropzone>
                     </vu:grid-cell>                
                     <vu:fileupload-simple label="Simple upload file" th:url="'@{/commons/upload}'" key="myFilesUris3" multiple/>                            
@@ -129,16 +129,29 @@
 	        <h6>Test table</h6>
 	        <vu:table list="movies" componentId="movieTable" selectable="true" sortUrl="@{/movies/_sort}"
 	            th:tr_@click.native="|goTo('@{/movie/}'+props.row.movId)|" tr_class="nav">
-	            <vu:slot name="actions_slot"><q-btn label="View detail" th:@click="|openModal('movieDetailModal', '@{/movie/}'+props.row.movId, {  })|"></q-btn></vu:slot>
+	            <vu:slot name="actions_slot"><q-btn label="View detail" color="primary" th:@click="|openModal('movieDetailModal', '@{/movie/}'+props.row.movId, {  })|"></q-btn></vu:slot>
 	            <vu:include-data object="movies" field="movId" />
 	            <vu:column field="movId" >
 	                <a th::href="|'@{/movie/}'+props.row.movId|" >{{props.row.movId}}</a>
 	            </vu:column>
 	            <vu:column field="title" sortable="true" />
-	            <vu:column name="tata" label="Tata">
+	            <vu:column name="customTitleColumn" label="Custom title column">
 	               another column  : {{props.row.movId}} : {{props.row.title}}
 	           </vu:column>                       
 	        </vu:table>
+	        
+	        <h6>Test table modifiable</h6>
+	        
+	        <vu:table-modifiable list="moviesModifiable" componentId="movieTable2">
+	            <vu:column field="title">
+	                <vu:text-field object="moviesModifiable" field="title" />
+	            </vu:column>
+	            <vu:column field="year" />
+	        </vu:table-modifiable>
+	        
+	        <vu:grid-cell class="q-py-md q-gutter-md">
+	        	<vu:button-submit th:if="${!model.modeReadOnly}" id="saveAction" label="Save" action="@{_save}" color="primary" />
+	        </vu:grid-cell>
 	        
 	        <br/>
 	        

@@ -21,6 +21,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 
 import javax.inject.Inject;
@@ -92,7 +93,7 @@ public final class PrimitiveJsonConverter implements JsonConverter {
 		Assertion.check().isNotNull(json); //never null (because after instanceof)
 		//-----
 		if (paramClass.isPrimitive()) {
-			return jsonReaderEngine.fromJson(json, paramClass);
+			return jsonReaderEngine.fromJson(json, paramClass, Collections.emptySet(), Collections.emptySet());
 		} else if (String.class.isAssignableFrom(paramClass)) {
 			return paramClass.cast(json);
 		} else if (Integer.class.isAssignableFrom(paramClass)) {
@@ -107,7 +108,7 @@ public final class PrimitiveJsonConverter implements JsonConverter {
 				|| LocalDate.class.isAssignableFrom(paramClass)
 				|| ZonedDateTime.class.isAssignableFrom(paramClass)
 				|| Instant.class.isAssignableFrom(paramClass)) {
-			return jsonReaderEngine.fromJson(escapeJsonValue(json), paramClass); //Pour utiliser Gson sur des valeurs seules, il faut entourer de "", sinon elles sont splitées sur le :
+			return jsonReaderEngine.fromJson(escapeJsonValue(json), paramClass, Collections.emptySet(), Collections.emptySet()); //Pour utiliser Gson sur des valeurs seules, il faut entourer de "", sinon elles sont splitées sur le :
 		} else {
 			throw new IllegalArgumentException("Unsupported type " + paramClass.getSimpleName());
 		}

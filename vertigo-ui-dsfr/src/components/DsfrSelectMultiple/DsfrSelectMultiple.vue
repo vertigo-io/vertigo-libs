@@ -321,7 +321,10 @@ let toggleOption = (event, value) => {
     >
       <p class="grow overflow">{{ selectionDisplay }}</p>
       <div class="fr-pl-1v fr-select__icon">
-        <v-icon style="font-size: 1rem" name="ri-arrow-down-s-line"></v-icon>
+        <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" class="vicon iconify iconify--local"
+             width="1em" height="1em" viewBox="0 0 24 24">
+          <path fill="currentColor" d="m12 13.171l4.95-4.95l1.414 1.415L12 16L5.636 9.636L7.05 8.222z" />
+        </svg>
       </div>
     </div>
     <div
@@ -457,6 +460,10 @@ ul[aria-multiselectable=true] li span::before {
   margin-right: .5rem;
   position: absolute;
   top: 0;
+}
+
+.vicon {
+  font-size: 1rem;
 }
 
 </style>

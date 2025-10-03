@@ -21,12 +21,10 @@ import java.io.IOException;
 
 import javax.inject.Inject;
 
-import io.javalin.Javalin;
 import io.vertigo.connectors.javalin.JavalinConnector;
 import io.vertigo.core.util.InjectorUtil;
-import jakarta.servlet.Filter;
+import io.vertigo.vega.impl.servlet.filter.AbstractFilter;
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.FilterConfig;
 import jakarta.servlet.Servlet;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
@@ -36,7 +34,7 @@ import jakarta.servlet.ServletResponse;
  * VegaJavalinFilter for JavalinServlet (mandatory).
  * @author npiedeloup
  */
-public final class VegaJavalinFilter implements Filter {
+public final class VegaJavalinFilter extends AbstractFilter {
 	@Inject
 	private JavalinConnector javalinConnector;
 	private Servlet javalinServlet;
@@ -46,14 +44,14 @@ public final class VegaJavalinFilter implements Filter {
 	}
 
 	@Override
-	public void init(final FilterConfig filterConfig) throws ServletException {
-		final Javalin javalin = javalinConnector.getClient();
+	public void doInit() {
+		final var javalin = javalinConnector.getClient();
 		javalinServlet = javalin.javalinServlet();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain)
+	public void doMyFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain)
 			throws IOException, ServletException {
 		javalinServlet.service(request, response);
 		//chain.doFilter(request, response);

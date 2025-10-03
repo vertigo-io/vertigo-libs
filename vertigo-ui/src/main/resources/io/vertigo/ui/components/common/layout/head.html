@@ -23,7 +23,7 @@
         th:with="isVuiDevMode=${vuiDevMode != null ? vuiDevMode : false}, 
                  isVuejsDevMode=${vuejsDevMode != null ? vuejsDevMode : false},
                  isVuiSsr=${vuiSsr != null ? vuiSsr : false},
-                 myVueJsVersion=${vueJsVersion?:'3.5.13'}, myVertigoUiVersion=${vertigoUiVersion?:'4.3.0'},
+                 myVueJsVersion=${vueJsVersion?:'3.5.13'}, myVertigoUiVersion=${vertigoUiVersion?:'4.3.3'},
                  myAxiosVersion=${axiosVersion?:'1.8.4'},
                  myUseQuasar=${useQuasar ?: true}, myQuasarVersion=${quasarVersion?:'2.18.1'}, myOnlyDsfrStyle=${onlyDsfrStyle?:false},
                  myRobotoVersion=${robotoVersion?:'47'},
@@ -60,7 +60,7 @@
 
 	<!--/* Vertigo UI - DSFR */-->
 	<th:block th:if="${myUseDsfr}">
-		<link th:href="@{/vertigo-ui/static/3rdParty/dsfr/style.css}" rel="stylesheet" type="text/css"/>
+		<link th:href="@{/vertigo-ui/static/3rdParty/dsfr/vertigo-dsfr.css}" rel="stylesheet" type="text/css"/>
 		<script th:src="@{/vertigo-ui/static/3rdParty/dsfr/dsfr.umd.js}"></script>
 	</th:block>
 

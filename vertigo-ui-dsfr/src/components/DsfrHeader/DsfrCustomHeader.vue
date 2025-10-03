@@ -12,6 +12,8 @@ import {computed, onMounted, onUnmounted, provide, ref, toRef, useSlots} from 'v
 
 import {registerNavigationLinkKey} from './injection-key'
 
+import { FocusTrap } from 'focus-trap-vue'
+
 import type {DsfrHeaderProps} from '@gouvminint/vue-dsfr/types/components/DsfrHeader/DsfrHeader.types'
 import {
   DsfrLanguageSelector,
@@ -52,6 +54,16 @@ const emit = defineEmits<{
   (e: 'on-mounted'): void
 }>()
 
+const slots = defineSlots<{
+  default: () => any
+  operator: () => any
+  mainnav: () => any
+  'before-quick-links': () => any
+  'after-quick-links': () => any
+  'header-search' : () => any
+  'header-menu-link': () => any
+}>()
+
 const languageSelector = toRef(props, 'languageSelector')
 
 const menuOpened = ref(false)
@@ -82,7 +94,10 @@ const showMenu = () => {
   modalOpened.value = true
   menuOpened.value = true
   searchModalOpened.value = false
-  document.getElementById('close-button')?.focus()
+  // Sans le setTimeout, le focus n'est pas fait
+  setTimeout(() => {
+    document.getElementById('close-button')?.focus()
+  }, 50)
 }
 const showSearchModal = () => {
   modalOpened.value = true
@@ -91,8 +106,9 @@ const showSearchModal = () => {
 }
 const onQuickLinkClick = hideModal
 
-const slots = useSlots()
-const isWithSlotOperator = computed(() => Boolean(slots.operator?.().length) || !!props.operatorImgSrc)
+const title = computed(() => [props.homeLabel, props.serviceTitle].filter(x => x).join(' - '))
+
+const isWithSlotOperator = computed(() => Boolean(slots.operator) || !!props.operatorImgSrc)
 const isWithSlotNav = computed(() => Boolean(slots.mainnav))
 provide(registerNavigationLinkKey, () => {
   return hideModal
@@ -111,6 +127,7 @@ provide(registerNavigationLinkKey, () => {
             <div class="fr-header__brand-top">
               <div class="fr-header__logo">
                 <RouterLink
+                    v-if="!serviceTitle"
                     :to="homeTo"
                     :title="`${homeLabel} - ${serviceTitle}`"
                 >
@@ -119,6 +136,11 @@ provide(registerNavigationLinkKey, () => {
                       data-testid="header-logo"
                   />
                 </RouterLink>
+                <DsfrLogo
+                  v-else
+                  :logo-text="logoText"
+                  data-testid="header-logo"
+                />
               </div>
               <div
                   v-if="isWithSlotOperator"
@@ -147,19 +169,25 @@ provide(registerNavigationLinkKey, () => {
                     :title="showSearchLabel"
                     :data-fr-opened="searchModalOpened"
                     @click.prevent.stop="showSearchModal()"
-                />
+                >
+                  <span class="fr-sr-only">
+                    {{ showSearchLabel }}
+                  </span>
+                </button>
                 <button
                     v-if="isWithSlotNav || quickLinks?.length"
                     id="button-menu"
                     class="fr-btn--menu  fr-btn"
                     :data-fr-opened="showMenu"
                     aria-controls="header-navigation"
-                    aria-haspopup="menu"
-                    :aria-label="menuLabel"
-                    :title="menuLabel"
+                    aria-haspopup="dialog"
                     data-testid="open-menu-btn"
                     @click.prevent.stop="showMenu()"
-                />
+                >
+                  <span class="fr-sr-only">
+                    {{ menuLabel }}
+                  </span>
+                </button>
               </div>
             </div>
             <div
@@ -203,6 +231,7 @@ provide(registerNavigationLinkKey, () => {
                 v-if="quickLinks?.length || languageSelector"
                 class="fr-header__tools-links"
             >
+              <slot name="before-quick-links" />
               <DsfrCustomHeaderMenuLinks
                   v-if="!menuOpened"
                   :links="quickLinks"
@@ -210,6 +239,7 @@ provide(registerNavigationLinkKey, () => {
               >
                 <slot name="header-menu-link"></slot>
               </DsfrCustomHeaderMenuLinks>
+              <slot name="after-quick-links" />
               <template v-if="languageSelector">
                 <DsfrLanguageSelector
                     v-bind="languageSelector"
@@ -233,8 +263,19 @@ provide(registerNavigationLinkKey, () => {
               </div>
           </div>
         </div>
-        <div
-            v-if="showSearch || isWithSlotNav || (quickLinks && quickLinks.length) || languageSelector"
+        <FocusTrap
+          v-if="modalOpened"
+          :active="modalOpened"
+          :focus-trap-options="{
+            initialFocus: '#close-button',
+            fallbackFocus: '#close-button',
+            escapeDeactivates: true,
+            clickOutsideDeactivates: true,
+            returnFocusOnDeactivate: true,
+          }"
+        >
+          <div
+            v-if="(showSearch || isWithSlotNav || (quickLinks && quickLinks.length) || languageSelector) && modalOpened"
             id="header-navigation"
             class="fr-header__menu  fr-modal"
             :class="{ 'fr-modal--opened': modalOpened }"
@@ -259,6 +300,7 @@ provide(registerNavigationLinkKey, () => {
                     @select="languageSelector.currentLanguage = $event.codeIso"
                 />
               </template>
+              <slot name="before-quick-links" />
               <DsfrCustomHeaderMenuLinks
                   v-if="menuOpened"
                   role="navigation"
@@ -268,7 +310,7 @@ provide(registerNavigationLinkKey, () => {
               >
                 <slot name="header-menu-link"></slot>
               </DsfrCustomHeaderMenuLinks>
-              <slot name="header-search"></slot>
+              <slot name="after-quick-links" />
             </div>
 
             <template v-if="modalOpened">
@@ -291,6 +333,7 @@ provide(registerNavigationLinkKey, () => {
             </div>
           </div>
         </div>
+        </FocusTrap>
         <!-- @slot Slot par défaut pour le contenu du fieldset (sera dans `<div class="fr-header__body-row">`) -->
         <slot/>
       </div>

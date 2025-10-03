@@ -11,13 +11,14 @@
  * - Ajoute la possibilité de changer la taille de la pagination
  * - Ajoute la possibilité de masquer le libellé d’une colonne via un sr-only
  * - Ajoute la possibilité de reset la page courante via la méthode resetCurrentPage()
+ * - Ajoute une meilleure accessibilité pour les entêtes triables
  *
  */
 
 import {useRandomId} from '@/utils/random-utils'
 
 import {computed, ref} from 'vue'
-import {DsfrPagination, VIcon} from "@gouvminint/vue-dsfr";
+import DsfrCustomPagination from "@/components/DsfrDataTable/DsfrCustomPagination.vue";
 
 export type Page = { href?: string, label: string, title: string }
 
@@ -182,7 +183,7 @@ function resetCurrentPage() {
   currentPage.value = 0
 }
 
-defineExpose({ resetCurrentPage })
+defineExpose({resetCurrentPage})
 
 </script>
 
@@ -227,17 +228,14 @@ defineExpose({ resetCurrentPage })
                     'text-right': header.align === 'right',
                     'text-left': header.align === 'left'
                   }"
-                  :tabindex="sortableRows ? 0 : undefined"
-                  @click="sortBy((header as DsfrDataTableHeaderCellObject).key ?? (Array.isArray(rows[0]) ? idx : header))"
-                  @keydown.enter="sortBy((header as DsfrDataTableHeaderCellObject).key ?? header)"
-                  @keydown.space="sortBy((header as DsfrDataTableHeaderCellObject).key ?? header)"
               >
-                <div
-                    :class="{ 'sortable-header': sortableRows === true || (Array.isArray(sortableRows) && sortableRows.includes((header as DsfrDataTableHeaderCellObject).key ?? header)),
-                              'fr-sr-only': typeof header === 'object' ? header.hideLabel : false,
-                              'flex-row-reverse': typeof header === 'object' ? header.align === 'right' : false,
-                            }"
+                <div :class="{ 'sortable-header': sortableRows === true || (Array.isArray(sortableRows) && sortableRows.includes((header as DsfrDataTableHeaderCellObject).key ?? header)),
+                               'fr-sr-only': typeof header === 'object' ? header.hideLabel : false,
+                               'flex-row-reverse': typeof header === 'object' ? header.align === 'right' : false
+                             }"
+                     class="flex gap--sm items-center"
                 >
+
                   <slot
                       name="header"
                       v-bind="typeof header === 'object' ? header : { key: header, label: header }"
@@ -245,16 +243,41 @@ defineExpose({ resetCurrentPage })
                     {{ typeof header === 'object' ? header.label : header }}
                   </slot>
 
-                  <span
-                      v-if="sortedBy !== ((header as DsfrDataTableHeaderCellObject).key ?? header) && (sortableRows === true || (Array.isArray(sortableRows) && sortableRows.includes((header as DsfrDataTableHeaderCellObject).key ?? header)))">
-                      <VIcon
-                          name="ri-sort-asc"
-                          color="var(--grey-625-425)"
-                      />
+                  <dsfr-button type="button" size="sm" tertiary class="sortable-button"
+                               :title="`Trier la colonne '${typeof header === 'object' ? header.label : header}'`"
+                               v-if="(sortableRows === true || (Array.isArray(sortableRows) && sortableRows.includes((header as DsfrDataTableHeaderCellObject).key ?? header)))"
+                               @click="sortBy((header as DsfrDataTableHeaderCellObject).key ?? (Array.isArray(rows[0]) ? idx : header))"
+                               @keydown.enter="sortBy((header as DsfrDataTableHeaderCellObject).key ?? header)"
+                               @keydown.space="sortBy((header as DsfrDataTableHeaderCellObject).key ?? header)">
+                    <span class="fr-sr-only">
+                      {{ typeof header === 'object' ? header.label : header }}
                     </span>
-                  <span v-else-if="sortedBy === ((header as DsfrDataTableHeaderCellObject).key ?? header)">
-                      <VIcon :name="sortedDesc ? 'ri-sort-desc' : 'ri-sort-asc'"/>
+                    <span
+                        v-if="sortedBy !== ((header as DsfrDataTableHeaderCellObject).key ?? header) && (sortableRows === true || (Array.isArray(sortableRows) && sortableRows.includes((header as DsfrDataTableHeaderCellObject).key ?? header)))">
+                        <span class="fr-sr-only">(aucun tri)</span>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"
+                           aria-hidden="true"
+                           color="var(--grey-625-425)">
+                        <path fill="currentColor" d="m19 3l4 5h-3v12h-2V8h-3zm-5 15v2H3v-2zm0-7v2H3v-2zm-2-7v2H3V4z"/>
+                      </svg>
                     </span>
+                    <span v-else-if="sortedBy === ((header as DsfrDataTableHeaderCellObject).key ?? header)">
+                      <template v-if="sortedDesc">
+                        <span class="fr-sr-only">(tri décroissant)</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"
+                             aria-hidden="true">
+                          <path fill="currentColor" d="M20 4v12h3l-4 5l-4-5h3V4zm-8 14v2H3v-2zm2-7v2H3v-2zm0-7v2H3V4z"/>
+                        </svg>
+                      </template>
+                      <template v-else>
+                        <span class="fr-sr-only">(tri croissant)</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"
+                             aria-hidden="true">
+                          <path fill="currentColor" d="m19 3l4 5h-3v12h-2V8h-3zm-5 15v2H3v-2zm0-7v2H3v-2zm-2-7v2H3V4z"/>
+                        </svg>
+                      </template>
+                    </span>
+                  </dsfr-button>
                 </div>
               </th>
             </tr>
@@ -371,12 +394,13 @@ defineExpose({ resetCurrentPage })
               </select>
             </div>
             <div class="flex ml-1">
-              <span class="self-center"
+              <p class="self-center"
                     :class="{ 'fr-text--sm': isFooterSizeSm }"
               >
-                Page {{ currentPage + 1 }} sur {{ pageCount }}</span>
+                Page {{ currentPage + 1 }} sur {{ pageCount }}
+              </p>
             </div>
-            <DsfrPagination
+            <DsfrCustomPagination
                 v-model:current-page="currentPage"
                 :pages="pages"
                 next-page-title="Suivant"
@@ -413,6 +437,21 @@ defineExpose({ resetCurrentPage })
 .sortable-header {
   display: flex;
   justify-content: space-between;
-  cursor: pointer;
+}
+
+.sortable-header .sortable-button {
+  font-size: .875rem;
+  line-height: 1.5rem;
+  max-height: 2rem !important;
+  max-width: 2rem !important;
+  min-height: 2rem;
+  overflow: hidden;
+  padding: .25rem .5rem !important;
+}
+
+.sortable-header svg {
+  font-size: 1.2rem;
+  vertical-align: -0.2em;
+  display: inline-block;
 }
 </style>

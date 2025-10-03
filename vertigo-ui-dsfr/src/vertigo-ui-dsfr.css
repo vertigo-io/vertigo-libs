@@ -1,4 +1,62 @@
 textarea.fr-input {
-	field-sizing: content;
+    field-sizing: content;
 }
 
+/* vicon local */
+.vicon.iconify--local {
+    font-size: 1.2rem;
+    vertical-align: -0.2em;
+    display: inline-block;
+}
+
+.vicon-sm {
+    font-size: 0.8rem !important;
+}
+
+.vicon-lg {
+    font-size: 1.8rem !important;
+}
+
+.vicon-xl {
+    font-size: 2.4rem !important;
+}
+
+/* local vicon spin */
+.vicon-spin:not(.vicon-hover),
+.vicon-spin.vicon-hover:hover,
+.vicon-parent.vicon-hover:hover > .vicon-spin {
+    animation: vicon-spin 1s linear infinite;
+}
+
+.vicon-spin:not(.vicon-hover).vicon-fast,
+.vicon-spin.vicon-hover.vicon-fast:hover,
+.vicon-parent.vicon-hover:hover > .vicon-spin.vicon-fast {
+    animation: vicon-spin 0.7s linear infinite;
+}
+
+.vicon-spin:not(.vicon-hover).vicon-slow,
+.vicon-spin.vicon-hover.vicon-slow:hover,
+.vicon-parent.vicon-hover:hover > .vicon-spin.vicon-slow {
+    animation: vicon-spin 2s linear infinite;
+}
+
+@keyframes vicon-spin {
+    0% {
+        transform: rotate(0)
+    }
+    to {
+        transform: rotate(360deg)
+    }
+}
+
+.button-icon-loader {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: default;
+}

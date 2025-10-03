@@ -1,4 +1,5 @@
-import { format, parse } from 'date-fns'
+import { format, parse} from 'date-fns'
+import { useScheme } from '@gouvminint/vue-dsfr'
 
 export default {
     dsfrDecodeDate: function (value, formatDate) {
@@ -16,6 +17,7 @@ export default {
     dsfrSearch: function(contextKey) {
         return this.search(contextKey, 0);
     },
+    useScheme,
     dsfrDecodeDateTime: function (value, formatDate) {
         if (value === "") {
             return value;
@@ -38,15 +40,14 @@ export default {
         }
         return rawList
     },
-    dsfrTransformListForSelection: function (list, valueField, labelField, nullText, filterFunction, searchValue) {
+    dsfrTransformListForSelection: function (list, valueField, labelField, filterFunction, searchValue) {
         let rawList = this._searchAndFilterList(list, valueField, labelField, filterFunction, searchValue);
-        let result = rawList.map(function (object) {
-            return {value: object[valueField], text: object[labelField].toString()} // a label is always a string
+        return rawList.map(function (object) {
+            return {
+                value: object[valueField],
+                text: object[labelField].toString()
+            } // a label is always a string
         });
-        if (nullText !== undefined && nullText !== null && nullText !== '') {
-            result.unshift({value: '', text: nullText});
-        }
-        return result;
     },
     dsfrTransformListForRadio: function (list, valueField, labelField, disabledField, hintField, filterFunction, searchValue) {
         let rawList = this._searchAndFilterList(list, valueField, labelField, filterFunction, searchValue);
@@ -81,6 +82,7 @@ export default {
                 return response.data.map((object) => ({
                     value: object[valueField],
                     label: object[labelField].toString(), // A label is always a string
+                    object
                 }));
             })
             .catch(() => {

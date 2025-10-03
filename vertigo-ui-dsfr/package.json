@@ -1,7 +1,7 @@
 {
   "name": "vertigo-dsfr",
-  "version": "4.3.1",
-  "private": true,
+  "version": "4.3.3",
+  "private": false,
   "type": "module",
   "scripts": {
     "dev": "vite --port 3001",
@@ -10,7 +10,8 @@
   },
   "dependencies": {
     "@gouvfr/dsfr": "^1.12.1",
-    "@gouvminint/vue-dsfr": "^8.3.0",
+    "@gouvminint/vue-dsfr": "^8.6.0",
+    "@iconify-json/ri": "^1.2.3",
     "@trevoreyre/autocomplete": "^3.0.3",
     "@trevoreyre/autocomplete-vue": "^3.0.3",
     "date-fns": "^4.1.0",

@@ -42,7 +42,6 @@ import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.core.lang.Builder;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.datafactory.collections.model.FacetedQueryResult;
-import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.datamodel.data.model.DtListState;
@@ -56,11 +55,13 @@ import io.vertigo.vega.webservice.validation.UiMessageStack;
 
 /**
  * Swagger WebService to list services published.
+ *
  * @see "https://github.com/wordnik/swagger-spec/blob/master/versions/2.0.md"
  * @author npiedeloup (22 juil. 2014 11:12:02)
  */
 public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 
+	private static final String REF_HASH_SEPARATOR = "_";
 	private static final String REQUIRED = "required";
 
 	private static final String SCHEMA = "schema";
@@ -126,7 +127,7 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 				.isNotNull(builderWebServiceDefinitions, "webServiceDefinitions must be set")
 				.isNotNull(jsonTypeAdapters, "typeAdapters must be set");
 		//-----
-		final SwaggerApi swagger = new SwaggerApi();
+		final var swagger = new SwaggerApi();
 		swagger.put("swagger", "2.0");
 		swagger.put("info", createInfoObject());
 		swagger.put("basePath", builderContextPath);
@@ -141,7 +142,7 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 	private Map<String, Object> createPathsObject() {
 		final Map<String, Object> paths = new LinkedHashMap<>();
 		for (final WebServiceDefinition webServiceDefinition : builderWebServiceDefinitions) {
-			final Map<String, Object> pathItem = (Map<String, Object>) paths.get(webServiceDefinition.getPath());
+			final var pathItem = (Map<String, Object>) paths.get(webServiceDefinition.getPath());
 			if (pathItem != null) {
 				pathItem.putAll(createPathItemObject(webServiceDefinition));
 				paths.put(webServiceDefinition.getPath(), pathItem);
@@ -161,7 +162,7 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 	private Map<String, Object> createOperationObject(final WebServiceDefinition webServiceDefinition) {
 		final Map<String, Object> operation = new LinkedHashMap<>();
 		operation.put("summary", webServiceDefinition.getMethod().getName());
-		final StringBuilder description = new StringBuilder();
+		final var description = new StringBuilder();
 		if (!webServiceDefinition.getDoc().isEmpty()) {
 			description.append(webServiceDefinition.getDoc());
 			description.append("<br/>");
@@ -171,7 +172,7 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 			description.append("<br/>");
 		}
 		putIfNotEmpty(operation, DESCRIPTION, description.toString());
-		operation.put("operationId", webServiceDefinition.getName());
+		operation.put("operationId", webServiceDefinition.getName()); //operationId must be unique, and it url encoded when needed
 		putIfNotEmpty(operation, "consumes", createConsumesArray(webServiceDefinition));
 		putIfNotEmpty(operation, "parameters", createParametersArray(webServiceDefinition));
 		putIfNotEmpty(operation, "responses", createResponsesObject(webServiceDefinition));
@@ -190,9 +191,9 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 
 	private Map<String, Object> createResponsesObject(final WebServiceDefinition webServiceDefinition) {
 		final Map<String, Object> responses = new LinkedHashMap<>();
-		final Map<String, Object> headers = createResponsesHeaders(webServiceDefinition);
+		final var headers = createResponsesHeaders(webServiceDefinition);
 
-		final Type returnType = webServiceDefinition.getMethod().getGenericReturnType();
+		final var returnType = webServiceDefinition.getMethod().getGenericReturnType();
 		if (void.class.isAssignableFrom(webServiceDefinition.getMethod().getReturnType())) {
 			responses.put("204", createResponseObject("No content", returnType, Collections.emptySet(), Collections.emptySet(), headers));
 		} else if (webServiceDefinition.getMethod().getName().startsWith("create")) {
@@ -206,12 +207,13 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 		if (webServiceDefinition.isNeedAuthentification()) {
 			//webServiceDefinition.isNeedSession() don't mean that session is mandatory, it just say to create a session
 			responses.put("401", createResponseObject("Unauthorized : no valid session", ErrorMessage.class, Collections.emptySet(), Collections.emptySet(), headers));
-			responses.put("403", createResponseObject("Forbidden : not enought rights", ErrorMessage.class, Collections.emptySet(), Collections.emptySet(), headers));
+			responses.put("403", createResponseObject("Forbidden : not enough rights", ErrorMessage.class, Collections.emptySet(), Collections.emptySet(), headers));
 		}
 		if (!webServiceDefinition.getWebServiceParams().isEmpty()) {
 			responses.put("422", createResponseObject("Unprocessable entity : validations or business error", UiMessageStack.class, Collections.emptySet(), Collections.emptySet(), headers));
 		}
-		responses.put("429", createResponseObject("Too many request : anti spam security (must wait for next time window)", ErrorMessage.class, Collections.emptySet(), Collections.emptySet(), headers));
+		responses.put("429",
+				createResponseObject("Too many request : anti spam security (must wait for next time window)", ErrorMessage.class, Collections.emptySet(), Collections.emptySet(), headers));
 		responses.put("500", createResponseObject("Internal server error", ErrorMessage.class, Collections.emptySet(), Collections.emptySet(), headers));
 		return responses;
 	}
@@ -226,9 +228,11 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 
 	/**
 	 * ErrorMessage for json conversion.
+	 *
 	 * @author npiedeloup
 	 */
 	static final class ErrorMessage {
+
 		private final List<String> globalErrors = Collections.emptyList();
 
 		/**
@@ -239,7 +243,8 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 		}
 	}
 
-	private Map<String, Object> createResponseObject(final String description, final Type returnType, final Set<String> includedFields, final Set<String> excludedFields, final Map<String, Object> headers) {
+	private Map<String, Object> createResponseObject(final String description, final Type returnType, final Set<String> includedFields, final Set<String> excludedFields,
+			final Map<String, Object> headers) {
 		final Map<String, Object> response = new LinkedHashMap<>();
 		response.put(DESCRIPTION, description);
 		putIfNotEmpty(response, SCHEMA, createOptionalSchemaObject(returnType, includedFields, excludedFields).orElse(null)); //return type could be void
@@ -261,15 +266,17 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 		//-----
 		final Map<String, Object> schema = new LinkedHashMap<>();
 		final Class<?> objectClass = WebServiceTypeUtil.castAsClass(type);
-		final String[] typeAndFormat = toSwaggerType(objectClass);
+		final var typeAndFormat = toSwaggerType(objectClass);
 		schema.put("type", typeAndFormat[0]);
 		if (typeAndFormat[1] != null) {
 			schema.put("format", typeAndFormat[1]);
 		}
 		if (WebServiceTypeUtil.isAssignableFrom(Collection.class, type)) {
-			final Type itemsType = ((ParameterizedType) type).getActualTypeArguments()[0]; //we known that List has one parameterized type
-			//Si le itemsType est null, on prend le unknownObject
-			schema.put("items", createSchemaObject(itemsType, includedFields, excludedFields)); //type argument can't be void
+			if (((ParameterizedType) type).getActualTypeArguments().length > 0) {
+				final var itemsType = ((ParameterizedType) type).getActualTypeArguments()[0]; //we known that List has one parameterized type
+				//Si le itemsType est null, on prend le unknownObject
+				schema.put("items", createSchemaObject(itemsType, includedFields, excludedFields)); //type argument can't be void
+			}
 		} else if ("object".equals(typeAndFormat[0])) {
 			final String objectName;
 			final Class<?> parameterClass;
@@ -278,7 +285,7 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 					&& (((ParameterizedType) type).getActualTypeArguments()[0] instanceof Class || ((ParameterizedType) type).getActualTypeArguments()[0] instanceof ParameterizedType)
 					&& !(((ParameterizedType) type).getActualTypeArguments()[0] instanceof WildcardType)) {
 				//We have checked there is one parameter or we known that FacetedQueryResult has two parameterized type
-				final Type itemsType = ((ParameterizedType) type).getActualTypeArguments()[0];
+				final var itemsType = ((ParameterizedType) type).getActualTypeArguments()[0];
 				parameterClass = WebServiceTypeUtil.castAsClass(itemsType);
 				objectName = objectClass.getSimpleName() + "<" + parameterClass.getSimpleName() + ">" + filterHash(includedFields, excludedFields);
 			} else {
@@ -305,23 +312,23 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 		if (includedFields.isEmpty() && excludedFields.isEmpty()) {
 			return "";
 		}
-		final String sb = "+(" + includedFields + ")" +
+		final var sb = "+(" + includedFields + ")" +
 				"-(" + excludedFields + ")";
-		return "$" + sb.hashCode();
+		return REF_HASH_SEPARATOR + sb.hashCode();
 	}
 
 	private void appendPropertiesDtObject(final Map<String, Object> entity, final Class<? extends DataObject> objectClass, final Set<String> includedFields, final Set<String> excludedFields) {
 		//can't be a primitive nor array nor DtListDelta
 		final Map<String, Object> properties = new LinkedHashMap<>();
 		final List<String> required = new ArrayList<>(); //mandatory fields
-		final DataDefinition dataDefinition = DataModelUtil.findDataDefinition(objectClass);
+		final var dataDefinition = DataModelUtil.findDataDefinition(objectClass);
 		for (final DataField dtField : dataDefinition.getFields()) {
-			final String fieldName = dtField.name();
+			final var fieldName = dtField.name();
 			if (isExcludedField(fieldName, includedFields, excludedFields)) {
 				continue;
 			}
-			final Type fieldType = getFieldType(dtField);
-			final Map<String, Object> fieldSchema = createSchemaObject(fieldType, subFilter(fieldName, includedFields), subFilter(fieldName, excludedFields)); //not Nullable
+			final var fieldType = getFieldType(dtField);
+			final var fieldSchema = createSchemaObject(fieldType, subFilter(fieldName, includedFields), subFilter(fieldName, excludedFields)); //not Nullable
 			fieldSchema.put("title", dtField.getLabel().getDisplay());
 			if (dtField.cardinality().hasOne()) {
 				required.add(fieldName);
@@ -345,7 +352,11 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 		if (includedFields.isEmpty() && excludedFields.isEmpty()) {
 			return false;
 		}
-		if (!includedFields.isEmpty()) {
+		//on ne garde les includedFields qui n'ont pas de .
+		final var currentIncludedFields = includedFields.stream()
+				.filter(field -> !field.contains("."))
+				.collect(Collectors.toSet());
+		if (!currentIncludedFields.isEmpty()) {
 			return !includedFields.contains(fieldName);
 		}
 		return excludedFields.contains(fieldName);
@@ -366,8 +377,11 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 		final List<String> requireds = new ArrayList<>(); //mandatory fields
 		for (final Field field : objectClass.getDeclaredFields()) {
 			if ((field.getModifiers() & (Modifier.STATIC | Modifier.TRANSIENT | 0x1000)) == 0) { //0x1000 is for synthetic field (excludes)
-				final String fieldName = field.getName();
-				final Map<String, Object> fieldSchema = obtainFieldSchema(field, parameterClass, subFilter(fieldName, includedFields), subFilter(fieldName, excludedFields), requireds);
+				final var fieldName = field.getName();
+				if (isExcludedField(fieldName, includedFields, excludedFields)) {
+					continue;
+				}
+				final var fieldSchema = obtainFieldSchema(field, parameterClass, subFilter(fieldName, includedFields), subFilter(fieldName, excludedFields), requireds);
 				properties.put(field.getName(), fieldSchema);
 			}
 		}
@@ -376,17 +390,17 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 	}
 
 	private Map<String, Object> obtainFieldSchema(final Field field, final Class<?> parameterClass, final Set<String> includedFields, final Set<String> excludedFields, final List<String> requireds) {
-		final Type fieldType = field.getGenericType();
-		Type usedFieldType = fieldType;
+		final var fieldType = field.getGenericType();
+		var usedFieldType = fieldType;
 		if (fieldType instanceof ParameterizedType) {
-			final Type[] actualTypeArguments = ((ParameterizedType) fieldType).getActualTypeArguments();
+			final var actualTypeArguments = ((ParameterizedType) fieldType).getActualTypeArguments();
 			if (actualTypeArguments.length == 1 && actualTypeArguments[0] instanceof TypeVariable) {
 				usedFieldType = new CustomParameterizedType(fieldType, parameterClass);
 			}
 		} else if (fieldType instanceof TypeVariable) {
 			usedFieldType = parameterClass;
 		}
-		final Map<String, Object> fieldSchema = createSchemaObject(usedFieldType, includedFields, excludedFields); //field type can't be void
+		final var fieldSchema = createSchemaObject(usedFieldType, includedFields, excludedFields); //field type can't be void
 		if ((field.getModifiers() & Modifier.FINAL) != 0
 				&& !Optional.class.isAssignableFrom(field.getType())) {
 			requireds.add(field.getName());
@@ -426,9 +440,9 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 			parameters.add(parameter);
 		}
 		if (!bodyParameter.isEmpty()) {
-			final String[] splittedDefinitionName = webServiceDefinition.getName().split("\\$");
-			final String bodyName = splittedDefinitionName[0].replaceAll("_+", "_") + "Body" + "$" + splittedDefinitionName[1];
-			final Map<String, Object> compositeSchema = (Map<String, Object>) bodyParameter.get(SCHEMA);
+			final var splittedDefinitionName = webServiceDefinition.getName().split("\\$");
+			final var bodyName = splittedDefinitionName[0].replaceAll("_+", "_") + "Body" + REF_HASH_SEPARATOR + splittedDefinitionName[1];
+			final var compositeSchema = (Map<String, Object>) bodyParameter.get(SCHEMA);
 			bodyParameter.put(SCHEMA, Collections.singletonMap("$ref", "#/definitions/" + bodyName));
 			final Map<String, Object> bodyDefinition = new LinkedHashMap<>();
 			bodyDefinition.put(REQUIRED, compositeSchema.keySet().toArray(new String[compositeSchema.size()]));
@@ -444,32 +458,32 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 	private void appendParameters(final WebServiceParam webServiceParam, final List<Map<String, Object>> parameters, final Map<String, Object> bodyParameter) {
 		if (isOneInMultipleOutParams(webServiceParam)) {
 			for (final WebServiceParam pseudoWebServiceParam : createPseudoWebServiceParams(webServiceParam)) {
-				final Map<String, Object> parameter = createParameterObject(pseudoWebServiceParam);
+				final var parameter = createParameterObject(pseudoWebServiceParam);
 				parameter.remove(REQUIRED); //query params aren't required
 				parameters.add(parameter);
 			}
 		} else if (isMultipleInOneOutParams(webServiceParam)) {
-			final Map<String, Object> parameter = createParameterObject(webServiceParam);
+			final var parameter = createParameterObject(webServiceParam);
 			if (bodyParameter.isEmpty()) {
 				bodyParameter.putAll(parameter);
 			} else {
-				final String newDescription = (String) parameter.get(DESCRIPTION);
-				final String oldDescription = (String) bodyParameter.get(DESCRIPTION);
+				final var newDescription = (String) parameter.get(DESCRIPTION);
+				final var oldDescription = (String) bodyParameter.get(DESCRIPTION);
 				bodyParameter.put(DESCRIPTION, oldDescription + ", " + newDescription);
 
-				final Map<String, Object> newSchema = (Map<String, Object>) parameter.get(SCHEMA);
-				final Map<String, Object> oldSchema = (Map<String, Object>) bodyParameter.get(SCHEMA);
+				final var newSchema = (Map<String, Object>) parameter.get(SCHEMA);
+				final var oldSchema = (Map<String, Object>) bodyParameter.get(SCHEMA);
 				oldSchema.putAll(newSchema);
 			}
 		} else {
-			final Map<String, Object> parameter = createParameterObject(webServiceParam);
+			final var parameter = createParameterObject(webServiceParam);
 			parameters.add(parameter);
 		}
 	}
 
 	private static List<WebServiceParam> createPseudoWebServiceParams(final WebServiceParam webServiceParam) {
 		final List<WebServiceParam> pseudoWebServiceParams = new ArrayList<>();
-		final String prefix = !webServiceParam.getName().isEmpty() ? webServiceParam.getName() + "." : "";
+		final var prefix = !webServiceParam.getName().isEmpty() ? webServiceParam.getName() + "." : "";
 		if (DtListState.class.isAssignableFrom(webServiceParam.getType())) {
 			pseudoWebServiceParams.add(WebServiceParam.builder(int.class)
 					.with(webServiceParam.getParamType(), prefix + "top").build());
@@ -481,9 +495,9 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 					.with(webServiceParam.getParamType(), prefix + "sortDesc").build());
 		} else if (DataObject.class.isAssignableFrom(webServiceParam.getType())) {
 			final Class<? extends DataObject> paramClass = (Class<? extends DataObject>) webServiceParam.getType();
-			final DataDefinition dataDefinition = DataModelUtil.findDataDefinition(paramClass);
+			final var dataDefinition = DataModelUtil.findDataDefinition(paramClass);
 			for (final DataField dtField : dataDefinition.getFields()) {
-				final String fieldName = dtField.name();
+				final var fieldName = dtField.name();
 				pseudoWebServiceParams.add(WebServiceParam.builder(dtField.smartTypeDefinition().getJavaClass())
 						.with(webServiceParam.getParamType(), prefix + fieldName)
 						.build());
@@ -552,7 +566,7 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 			bodyParameter.put(webServiceParam.getName(), createSchemaObject(webServiceParam.getGenericType(), webServiceParam.getIncludedFields(), webServiceParam.getExcludedFields()));
 			parameter.put(SCHEMA, bodyParameter);
 		} else {
-			final String[] typeAndFormat = toSwaggerType(webServiceParam.getType());
+			final var typeAndFormat = toSwaggerType(webServiceParam.getType());
 			parameter.put("type", typeAndFormat[0]);
 			if ("file".equals(typeAndFormat[0])) {
 				parameter.put("in", "formData");
@@ -588,7 +602,7 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 			return new String[] { "array", null };
 		} else {
 			//if query is a BasicTypeAdapter we use basicType
-			final BasicTypeAdapter basicTypeAdapter = jsonTypeAdapters.get(paramClass);
+			final var basicTypeAdapter = jsonTypeAdapters.get(paramClass);
 			if (basicTypeAdapter != null) {
 				return toSwaggerType(basicTypeAdapter.getBasicType().getJavaClass());
 			}
@@ -613,6 +627,7 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 	}
 
 	private static final class CustomParameterizedType implements ParameterizedType {
+
 		private final Type fieldType;
 		private final Type[] typeArguments;
 

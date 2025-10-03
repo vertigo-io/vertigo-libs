@@ -295,8 +295,9 @@ public final class AdvancedTestWebServices implements WebServices {
 		return result;
 	}
 
+	/** TODO : error in swaggerApi : add two body, only one is accepted */
 	@PUT("/contactExtended/{conId}")
-	public ExtendedObject<Contact> testGetExtended(
+	public ExtendedObject<Contact> testPutExtended(
 			@PathParam("conId") final long conId,
 			final @Validate({ ContactValidator.class, EmptyPkValidator.class }) Contact contact,
 			@InnerBodyParam("vanillaUnsupportedMultipleIds") final int[] multipleIds) {
@@ -338,7 +339,7 @@ public final class AdvancedTestWebServices implements WebServices {
 	}
 
 	private <C extends DataObject, E extends Entity> Predicate<E> createFilterFunction(final C criteria, final Class<E> resultClass) {
-		Predicate<E> filter = (o) -> true;
+		Predicate<E> filter = o -> true;
 		final DataDefinition criteriaDefinition = DataModelUtil.findDataDefinition(criteria);
 		final DataDefinition resultDefinition = DataModelUtil.findDataDefinition(resultClass);
 		final Set<String> alreadyAddedField = new HashSet<>();

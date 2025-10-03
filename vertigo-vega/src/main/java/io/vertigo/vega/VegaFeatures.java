@@ -157,14 +157,7 @@ public final class VegaFeatures extends Features<VegaFeatures> {
 
 	@Feature("webservices.cors")
 	public VegaFeatures withWebServicesOriginCORSFilter(final Param... params) {
-		Assertion.check().isTrue(params.length == 1 && "originCORSFilter".equals(params[0].getName()), "originCORSFilter param should be provided ");
-		final String myOriginCORSFilter = params[0].getValue();
-		//---
-		if (myOriginCORSFilter != null) {
-			getModuleConfigBuilder().addPlugin(CorsAllowerWebServiceHandlerPlugin.class);
-		} else {
-			getModuleConfigBuilder().addPlugin(CorsAllowerWebServiceHandlerPlugin.class, Param.of("originCORSFilter", myOriginCORSFilter));
-		}
+		getModuleConfigBuilder().addPlugin(CorsAllowerWebServiceHandlerPlugin.class, params);
 		return this;
 	}
 

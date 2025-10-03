@@ -1,4 +1,4 @@
-<th:block th:fragment="fileupload-edit(url, componentId, downloadUrl, key, object, field, multiple, simple, uploader_attrs)" 
+<th:block th:fragment="fileupload-edit(url, componentId, downloadUrl, key, object, field, multiple, simple, maxFileSize, maxTotalSize, maxFiles, accept, uploader_attrs)" 
 	vu:alias="fileupload" vu:selector="${viewMode=='edit'}"
 	th:assert="(${key} != null or (${object} != null and ${field} != null)) and ${url} != null"
 	th:with="object=${object ?: key},
@@ -19,6 +19,10 @@
             field-name="file"
             th::simple="${mySimple}"
             th::multiple="${myMultiple}"
+            th::max-file-size="${maxFileSize != null ? maxFileSize*1024*1024 : null}"
+            th::max-total-size="${maxTotalSize != null ? maxTotalSize*1024*1024 : null}"
+            th::max-files="${maxFiles}"
+            th:accept="${accept}"
             th:v-bind:file-info-uris="|vueDataToArray(${model.util.vueDataKey(object, field, rowIndex)})|"
             th:@update:file-info-uris="|(newFileInfoUris) => ${model.util.vueDataKey(object, field, rowIndex)} = vueDataToObject(newFileInfoUris)|"
             th:@download-file="|(fileUri) => goTo('${downloadUrl}' + fileUri)|"
@@ -48,9 +52,9 @@
             th:attr="__${uploader_attrs}__"></v-file-upload-quasar>
 </th:block>
 
-<th:block th:fragment="fileupload-dropzone(key, dropzone_attrs)" 
-    th:assert="${key} != null"
-    th:with="myComponentId='uploader_'+${key}+'_drop',fileComponentId='uploader_'+${key}"
+<th:block th:fragment="fileupload-dropzone(fileComponentId, dropzone_attrs)" 
+    th:assert="${fileComponentId} != null"
+    th:with="myComponentId=${model.util.generateComponentUID('uploader_drop', fileComponentId, null, null)}"
     th:attr="objectKey=${model.vContext['componentStates'].addComponentState(myComponentId).addPrimitive('dragover',false)}" >
         <div class="dropzone-area" 
             th:@dragenter.prevent="|uploader_dragenter('${myComponentId}')|"
@@ -64,18 +68,18 @@
         </div>
 </th:block>
 
-<th:block th:fragment="fileupload-simple(url, downloadUrl, key, multiple, uploader_attrs)" 
+<th:block th:fragment="fileupload-simple(url, downloadUrl, key, multiple, maxFileSize, maxTotalSize, accept, uploader_attrs)" 
     th:assert="${key} != null and ${url} != null">
     <vu:fileupload simple="true" />
 </th:block>
 
-<th:block th:fragment="fileupload-simple-object-edit(url, downloadUrl, object, field, multiple, uploader_attrs)" 
+<th:block th:fragment="fileupload-simple-object-edit(url, downloadUrl, object, field, multiple, maxFileSize, maxTotalSize, maxFiles, accept, uploader_attrs)" 
     vu:alias="fileupload-simple-object" vu:selector="${viewMode=='edit'}"
     th:assert="${object} != null and ${field} != null and ${url} != null">
         <vu:fileupload-edit simple="true" />
 </th:block>
 
-<th:block th:fragment="fileupload-simple-object-read(url, downloadUrl, object, field, multiple, uploader_attrs)" 
+<th:block th:fragment="fileupload-simple-object-read(url, downloadUrl, object, field, multiple, maxFileSize, maxTotalSize, maxFiles, accept, uploader_attrs)" 
     vu:alias="fileupload-simple-object" vu:selector="${viewMode=='read'}"
     th:assert="${object} != null and ${field} != null and ${url} != null">
         <vu:fileupload-read simple="true" />

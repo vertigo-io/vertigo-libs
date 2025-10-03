@@ -4,9 +4,13 @@
             :field-name="$props.fieldName"
             :multiple="$props.multiple"
             :max-files="$props.multiple ? undefined : 1"
+            :max-file-size="$props.maxFileSize"
+            :accept="$props.accept"
             :headers="[{name: 'Accept', value: 'application/json'}]"
+            :filter="filterFiles"
             @uploaded="uploadedFiles"
             @failed="failedFiles"
+            @rejected="rejectedFiles"
             :readonly="$props.readonly || !globalCanAddFiles([])"
             v-bind="$attrs"
             ref="quasarUploader">
@@ -69,12 +73,12 @@
                                         (file.type.indexOf('image/') === 0 ? 'photo' :
                                         (file.type.indexOf('audio/') === 0 ? 'audiotrack' : 'insert_drive_file'))" ></q-icon>
                                     <div class="q-uploader__file-header-content col">
-                                    	<div class="q-uploader__title" :id="file.fileUri + '_label'">{{file.name}}</div>
+                                        <div class="q-uploader__title" :id="file.fileUri + '_label'">{{file.name}}</div>
                                     </div>
-									<div role="toolbar" :aria-labelledby="file.fileUri + '_label'">
-	                                    <q-btn v-if="!$props.readonly" round dense flat icon="delete" @click="removeRemoteFile(file)" :title="$q.lang.vui.uploader.remove"></q-btn>                      
-	                                    <q-btn round dense flat icon="file_download" @click="$emit('download-file', file.fileUri)" :title="$q.lang.vui.uploader.download"></q-btn>
-									</div>
+                                    <div role="toolbar" :aria-labelledby="file.fileUri + '_label'">
+                                        <q-btn v-if="!$props.readonly" round dense flat icon="delete" @click="removeRemoteFile(file)" :title="$q.lang.vui.uploader.remove"></q-btn>                      
+                                        <q-btn round dense flat icon="file_download" @click="$emit('download-file', file.fileUri)" :title="$q.lang.vui.uploader.download"></q-btn>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -91,7 +95,7 @@
                             </q-btn>
                     </div>
                  </div>
-				 <slot name="footer"></slot>
+                 <slot name="footer"></slot>
             </template>   
         </q-uploader>
 </template>
@@ -99,15 +103,19 @@
 
 export default {
   props: {
-        inputId: Number,
-		readonly: Boolean,
+        inputId: String,
+        readonly: Boolean,
         label: String,
         simple : {type: Boolean, default: false},
         fileInfoUris: Array,
         fieldName: String,
         url : String,
         downloadUrl : { type : String, default : (props) => props.baseUrl + '/download'},
-        multiple: { type : Boolean, default : true  }
+        multiple: { type : Boolean, default : true  },
+        accept: String,
+        maxFileSize: Number,
+        maxTotalSize: Number,
+        maxFiles: Number,
   },
   emits: ["update:file-info-uris", "download-file", "init-ok", "init-ko"],
   computed: {
@@ -162,21 +170,53 @@ export default {
             this.$emit('update:file-info-uris', newFileInforUris);
         }.bind(this));
     },
+    filterFiles(files) {
+        let acceptedFiles = [];
+        let actualSize = this.getGlobalSize();
+        for (let file of files) {
+            if (this.maxFiles && (this.files.length + acceptedFiles.length) >= this.maxFiles) {
+                file._error = 'maxFiles';
+                continue;
+            }
+            if (this.maxTotalSize && (actualSize + file.size > this.maxTotalSize)) {
+                file._error = 'maxTotalSize';
+                continue;
+            }
+            acceptedFiles.push(file);
+            actualSize += file.size;
+        }
+        return acceptedFiles;
+    },
     failedFiles(info) {
         if (info.xhr.status === 413) {
              this.$q.notify({
-                type: 'negative', message: this.$q.lang.vui.uploader.fileErrorTooBig,
+                type: 'negative', message: this.$vui.i18n().uploader.fileErrorTooBig,
                 multiLine: true, timeout: 2500,
                });
         } else {
             this.$q.notify({
-                type: 'negative', message: this.$q.lang.vui.uploader.fileErrorUnknown,
+                type: 'negative', message: this.$vui.i18n().uploader.fileErrorUnknown,
                 multiLine: true, timeout: 2500,
                });
         }
     },
-    start(a,b,c){
-        this.$refs.quasarUploader;
+    rejectedFiles(errors) {
+        let errorMessages = [];
+        for (let error of errors) {
+            if (error.failedPropValidation === 'accept') {
+                errorMessages.push(this.$vui.i18n().uploader.fileErrorAccept(this.accept));
+            } else if (error.failedPropValidation === 'max-file-size') {
+                errorMessages.push(this.$vui.i18n().uploader.fileErrorTooBigSize(this.$props.maxFileSize));
+            } else if (error.failedPropValidation === 'filter') {
+                if (error.file._error === 'maxFiles') {
+                    errorMessages.push(this.$vui.i18n().uploader.fileCountError(this.$props.maxFiles));
+                } else if (error.file._error === 'maxTotalSize') {
+                    errorMessages.push(this.$vui.i18n().uploader.fileErrorMaxTotalSize(this.$props.maxTotalSize));
+                }
+            }
+        };
+        VUiPage.uiMessageStackToNotify({globalErrors:errorMessages})
+            .forEach(function (notifyMessage) { this.$q.notify(notifyMessage) }.bind(this));
     },
     removeRemoteFile(removedFile) {
             var indexOfFile = this.files.indexOf(removedFile);
@@ -221,16 +261,9 @@ export default {
         }
     },
     getGlobalSize() {
-        var quasarFileSize = this.files
-        .filter( file => file.__status != "uploaded")
-        .reduce( (totalSize, file) => {
+        return this.files.reduce( (totalSize, file) => {
             return totalSize + file.size;
-        },0 )
-
-        var remoteFilesSize = this.files.reduce( (totalSize, file) => {
-            return totalSize + file.size;
-        },0 )
-        return quasarFileSize + remoteFilesSize;
+        },0 );
     },
     getGlobalSizeLabel() {
         return this.humanStorageSize(this.getGlobalSize());
