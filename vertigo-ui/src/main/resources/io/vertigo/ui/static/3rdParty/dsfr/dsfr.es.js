@@ -10152,12 +10152,15 @@ const Mi = {
     return l.sortUrl && l.descending ? a.slice().reverse() : a;
   },
   dsfrServerSideSort: function(e) {
-    let a = this.$data.componentStates[e].pagination, t = this.$data.vueData;
-    a.page = 0, a.sortUrl && a.sortBy && this.$http.post(a.sortUrl, this.objectToFormData({ sortFieldName: a.sortBy, sortDesc: a.descending, CTX: this.$data.vueData.CTX })).then(
-      (function(r) {
-        t[a.listKey] = r.data.model[a.listKey], this.$data.vueData.CTX = r.data.model.CTX;
-      }).bind(this)
-    );
+    let l = this.$data.componentStates, a = l[e].pagination, t = this.$data.vueData;
+    if (a.page = 0, a.sortUrl && a.sortBy) {
+      let r = l[e].columns.find((o) => o.name === a.sortBy);
+      this.$http.post(a.sortUrl, this.objectToFormData({ sortFieldName: r.field, sortDesc: a.descending, CTX: this.$data.vueData.CTX })).then(
+        (function(o) {
+          t[a.listKey] = o.data.model[a.listKey], this.$data.vueData.CTX = o.data.model.CTX;
+        }).bind(this)
+      );
+    }
   }
 }, T1 = (e = "", l = "") => (e ? `${e}-` : "") + c2() + (l ? `-${l}` : ""), Hi = {
   useRandomId: T1

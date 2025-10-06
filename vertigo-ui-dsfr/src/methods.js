@@ -176,7 +176,8 @@ export default {
         let vueData = this.$data.vueData;
         pagination.page = 0 //reset pagination (0 based in dsfr)
         if (pagination.sortUrl && pagination.sortBy) {
-            this.$http.post(pagination.sortUrl, this.objectToFormData({ sortFieldName: pagination.sortBy, sortDesc: pagination.descending, CTX: this.$data.vueData.CTX }))
+            let sortedColumn = componentStates[componentId].columns.find(column => column.name === pagination.sortBy);
+            this.$http.post(pagination.sortUrl, this.objectToFormData({ sortFieldName: sortedColumn.field, sortDesc: pagination.descending, CTX: this.$data.vueData.CTX }))
                 .then(
                     function (response) {
                         vueData[pagination.listKey] = response.data.model[pagination.listKey];
