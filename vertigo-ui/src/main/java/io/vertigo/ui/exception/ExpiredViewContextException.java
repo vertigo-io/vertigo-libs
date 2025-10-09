@@ -21,6 +21,7 @@ import java.util.Optional;
 
 /**
  * Exception lancée dans le cas ou l'on recherche un context expiré.
+ * 
  * @author npiedeloup
  */
 public final class ExpiredViewContextException extends RuntimeException {
@@ -30,7 +31,9 @@ public final class ExpiredViewContextException extends RuntimeException {
 
 	/**
 	 * Constructeur.
+	 * 
 	 * @param message Message d'erreur
+	 * @param redirectUrlOpt URL de redirection (si vide : pas de redirection)
 	 */
 	public ExpiredViewContextException(final String message, final Optional<String> redirectUrlOpt) {
 		super(message);
