@@ -6,7 +6,9 @@
              th:with="o=${model.vContext['componentStates'].addComponentState(componentId).addPrimitive('expand', false)}">
             <div class="fr-hidden-md">
                 <vu:dsfr-accordion th:componentId="|${componentId}_accordion|"
-                                   th:title="${currentLabel}">
+                                   th:title="${currentLabel}"
+                                   title-tag="p"
+                >
                     <ul>
                         <vu:content/>
                     </ul>
