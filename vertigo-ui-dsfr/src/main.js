@@ -31,6 +31,7 @@ import Autocomplete from "@trevoreyre/autocomplete-vue/Autocomplete.vue";
 
 import './utils.css'
 import './surcharges.css'
+import './components.css'
 import './vertigo-ui-dsfr.css'
 
 import { addCollection } from '@iconify/vue';

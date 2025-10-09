@@ -1,0 +1,34 @@
+<!--/* tabnav */-->
+
+<th:block th:fragment="dsfr-tabnav-list(class, componentId, currentLabel)">
+    <div class="dsfr-navtab">
+        <div class=""
+             th:with="o=${model.vContext['componentStates'].addComponentState(componentId).addPrimitive('expand', false)}">
+            <div class="fr-hidden-md">
+                <vu:dsfr-accordion th:componentId="|${componentId}_accordion|"
+                                   th:title="${currentLabel}">
+                    <ul>
+                        <vu:content/>
+                    </ul>
+                </vu:dsfr-accordion>
+            </div>
+        </div>
+        <div class="fr-hidden fr-unhidden-md">
+            <ul>
+                <vu:content/>
+            </ul>
+        </div>
+    </div>
+</th:block>
+
+<th:block th:fragment="dsfr-tabnav(label, href, class, active, other_attrs)">
+    <li class="dsfr-navtab__tab" th:data-current="${active==true?'page':null}">
+        <a th::href="|${disabled}?null:'${href}'|"
+           th:aria-current="${active==true?'page':null}"
+        >
+            <vu:content>
+                <span vu:text="${label}"></span>
+            </vu:content>
+        </a>
+    </li>
+</th:block>
