@@ -86,6 +86,7 @@ public abstract class AbstractSqlExceptionHandler implements SqlExceptionHandler
 	/**
 	 * Traite l'exception lié à la contrainte d'intégrité.
 	 * Et lance une KUserException avec le message par défaut passé en paramètre et une MessageKey basé sur le nom de la contrainte.
+	 *
 	 * @param sqle Exception SQL
 	 * @param defaultMsg Message par defaut
 	 */
@@ -100,7 +101,7 @@ public abstract class AbstractSqlExceptionHandler implements SqlExceptionHandler
 		//Ex: CK_PERSON_FULL_NAME_UNIQUE
 		final LocaleMessageKey constraintKey = new SQLConstraintMessageKey(constraintName);
 
-		//On récupère ici le message externalisé par défaut : Resources.DYNAMO_SQL_CONSTRAINT_IMPOSSIBLE_TO_DELETE ou Resources.DYNAMO_SQL_CONSTRAINT_ALREADY_REGISTRED)
+		//On récupère ici le message externalisé par défaut : Resources.DYNAMO_SQL_CONSTRAINT_IMPOSSIBLE_TO_DELETE ou Resources.DYNAMO_SQL_CONSTRAINT_ALREADY_REGISTERED)
 		final String defaultConstraintMsg = LocaleMessageText.of(defaultMsg).getDisplay();
 		final LocaleMessageText userContraintMessageText = LocaleMessageText.ofDefaultMsg(defaultConstraintMsg, constraintKey);
 		final VUserException constraintException = new VUserException(userContraintMessageText);
@@ -120,7 +121,7 @@ public abstract class AbstractSqlExceptionHandler implements SqlExceptionHandler
 	 * @param sqle UniqueConstraintSQLException
 	 */
 	protected final VUserException handleUniqueConstraintSQLException(final SQLException sqle) {
-		return handleConstraintSQLException(sqle, Resources.DYNAMO_SQL_CONSTRAINT_ALREADY_REGISTRED);
+		return handleConstraintSQLException(sqle, Resources.DYNAMO_SQL_CONSTRAINT_ALREADY_REGISTERED);
 	}
 
 	/**
