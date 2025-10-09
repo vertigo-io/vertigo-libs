@@ -63,7 +63,7 @@ public final class RateLimitingManagerImpl implements RateLimitingManager {
 	private static final String HEADER_RATE_LIMIT_LIMIT = "X-Rate-Limit-Limit"; //the rate limit ceiling for that given request
 	private static final String HEADER_RATE_LIMIT_REMAINING = "X-Rate-Limit-Remaining"; //the number of requests left for the M minute window
 	private static final String HEADER_RATE_LIMIT_RESET = "X-Rate-Limit-Reset"; //the remaining seconds before the rate limit resets
-	private static final Set<String> USER_EXCLUDED_IPS = Set.of("127.0.0.1"); //some IP can't be use as user IP
+	private static final Set<String> USER_EXCLUDED_IPS = Set.of("127.0.0.1", "[0:0:0:0:0:0:0:1]"); //some IP can't be use as user IP
 
 	public static final int DEFAULT_WINDOW_SECONDS = 5 * 60; //the time windows use to limit calls rate
 	private static final long DEFAULT_MAX_REQUESTS_VALUE = 150; //the rate limit ceiling value
