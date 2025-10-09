@@ -112,6 +112,7 @@ Release 4.3.0 - 2025/03/27
 * [Ui] Integrate lodash debounce to replace quasar dependency
 * [Ui] Restore curentUserSession on error pages (handled in another thread by Spring), can be use to get currentLocale
 * [Ui] Fix geolocation input
+* [Ui] Remove `UiRequestUtil.removeCurrentUiMessageStack`
 * [Vega] WebServiceClientAmplifier No content-type in request when there is no body
 * [Vega] Add maxDayRequests and whiteListUsers to RateLimitingManager
 * [Vega] Fix logout if no session
