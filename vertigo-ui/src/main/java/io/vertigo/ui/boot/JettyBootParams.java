@@ -39,7 +39,7 @@ public class JettyBootParams {
 	private final Optional<String> jettySessionStoreCollectionName;
 	private final boolean noJettySessionCache;
 	private final boolean join;
-	private final List<String> extraClasspath;
+	private final List<String> addonPaths;
 
 	JettyBootParams(
 			final int port,
@@ -55,12 +55,12 @@ public class JettyBootParams {
 			final Optional<String> jettySessionStoreCollectionName,
 			final boolean noJettySessionCache,
 			final boolean join,
-			final List<String> extraClasspath) {
+			final List<String> addonPaths) {
 		Assertion.check()
 				.isNotBlank(contextRoot)
 				.isNotNull(contextPath)
 				.isNotNull(webApplicationInitializerClass)
-				.isNotNull(extraClasspath)
+				.isNotNull(addonPaths)
 				.when(
 						!sslDisabled,
 						() -> Assertion.check()
@@ -85,7 +85,7 @@ public class JettyBootParams {
 		this.jettySessionStoreCollectionName = jettySessionStoreCollectionName;
 		this.noJettySessionCache = noJettySessionCache;
 		this.join = join;
-		this.extraClasspath = extraClasspath;
+		this.addonPaths = addonPaths;
 	}
 
 	public static JettyBootParamsBuilder builder(final String contextRoot, final Class<? extends WebApplicationInitializer> webApplicationInitializerClass) {
@@ -140,8 +140,8 @@ public class JettyBootParams {
 		return noJettySessionCache;
 	}
 	
-	public List<String> getExtraClasspath() {
-		return extraClasspath;
+	public List<String> getAddonPaths() {
+		return addonPaths;
 	}
 
 	public boolean isJoin() {

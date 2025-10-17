@@ -44,7 +44,7 @@ public class JettyBootParamsBuilder implements Builder<JettyBootParams> {
 	private boolean myNoJettySessionCache;
 	//TODO parameter si cache null ou default (si on croit dans l'affinité de session ou non)
 	private boolean myJoin = true;// true by default
-	private List<String> myExtraClasspath = List.of();
+	private List<String> myAddonPaths = List.of();
 
 	public JettyBootParamsBuilder(final String contextRoot, final Class<? extends WebApplicationInitializer> webApplicationInitializerClass) {
 		myContextRoot = contextRoot;
@@ -101,8 +101,8 @@ public class JettyBootParamsBuilder implements Builder<JettyBootParams> {
 		return this;
 	}
 
-	public JettyBootParamsBuilder withExtraClasspath(final List<String> extraClasspath) {
-		myExtraClasspath = extraClasspath;
+	public JettyBootParamsBuilder withAddonPaths(final List<String> addonPaths) {
+		myAddonPaths = addonPaths;
 		return this;
 	}
 
@@ -122,7 +122,7 @@ public class JettyBootParamsBuilder implements Builder<JettyBootParams> {
 				Optional.ofNullable(myJettySessionStoreCollectionName),
 				myNoJettySessionCache,
 				myJoin,
-				myExtraClasspath);
+				myAddonPaths);
 	}
 
 }

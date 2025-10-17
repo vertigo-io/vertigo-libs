@@ -145,12 +145,12 @@ public class JettyBoot {
 		context.setAttribute("jacoco.exclClassLoaders", "*");
 		context.setAttribute(AnnotationConfiguration.CLASS_INHERITANCE_MAP, createClassInheritanceMap(jettyBootParams.getWebApplicationInitializerClass()));
 
-		if (!jettyBootParams.getExtraClasspath().isEmpty()) {
-			// Load extra classpath dynamically
+		if (!jettyBootParams.getAddonPaths().isEmpty()) {
+			// Load addon paths dynamically
 			// Must be done before setting the classloader
-			final String extraClasspath = String.join(";", jettyBootParams.getExtraClasspath());
-			context.setExtraClasspath(extraClasspath);
-			context.setInitParameter("boot.addonPaths", extraClasspath);
+			final String addonPaths = String.join(";", jettyBootParams.getAddonPaths());
+			context.setExtraClasspath(addonPaths);
+			context.setInitParameter("boot.addonPaths", addonPaths);
 		}
 		context.setClassLoader(new WebAppClassLoader(rootClassLoader, context));
 
