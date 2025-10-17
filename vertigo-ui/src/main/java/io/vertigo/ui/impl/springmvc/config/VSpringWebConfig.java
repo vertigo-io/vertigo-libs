@@ -51,6 +51,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 import org.thymeleaf.spring6.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring6.view.ThymeleafViewResolver;
+import org.thymeleaf.templateresolver.AbstractConfigurableTemplateResolver;
+import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
 import io.vertigo.connectors.spring.EnableVertigoSpringBridge;
 import io.vertigo.core.lang.WrappedException;
@@ -93,9 +95,20 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 	 * STEP 1 - Create SpringResourceTemplateResolver
 	 * */
 	@Bean
-	public SpringResourceTemplateResolver templateResolver() {
+	public AbstractConfigurableTemplateResolver templateResolverWebapp() {
 		final SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
 		templateResolver.setApplicationContext(applicationContext);
+		templateResolver.setPrefix("/WEB-INF/views/");
+		templateResolver.setSuffix(".html");
+		templateResolver.setCharacterEncoding("UTF-8");
+		// for dev purpose
+		templateResolver.setCacheable(!isDevMode());
+		return templateResolver;
+	}
+
+	@Bean
+	public AbstractConfigurableTemplateResolver templateResolverClasspath() {
+		final AbstractConfigurableTemplateResolver templateResolver = new ClassLoaderTemplateResolver(Thread.currentThread().getContextClassLoader());
 		templateResolver.setPrefix("/WEB-INF/views/");
 		templateResolver.setSuffix(".html");
 		templateResolver.setCharacterEncoding("UTF-8");
@@ -116,11 +129,16 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 
 		final SpringTemplateEngine templateEngine = new VSpringTemplateEngine();
 
-		// add view resolver
-		final SpringResourceTemplateResolver viewsResolvers = templateResolver();
-		viewsResolvers.setOrder(componentTemplateResolvers.size() + 1); // order last
-		templateEngine.setTemplateResolver(viewsResolvers);
+		// add view resolvers
+		final AbstractConfigurableTemplateResolver viewsResolverWebapp = templateResolverWebapp();
+		viewsResolverWebapp.setOrder(componentTemplateResolvers.size() + 2); // we do not setCheckExistence(true) so if not found, error is raised with expected path, therefore we must be last because on error we do not go to next resolver
+		templateEngine.setTemplateResolver(viewsResolverWebapp);
 		templateEngine.setEnableSpringELCompiler(true);
+
+		final AbstractConfigurableTemplateResolver viewsResolverClasspath = templateResolverClasspath();
+		viewsResolverClasspath.setCheckExistence(true); // go to next resolver if not found
+		viewsResolverClasspath.setOrder(componentTemplateResolvers.size() + 1);
+		templateEngine.addTemplateResolver(viewsResolverClasspath);
 
 		// add component resolvers
 		var order = componentTemplateResolvers.size();

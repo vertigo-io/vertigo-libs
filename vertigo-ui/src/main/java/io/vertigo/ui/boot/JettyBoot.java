@@ -19,7 +19,6 @@ package io.vertigo.ui.boot;
 
 import java.io.IOException;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.security.KeyStore;
 import java.util.List;
 import java.util.Set;
@@ -146,8 +145,15 @@ public class JettyBoot {
 		context.setAttribute("jacoco.exclClassLoaders", "*");
 		context.setAttribute(AnnotationConfiguration.CLASS_INHERITANCE_MAP, createClassInheritanceMap(jettyBootParams.getWebApplicationInitializerClass()));
 
-		context.setClassLoader(new URLClassLoader(new URL[0], rootClassLoader));
+		if (!jettyBootParams.getExtraClasspath().isEmpty()) {
+			// Load extra classpath dynamically
+			// Must be done before setting the classloader
+			final String extraClasspath = String.join(";", jettyBootParams.getExtraClasspath());
+			context.setExtraClasspath(extraClasspath);
+			context.setInitParameter("boot.addonPaths", extraClasspath);
+		}
 		context.setClassLoader(new WebAppClassLoader(rootClassLoader, context));
+
 		context.setThrowUnavailableOnStartupException(true);
 
 		// Create a HandlerList.

@@ -17,6 +17,7 @@
  */
 package io.vertigo.ui.boot;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.web.WebApplicationInitializer;
@@ -43,6 +44,7 @@ public class JettyBootParamsBuilder implements Builder<JettyBootParams> {
 	private boolean myNoJettySessionCache;
 	//TODO parameter si cache null ou default (si on croit dans l'affinité de session ou non)
 	private boolean myJoin = true;// true by default
+	private List<String> myExtraClasspath = List.of();
 
 	public JettyBootParamsBuilder(final String contextRoot, final Class<? extends WebApplicationInitializer> webApplicationInitializerClass) {
 		myContextRoot = contextRoot;
@@ -99,6 +101,11 @@ public class JettyBootParamsBuilder implements Builder<JettyBootParams> {
 		return this;
 	}
 
+	public JettyBootParamsBuilder withExtraClasspath(final List<String> extraClasspath) {
+		myExtraClasspath = extraClasspath;
+		return this;
+	}
+
 	@Override
 	public JettyBootParams build() {
 		return new JettyBootParams(
@@ -114,7 +121,8 @@ public class JettyBootParamsBuilder implements Builder<JettyBootParams> {
 				Optional.ofNullable(myJettyNodeName),
 				Optional.ofNullable(myJettySessionStoreCollectionName),
 				myNoJettySessionCache,
-				myJoin);
+				myJoin,
+				myExtraClasspath);
 	}
 
 }
