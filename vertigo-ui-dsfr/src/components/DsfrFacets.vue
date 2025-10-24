@@ -13,7 +13,7 @@
         </template>
       </template>
     </div>
-    <div v-for="facet in facets" :key="facet.code" class="facets">
+    <div v-for="facet in facets.filter(facetFilter)" :key="facet.code" class="facets">
       <template v-if="facet.multiple || !isFacetSelected(facet.code)">
         <component :is="heading" class="fr-mb-1w fr-text--md" :id="facet.code">{{ facet.label }}</component>
 
@@ -94,6 +94,7 @@ export default {
     selectedFacets: Object,
     contextKey: String,
     facetValueTranslatorProvider: Function,
+    facetFilter : { type: Function, 'default': () => true },
     heading: {
       type: String,
       default: "h6"
