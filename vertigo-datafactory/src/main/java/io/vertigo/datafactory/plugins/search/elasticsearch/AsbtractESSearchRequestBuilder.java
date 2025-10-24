@@ -71,6 +71,7 @@ import io.vertigo.datamodel.smarttype.definitions.DtProperty;
 
 /**
  * ElasticSearch request builder from searchManager api.
+ * 
  * @author pchretien, npiedeloup
  * @param R Type of ES searchRequest : SearchRequest for HLClent or SearchRequestBuilder for TransportClient
  * @param S Type of ES SearchSourceBuilder : SearchSourceBuilder for HLClent or SearchRequestBuilder for TransportClient
@@ -557,10 +558,13 @@ public abstract class AsbtractESSearchRequestBuilder<R, S, T extends AsbtractESS
 		Assertion.check().isNotNull(listFilter);
 		//-----
 		String listFilterValue = listFilter.getFilterValue();
+		if (listFilterValue.trim().isEmpty()) {
+			return QueryBuilders.matchAllQuery(); //empty mean match all
+		}
+
 		for (final DataField keywordField : keywordFields) {
 			listFilterValue = listFilterValue.replace(keywordField.name() + ":", keywordField.name() + ".keyword:");
 		}
-
 		final String query = " +(" +
 				listFilterValue +
 				')';

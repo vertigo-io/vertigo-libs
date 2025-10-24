@@ -8,6 +8,14 @@
     >
         <p th:class="${pClass}" v-for="message in uiMessageStack.globalErrors">{{message}}</p>
     </div>
+	<div  v-if="uiMessageStack.objectFieldErrors && Object.keys(uiMessageStack.objectFieldErrors).length > 0"
+	         th:classappend="${class}"
+	         role="alert"
+	         th:class="|fr-alert fr-alert--error ${smallClass}|"
+	         v-cloak
+	    >
+	        <p th:class="${pClass}" vu:text="#{messages.hasObjectFieldErrors.message}"></p>
+	</div>
     <div v-if="uiMessageStack.globalWarnings && uiMessageStack.globalWarnings.length > 0"
          th:classappend="${class}"
          role="status"

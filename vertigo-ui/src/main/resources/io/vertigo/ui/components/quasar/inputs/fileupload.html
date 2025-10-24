@@ -73,14 +73,18 @@
     <vu:fileupload simple="true" />
 </th:block>
 
-<th:block th:fragment="fileupload-simple-object-edit(url, downloadUrl, object, field, multiple, maxFileSize, maxTotalSize, maxFiles, accept, uploader_attrs)" 
+<th:block th:fragment="fileupload-simple-object-edit(url, downloadUrl, object, field, label, multiple, maxFileSize, maxTotalSize, maxFiles, accept, uploader_attrs)" 
     vu:alias="fileupload-simple-object" vu:selector="${viewMode=='edit'}"
     th:assert="${object} != null and ${field} != null and ${url} != null">
+	<vu:label object="${object}" field="${field}" label="${label}">
         <vu:fileupload-edit simple="true" />
+	</vu:label>
 </th:block>
 
-<th:block th:fragment="fileupload-simple-object-read(url, downloadUrl, object, field, multiple, maxFileSize, maxTotalSize, maxFiles, accept, uploader_attrs)" 
+<th:block th:fragment="fileupload-simple-object-read(url, downloadUrl, object, field, label, multiple, maxFileSize, maxTotalSize, maxFiles, accept, uploader_attrs)" 
     vu:alias="fileupload-simple-object" vu:selector="${viewMode=='read'}"
     th:assert="${object} != null and ${field} != null and ${url} != null">
+	<vu:label object="${object}" field="${field}" label="${label}">
         <vu:fileupload-read simple="true" />
+	</vu:label>
 </th:block>

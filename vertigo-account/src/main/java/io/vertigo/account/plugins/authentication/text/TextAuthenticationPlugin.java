@@ -39,8 +39,8 @@ import io.vertigo.core.util.FileUtil;
 
 /**
  * A simple implementation of the Realm interface that
- * uses a set of configured user accounts and roles to support authentication and authorization.  Each account entry
- * specifies the username, password, and roles for a user.  Roles can also be mapped
+ * uses a set of configured user accounts and roles to support authentication and authorization. Each account entry
+ * specifies the username, password, and roles for a user. Roles can also be mapped
  * to permissions and associated with users.
  * <p/>
  * User accounts and roles are stored in two {@code Map}s in memory, so it is expected that the total number of either
@@ -50,7 +50,7 @@ import io.vertigo.core.util.FileUtil;
  */
 public class TextAuthenticationPlugin implements AuthenticationPlugin, Activeable {
 	//	accountKey  |  login  |  password
-	private static final String FILE_PATTERN_STR = "^(\\S+)\\s+(\\S+)\\s+(\\S+)\\s*\\/\\/.*$";
+	private static final String FILE_PATTERN_STR = "^(\\S+)\\s+(\\S+)\\s+(\\S+)\\s*+\\/\\/.*+$";
 	private static final Pattern FILE_PATTERN = Pattern.compile(FILE_PATTERN_STR);
 
 	private final Map<String, AuthenticationAccountInfo> users; //username-to-SimpleAccount
@@ -59,6 +59,7 @@ public class TextAuthenticationPlugin implements AuthenticationPlugin, Activeabl
 
 	/**
 	 * Constructor.
+	 * 
 	 * @param resourceManager Resource Manager
 	 * @param filePath File path
 	 */

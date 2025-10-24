@@ -35,8 +35,8 @@ import io.vertigo.datamodel.data.definitions.DataDefinition;
  * @param <D> Destination type
  */
 public final class AccountMapperHelper<S, D> {
-	private static final Pattern ATTRIBUTES_PATTERN = Pattern.compile("\\s*,\\s*");
-	private static final Pattern ATTRIBUTE_VALUE_PATTERN = Pattern.compile("\\s*:\\s*");
+	private static final Pattern ATTRIBUTES_PATTERN = Pattern.compile("\\s*+,\\s*+");
+	private static final Pattern ATTRIBUTE_VALUE_PATTERN = Pattern.compile("\\s*+:\\s*+");
 
 	private final Optional<DataDefinition> sourceDataDefinition;
 	private final Optional<Class<? extends Enum>> destEnum;
@@ -51,6 +51,7 @@ public final class AccountMapperHelper<S, D> {
 
 	/**
 	 * Constructor.
+	 * 
 	 * @param destDataDefinition Destination dataDefinition
 	 * @param sourceToDestMappingStr source to dest mapping
 	 */
@@ -63,6 +64,7 @@ public final class AccountMapperHelper<S, D> {
 
 	/**
 	 * Constructor.
+	 * 
 	 * @param sourceDataDefinition Source dataDefinition
 	 * @param destEnum Destination enum
 	 * @param sourceToDestMappingStr source to dest mapping
