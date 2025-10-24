@@ -43,7 +43,7 @@
 			<dependency>
 				<groupId>com.google.guava</groupId>
 				<artifactId>guava</artifactId>
-				<version>33.4.8-jre</version> <!-- for tika : cve in 31.1-jre -->
+				<version>33.5.0-jre</version> <!-- for tika : cve in 31.1-jre -->
 			</dependency>
 			<dependency>
 				<groupId>com.j256.simplemagic</groupId>
