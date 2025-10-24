@@ -272,10 +272,14 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 			schema.put("format", typeAndFormat[1]);
 		}
 		if (WebServiceTypeUtil.isAssignableFrom(Collection.class, type)) {
-			if (((ParameterizedType) type).getActualTypeArguments().length > 0) {
+			if (type instanceof ParameterizedType
+					&& ((ParameterizedType) type).getActualTypeArguments().length > 0) {
 				final var itemsType = ((ParameterizedType) type).getActualTypeArguments()[0]; //we known that List has one parameterized type
 				//Si le itemsType est null, on prend le unknownObject
 				schema.put("items", createSchemaObject(itemsType, includedFields, excludedFields)); //type argument can't be void
+			} else {
+				// If no parameterized it must at least appear as an array in swagger
+				schema.put("items", unknownObjectRef);
 			}
 		} else if ("object".equals(typeAndFormat[0])) {
 			final String objectName;
