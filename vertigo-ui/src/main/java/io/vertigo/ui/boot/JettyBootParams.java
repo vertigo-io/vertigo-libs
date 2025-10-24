@@ -17,6 +17,7 @@
  */
 package io.vertigo.ui.boot;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.web.WebApplicationInitializer;
@@ -38,6 +39,7 @@ public class JettyBootParams {
 	private final Optional<String> jettySessionStoreCollectionName;
 	private final boolean noJettySessionCache;
 	private final boolean join;
+	private final List<String> addonPaths;
 
 	JettyBootParams(
 			final int port,
@@ -52,11 +54,13 @@ public class JettyBootParams {
 			final Optional<String> jettyNodeName,
 			final Optional<String> jettySessionStoreCollectionName,
 			final boolean noJettySessionCache,
-			final boolean join) {
+			final boolean join,
+			final List<String> addonPaths) {
 		Assertion.check()
 				.isNotBlank(contextRoot)
 				.isNotNull(contextPath)
 				.isNotNull(webApplicationInitializerClass)
+				.isNotNull(addonPaths)
 				.when(
 						!sslDisabled,
 						() -> Assertion.check()
@@ -81,6 +85,7 @@ public class JettyBootParams {
 		this.jettySessionStoreCollectionName = jettySessionStoreCollectionName;
 		this.noJettySessionCache = noJettySessionCache;
 		this.join = join;
+		this.addonPaths = addonPaths;
 	}
 
 	public static JettyBootParamsBuilder builder(final String contextRoot, final Class<? extends WebApplicationInitializer> webApplicationInitializerClass) {
@@ -133,6 +138,10 @@ public class JettyBootParams {
 
 	public boolean isNoJettySessionCache() {
 		return noJettySessionCache;
+	}
+	
+	public List<String> getAddonPaths() {
+		return addonPaths;
 	}
 
 	public boolean isJoin() {
