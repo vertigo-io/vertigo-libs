@@ -14,13 +14,12 @@
 	<parent>
 		<groupId>io.vertigo</groupId>
 		<artifactId>vertigo-libs</artifactId>
-		<version>4.3.2</version>
+		<version>4.3.3-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>vertigo-ui</artifactId>
 	<packaging>jar</packaging>
 	<name>vertigo-ui</name>
-	<version>4.3.3-SNAPSHOT</version>
 	
     <repositories>
       <!-- Needed repo for tests embedded ElasticSearch -->
