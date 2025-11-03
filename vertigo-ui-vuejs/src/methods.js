@@ -114,10 +114,13 @@ export default {
         return null;
     },
 
-    transformListForSelection: function (list, valueField, labelField, filterFunction, searchValue) {
+    transformListForSelection: function (list, valueField, labelField, filterFunction, searchValue, nullLabel) {
         let rawList = this.$data.vueData[list];
         if (filterFunction) {
             rawList = rawList.filter(filterFunction);
+        }
+        if (nullLabel != null && nullLabel !== '') {
+            rawList = [{ [valueField]: null, [labelField]: nullLabel }, ...rawList];
         }
         if (searchValue != null && searchValue.trim() !== '') {
             const searchNormalized = this.unaccentLower(searchValue);

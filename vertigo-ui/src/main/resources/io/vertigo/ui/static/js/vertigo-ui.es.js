@@ -3797,17 +3797,17 @@ const F = window.Quasar, Bt = {
   getSafeValue: function(e, t, n) {
     return this.$data.vueData[e] && this.$data.vueData[e][t] ? this.$data.vueData[e][t][n] : null;
   },
-  transformListForSelection: function(e, t, n, i, s) {
-    let o = this.$data.vueData[e];
-    if (i && (o = o.filter(i)), s != null && s.trim() !== "") {
-      const a = this.unaccentLower(s);
-      o = o.filter((r) => this.unaccentLower(r[n].toString()).indexOf(a) > -1), o.sort((r, l) => {
-        const c = this.unaccentLower(r[n].toString()).startsWith(a), u = this.unaccentLower(l[n].toString()).startsWith(a);
-        return c && !u ? -1 : !c && u ? 1 : 0;
+  transformListForSelection: function(e, t, n, i, s, o) {
+    let a = this.$data.vueData[e];
+    if (i && (a = a.filter(i)), o != null && o !== "" && (a = [{ [t]: null, [n]: o }, ...a]), s != null && s.trim() !== "") {
+      const r = this.unaccentLower(s);
+      a = a.filter((l) => this.unaccentLower(l[n].toString()).indexOf(r) > -1), a.sort((l, c) => {
+        const u = this.unaccentLower(l[n].toString()).startsWith(r), p = this.unaccentLower(c[n].toString()).startsWith(r);
+        return u && !p ? -1 : !u && p ? 1 : 0;
       });
     }
-    return o.map(function(a) {
-      return { value: a[t], label: a[n].toString() };
+    return a.map(function(r) {
+      return { value: r[t], label: r[n].toString() };
     });
   },
   unaccentLower: function(e) {

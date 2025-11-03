@@ -6,10 +6,11 @@ Running 5.0.0
 [Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-431-to-500)
 
 * **[Vega] ContentSecurityPolicyFilter ${..} are now resolved by the paramManager. Old syntax must be updated :**
-  - `${cspFrameAncestor}` => `${CSP_FRAME_ANCESTOR}`
-  - `${cspParam1}` => `${CSP_PARAM1}`
-  - `${cspParam2}` => `${CSP_PARAM2}`
-  - `${cspParam3}` => `${CSP_PARAM3}`
+    * `${cspFrameAncestor}` => `${CSP_FRAME_ANCESTOR}`
+    * `${cspParam1}` => `${CSP_PARAM1}`
+    * `${cspParam2}` => `${CSP_PARAM2}`
+    * `${cspParam3}` => `${CSP_PARAM3}`
+* [Ui][Quasar] Add `nullLabel` parameter for `vu:select` and `vu:field-read`.
 
 more to come :)
 
@@ -39,9 +40,9 @@ Release 4.3.0 - 2025/03/27
 * **[Ui-vuejs] Change i18n to use object instead of string**
     (this.i18n('uploader.progress') to $vui.i18n().uploader.progress)
 * [Ui] Various fix
-  - Fileupload, add can be triggered by keyboard
-  - Select, searchable component state is now correctly cleared on mounting
-  - Column fix closing th:block position in default content
+    * Fileupload, add can be triggered by keyboard
+    * Select, searchable component state is now correctly cleared on mounting
+    * Column fix closing th:block position in default content
 * [UI] Facet component : make facetValueTranslatorProvider optional
 * [Ui] Change modal default size from 'style' to css & add 'autoHeight' property
 * [Ui] Add VFileUpload component (not quasar based)
@@ -118,39 +119,39 @@ Release 4.3.0 - 2025/03/27
 * [Commons] Add base64LegacyCodec (diff than base64UrlCodec)
 * [Basics] Add current local to FormatterDate
 * [all] Update libs 
-  - c3p0 0.10.1 -> 0.10.2
-  - ojdbc11 23.4.0.24.05 -> 23.7.0.25.01
-  - postgresql 42.7.3 -> 42.7.5
-  - liquibase-core 4.28.0 -> 4.31.1
-  - org.elasticsearch.client transport -> x-pack-transport
-  - tika 2.9.2 -> 3.1.0
-  - guava 33.2.1 -> 33.4.6
-  - jersey-client 3.1.6 -> 3.0.17 (more recent, lock to jdk17)
-  - spring-webmvc 6.1.10 -> 6.2.5
-  - thymeleaf-spring6 3.1.2 -> 3.1.3
-  - thymeleaf-layout-dialect 3.3.0 -> 3.4.0
-  - nashorn 15.4 -> 15.6
-  - selenium 4.15.0 -> 4.30.0
-  - jackson 2.15.3 -> 2.18.3
-  - rest-assured 5.4.0 -> 5.5.1
+    * c3p0 0.10.1 -> 0.10.2
+    * ojdbc11 23.4.0.24.05 -> 23.7.0.25.01
+    * postgresql 42.7.3 -> 42.7.5
+    * liquibase-core 4.28.0 -> 4.31.1
+    * org.elasticsearch.client transport -> x-pack-transport
+    * tika 2.9.2 -> 3.1.0
+    * guava 33.2.1 -> 33.4.6
+    * jersey-client 3.1.6 -> 3.0.17 (more recent, lock to jdk17)
+    * spring-webmvc 6.1.10 -> 6.2.5
+    * thymeleaf-spring6 3.1.2 -> 3.1.3
+    * thymeleaf-layout-dialect 3.3.0 -> 3.4.0
+    * nashorn 15.4 -> 15.6
+    * selenium 4.15.0 -> 4.30.0
+    * jackson 2.15.3 -> 2.18.3
+    * rest-assured 5.4.0 -> 5.5.1
 * [Ui-vuejs] update libs 
-  - *JS libs :*
-  - vue-dsfr -> 8.3.0
-  - axios 1.7.2 -> 1.8.4
-  - core-js 3.37.1 -> 3.41.0
-  - vite 5.3.1 -> 6.2.3
-  - quasar 2.16.5 -> 2.18.1
-  - @vitejs/plugin-vue 5.0.5 -> 5.2.3
-  - vite-plugin-mkcert 1.17.5 -> 1.17.8
-  - vue 3.4.31 -> 3.5.13
-  - ol 9.2.4 -> 10.4.0
-  - eslint 9.6.0 -> 9.23.0
-  - eslint-plugin-vue 9.27.0 -> 10.0.0
-  - lodash.debounce 4.0.8
-  - *3rd party :*
-  - materialdesignicons v142 -> v143
-  - fontawesome 6.5.2 -> 6.7.2
-  - roboto v20 -> v47
+    * *JS libs :*
+    * vue-dsfr -> 8.3.0
+    * axios 1.7.2 -> 1.8.4
+    * core-js 3.37.1 -> 3.41.0
+    * vite 5.3.1 -> 6.2.3
+    * quasar 2.16.5 -> 2.18.1
+    * @vitejs/plugin-vue 5.0.5 -> 5.2.3
+    * vite-plugin-mkcert 1.17.5 -> 1.17.8
+    * vue 3.4.31 -> 3.5.13
+    * ol 9.2.4 -> 10.4.0
+    * eslint 9.6.0 -> 9.23.0
+    * eslint-plugin-vue 9.27.0 -> 10.0.0
+    * lodash.debounce 4.0.8
+    * *3rd party :*
+    * materialdesignicons v142 -> v143
+    * fontawesome 6.5.2 -> 6.7.2
+    * roboto v20 -> v47
 
 Release 4.2.0 - 2024/07/04
 ----------------------
@@ -158,11 +159,11 @@ Release 4.2.0 - 2024/07/04
 * **Github : split `vertigo-extensions` to `vertigo-libs` and `vertigo-modules`**  
 * **[all] Pom declare dependencyManagment to help dependencies versions config**
 * **[DataModel] Rename some model classes :**
-  - DtObject to DataObject
-  - DtField to DataField
-  - DtFieldName to DataFieldName
-  - DtDefinition to DataDefinition
-  - DtObjectUtil to DataModelUtil 
+    * DtObject to DataObject
+    * DtField to DataField
+    * DtFieldName to DataFieldName
+    * DtDefinition to DataDefinition
+    * DtObjectUtil to DataModelUtil 
 * **[DataModel] Move `io.vertigo.datamodel.structure.*` to `io.vertigo.datamodel.data.*`**
 * **[DataModel] Move `Criteria`, `Task`, `property` to [DataFactory]**
 * [DataModel] Simpler generics on DtList
@@ -248,37 +249,37 @@ Release 4.2.0 - 2024/07/04
 * [Account] Add assert operation with load
 * [Vortex] Work in progress : simple parser
 * [all] Update libs 
-  - c3p0 0.9.5.5 -> 0.10.1
-  - janino 3.1.10 -> 3.1.12
-  - log4j-slf4j2-impl 2.23.1 -> (import core)
-  - ojdbc10 19.21.0.0 -> ojdbc11 23.4.0.24.05
-  - postgresql 42.6.0 -> 42.7.3
-  - liquibase-core 4.24.0 -> 4.28.0
-  - lucene 8.11.1 -> 8.11.3
-  - speedbjni 2.7.0 -> 2.8.0
-  - ehcache 3.9.11 -> 3.10.8
-  - tika-core 2.9.0 -> 2.9.2
-  - guava 32.1.3-jre -> 33.2.1-jre
-  - servlet 5.0.0 -> 6.1.0
-  - rest-assured 5.3.2 -> 5.4.0
-  - spring-webmvc 6.0.13 -> 6.1.10
-  - jersey 3.1.3 -> 3.1.6 (not 3.1.7 jdk21)
+    * c3p0 0.9.5.5 -> 0.10.1
+    * janino 3.1.10 -> 3.1.12
+    * log4j-slf4j2-impl 2.23.1 -> (import core)
+    * ojdbc10 19.21.0.0 -> ojdbc11 23.4.0.24.05
+    * postgresql 42.6.0 -> 42.7.3
+    * liquibase-core 4.24.0 -> 4.28.0
+    * lucene 8.11.1 -> 8.11.3
+    * speedbjni 2.7.0 -> 2.8.0
+    * ehcache 3.9.11 -> 3.10.8
+    * tika-core 2.9.0 -> 2.9.2
+    * guava 32.1.3-jre -> 33.2.1-jre
+    * servlet 5.0.0 -> 6.1.0
+    * rest-assured 5.3.2 -> 5.4.0
+    * spring-webmvc 6.0.13 -> 6.1.10
+    * jersey 3.1.3 -> 3.1.6 (not 3.1.7 jdk21)
 * [Ui-vuejs] update libs 
-  - *JS libs :*
-  - axios 1.6.0 -> 1.7.2
-  - core-js 3.33.2 -> 3.37.1
-  - quasar 2.16.5 -> 2.13.0
-  - vue 3.3.7 -> 3.4.31
-  - vitejs/plugin-vue 4.4.0 -> 5.0.5
-  - eslint 8.53.0 -> 9.6.0
-  - eslint-plugin-vue 9.18.1 -> 9.27.0
-  - ol 8.1.0 -> 9.2.4
-  - vite 4.5.0 -> 5.3.3
-  - vite-plugin-mkcert 1.16.0 -> 1.17.5
-  - *3rd party :*
-  - materialdesignicons 7.3.67 -> 7.4.47
-  - materialIcon v140 -> v142
-  - fontawesome 6.4.2 -> 6.5.2
+    * *JS libs :*
+    * axios 1.6.0 -> 1.7.2
+    * core-js 3.33.2 -> 3.37.1
+    * quasar 2.16.5 -> 2.13.0
+    * vue 3.3.7 -> 3.4.31
+    * vitejs/plugin-vue 4.4.0 -> 5.0.5
+    * eslint 8.53.0 -> 9.6.0
+    * eslint-plugin-vue 9.18.1 -> 9.27.0
+    * ol 8.1.0 -> 9.2.4
+    * vite 4.5.0 -> 5.3.3
+    * vite-plugin-mkcert 1.16.0 -> 1.17.5
+    * *3rd party :*
+    * materialdesignicons 7.3.67 -> 7.4.47
+    * materialIcon v140 -> v142
+    * fontawesome 6.4.2 -> 6.5.2
 
 
 Release 4.1.0 - 2023/11/09
@@ -327,40 +328,40 @@ Release 4.1.0 - 2023/11/09
 * [Vega] OIDC, add support for PKCE (enabled by default)
 * [Vega] Fix deltaList compute
 * [all] Update libs 
-  - h2 2.2.220 -> 2.2.224
-  - log4j-slf4j 2.20.0 -> 2.21.1
-  - jetty 11.0.15 -> 11.0.18
-  - elasticsearch 7.17.12 -> 7.17.14
-  - rest-assured 5.3.1 -> 5.3.2
-  - liquibase 4.23.0 -> 4.24.0
-  - ojdbc 19.19.0.0 -> 19.21.0.0
-  - speedbjni -> 2.6.0 -> 2.7.0
-  - tika 2.8.0 -> 2.9.0
-  - guava 32.1.1 -> 32.1.3
-  - poi 5.2.3 -> 5.2.4
-  - sods 1.6.2 -> 1.6.4
-  - jersey 3.1.0 -> 3.1.3
-  - springmvc 6.0.11 -> 6.0.13
-  - thymeleaf 3.1.1 -> 3.1.2
-  - thymeleaf layout 3.2.1 -> 3.3.0
-  - selenium 4.10.0 -> 4.15.0
-  - htmlunit 4.10.0 -> 4.13.0
-  - jackson 2.15.2 -> 2.15.3
+    * h2 2.2.220 -> 2.2.224
+    * log4j-slf4j 2.20.0 -> 2.21.1
+    * jetty 11.0.15 -> 11.0.18
+    * elasticsearch 7.17.12 -> 7.17.14
+    * rest-assured 5.3.1 -> 5.3.2
+    * liquibase 4.23.0 -> 4.24.0
+    * ojdbc 19.19.0.0 -> 19.21.0.0
+    * speedbjni -> 2.6.0 -> 2.7.0
+    * tika 2.8.0 -> 2.9.0
+    * guava 32.1.1 -> 32.1.3
+    * poi 5.2.3 -> 5.2.4
+    * sods 1.6.2 -> 1.6.4
+    * jersey 3.1.0 -> 3.1.3
+    * springmvc 6.0.11 -> 6.0.13
+    * thymeleaf 3.1.1 -> 3.1.2
+    * thymeleaf layout 3.2.1 -> 3.3.0
+    * selenium 4.10.0 -> 4.15.0
+    * htmlunit 4.10.0 -> 4.13.0
+    * jackson 2.15.2 -> 2.15.3
 * [Ui-vuejs] update libs 
-  - *JS libs :*
-  - vue: 3.3.4 ->3.3.7
-  - quasar 2.12.3 -> 2.13.0
-  - axios 0.24.0 -> 1.6.0
-  - core-js 3.20.3 -> 3.33.2
-  - @vitejs/plugin-vue: 2.2.2 -> 4.4.0
-  - eslint 6.8.0 -> 8.53.0
-  - eslint-plugin-vue 6.2.2 -> 9.18.1
-  - ol 5.3.3 -> 8.1.0
-  - vite 2.8.4 -> 4.5.0
-  - vite-plugin-externals 0.4.0 -> 0.6.2
-  - *3rd party :*
-  - fontawesome 6.4.0 -> 6.4.2
-  - @mdi/font 7.2.96 -> 7.3.37
+    * *JS libs :*
+    * vue: 3.3.4 ->3.3.7
+    * quasar 2.12.3 -> 2.13.0
+    * axios 0.24.0 -> 1.6.0
+    * core-js 3.20.3 -> 3.33.2
+    * @vitejs/plugin-vue: 2.2.2 -> 4.4.0
+    * eslint 6.8.0 -> 8.53.0
+    * eslint-plugin-vue 6.2.2 -> 9.18.1
+    * ol 5.3.3 -> 8.1.0
+    * vite 2.8.4 -> 4.5.0
+    * vite-plugin-externals 0.4.0 -> 0.6.2
+    * *3rd party :*
+    * fontawesome 6.4.0 -> 6.4.2
+    * @mdi/font 7.2.96 -> 7.3.37
 
 
 Release 4.0.0 - 2023/08/17
@@ -374,32 +375,32 @@ Release 4.0.0 - 2023/08/17
 * [Ui] Add Jetty Boot Param : noSniHostCheck (needed when behind a proxy)
 * [Ui] Extract exceptions handling from VSpringMvcControllerAdvice to VSpringMvcExceptionHandler
 * **[Ui] Quasar v1 to v2** (see https://quasar.dev/start/upgrade-guide/)
-  - update css variable names
-    *  `--q-color-*` to `--q-*`
-  * Quasar utils : `Quasar.utils.date.getDateDiff` to `Quasar.date.getDateDiff`
-  * QTablme rename `:data` to `:rows`
-  * QSelect change `@input` to `@update:model-value`
+    * update css variable names
+        *  `--q-color-*` to `--q-*`
+    * Quasar utils : `Quasar.utils.date.getDateDiff` to `Quasar.date.getDateDiff`
+    * QTablme rename `:data` to `:rows`
+    * QSelect change `@input` to `@update:model-value`
 * [Ui] export VertigoUi to window.VertigoUi
 * **[Ui] Vue2 -> Vue3** (see https://v3-migration.vuejs.org/)
-  * slots syntax `slot="body" slot-scope="props"` to `#body="props"`
-  * no need .native event
-  * `:key` needed on same tag as `v-for` loop
-  * `v-bind:value` to `v-bind:modelValue`
-  * `@input` to `@update:model-value`
-  * `value` to `modelValue
-  * no need of `$set`
-    * `this.$set(this.$props.value, '_v_inputValue', newInputValue );`
-    * to `this.$props.modelValue['_v_inputValue'] = newInputValue;`
-  * pass function instead of a anonymous function
-	* `@filter="function(val, update, abort) { autocompleteParam(param, index, val, update, abort);}"`
- 	* to `@filter="function(val, update, abort) { autocompleteParam(param, index, val, update, abort);}"`
-  * In components : `import Quasar from "quasar"`to `import * as Quasar from "quasar"`
-  * Life cycle change :
-    * `bind` to `created`
-    * `componentUpdated` to `updated`
-    * `unbind` to `unmounted`
-  * `@hook` to `@vue`
-  * (weird) httpPostAjax.onSuccess : `this` and `window` are undefined in function body. To fix: `this` undefined when use fat arrow =>, so use `function(...) {...}`; `window` pass as second onSuccess arg)
+    * slots syntax `slot="body" slot-scope="props"` to `#body="props"`
+    * no need .native event
+    * `:key` needed on same tag as `v-for` loop
+    * `v-bind:value` to `v-bind:modelValue`
+    * `@input` to `@update:model-value`
+    * `value` to `modelValue
+    * no need of `$set`
+        * `this.$set(this.$props.value, '_v_inputValue', newInputValue );`
+        * to `this.$props.modelValue['_v_inputValue'] = newInputValue;`
+    * pass function instead of a anonymous function
+        * `@filter="function(val, update, abort) { autocompleteParam(param, index, val, update, abort);}"`
+        * to `@filter="function(val, update, abort) { autocompleteParam(param, index, val, update, abort);}"`
+    * In components : `import Quasar from "quasar"`to `import * as Quasar from "quasar"`
+    * Life cycle change :
+        * `bind` to `created`
+        * `componentUpdated` to `updated`
+        * `unbind` to `unmounted`
+    * `@hook` to `@vue`
+    * (weird) httpPostAjax.onSuccess : `this` and `window` are undefined in function body. To fix: `this` undefined when use fat arrow =>, so use `function(...) {...}`; `window` pass as second onSuccess arg)
 * [Ui] Components' param name support kebab-case, context variables are always as CamelCase (ex : buttons support `text-color` and `textColor` input params and declare a `textColor` thymeleaf variable)
 * **[Ui] Replace buttons attribute ariaLabel to title** (aria-label wasn't use for a11y in button, title was)
 * [datamodel] check required field throw a ConstraintException
@@ -442,10 +443,10 @@ Release 4.0.0 - 2023/08/17
 * [Ui] Column actions align right
 * [Ui] [A11y] add 'Actions' title to actions column
 * [Ui] [A11y] Update buttons and table and some DX 
-   - button : round if icon only
-   - force ariaLabel if icon only
-   - add sub span sr-only if necessary
-   - table : add scope col on th and aria-sort if sorted
+    * button : round if icon only
+    * force ariaLabel if icon only
+    * add sub span sr-only if necessary
+    * table : add scope col on th and aria-sort if sorted
 * [Ui] Support kebab-case in namedComposant : param with - : var in camelCase
 * [Ui] Fix width of qEditor inside a qLabel
 * [Ui] add parameters on head and page to change vueJs, Quasar and vertigoUi versions (you need to put wanted version in same place like `/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/`)
@@ -453,30 +454,30 @@ Release 4.0.0 - 2023/08/17
 * [Quarto] Check for forbidden char in filename (much clear execption message)
 * [Quarto] filename can't contains path
 * [ui] update js libs
-  * vue 2.7.14 -> 3.3.4
-  * quasar 1.22.9 => 2.12.3
-  * @mdi 7.2.96
-  * materialIcons v140
-  * babel 7.21.4 -> 7.22.7
+    * vue 2.7.14 -> 3.3.4
+    * quasar 1.22.9 => 2.12.3
+    * @mdi 7.2.96
+    * materialIcons v140
+    * babel 7.21.4 -> 7.22.7
 * [All] update libs
-  * h2 2.1.214 -> 2.2.220
-  * assertj 3.23.1 -> 3.24.2
-  * janino 3.1.9 -> 3.1.10
-  * freemarker 2.3.31 -> 2.3.32
-  * servlet 4.0.1 -> jakarta 5.0.0
-  * jetty 9.4.51 -> 11.0.15
-  * lucene 8.11.1 -> 8.11.1 (cant update compatibility with ES 7.17.12)
-  * elasticsearch 7.17.9 -> 7.17.12
-  * rest-assured 5.2.0 -> 5.3.1
-  * liquibase 4.21.1 -> 4.23.0
-  * ojdbc 19.18.0.0 -> 19.19.0.0
-  * ehcache 3.9.10 -> 3.9.11 (dep errors with 3.10.x)
-  * tika 2.7.0 -> 2.8.0
-  * guava 31.1-jre -> 32.1.1-jre (for tika cve in 31.1-jre)
-  * sods 1.5.3 -> 1.6.2
-  * spring-webmvc 5.3.27 -> 6.0.11
-  * selenium 4.7.2 -> 4.10.0
-  * jackson 2.14.1 -> 2.15.2 
+    * h2 2.1.214 -> 2.2.220
+    * assertj 3.23.1 -> 3.24.2
+    * janino 3.1.9 -> 3.1.10
+    * freemarker 2.3.31 -> 2.3.32
+    * servlet 4.0.1 -> jakarta 5.0.0
+    * jetty 9.4.51 -> 11.0.15
+    * lucene 8.11.1 -> 8.11.1 (cant update compatibility with ES 7.17.12)
+    * elasticsearch 7.17.9 -> 7.17.12
+    * rest-assured 5.2.0 -> 5.3.1
+    * liquibase 4.21.1 -> 4.23.0
+    * ojdbc 19.18.0.0 -> 19.19.0.0
+    * ehcache 3.9.10 -> 3.9.11 (dep errors with 3.10.x)
+    * tika 2.7.0 -> 2.8.0
+    * guava 31.1-jre -> 32.1.1-jre (for tika cve in 31.1-jre)
+    * sods 1.5.3 -> 1.6.2
+    * spring-webmvc 5.3.27 -> 6.0.11
+    * selenium 4.7.2 -> 4.10.0
+    * jackson 2.14.1 -> 2.15.2 
 
 Release 3.6.0 - 2023/05/04
 ----------------------
@@ -519,7 +520,7 @@ Release 3.6.0 - 2023/05/04
 - [Ui] authz attrs javadoc
 - [Ui] Fix regression with axios 1.0+
 - [Ui] Add a loading stats with spinner on button-submit(show after a delay, rely on pendingAction map : share with httpPostAjax)
-  - on `q-btn`, you may use something like : `th::loading="|isPendingAction('@{_myAction}')|"`
+    * on `q-btn`, you may use something like : `th::loading="|isPendingAction('@{_myAction}')|"`
 - [ui] add parameter `devMode.authzLogOnly` to toogle secureDevMode
 - [Ui] Add a check in Authz tag : don't support `&&` as AND
 - [ui] Link protectedValues to Session
@@ -547,16 +548,16 @@ Release 3.6.0 - 2023/05/04
 - [ui-vuejs] refactor vueDataParams (perf improvements) and skip fields with modifiers
 - [ui-vuejs] externalize ajax errorMessages
 - [VueJs-UI] update dependencies
-  - quasar: 1.22.3 => 1.22.9
+    * quasar: 1.22.3 => 1.22.9
 - [All] update libs 
-  - log4j : 2.19.0 -> 2.20.0
-  - jetty : 9.4.50.v20221201 -> 9.4.51.v20230217
-  - elasticsearch : 7.17.8 -> 7.17.9
-  - liquibase-core : 4.18.0 -> 4.20.0
-  - ojdbc10 : 19.17.0.0 -> 19.18.0.0
-  - postgresql : 42.5.1 -> 42.6.0
-  - SODS : 1.5.2 -> 1.5.3
-  - spring : 5.3.24 -> 5.3.27
+    * log4j : 2.19.0 -> 2.20.0
+    * jetty : 9.4.50.v20221201 -> 9.4.51.v20230217
+    * elasticsearch : 7.17.8 -> 7.17.9
+    * liquibase-core : 4.18.0 -> 4.20.0
+    * ojdbc10 : 19.17.0.0 -> 19.18.0.0
+    * postgresql : 42.5.1 -> 42.6.0
+    * SODS : 1.5.2 -> 1.5.3
+    * spring : 5.3.24 -> 5.3.27
   
   
 Release 3.5.0 - 2023/01/06
@@ -599,23 +600,23 @@ Release 3.5.0 - 2023/01/06
 - [Basics] Sometimes needed i18n FR
 - [VueJs-UI] update devDependencies
 - [VueJs-UI] update dependencies
-  - axios : 1.0.0 => 1.2.1,
-  - core-js: 3.20.3 => 3.27.1
-  - ionicons: 6.0.1 => 6.0.4
-  - ol: 5.3.3 => 7.2.2
-  - vue: 2.7.10 => 2.7.14
-  - quasar: 1.21.1 => 1.22.3
-  - vue-template-compiler: 2.7.10 => 2.7.14
+    * axios : 1.0.0 => 1.2.1,
+    * core-js: 3.20.3 => 3.27.1
+    * ionicons: 6.0.1 => 6.0.4
+    * ol: 5.3.3 => 7.2.2
+    * vue: 2.7.10 => 2.7.14
+    * quasar: 1.21.1 => 1.22.3
+    * vue-template-compiler: 2.7.10 => 2.7.14
 - [All] update libs 
-  - janino 3.1.18 -> 3.1.9
-  - jetty 9.4.49 -> 9.4.50
-  - elasticsearch 7.17.6 -> 7.17.8
-  - rest-assured 5.2.0 -> 5.3.0
-  - liquibase 4.16.1 -> 4.18.0
-  - ehcache 3.9.9 -> 3.9.10
-  - com.github.miachm.sods 1.5.1 -> 1.5.2
-  - jersey 3.0.8 -> 3.1.0
-  - rest-assured 5.2.0 -> 5.3.0
+    * janino 3.1.18 -> 3.1.9
+    * jetty 9.4.49 -> 9.4.50
+    * elasticsearch 7.17.6 -> 7.17.8
+    * rest-assured 5.2.0 -> 5.3.0
+    * liquibase 4.16.1 -> 4.18.0
+    * ehcache 3.9.9 -> 3.9.10
+    * com.github.miachm.sods 1.5.1 -> 1.5.2
+    * jersey 3.0.8 -> 3.1.0
+    * rest-assured 5.2.0 -> 5.3.0
 
 Release 3.4.0 - 2022/10/12
 ----------------------
@@ -663,27 +664,27 @@ Release 3.4.0 - 2022/10/12
 - [Ui] Update ViewContextUpdateSecurity to protect update of primitive param
 - [Vega] Add adapters for EmptyMap, EmptySet and EmptyList
 - [All] Updated libs
-  - h2 2.1.210 -> 2.1.214
-  - assertj-core 3.22.0 -> 3.23.1
-  - janino 3.1.6 -> 3.1.8
-  - jetty-server 9.4.44.v20210927 -> 9.4.49.v20220914
-  - lucene-core 8.10.1 -> 8.11.1
-  - liquibase-core 4.7.0 -> 4.16.1
-  - ojdbc10 19.13.0.0.1 -> 19.16.0.0
-  - postgresql 42.3.1 -> 42.5.0
-  - poi-ooxml 4.1.2 -> 52.2.3
-  - SODS 1.4.0 -> 1.5.1
-  - xdocreport 2.0.2 -> 2.0.4
-  - rest-assured 4.4.0 -> 5.2.0
-  - spring-webmvc 5.3.15 -> 5.3.23
-  - thymeleaf-spring5 3.0.14.RELEASE -> 3.0.15.RELEASE
-  - selenium-support 4.1.1 -> 4.4.0
-  - htmlunit-driver 3.56.0 -> 3.64.0
+    * h2 2.1.210 -> 2.1.214
+    * assertj-core 3.22.0 -> 3.23.1
+    * janino 3.1.6 -> 3.1.8
+    * jetty-server 9.4.44.v20210927 -> 9.4.49.v20220914
+    * lucene-core 8.10.1 -> 8.11.1
+    * liquibase-core 4.7.0 -> 4.16.1
+    * ojdbc10 19.13.0.0.1 -> 19.16.0.0
+    * postgresql 42.3.1 -> 42.5.0
+    * poi-ooxml 4.1.2 -> 52.2.3
+    * SODS 1.4.0 -> 1.5.1
+    * xdocreport 2.0.2 -> 2.0.4
+    * rest-assured 4.4.0 -> 5.2.0
+    * spring-webmvc 5.3.15 -> 5.3.23
+    * thymeleaf-spring5 3.0.14.RELEASE -> 3.0.15.RELEASE
+    * selenium-support 4.1.1 -> 4.4.0
+    * htmlunit-driver 3.56.0 -> 3.64.0
 - [Ui] update js dependencies
-  - mdi 6.5.95 -> 7.0.96
-  - axios 0.24.0 -> 1.0.0
-  - vuejs 2.6.14 -> 2.7.10
-  - quasar 1.17.7 -> 1.21.1
+    * mdi 6.5.95 -> 7.0.96
+    * axios 0.24.0 -> 1.0.0
+    * vuejs 2.6.14 -> 2.7.10
+    * quasar 1.17.7 -> 1.21.1
 
 Release 3.3.0 - 2022/02/03
 ----------------------
@@ -759,33 +760,33 @@ Release 3.3.0 - 2022/02/03
 * [Vega] Fix deserializing Json of SmartTypes (like geoPoint)
 * [Quarto] Secure XML read (docx) 
 * [All] Updated libs
-  - __h2 1.4.200 -> 2.1.210 (need to rebuild bdd)__
-  - assertj-core 3.19.0 -> 3.22.0
-  - log4j 2.14.1 -> 2.17.1 (log4shell)
-  - janino 3.1.4 -> 3.1.6
-  - jetty-server 9.4.40.v20210413 -> 9.4.44.v20210927
-  - jersey-client 2.33 -> 3.0.3
-  - lucene 8.7.0 -> 8.10.1
-  - elasticsearch 7.10.2 -> 7.16.3
-  - codelibs embedded ES 7.10.2 -> 7.16.3
-  - restassured 4.3.3 -> 4.4.0
-  - liquibase 4.3.5 -> 4.7.0
-  - ehcache 3.9.4 -> 3.9.9
-  - Spring-webmvc 5.3.7 -> 5.3.15
-  - Thymeleaf 3.0.12 -> 3.0.14
-  - Thymeleaf-layout 2.5.3 -> 3.0.0
-  - selenium 3.141.59 -> 4.1.1
-  - htmlunit-driver 2.50.0 -> 3.56.0
-  - jackson 2.12.3 -> 2.13.1
+    * __h2 1.4.200 -> 2.1.210 (need to rebuild bdd)__
+    * assertj-core 3.19.0 -> 3.22.0
+    * log4j 2.14.1 -> 2.17.1 (log4shell)
+    * janino 3.1.4 -> 3.1.6
+    * jetty-server 9.4.40.v20210413 -> 9.4.44.v20210927
+    * jersey-client 2.33 -> 3.0.3
+    * lucene 8.7.0 -> 8.10.1
+    * elasticsearch 7.10.2 -> 7.16.3
+    * codelibs embedded ES 7.10.2 -> 7.16.3
+    * restassured 4.3.3 -> 4.4.0
+    * liquibase 4.3.5 -> 4.7.0
+    * ehcache 3.9.4 -> 3.9.9
+    * Spring-webmvc 5.3.7 -> 5.3.15
+    * Thymeleaf 3.0.12 -> 3.0.14
+    * Thymeleaf-layout 2.5.3 -> 3.0.0
+    * selenium 3.141.59 -> 4.1.1
+    * htmlunit-driver 2.50.0 -> 3.56.0
+    * jackson 2.12.3 -> 2.13.1
 * [Ui] Update js libs 
-  - axios 0.21.1 -> 0.24.0
-  - core-js 3.8.3 -> 3.20.3
-  - Quasar 1.15.2 -> v1.17.7
-  - vue 2.6.13 -> 2.6.14
-  - MaterialIcons v50 -> v121
-  - fontawesome icons 5.7.1 -> 5.15.4
-  - materialDesignIcons 5.5.55 -> 6.5.95
-  - ionicons 5.4.0 -> 6.0.1
+    * axios 0.21.1 -> 0.24.0
+    * core-js 3.8.3 -> 3.20.3
+    * Quasar 1.15.2 -> v1.17.7
+    * vue 2.6.13 -> 2.6.14
+    * MaterialIcons v50 -> v121
+    * fontawesome icons 5.7.1 -> 5.15.4
+    * materialDesignIcons 5.5.55 -> 6.5.95
+    * ionicons 5.4.0 -> 6.0.1
 
 
 Release 3.2.0 - 2021/06/21
@@ -815,27 +816,27 @@ Release 3.2.0 - 2021/06/21
 * [Vega] Finer exceptions messages
 * [All] Code cleaning, refactoring and documenting 
 * [Ui] upgrade js depencies 
-  - quasar 1.15.2 -> 1.15.19
-  - vuejs 2.6.12 -> 2.6.13
+    * quasar 1.15.2 -> 1.15.19
+    * vuejs 2.6.12 -> 2.6.13
 * [All] Updated libs
-  - gson 2.8.6 -> 2.8.7
-  - snakeyaml 1.27 -> 1.28
-  - javassist 3.27.0-GA -> 3.28.0-GA
-  - javalin 3.13.3 -> 3.13.7
-  - jetty 9.4.35.v20201120 -> 9.4.40.v20210413
-  - mongo 4.2.0 -> 4.2.3
-  - neo4j 4.1.3 -> 4.2.7
-  - jedis 3.5.1 -> 3.6.0
-  - janino 3.1.2 -> 3.1.4
-  - freemarker 2.3.30 -> 2.3.31
-  - liquibase 4.2.2 -> 4.3.5
-  - ehcache 3.9.0 -> 3.9.4
-  - ojdbc 19.8.0.0 -> 19.10.0.0
-  - postgresql jdbc 42.2.18 -> 42.2.20
-  - spring 5.3.3 -> 5.3.7
-  - thymeleaf-layout-dialect 2.5.2 -> 2.5.3
-  - selenium 2.46.0 -> 2.50.0
-  - jackson 2.11.3 -> 2.12.3
+    * gson 2.8.6 -> 2.8.7
+    * snakeyaml 1.27 -> 1.28
+    * javassist 3.27.0-GA -> 3.28.0-GA
+    * javalin 3.13.3 -> 3.13.7
+    * jetty 9.4.35.v20201120 -> 9.4.40.v20210413
+    * mongo 4.2.0 -> 4.2.3
+    * neo4j 4.1.3 -> 4.2.7
+    * jedis 3.5.1 -> 3.6.0
+    * janino 3.1.2 -> 3.1.4
+    * freemarker 2.3.30 -> 2.3.31
+    * liquibase 4.2.2 -> 4.3.5
+    * ehcache 3.9.0 -> 3.9.4
+    * ojdbc 19.8.0.0 -> 19.10.0.0
+    * postgresql jdbc 42.2.18 -> 42.2.20
+    * spring 5.3.3 -> 5.3.7
+    * thymeleaf-layout-dialect 2.5.2 -> 2.5.3
+    * selenium 2.46.0 -> 2.50.0
+    * jackson 2.11.3 -> 2.12.3
 
 Release 3.1.1 - 2021/02/22
 ----------------------
@@ -879,27 +880,27 @@ Release 3.1.0 - 2021/02/05
 * [Vega] Add CSP servlet filter (Content Security Policy) : add CSP directive in header and can generate a nonce uuid per request for specific usage
 * [All] Code cleaning, refactoring and documenting 
 * [All] Updated libs
-  - Quasar 1.14.3 -> v1.15.2
-  - Axios -> 0.21.1
-  - animate.css -> 4.1.1
-  - vue-cookies.js -> 1.7.4
-  - log4j 2.13.3 -> 2.14.0
-  - elastic search 7.9.3 -> 7.10.2
-  - lucene 8.6.2 -> 8.7.0
-  - jersey client 2.32 -> 2.33
-  - influxdb-java 2.20 -> 2.21
-  - javalin 3.12.0 -> 3.13.3
-  - jetty 9.4.31.v20200723 -> 9.4.35.v20201120
-  - keycloak-servlet-filter-adapter 11.0.3 -> 12.0.2
-  - neo4j 4.1.3 -> 4.2.3
-  - jedis 3.3.0 -> 3.5.1
-  - spring 5.3.0 -> 5.3.3
-  - janino 3.1.2 -> 3.1.3
-  - restassured 4.3.2 -> 4.3.3
-  - liquibase-core 4.1.1 -> 4.2.2
-  - thymeleaf-spring5 3.0.11.RELEASE -> 3.0.12.RELEASE
-  - thymeleaf-layout-dialect 2.5.1 -> 2.5.2
-  - htmlunit-driver 2.45.0 -> 2.46.0
+    * Quasar 1.14.3 -> v1.15.2
+    * Axios -> 0.21.1
+    * animate.css -> 4.1.1
+    * vue-cookies.js -> 1.7.4
+    * log4j 2.13.3 -> 2.14.0
+    * elastic search 7.9.3 -> 7.10.2
+    * lucene 8.6.2 -> 8.7.0
+    * jersey client 2.32 -> 2.33
+    * influxdb-java 2.20 -> 2.21
+    * javalin 3.12.0 -> 3.13.3
+    * jetty 9.4.31.v20200723 -> 9.4.35.v20201120
+    * keycloak-servlet-filter-adapter 11.0.3 -> 12.0.2
+    * neo4j 4.1.3 -> 4.2.3
+    * jedis 3.3.0 -> 3.5.1
+    * spring 5.3.0 -> 5.3.3
+    * janino 3.1.2 -> 3.1.3
+    * restassured 4.3.2 -> 4.3.3
+    * liquibase-core 4.1.1 -> 4.2.2
+    * thymeleaf-spring5 3.0.11.RELEASE -> 3.0.12.RELEASE
+    * thymeleaf-layout-dialect 2.5.1 -> 2.5.2
+    * htmlunit-driver 2.45.0 -> 2.46.0
 
 
 Release 3.0.0 - 2020/11/20
@@ -991,47 +992,47 @@ Release 3.0.0 - 2020/11/20
 * [File] Refactored FileManager
 * [Stella] Refact Vega Javaspark to Javalin
 * [Ui] upgrade js depencies 
-  - quasar 1.14.3
-  - axios 0.21.0
+    * quasar 1.14.3
+    * axios 0.21.0
 * [Struts2] Updated lib + fix tests with htmlUnit-driver
-  - struts2 2.5.20 -> 2.5.22
-  - c3p0 0.9.5.4 -> 0.9.5.5
-  - org.eclipse.jetty 9.4.21 -> 9.4.31
-  - org.apache.lucene 8.2.0 -> 8.5.1
-  - commons-io 2.6 -> 2.7
-  - slf4j-log4j12 1.7.28 -> 1.7.30
+    * struts2 2.5.20 -> 2.5.22
+    * c3p0 0.9.5.4 -> 0.9.5.5
+    * org.eclipse.jetty 9.4.21 -> 9.4.31
+    * org.apache.lucene 8.2.0 -> 8.5.1
+    * commons-io 2.6 -> 2.7
+    * slf4j-log4j12 1.7.28 -> 1.7.30
 * [All] Updated libs
-  - org.apache.logging.log4j 2.12.1 -> 2.13.3
-  - com.mchange. c3p0 0.9.5.4 -> 0.9.5.5
-  - org.codehaus.janino 3.1.0 -> 3.1.2
-  - org.liquibase 3.8.6 -> 4.1.1
-  - com.oracle.ojdbc.ojdbc8 19.3.0.0 -> com.oracle.database.jdbc.ojdbc10 19.7.0.0
-  - org.postgresql 42.2.8 -> 42.2.18
-  - c3p0 0.9.5.4 -> 0.9.5.5
-  - org.apache.lucene 8.2.0 -> 8.6.2
-  - org.elasticsearch 7.4.1 -> 7.9.3
-  - io.rest-assured 3.3.0 -> 4.3.2
-  - org.apache.poi 4.1.1 -> 4.1.2
-  - jersey-client 2.29.1 -> 2.31
-  - org.springframework 5.2.0 -> 5.2.8
-  - org.eclipse.jetty 9.4.21 -> 9.4.31
-  - com.fasterxml.jackson 2.10.0 -> 2.11.1
-  - slf4j-log4j12 1.7.28 -> 1.7.30
-  - web3j 3.5.0 -> 5.0.0
-  - assertj 3.14.0 -> 3.17.1
-  - freemarker 2.3.29 -> 2.3.30
-  - ehcache 3.8.1 -> 3.9.0
-  - h2 1.4.199 -> 1.4.200
-  - javax.servlet 3.1.0 -> 4.0.1
-  - selenium htmlunit-driver 2.42.0 -> 2.44.0
-  - javalin 3.11.0 -> 3.11.2
-  - keycloak-servlet-filter-adapter 11.0.2 -> 11.0.3
-  - neo4j 4.1.1 -> 4.1.3
-  - spring 5.2.8.RELEASE -> 5.3.0.RELEASE
-  - snakeyaml 1.26 -> 1.27
-  - junit-jupiter-engine 5.6.2 -> 5.7.0
-  - ojdbc10 19.7.0.0 -> 19.8.0.0
-  - thymeleaf-layout-dialect 2.4.1 -> 2.5.1
+    * org.apache.logging.log4j 2.12.1 -> 2.13.3
+    * com.mchange. c3p0 0.9.5.4 -> 0.9.5.5
+    * org.codehaus.janino 3.1.0 -> 3.1.2
+    * org.liquibase 3.8.6 -> 4.1.1
+    * com.oracle.ojdbc.ojdbc8 19.3.0.0 -> com.oracle.database.jdbc.ojdbc10 19.7.0.0
+    * org.postgresql 42.2.8 -> 42.2.18
+    * c3p0 0.9.5.4 -> 0.9.5.5
+    * org.apache.lucene 8.2.0 -> 8.6.2
+    * org.elasticsearch 7.4.1 -> 7.9.3
+    * io.rest-assured 3.3.0 -> 4.3.2
+    * org.apache.poi 4.1.1 -> 4.1.2
+    * jersey-client 2.29.1 -> 2.31
+    * org.springframework 5.2.0 -> 5.2.8
+    * org.eclipse.jetty 9.4.21 -> 9.4.31
+    * com.fasterxml.jackson 2.10.0 -> 2.11.1
+    * slf4j-log4j12 1.7.28 -> 1.7.30
+    * web3j 3.5.0 -> 5.0.0
+    * assertj 3.14.0 -> 3.17.1
+    * freemarker 2.3.29 -> 2.3.30
+    * ehcache 3.8.1 -> 3.9.0
+    * h2 1.4.199 -> 1.4.200
+    * javax.servlet 3.1.0 -> 4.0.1
+    * selenium htmlunit-driver 2.42.0 -> 2.44.0
+    * javalin 3.11.0 -> 3.11.2
+    * keycloak-servlet-filter-adapter 11.0.2 -> 11.0.3
+    * neo4j 4.1.1 -> 4.1.3
+    * spring 5.2.8.RELEASE -> 5.3.0.RELEASE
+    * snakeyaml 1.26 -> 1.27
+    * junit-jupiter-engine 5.6.2 -> 5.7.0
+    * ojdbc10 19.7.0.0 -> 19.8.0.0
+    * thymeleaf-layout-dialect 2.4.1 -> 2.5.1
 
 Release 2.1.0 - 2019/11/12
 ----------------------
@@ -1244,13 +1245,13 @@ Release 1.1.1 - 2018/04/27
 * [Commons] Add specific base64 to base64url tests
 * [core] fix discovery of proxies + added test
 * [all] update dependencies 
-  * com.h2database/h2 : 1.4.196 -> 1.4.197
-  * org.codehaus.janino/janino : 3.0.7 -> 3.0.8
-  * org.apache.logging.log4j/log4j-core : 2.9.1 -> 2.11.0
-  * cglib/cglib-nodep : 3.2.5 -> 3.2.6
-  * org.hibernate/hibernate-core : 5.2.11.Final -> 5.2.15.Final
-  * org.elasticsearch/elasticsearch : 5.6.2 -> 5.6.8
-  * org.elasticsearch/elasticsearch : 2.4.5 -> 2.4.6
+    * com.h2database/h2 : 1.4.196 -> 1.4.197
+    * org.codehaus.janino/janino : 3.0.7 -> 3.0.8
+    * org.apache.logging.log4j/log4j-core : 2.9.1 -> 2.11.0
+    * cglib/cglib-nodep : 3.2.5 -> 3.2.6
+    * org.hibernate/hibernate-core : 5.2.11.Final -> 5.2.15.Final
+    * org.elasticsearch/elasticsearch : 5.6.2 -> 5.6.8
+    * org.elasticsearch/elasticsearch : 2.4.5 -> 2.4.6
 * [quarto] fix creation of final doc (medias etc...) (docx)
 * [quarto] fix new paragraphs on line breaks (docx)
 * [orchestra] fix params in memoryImpl
@@ -1706,7 +1707,7 @@ __In Bold__ : Potential compatibility problems
 * [Vega] Fixed SwaggerAPI
 * [Vega] Fixed contentType while preflight Cors request
 * [Vega] Fixed requests not mark as succeeded
-* [Vega] Refactored JsonSerializer for FacetedQueryResultJson v2      
+* [Vega] Refactored JsonSerializer for FacetedQueryResultJson v2
 * [Vega] Removed nullLast and ignorecase in DtListState
 * [Vega] Renamed WebServiceIntrospector to WebServiceScanner
 
@@ -2158,42 +2159,42 @@ Release 0.4.1 - 2014/07/29
 
 Release 0.4.0 - 2014/07/25
 --------------------------
-The most notable changes in Vertigo 0.4.0 over previous releases are:  
-  * Changed ksp syntax to have a more similar json syntax.  Separator ';' is replaced by ','. Array {} is replaced by [] and  object notation () is replaced by {}
-  * Changed declaration of resources is externalized. In this way, each module can declare its own resources (oom, ea, ksp, xml).     
-  * Changed KDataType to DataType
-  * Changed : Tasks must be processed using TaskManager and not WorkManager. (In fact each component must be able to process sync or async its own works) 
-  * Added module labs, contains some usefull components such as mail   
-  * Added module persona, built to manage all concepts around a user/persona  
-  * Added module quarto, which contains two components : publisher (to create new publications by merging template and data) and converter (to convert a doc, docx into a pdf for example)   
-  * Added distributed task management (by redis or http/rest)
-  * Added Enterprise Architect support
-  * Added vertigo-vega : RESTful WebService support for HTML5 applications
-  * Fixed Issues #3 : added a new mandatory vertigo-studio parameter ```domain.dictionaryClassName``` 
-  * To maintain compatibility Added : ```domain.dictionaryClassName=DtDefinitions``` in your studio-config.properties
-  * Added check on unused components, params during injection  
-  * Fixed Issues #2
+The most notable changes in Vertigo 0.4.0 over previous releases are:
+* Changed ksp syntax to have a more similar json syntax.  Separator ';' is replaced by ','. Array {} is replaced by [] and  object notation () is replaced by {}
+* Changed declaration of resources is externalized. In this way, each module can declare its own resources (oom, ea, ksp, xml).
+* Changed KDataType to DataType
+* Changed : Tasks must be processed using TaskManager and not WorkManager. (In fact each component must be able to process sync or async its own works) 
+* Added module labs, contains some usefull components such as mail   
+* Added module persona, built to manage all concepts around a user/persona  
+* Added module quarto, which contains two components : publisher (to create new publications by merging template and data) and converter (to convert a doc, docx into a pdf for example)   
+* Added distributed task management (by redis or http/rest)
+* Added Enterprise Architect support
+* Added vertigo-vega : RESTful WebService support for HTML5 applications
+* Fixed Issues #3 : added a new mandatory vertigo-studio parameter ```domain.dictionaryClassName``` 
+* To maintain compatibility Added : ```domain.dictionaryClassName=DtDefinitions``` in your studio-config.properties
+* Added check on unused components, params during injection  
+* Fixed Issues #2
 
 Release 0.3.0 - 2014/03/13
 --------------------------
 The most notable changes in Vertigo 0.3.0 over previous releases are:
-  * Added vertigo-studio
-  * Added Jpa/Hibernate support
-  * Added vertigo-dynamo
-  * Added vertigo-ccc Command & Control Center
-  * Refactor maven modules
+* Added vertigo-studio
+* Added Jpa/Hibernate support
+* Added vertigo-dynamo
+* Added vertigo-ccc Command & Control Center
+* Refactor maven modules
 
 Release 0.2.1 - 2014/02/26
 --------------------------
-  * Simplify Assertion api
+* Simplify Assertion api
 
 Release 0.2.0 - 2014/02/26
 --------------------------
 The most notable changes in Vertigo 0.2.0 over previous releases are:
-  * Refactor package and naming 
-  * Added vertigo-commons tools, api and impl split
-  * Added autocloseable
+* Refactor package and naming 
+* Added vertigo-commons tools, api and impl split
+* Added autocloseable
 
 Release 0.1.0 - 2014/01/14
 --------------------------
-  * First release
+* First release
