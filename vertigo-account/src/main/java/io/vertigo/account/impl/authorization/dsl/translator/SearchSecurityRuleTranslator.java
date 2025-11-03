@@ -20,6 +20,7 @@ package io.vertigo.account.impl.authorization.dsl.translator;
 import java.io.Serializable;
 import java.util.List;
 
+import io.vertigo.account.authorization.UserAuthorizations;
 import io.vertigo.account.authorization.definitions.SecurityDimension;
 import io.vertigo.account.authorization.definitions.rulemodel.RuleExpression;
 import io.vertigo.account.authorization.definitions.rulemodel.RuleExpression.ValueOperator;
@@ -131,12 +132,16 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 			} else if (operator == ValueOperator.NEQ) {
 				query.append("(-"); //need a ' <blank> (-field:notvalue) to create a optional not
 			}
-			query.append(fieldName)
-					.append(':')
-					.append(toOperator(operator))
-					.append(strict ? "'" : "")
-					.append(userValue)
-					.append(strict ? "'" : "");
+			if (UserAuthorizations.SECURITY_KEY_ALL_VALUES.equals(userValue)) {
+				query.append("*:*");
+			} else {
+				query.append(fieldName)
+						.append(':')
+						.append(toOperator(operator))
+						.append(strict ? "'" : "")
+						.append(userValue)
+						.append(strict ? "'" : "");
+			}
 
 			if (operator == ValueOperator.NEQ && !mandatory) {
 				query.append(')');

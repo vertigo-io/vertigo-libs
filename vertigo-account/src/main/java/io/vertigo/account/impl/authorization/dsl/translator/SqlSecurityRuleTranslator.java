@@ -20,6 +20,7 @@ package io.vertigo.account.impl.authorization.dsl.translator;
 import java.io.Serializable;
 import java.util.List;
 
+import io.vertigo.account.authorization.UserAuthorizations;
 import io.vertigo.account.authorization.definitions.rulemodel.RuleExpression;
 import io.vertigo.account.authorization.definitions.rulemodel.RuleExpression.ValueOperator;
 import io.vertigo.account.authorization.definitions.rulemodel.RuleFixedValue;
@@ -77,8 +78,6 @@ public final class SqlSecurityRuleTranslator extends AbstractSecurityRuleTransla
 	}
 
 	private void appendExpression(final StringBuilder query, final RuleExpression expressionDefinition) {
-
-		query.append(expressionDefinition.getFieldName());
 		if (expressionDefinition.getValue() instanceof final RuleUserPropertyValue userPropertyValue) {
 			final List<Serializable> userValues = getUserCriteria(userPropertyValue.getUserProperty());
 			if (userValues.size() > 0) {
@@ -86,6 +85,7 @@ public final class SqlSecurityRuleTranslator extends AbstractSecurityRuleTransla
 					final Serializable userValue = userValues.get(0);
 					final ValueOperator operator = expressionDefinition.getOperator();
 					if (userValue == null) {
+						query.append(expressionDefinition.getFieldName());
 						if (operator == ValueOperator.NEQ) {
 							query.append(" is not null");
 						} else if (operator == ValueOperator.EQ) {
@@ -95,7 +95,15 @@ public final class SqlSecurityRuleTranslator extends AbstractSecurityRuleTransla
 							query.append(operator)
 									.append(userValue);
 						}
+					} else if (UserAuthorizations.SECURITY_KEY_ALL_VALUES.equals(userValue)) {
+						// SECURITY_KEY_ALL_VALUES means always true or always false, so no field name should be present
+						if (operator == ValueOperator.EQ) {
+							query.append("1=1"); // always true
+						} else {
+							query.append("0=1"); // always false
+						}
 					} else {
+						query.append(expressionDefinition.getFieldName());
 						//may translate > and >= to 'like' expressions
 						query
 								.append(expressionDefinition.getOperator())
@@ -104,6 +112,7 @@ public final class SqlSecurityRuleTranslator extends AbstractSecurityRuleTransla
 				} else {
 					final ValueOperator operator = expressionDefinition.getOperator();
 					if (operator == ValueOperator.EQ || operator == ValueOperator.NEQ) {
+						query.append(expressionDefinition.getFieldName());
 						if (operator == ValueOperator.NEQ) {
 							query.append(" NOT");
 						}
@@ -119,8 +128,9 @@ public final class SqlSecurityRuleTranslator extends AbstractSecurityRuleTransla
 						String inSep = "";
 						for (final Serializable userValue : userValues) {
 							query.append(inSep);
+							query.append(expressionDefinition.getFieldName());
 							query.append(operator).append(userValue);
-							inSep = " OR " + expressionDefinition.getFieldName();
+							inSep = " OR ";
 						}
 					}
 				}
@@ -128,6 +138,7 @@ public final class SqlSecurityRuleTranslator extends AbstractSecurityRuleTransla
 		} else if (expressionDefinition.getValue() instanceof RuleFixedValue) {
 			final var fixedValue = ((RuleFixedValue) expressionDefinition.getValue()).getFixedValue();
 			final var operator = expressionDefinition.getOperator();
+			query.append(expressionDefinition.getFieldName());
 			if (fixedValue == null) {
 				if (operator == ValueOperator.NEQ) {
 					query.append(" is not null");

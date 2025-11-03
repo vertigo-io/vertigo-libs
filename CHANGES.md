@@ -11,6 +11,7 @@ Running 5.0.0
     * `${cspParam2}` => `${CSP_PARAM2}`
     * `${cspParam3}` => `${CSP_PARAM3}`
 * [Ui][Quasar] Add `nullLabel` parameter for `vu:select` and `vu:field-read`.
+* [Account] Add wildcard security key to authorize all possible values (`UserAuthorizations.SECURITY_KEY_ALL_VALUES`).
 
 more to come :)
 

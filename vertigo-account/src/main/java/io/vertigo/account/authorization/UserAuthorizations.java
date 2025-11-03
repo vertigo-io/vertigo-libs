@@ -38,9 +38,11 @@ import io.vertigo.datamodel.data.definitions.DataDefinition;
 /**
  * This class list User's Authorizations.
  *
- * @author  pchretien, npiedeloup
+ * @author pchretien, npiedeloup
  */
 public final class UserAuthorizations implements Serializable {
+
+	public static final String SECURITY_KEY_ALL_VALUES = "*";
 
 	private static final long serialVersionUID = -7924146007592711123L;
 
@@ -83,6 +85,7 @@ public final class UserAuthorizations implements Serializable {
 
 	/**
 	 * Return roles set of this user.
+	 *
 	 * @return roles set
 	 */
 	public Set<Role> getRoles() {
@@ -104,6 +107,7 @@ public final class UserAuthorizations implements Serializable {
 	/**
 	 * Clear all roles on this user. (authorizations are cleared too)
 	 * Warning : no more rights after that.
+	 *
 	 * @return this UserAuthorizations
 	 */
 	public UserAuthorizations clearRoles() {
@@ -152,6 +156,7 @@ public final class UserAuthorizations implements Serializable {
 	/**
 	 * Return uncontextual authorizations set of this user.
 	 * It may be limited by entity right. It's usefull for UI rendering rights based.
+	 *
 	 * @return authorizations set
 	 */
 	public Set<String> getPriorAuthorizationNames() {
@@ -188,6 +193,7 @@ public final class UserAuthorizations implements Serializable {
 	/**
 	 * Clear all authorization on this user. (but only authorization : roles aren't cleared)
 	 * Warning : no more rights after that.
+	 *
 	 * @return this UserAuthorizations
 	 */
 	public UserAuthorizations clearAuthorizations() {
@@ -199,6 +205,7 @@ public final class UserAuthorizations implements Serializable {
 	/**
 	 * Return the security keys of this user.
 	 * Used for data dependent security rules.
+	 *
 	 * @return User's security keys.
 	 */
 	public Map<String, List<Serializable>> getSecurityKeys() {
@@ -220,7 +227,7 @@ public final class UserAuthorizations implements Serializable {
 				.isNotBlank(securityKey)
 				.isNotNull(value, "securityKey value of {0} can't be null, it's ambigious.\n"
 						+ "If it means 'no rights' you shouldn't set this securityKey for this user. \n"
-						+ "If it means 'any value' you should use an other securityKey (like 'couldAccessXx'),\n"
+						+ "If it means 'any value' you should use UserAuthorizations.SECURITY_KEY_ALL_VALUES,\n"
 						+ "or you may check if this security field shouldn't be a securityDimensions TREE.",
 						securityKey);
 		//-----
@@ -231,6 +238,7 @@ public final class UserAuthorizations implements Serializable {
 	/**
 	 * Clear Security Keys.
 	 * Use when user change it security perimeter.
+	 *
 	 * @return this UserAuthorizations
 	 */
 	public UserAuthorizations clearSecurityKeys() {

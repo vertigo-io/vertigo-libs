@@ -26,6 +26,7 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import io.vertigo.account.authorization.UserAuthorizations;
 import io.vertigo.account.impl.authorization.dsl.translator.CriteriaSecurityRuleTranslator;
 import io.vertigo.account.impl.authorization.dsl.translator.SearchSecurityRuleTranslator;
 import io.vertigo.account.impl.authorization.dsl.translator.SqlSecurityRuleTranslator;
@@ -65,6 +66,9 @@ public final class DslSecurityRulesBuilderTest {
 				{ "GEO<=${query} && actif=true", "'Test'", "GEO<='Test' AND actif=true", "(+GEO:<='Test' +actif:true)", "(GEO<='Test' AND actif=true)" }, //11
 				{ "ALL=null", null, "ALL is null", "(-_exists_:ALL)" }, //12
 				{ "ALL=NULL", null, "ALL is null", "(-_exists_:ALL)" }, //13
+				{ "ALL=${query}", UserAuthorizations.SECURITY_KEY_ALL_VALUES, "1=1", "(+*:*)" }, //14
+				{ "ALL=${query} && OTHER='VALID'", UserAuthorizations.SECURITY_KEY_ALL_VALUES, "1=1 AND OTHER='VALID'", "(+*:* +OTHER:'VALID')", "(1=1 AND OTHER='VALID')" }, //15
+				{ "ALL!=${query}", UserAuthorizations.SECURITY_KEY_ALL_VALUES, "0=1", "(-*:*)" }, //16
 		};
 		testSearchAndSqlQuery(testQueries);
 	}
@@ -189,9 +193,7 @@ public final class DslSecurityRulesBuilderTest {
 				case STARTS_WITH:
 					return fieldName + " startWith #" + ctx.attributeName(dtFieldName, values[0]) + "#";
 				case IN:
-					return Stream.of(values)
-							.map(Serializable::toString)
-							.collect(Collectors.joining(", ", fieldName + " in (", ")"));
+					return Stream.of(values).map(Serializable::toString).collect(Collectors.joining(", ", fieldName + " in (", ")"));
 				default:
 					throw new IllegalAccessError();
 			}

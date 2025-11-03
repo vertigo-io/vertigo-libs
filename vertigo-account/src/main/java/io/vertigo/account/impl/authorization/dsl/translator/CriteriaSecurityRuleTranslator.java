@@ -20,6 +20,7 @@ package io.vertigo.account.impl.authorization.dsl.translator;
 import java.io.Serializable;
 import java.util.List;
 
+import io.vertigo.account.authorization.UserAuthorizations;
 import io.vertigo.account.authorization.definitions.SecurityDimension;
 import io.vertigo.account.authorization.definitions.SecurityDimensionType;
 import io.vertigo.account.authorization.definitions.rulemodel.RuleExpression;
@@ -146,6 +147,8 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 			case EQ:
 				if (value == null) {
 					return Criterions.isNull(fieldName);
+				} else if (UserAuthorizations.SECURITY_KEY_ALL_VALUES.equals(value)) {
+					return Criterions.alwaysTrue();
 				}
 				return Criterions.isEqualTo(fieldName, value);
 			case GT:
@@ -159,6 +162,8 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 			case NEQ:
 				if (value == null) {
 					return Criterions.isNotNull(fieldName);
+				} else if (UserAuthorizations.SECURITY_KEY_ALL_VALUES.equals(value)) {
+					return Criterions.alwaysFalse();
 				}
 				return Criterions.isNotEqualTo(fieldName, value);
 			default:
