@@ -17,6 +17,8 @@
  */
 package io.vertigo.account.authorization;
 
+import org.h2.Driver;
+
 import io.vertigo.account.AccountFeatures;
 import io.vertigo.account.authorization.model.FullSecuredServices;
 import io.vertigo.account.authorization.model.PartialSecuredServices;
@@ -30,6 +32,8 @@ import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
+import io.vertigo.database.DatabaseFeatures;
+import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
 import io.vertigo.datamodel.impl.smarttype.ModelDefinitionProvider;
 
 public final class MyNodeConfig {
@@ -39,6 +43,13 @@ public final class MyNodeConfig {
 				.withBoot(BootConfig.builder()
 						.withLocales("fr_FR")
 						.addPlugin(ClassPathResourceResolverPlugin.class)
+						.build())
+				.addModule(new DatabaseFeatures()
+						.withSqlDataBase()
+						.withC3p0(
+								Param.of("dataBaseClass", H2DataBase.class.getCanonicalName()),
+								Param.of("jdbcDriver", Driver.class.getCanonicalName()),
+								Param.of("jdbcUrl", "jdbc:h2:mem:database"))
 						.build())
 				.addModule(new AccountFeatures()
 						.withSecurity(
