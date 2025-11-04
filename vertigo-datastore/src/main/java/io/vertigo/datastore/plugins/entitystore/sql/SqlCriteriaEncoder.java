@@ -143,6 +143,7 @@ public class SqlCriteriaEncoder implements CriteriaEncoder {
 						|| value instanceof Boolean
 						|| value instanceof Integer
 						|| value instanceof Long
+						|| value instanceof Double
 						|| value instanceof BigDecimal,
 				"Only String,Long,Integers and booleans are allowed in a where in clause.");
 		// we check to avoid sql injection without espacing and parametizing the statement
