@@ -18,7 +18,6 @@
 package io.vertigo.datastore.plugins.filestore.mimetype.simplemagic;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -27,7 +26,6 @@ import javax.inject.Inject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.j256.simplemagic.ContentInfo;
 import com.j256.simplemagic.ContentInfoUtil;
 
 import io.vertigo.core.lang.VSystemException;
@@ -37,21 +35,21 @@ import io.vertigo.datastore.impl.filestore.MimeTypeResolverPlugin;
 public class SimpleMagicMimeTypeResolverPlugin implements MimeTypeResolverPlugin {
 
 	private static final Logger LOG = LogManager.getLogger(SimpleMagicMimeTypeResolverPlugin.class);
-	
+
 	@Inject
 	public SimpleMagicMimeTypeResolverPlugin() {
 	}
 
 	@Override
 	public Optional<String> resolveMimeType(final VFile vFile) {
-		ContentInfoUtil util = new ContentInfoUtil();
-		
-		try (InputStream stream = vFile.createInputStream()) {
-			ContentInfo infoFromBytes = util.findMatch(stream);
-			Optional<String> mimeTypeFromBytes = infoFromBytes!=null&&infoFromBytes.getMimeType()!=null?Optional.of(infoFromBytes.getMimeType()):Optional.empty();
+		final var util = new ContentInfoUtil();
+
+		try (final var stream = vFile.createInputStream()) {
+			final var infoFromBytes = util.findMatch(stream);
+			final var mimeTypeFromBytes = infoFromBytes != null && infoFromBytes.getMimeType() != null ? Optional.of(infoFromBytes.getMimeType()) : Optional.<String> empty();
 			if (mimeTypeFromBytes.isPresent()) {
-				var acceptedExtension = infoFromBytes.getContentType().getFileExtensions();
-				var fileExtension = vFile.getFileName().substring(vFile.getFileName().lastIndexOf(".")+1);
+				final var acceptedExtension = infoFromBytes.getContentType().getFileExtensions();
+				final var fileExtension = vFile.getFileName().substring(vFile.getFileName().lastIndexOf(".") + 1).toLowerCase();
 				if (!Arrays.asList(acceptedExtension).contains(fileExtension)) {
 					throw new VSystemException("Incoherent mimeType.");
 				}
