@@ -49,7 +49,7 @@ class PegDelayedOperationAndComparisonRule<A> implements PegRule<PegSolver<A, Ob
 	@Override
 	public PegResult<PegSolver<A, Object, Boolean>> parse(final String text, final int start) throws PegNoMatchFoundException {
 		final var result = mainRule.parse(text, start);
-		return new PegResult<>(result.getIndex(), PegSolver.flattenSolvers(result.getValue()));
+		return new PegResult<>(result.index(), PegSolver.flattenSolvers(result.value()));
 	}
 
 }
