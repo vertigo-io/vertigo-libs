@@ -63,6 +63,7 @@ Release 4.3.0 - 2025/03/27
 * **[Ui] EncoderDate now uses ISO format yyyy-MM-dd and yyyy-MM-dd'T'HH:mm**
 * **[Ui] Add length constraint on text-area (same as other inputs : from smartType)**
 * **[Ui] Add wysiwyg editor based on tiptap** (quasar editor is renamed q-text-editor)
+    * To enable, add `useWysiwyg="true"` to your `vu:head` or `vu:head-meta`
 * **[Ui-vuejs] Change i18n to use object instead of string**
     (this.i18n('uploader.progress') to $vui.i18n().uploader.progress)
 * [Ui] Various fix
