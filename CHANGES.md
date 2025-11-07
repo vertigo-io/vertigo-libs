@@ -15,6 +15,13 @@ Release 4.3.3 -
 * [Ui] `vu:fileupload` : Fix displayed total file size after page reloading
 * [Ui] `vu:fileupload-dropzone` and `vu:v-fileupload-dropzone` : Fix : Change `key` attribute for `fileComponentId` attribute (referencing uploader `componentId` attribute)
 * [Vega] Fix `originCORSFilter` parameter.
+* [Ui][WYSIWYG] Multiple fixes in `vu:text-editor` :
+    * Add default CSS for info and blockquote
+    * Add max-height attribute
+    * Links in https by default
+    * Fix align button highlight
+    * Fix css hightlight rounding
+    * Fix "see source" when text is selected and bubble menu is also enabled
 
 
 Release 4.3.2 - 2025/07/10
