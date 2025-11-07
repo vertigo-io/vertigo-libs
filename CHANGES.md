@@ -14,6 +14,44 @@ Running 5.0.0
 
 more to come :)
 
+Release 4.3.3 - 
+----------------------
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-432-to-433)
+
+* [Ui] `vu:fileupload` : Add `maxFileSize` (MB), `maxTotalSize` (MB), `maxFiles` and `accept` attributes
+* [Ui] `vu:fileupload` : Fix displayed total file size after page reloading
+* [Ui] `vu:fileupload-dropzone` and `vu:v-fileupload-dropzone` : Fix : Change `key` attribute for `fileComponentId` attribute (referencing uploader `componentId` attribute)
+* [Vega] Fix `originCORSFilter` parameter.
+* [Ui][WYSIWYG] Multiple fixes in `vu:text-editor` :
+    * Add default CSS for info and blockquote
+    * Add max-height attribute
+    * Links in https by default
+    * Fix align button highlight
+    * Fix css hightlight rounding
+    * Fix "see source" when text is selected and bubble menu is also enabled
+
+
+Release 4.3.2 - 2025/07/10
+----------------------
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-431-to-432)
+
+* [Ui] Fix missing version in head.html
+* [Ui] Fix table-modifiable header when empty
+* [UI][DSFR] Add `noneDisplayed` option to `vu:dsfr-select` component
+* [Vega] Add excluded/included fields to Json methods (**so for POJO**, in swagger too)
+* [Vega] Fix SwaggerApi builder for using raw Collections type in WS signature (ex; List, Set, etc..)
+* [Vega] VegaJavalinFilter is an abstract filter (ability to excluse urls)
+* [Vega] Update jdoc rateLimiting
+* [dataBase] Add better message for sql constraint violation
+* [database] Fix generated keys mode (index is 1 based)
+* [datastore][Tika] Improved log on incoherent mimetype
+* [datastore][Tika] Add optional config file (eg to add zero file size detection)
+* [datastore] fix TwoTableFileStorePlugin
+* [dsfr-ui] Improve accessibility and slots usage in DsfrCustomHeader; enhance DsfrSelect with new noneDisplayed support; update vue-dsfr
+* [datamodel] Fix ListVAccessor getSourceUID that might be null
+* [libs] Move resources files to java/main/resources
+
+
 Release 4.3.1 - 2025/06/13
 ----------------------
 * [UI][Quasar] Improved Accessibility

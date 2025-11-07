@@ -13,7 +13,7 @@
         </div>
       </div>
       <div class="grow-wrap" :data-replicated-value="model">
-        <textarea v-model="model" class="editor"/>
+        <textarea v-model="model" class="editor" :style="{'max-height': maxHeight}"/>
       </div>
     </template>
     <template v-else>
@@ -31,7 +31,6 @@
         </div>
       </div>
       <bubble-menu :editor="editor"
-                   :tippy-options="{ duration: 100 }"
                    v-if="editor && bubbleToolbar">
         <div class="toolbar bubble">
           <div v-for="btnGroup in bubbleToolbar" class="button-group" :class="{'gap' : btnGroup.length === 0}">
@@ -47,7 +46,7 @@
           </div>
         </div>
       </bubble-menu>
-      <editor-content :editor="editor" class="editor"></editor-content>
+      <editor-content :editor="editor" class="editor" :style="{'max-height': maxHeight}"></editor-content>
     </template>
   </div>
 </template>
@@ -65,7 +64,7 @@
   import Gapcursor from '@tiptap/extension-gapcursor'
   
   // usefull for custom commands
-  import { mergeAttributes, Node, wrappingInputRule } from '@tiptap/core'
+  import { mergeAttributes, Node } from '@tiptap/core'
   
   // import extensions
   import Bold from '@tiptap/extension-bold'
@@ -105,7 +104,11 @@
     autofocus: {
       type: Boolean,
       default: false
-    }
+    },
+	maxHeight: {
+	  type: String,
+	  default: '50vh'
+	}
   })
 
   // Configure extensions 
@@ -223,26 +226,26 @@
     },
     'left' : {
       class: 'mdi mdi-format-align-left',
-      action: (editor) => editor.chain().focus().setTextAlign('left').run(),
-      active: (editor) => editor.isActive('textAlign', { align: 'left' }),
+      action: (editor) => editor.chain().focus().unsetTextAlign().run(),
+      active: (editor) => !(editor.isActive({ textAlign: 'center' }) || editor.isActive({ textAlign: 'right' }) || editor.isActive({ textAlign: 'justify' })),
       extensions: [TextAlign]
     },
     'center' : {
       class: 'mdi mdi-format-align-center',
       action: (editor) => editor.chain().focus().setTextAlign('center').run(),
-      active: (editor) => editor.isActive('textAlign', { align: 'center' }),
+      active: (editor) => editor.isActive({ textAlign: 'center' }),
       extensions: [TextAlign]
     },
     'right' : {
       class: 'mdi mdi-format-align-right',
       action: (editor) => editor.chain().focus().setTextAlign('right').run(),
-      active: (editor) => editor.isActive('textAlign', { align: 'right' }),
+      active: (editor) => editor.isActive({ textAlign: 'right' }),
       extensions: [TextAlign]
     },
     'justify' : {
       class: 'mdi mdi-format-align-justify',
       action: (editor) => editor.chain().focus().setTextAlign('justify').run(),
-      active: (editor) => editor.isActive('textAlign', { align: 'justify' }),
+      active: (editor) => editor.isActive({ textAlign: 'justify' }),
       extensions: [TextAlign]
     },
     'link' : {
@@ -375,7 +378,7 @@
       .chain()
       .focus()
       .extendMarkRange('link')
-      .setLink({ href: /^https?:\/\//i.test(url) ? url : `http://${url}` })
+      .setLink({ href: /^https?:\/\//i.test(url) ? url : `https://${url}` })
       .run()
     };
     
@@ -393,6 +396,9 @@
   
     .editor {
       display: flex;
+      border: 1px solid #ccc;
+      padding: 0.5rem;
+      overflow-y: auto;
     }
     
     .tiptap {
@@ -442,46 +448,90 @@
       
       button.is-active {
         color: blue;
-        outline: 1px solid blue;
+        box-shadow: 0 0 0 1px blue;
       }
     }
     
-    .editor {
-      border: 1px solid #ccc;
-      padding: 0.5rem;
+    .info-block {
+      position: relative;
+      padding-left: 60px;
+      padding-top: 8px;
+      padding-bottom: 5px;
+      border: 2px solid darkorange;
+      width: 100%;
+      min-height: 45px;
+      font-size: 0.9rem;
+      font-style: italic;
+
+      &::before {
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        content: "i";
+        padding: 0 10px;
+        background-color: white;
+        display: block;
+        text-align: center;
+        border: 10px solid darkorange;
+        font-weight: bold;
+        color: darkorange;
+      }
+      
+      p  {
+        margin-bottom: 5px;
+      }
+    }
+    
+    blockquote {
+      position: relative;
+      padding-left: 1em;
+      margin: 0;
+      
+        &::before {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          top: 0;
+          height: 100%;
+          width: .25em;
+          background-color: black;
+          content: "";
+          border-radius: 0;
+      }
     }
     
     // textera autogrow : https://stackoverflow.com/questions/17731083/how-to-autogrow-a-textarea-with-css
     .grow-wrap {
       /* easy way to plop the elements on top of each other and have them both sized based on the tallest one's height */
       display: grid;
-    }
+	  /* Firefox shows scrollbar on growth, you can hide like this. */
+	  padding-bottom: 5px;
     
-    .grow-wrap::after {
-      /* Note the weird space! Needed to preventy jumpy behavior */
-      content: attr(data-replicated-value) " ";
-      /* This is how textarea text behaves */
-      white-space: pre-wrap;
-      /* Hidden from view, clicks, and screen readers */
-      visibility: hidden;
-    }
+      &::after {
+        /* Note the weird space! Needed to preventy jumpy behavior */
+        content: attr(data-replicated-value) " ";
+        /* This is how textarea text behaves */
+        white-space: pre-wrap;
+        /* Hidden from view, clicks, and screen readers */
+        visibility: hidden;
+      }
     
-    .grow-wrap>textarea {
-      /* You could leave this, but after a user resizes, then it ruins the auto sizing */
-      resize: none;
-      /* Firefox shows scrollbar on growth, you can hide like this. */
-      overflow: hidden;
-    }
+      &>textarea {
+        /* You could leave this, but after a user resizes, then it ruins the auto sizing */
+        resize: none;
+        /* Firefox shows scrollbar on growth, you can hide like this. */
+        margin-bottom: -5px;
+      }
     
-    .grow-wrap>textarea,
-    .grow-wrap::after {
-      /* Identical styling required!! */
-      padding: 0.5rem;
-      font: inherit;
-      /* Place on top of each other */
-      grid-area: 1 / 1 / 2 / 2;
-      outline: none;
+      &>textarea,
+      &::after {
+        /* Identical styling required!! */
+        padding: 0.5rem;
+        font: inherit;
+        /* Place on top of each other */
+        grid-area: 1 / 1 / 2 / 2;
+        outline: none;
+      }
     }
-    
   }
 </style>

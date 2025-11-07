@@ -158,6 +158,15 @@
 	        <vu:block id="location" title="Location">
 				<vu:geolocation object="casting" field="birthLocation" nameField="characterName" map_style="height: 50vh; width:100%;" map_overview></vu:geolocation>
 			</vu:block>
+			<br/>
+	        <vu:block id="location" title="Location">
+				<vu:text-editor object="movie" field="description"
+				    :toolbar="[['bold', 'italic', 'underline', 'strike', 'removeFormat'], ['unordered', 'ordered', 'outdent', 'indent'], ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'], ['quote', 'hr', 'hardBreak'], ['left', 'center', 'right', 'justify'], ['link', 'unlink'], ['superscript', 'subscript'], ['infoBlock'], [], ['undo', 'redo'], ['viewsource'] ]"
+				    :bubble-toolbar="[['bold', 'italic', 'underline', 'removeFormat'], ['h1', 'h2']]"
+				    :link-configuration="{HTMLAttributes: {rel: 'noopener noreferrer'}}" <!--/* see https://tiptap.dev/docs/editor/extensions/marks/link */-->
+				    max-height="400px"
+				    />
+			</vu:block>
 			
         </vu:form>
             
