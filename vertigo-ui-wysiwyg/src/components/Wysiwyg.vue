@@ -54,35 +54,32 @@
 <script setup>
   import { watch, ref } from 'vue'
 
-  // import mandatory tiptap components
-  import { useEditor, EditorContent, BubbleMenu, findParentNode, isList } from '@tiptap/vue-3'
+  // Import mandatory Tiptap components
+  import { useEditor, EditorContent, findParentNode, isList } from '@tiptap/vue-3'
+  import { BubbleMenu } from '@tiptap/vue-3/menus'
   import Document from '@tiptap/extension-document'
   import Paragraph from '@tiptap/extension-paragraph'
   import Text from '@tiptap/extension-text'
-  import History from '@tiptap/extension-history'
   import HardBreak from '@tiptap/extension-hard-break'
-  import Gapcursor from '@tiptap/extension-gapcursor'
-  
+  import { UndoRedo, Gapcursor } from '@tiptap/extensions'
+
   // usefull for custom commands
   import { mergeAttributes, Node } from '@tiptap/core'
-  
+
   // import extensions
   import Bold from '@tiptap/extension-bold'
   import Italic from '@tiptap/extension-italic'
   import Underline from '@tiptap/extension-underline'
   import Strike from '@tiptap/extension-strike'
-  import ListItem from '@tiptap/extension-list-item'
-  import BulletList from '@tiptap/extension-bullet-list'
-  import OrderedList from '@tiptap/extension-ordered-list'
-  import ListKeymap from '@tiptap/extension-list-keymap'
+  import { ListItem, BulletList, OrderedList, ListKeymap } from '@tiptap/extension-list'
   import Heading from '@tiptap/extension-heading'
   import Blockquote from '@tiptap/extension-blockquote'
   import HorizontalRule from '@tiptap/extension-horizontal-rule'
   import { TextAlign as RawTextAlign } from '@tiptap/extension-text-align'
-  import { Link as RawLink }from '@tiptap/extension-link'
+  import { Link as RawLink } from '@tiptap/extension-link'
   import Subscript from '@tiptap/extension-subscript'
   import Superscript from '@tiptap/extension-superscript'
-  
+
   // props and model  
   let displayHtml = ref(false);
   
@@ -335,7 +332,7 @@
   // #########################################
   const editor = useEditor({
     content: model.value,
-    extensions: [Document, Paragraph, Text, History, HardBreak, Gapcursor, customExtension, ...activeExtensions],
+    extensions: [Document, Paragraph, Text, UndoRedo, HardBreak, Gapcursor, customExtension, ...activeExtensions],
     onUpdate: function({editor}) {
         model.value = editor.getHTML();
     },
