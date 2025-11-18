@@ -53,7 +53,7 @@ import io.vertigo.core.lang.WrappedException;
  */
 class IpWhitelistHelper {
 
-	private final Set<String> whitelistPatterns;
+	private final Set<String> myWhitelistPatterns;
 	private final Set<String> whitelist;
 	private final int maxWhitelistSize;
 
@@ -69,7 +69,7 @@ class IpWhitelistHelper {
 				.isTrue(maxWhitelistSize > 0 && maxWhitelistSize <= 1_000_000, "maxWhitelistSize must be in range 0-1_000_000");
 		//---
 		this.maxWhitelistSize = maxWhitelistSize;
-		this.whitelistPatterns = Set.copyOf(whitelistPatterns);
+		this.myWhitelistPatterns = Set.copyOf(whitelistPatterns);
 		whitelist = new HashSet<>();
 		addWhitelist(whitelistPatterns);
 	}
@@ -118,7 +118,7 @@ class IpWhitelistHelper {
 	 * @return String representation of the whitelist patterns
 	 */
 	public String getWhitelistPatterns() {
-		return String.join(", ", whitelistPatterns);
+		return String.join(", ", myWhitelistPatterns);
 	}
 
 	/**
@@ -142,15 +142,15 @@ class IpWhitelistHelper {
 
 						// natural integer order for ips
 						.thenComparing(InetAddress::getAddress, (m1, m2) -> {
-							final int len1 = m1.length;
-							final int len2 = m2.length;
+							final var len1 = m1.length;
+							final var len2 = m2.length;
 							if (len1 < len2) {
 								return -1;
 							}
 							if (len1 > len2) {
 								return 1;
 							}
-							for (int i = 0; i < len1; i++) {
+							for (var i = 0; i < len1; i++) {
 								final int a = m1[i];
 								final int b = m2[i];
 								if (a != b) {
@@ -201,17 +201,17 @@ class IpWhitelistHelper {
 	 * @throws UnknownHostException If an IP address in the range is invalid
 	 */
 	private Set<String> initIpRange(final String ipRange) throws UnknownHostException {
-		final String[] parts = ipRange.split("-");
+		final var parts = ipRange.split("-");
 		Assertion.check()
 				.isTrue(parts.length == 2, "Invalid IP range " + ipRange);
 		//---
-		final String startIp = parts[0].trim();
-		final String endIp = parts[1].trim();
+		final var startIp = parts[0].trim();
+		final var endIp = parts[1].trim();
 		// Determine if we're dealing with IPv4 or IPv6
-		final char prefixSep = startIp.indexOf(':') > 0 ? ':' : '.';
-		final String prefix = startIp.substring(0, startIp.lastIndexOf(prefixSep));
+		final var prefixSep = startIp.indexOf(':') > 0 ? ':' : '.';
+		final var prefix = startIp.substring(0, startIp.lastIndexOf(prefixSep));
 
-		final InetAddress startAdr = InetAddress.getByName(startIp);
+		final var startAdr = InetAddress.getByName(startIp);
 		final InetAddress endAdr;
 
 		// Handle two different formats: full IP in end range or just the last part
@@ -226,8 +226,8 @@ class IpWhitelistHelper {
 		}
 
 		// Convert IP addresses to numeric representation for iteration
-		final BigInteger hmin = new BigInteger(startAdr.getAddress());
-		final BigInteger hmax = new BigInteger(endAdr.getAddress());
+		final var hmin = new BigInteger(startAdr.getAddress());
+		final var hmax = new BigInteger(endAdr.getAddress());
 		Assertion.check()
 				.isTrue(hmin.compareTo(hmax) <= 0, "Invalid IP range " + ipRange + ", startIp must be less than endIp");
 		if (hmin.add(BigInteger.ONE.shiftLeft(20).subtract(BigInteger.ONE)).compareTo(hmax) < 0) {
@@ -236,8 +236,8 @@ class IpWhitelistHelper {
 
 		// Generate all IP addresses in the range
 		final var ipRangeSet = new HashSet<String>();
-		for (BigInteger ip = hmin; ip.compareTo(hmax) <= 0; ip = ip.add(BigInteger.ONE)) {
-			final InetAddress ipAddress = InetAddress.getByAddress(ip.toByteArray());
+		for (var ip = hmin; ip.compareTo(hmax) <= 0; ip = ip.add(BigInteger.ONE)) {
+			final var ipAddress = InetAddress.getByAddress(ip.toByteArray());
 			ipRangeSet.add(ipAddress.getHostAddress());
 		}
 		return ipRangeSet;
@@ -251,35 +251,35 @@ class IpWhitelistHelper {
 	 * @throws UnknownHostException If the base IP is invalid
 	 */
 	private Set<String> initCIDR(final String subnet) throws UnknownHostException {
-		final String[] parts = subnet.contains("/") ? subnet.split("/") : new String[] { subnet, null };
-		final String baseIp = parts[0];
-		final InetAddress baseAddr = InetAddress.getByName(baseIp);
-		final int maskPrefixLength = baseAddr instanceof Inet6Address ? 128 : 32;
+		final var parts = subnet.contains("/") ? subnet.split("/") : new String[] { subnet, null };
+		final var baseIp = parts[0];
+		final var baseAddr = InetAddress.getByName(baseIp);
+		final var maskPrefixLength = baseAddr instanceof Inet6Address ? 128 : 32;
 		if (parts[1] == null) {
 			parts[1] = String.valueOf(maskPrefixLength);
 		}
-		final int prefixLength = Integer.parseInt(parts[1]);
+		final var prefixLength = Integer.parseInt(parts[1]);
 
 		// Validate prefix length
 		if (prefixLength < 0 || prefixLength > maskPrefixLength) {
 			throw new IllegalStateException("Invalid mask in subnet " + subnet);
 		}
 		// Calculate maximum bits that can be allowed to change
-		final int maxChangedBits = 20; // Allow up to 2^20 addresses (about 1 million)
+		final var maxChangedBits = 20; // Allow up to 2^20 addresses (about 1 million)
 		if (maskPrefixLength - prefixLength > maxChangedBits) {
 			throw new IllegalStateException("For performance reason, mask cannot be lower than " + (maskPrefixLength - maxChangedBits));
 		}
 
 		// Calculate IP range based on CIDR prefix
 		// For both IPv4 and IPv6 we now use the same approach
-		final byte[] addrBytes = baseAddr.getAddress();
-		final BigInteger address = new BigInteger(1, addrBytes);
+		final var addrBytes = baseAddr.getAddress();
+		final var address = new BigInteger(1, addrBytes);
 
 		// Calculate network and broadcast addresses
-		final int addressLengthBits = addrBytes.length * 8;
-		final BigInteger networkMask = BigInteger.ONE.shiftLeft(prefixLength).subtract(BigInteger.ONE)
+		final var addressLengthBits = addrBytes.length * 8;
+		final var networkMask = BigInteger.ONE.shiftLeft(prefixLength).subtract(BigInteger.ONE)
 				.shiftLeft(addressLengthBits - prefixLength);
-		final BigInteger network = address.and(networkMask);
+		final var network = address.and(networkMask);
 
 		// Special cases for /31 and /32 (IPv4) or /127 and /128 (IPv6)
 		BigInteger hmin, hmax;
@@ -298,9 +298,9 @@ class IpWhitelistHelper {
 
 		// Generate all IP addresses in the range
 		final var ipRangeSet = new HashSet<String>();
-		for (BigInteger ip = hmin; ip.compareTo(hmax) <= 0; ip = ip.add(BigInteger.ONE)) {
-			final byte[] ipBytes = toByteArray(ip, addrBytes.length);
-			final InetAddress ipAddress = InetAddress.getByAddress(ipBytes);
+		for (var ip = hmin; ip.compareTo(hmax) <= 0; ip = ip.add(BigInteger.ONE)) {
+			final var ipBytes = toByteArray(ip, addrBytes.length);
+			final var ipAddress = InetAddress.getByAddress(ipBytes);
 			ipRangeSet.add(ipAddress.getHostAddress());
 		}
 		return ipRangeSet;
@@ -316,7 +316,7 @@ class IpWhitelistHelper {
 	 * @return A byte array of the expected length
 	 */
 	private byte[] toByteArray(final BigInteger value, final int length) {
-		final byte[] bytes = value.toByteArray();
+		final var bytes = value.toByteArray();
 
 		// If the byte array is already the correct length, return it
 		if (bytes.length == length) {
@@ -325,14 +325,14 @@ class IpWhitelistHelper {
 
 		// If it's longer (likely has a leading 0), remove the extra byte
 		if (bytes.length == length + 1 && bytes[0] == 0) {
-			final byte[] result = new byte[length];
+			final var result = new byte[length];
 			System.arraycopy(bytes, 1, result, 0, length);
 			return result;
 		}
 
 		// If it's shorter, pad with leading zeros
 		if (bytes.length < length) {
-			final byte[] result = new byte[length];
+			final var result = new byte[length];
 			System.arraycopy(bytes, 0, result, length - bytes.length, bytes.length);
 			return result;
 		}
