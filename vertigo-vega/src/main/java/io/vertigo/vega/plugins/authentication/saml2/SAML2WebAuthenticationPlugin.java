@@ -157,7 +157,7 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 	/** {@inheritDoc} */
 	@Override
 	public Optional<String> getExternalUrlOptional() {
-		return saml2Parameters.getExternalUrlOpt();
+		return saml2Parameters.externalUrlOpt();
 	}
 
 	private Tuple<Boolean, HttpServletRequest> sendMetadataResponse(final HttpServletRequest request, final HttpServletResponse response) {
@@ -173,18 +173,18 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 
 	private String generateSamlSpMetadata(final String externalUrl) {
 		final var spEntityDescriptor = new EntityDescriptorBuilder().buildObject();
-		spEntityDescriptor.setEntityID(saml2Parameters.getSamlClientName());
+		spEntityDescriptor.setEntityID(saml2Parameters.samlClientName());
 
 		final var spSSODescriptor = new SPSSODescriptorBuilder().buildObject();
 		spSSODescriptor.setWantAssertionsSigned(true);
 		spSSODescriptor.setAuthnRequestsSigned(true);
 
 		// set keys
-		for (final Credential cred : saml2Parameters.getSpCredentials()) {
+		for (final Credential cred : saml2Parameters.spCredentials()) {
 			OpenSAMLUtil.addKeyDescriptor(spSSODescriptor, cred,
-					UsageType.SIGNING, saml2Parameters.isExtractPublicKeyFromCertificate());
+					UsageType.SIGNING, saml2Parameters.extractPublicKeyFromCertificate());
 			OpenSAMLUtil.addKeyDescriptor(spSSODescriptor, cred,
-					UsageType.ENCRYPTION, saml2Parameters.isExtractPublicKeyFromCertificate());
+					UsageType.ENCRYPTION, saml2Parameters.extractPublicKeyFromCertificate());
 		}
 
 		// set locations
@@ -239,7 +239,7 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 
 		final var peerEntityContext = context.getSubcontext(SAMLPeerEntityContext.class, true);
 		final var endpointContext = peerEntityContext.getSubcontext(SAMLEndpointContext.class, true);
-		endpointContext.setEndpoint(OpenSAMLUtil.urlToEndpoint(saml2Parameters.getLoginUrl()));
+		endpointContext.setEndpoint(OpenSAMLUtil.urlToEndpoint(saml2Parameters.loginUrl()));
 
 		final var signatureSigningParameters = new SignatureSigningParameters();
 		signatureSigningParameters.setSigningCredential(saml2Parameters.getSpCredential());
@@ -258,7 +258,7 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 	@Override
 	public void doLogout(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse, final Optional<String> redirectUrlOpt) {
 		try {
-			httpResponse.sendRedirect(saml2Parameters.getLogoutUrl());
+			httpResponse.sendRedirect(saml2Parameters.logoutUrl());
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e);
 		}
@@ -267,11 +267,11 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 	private AuthnRequest buildAuthnRequest(final HttpServletRequest request) {
 		final var authnRequest = new AuthnRequestBuilder().buildObject();
 		authnRequest.setIssueInstant(Instant.now());
-		authnRequest.setDestination(saml2Parameters.getLoginUrl());
+		authnRequest.setDestination(saml2Parameters.loginUrl());
 		authnRequest.setProtocolBinding(BINDING_TYPE);
 		authnRequest.setAssertionConsumerServiceURL(WebAuthenticationUtil.resolveExternalUrl(request, getExternalUrlOptional()) + getCallbackUrl());
 		authnRequest.setID(OpenSAMLUtil.generateSecureRandomId());
-		authnRequest.setIssuer(OpenSAMLUtil.buildIssuer(saml2Parameters.getSamlClientName()));
+		authnRequest.setIssuer(OpenSAMLUtil.buildIssuer(saml2Parameters.samlClientName()));
 
 		return authnRequest;
 	}
@@ -317,16 +317,16 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 	private static boolean checkSignature(final SAML2Parameters saml2Parameters, final Signature signature) {
 		var signatureValid = false;
 		var checkCount = 1;
-		for (final Credential cred : saml2Parameters.getIpPublicCredentials()) {
+		for (final Credential cred : saml2Parameters.ipPublicCredentials()) {
 			try {
 				SignatureValidator.validate(signature, cred);
 				signatureValid = true;
 				break;
 			} catch (final SignatureException e) {
 				if (LOG.isDebugEnabled()) {
-					LOG.debug("SAML signature check fail for cert n°{}/{}.", checkCount, saml2Parameters.getIpPublicCredentials().size(), e);
+					LOG.debug("SAML signature check fail for cert n°{}/{}.", checkCount, saml2Parameters.ipPublicCredentials().size(), e);
 				} else {
-					LOG.info("SAML signature check fail for cert n°{}/{}.", checkCount, saml2Parameters.getIpPublicCredentials().size());
+					LOG.info("SAML signature check fail for cert n°{}/{}.", checkCount, saml2Parameters.ipPublicCredentials().size());
 				}
 			}
 			++checkCount;
@@ -353,7 +353,7 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 	}
 
 	private static Assertion decryptAssertion(final SAML2Parameters saml2Parameters, final EncryptedAssertion encryptedAssertion) {
-		final var keyInfoCredentialResolver = new StaticKeyInfoCredentialResolver(saml2Parameters.getSpCredentials());
+		final var keyInfoCredentialResolver = new StaticKeyInfoCredentialResolver(saml2Parameters.spCredentials());
 
 		final var decrypter = new Decrypter(null, keyInfoCredentialResolver, new InlineEncryptedKeyResolver());
 		decrypter.setRootInNewDocument(true);
