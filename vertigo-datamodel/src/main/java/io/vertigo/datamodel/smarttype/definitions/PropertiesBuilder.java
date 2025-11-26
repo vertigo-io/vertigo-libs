@@ -49,9 +49,9 @@ public final class PropertiesBuilder implements Builder<Properties> {
 	public <T> PropertiesBuilder addValue(final Property<T> property, final T value) {
 		Assertion.check()
 				.isNotNull(property)
-				.isFalse(properties.containsKey(property), "Propriété {0} déjà déclarée : ", property.getName());
+				.isFalse(properties.containsKey(property), "Propriété {0} déjà déclarée : ", property.name());
 		//On vérifie que la valeur est du bon type
-		property.getType().cast(value);
+		property.type().cast(value);
 		//-----
 		properties.put(property, value);
 		return this;

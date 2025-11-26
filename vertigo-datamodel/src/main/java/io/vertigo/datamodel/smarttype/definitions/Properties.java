@@ -68,6 +68,6 @@ public final class Properties {
 		//le type a été validé lors du put.
 		//-----
 		//Conformémément au contrat, on retourne null si pas de propriété trouvée
-		return property.getType().cast(properties.get(property));
+		return property.type().cast(properties.get(property));
 	}
 }

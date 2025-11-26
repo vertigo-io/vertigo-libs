@@ -44,38 +44,18 @@ import io.vertigo.core.lang.Assertion;
  * @author  pchretien
  * @param <T> type of the property
  */
-public final class Property<T> {
-	/**
-	 * Classe java représentant le type de la propriété.
-	 */
-	private final Class<T> clazz;
-	private final String name;
+public record Property<T>(
+		String name,
+		Class<T> type) {
 
 	/**
 	 * Constructeur à partir du nom évocateur de la propriété.
 	 * @param name the name of the property
-	 * @param clazz Classe java représentant le type de la propriété.
+	 * @param type Classe java représentant le type de la propriété.
 	 */
-	public Property(final String name, final Class<T> clazz) {
+	public Property {
 		Assertion.check()
 				.isNotBlank(name)
-				.isNotNull(clazz);
-		//-----
-		this.clazz = clazz;
-		this.name = name;
-	}
-
-	/**
-	 * @return Nom de la propriété
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	* @return Classe java représentant le type de la propriété.
-	*/
-	public Class<T> getType() {
-		return clazz;
+				.isNotNull(type);
 	}
 }
