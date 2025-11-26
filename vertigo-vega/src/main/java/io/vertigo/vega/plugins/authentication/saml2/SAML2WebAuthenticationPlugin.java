@@ -118,7 +118,7 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 		callbackUrl = urlHandlerPrefix + "callback";
 		logoutUrl = urlHandlerPrefix + "logout";
 
-		signatureType = OpenSAMLUtil.resolveSignatureType(saml2Parameters.getSignatureType());
+		signatureType = OpenSAMLUtil.resolveSignatureType(saml2Parameters.signatureType());
 
 		OpenSAMLUtil.initOpenSamlIfNeeded();
 
