@@ -70,12 +70,12 @@ public final class ContentSecurityPolicyFilter extends AbstractFilter {
 		final Pattern pattern = Pattern.compile("\\$\\{([^}]+)\\}");
 		cspPattern = pattern.matcher(cspPattern).replaceAll(matchResult -> {
 			final String paramName = matchResult.group(1);
-			return paramManager.getOptionalParam(paramName).map(Param::getValue).orElse("");
+			return paramManager.getOptionalParam(paramName).map(Param::value).orElse("");
 		});
 
 		final Optional<Param> reportUri = paramManager.getOptionalParam(REPORT_WS_PARAM_NAME);
-		if (reportUri.isPresent() && !reportUri.get().getValue().isBlank()) {
-			cspPattern += " report-uri " + reportUri.get().getValue();
+		if (reportUri.isPresent() && !reportUri.get().value().isBlank()) {
+			cspPattern += " report-uri " + reportUri.get().value();
 		}
 
 		// Minify the CSP because it seems that \n are misinterpreted

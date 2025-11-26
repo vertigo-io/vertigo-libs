@@ -155,7 +155,7 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 	@Override
 	public Optional<Account> getAccountByAuthToken(final String accountAuthToken) {
 		final Optional<AccountInfo> accountInfoOpt = accounts.values().stream()
-				.filter(accountInfo -> accountAuthToken.equals(accountInfo.account().getAuthToken()))
+				.filter(accountInfo -> accountAuthToken.equals(accountInfo.account().authToken()))
 				.findFirst();
 		return accountInfoOpt.map(AccountInfo::account);
 	}

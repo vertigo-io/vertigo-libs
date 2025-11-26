@@ -60,19 +60,19 @@ public final class TestIdentities implements AccountLoader, GroupLoader {
 		final Account testAccount3 = Account.builder("3").withAuthToken("admin").withDisplayName("Phil Mormon").withEmail("phil.mormon@yopmail.com").build();
 		saveAccounts(Arrays.asList(testAccount0, testAccount1, testAccount2, testAccount3));
 
-		final UID<Account> accountURI0 = createAccountURI(testAccount0.getId());
-		final UID<Account> accountURI1 = createAccountURI(testAccount1.getId());
-		final UID<Account> accountURI2 = createAccountURI(testAccount2.getId());
+		final UID<Account> accountURI0 = createAccountURI(testAccount0.id());
+		final UID<Account> accountURI1 = createAccountURI(testAccount1.id());
+		final UID<Account> accountURI2 = createAccountURI(testAccount2.id());
 
 		final AccountGroup testAccountGroup1 = new AccountGroup("100", "TIME's cover");
-		final UID<AccountGroup> group1Uri = UID.of(AccountGroup.class, testAccountGroup1.getId());
+		final UID<AccountGroup> group1Uri = UID.of(AccountGroup.class, testAccountGroup1.id());
 		saveGroup(testAccountGroup1);
 
 		attach(accountURI1, group1Uri);
 		attach(accountURI2, group1Uri);
 
 		final AccountGroup groupAll = new AccountGroup("ALL", "Everyone");
-		final UID<AccountGroup> groupAllUri = UID.of(AccountGroup.class, groupAll.getId());
+		final UID<AccountGroup> groupAllUri = UID.of(AccountGroup.class, groupAll.id());
 		saveGroup(groupAll);
 		attach(accountURI0, groupAllUri);
 		attach(accountURI1, groupAllUri);
@@ -82,7 +82,7 @@ public final class TestIdentities implements AccountLoader, GroupLoader {
 		final List<Account> accounts = createAccounts();
 		saveAccounts(accounts);
 		for (final Account account : accounts) {
-			final UID<Account> accountUri = createAccountURI(account.getId());
+			final UID<Account> accountUri = createAccountURI(account.id());
 			attach(accountUri, groupAllUri);
 		}
 
@@ -118,13 +118,13 @@ public final class TestIdentities implements AccountLoader, GroupLoader {
 	}
 
 	private void saveGroup(final AccountGroup accountGroup) {
-		groupsMap.put(accountGroup.getId(), accountGroup);
+		groupsMap.put(accountGroup.id(), accountGroup);
 	}
 
 	private void saveAccounts(final List<Account> accounts) {
 		accounts.stream().forEach(account -> {
-			accountsMap.put(account.getId(), account);
-			accountsMapByAuth.put(account.getAuthToken(), account);
+			accountsMap.put(account.id(), account);
+			accountsMapByAuth.put(account.authToken(), account);
 		});
 	}
 

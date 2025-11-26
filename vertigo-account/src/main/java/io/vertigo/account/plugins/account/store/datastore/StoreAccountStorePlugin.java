@@ -226,7 +226,7 @@ public class StoreAccountStorePlugin extends AbstractAccountStorePlugin implemen
 	@Override
 	public Optional<VFile> getPhoto(final UID<Account> accountURI) {
 		final Account account = getAccount(accountURI);
-		final String photoId = account.getPhoto();
+		final String photoId = account.photo();
 		if (photoId != null && photoFileInfoDefinition.isPresent()) {
 			return executeInTransaction(() -> {
 				final FileInfoURI photoUri = new FileInfoURI(photoFileInfoDefinition.get(), photoId);

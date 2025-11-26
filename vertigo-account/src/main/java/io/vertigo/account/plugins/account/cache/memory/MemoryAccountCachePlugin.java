@@ -62,7 +62,7 @@ public final class MemoryAccountCachePlugin implements AccountCachePlugin {
 		final Object old = accountByUID.put(uid, account);
 		if (old == null) {
 			groupByAccountUID.put(uid, new HashSet<UID<AccountGroup>>());
-			accountUIDByAuthToken.put(account.getAuthToken(), uid);
+			accountUIDByAuthToken.put(account.authToken(), uid);
 		}
 	}
 

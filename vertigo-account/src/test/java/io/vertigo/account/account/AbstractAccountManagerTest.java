@@ -100,10 +100,10 @@ public abstract class AbstractAccountManagerTest {
 	@Test
 	public void testAccounts() {
 		try (VTransactionWritable tx = obtainTx()) {
-			Assertions.assertEquals("Palmer Luckey", accountManager.getAccount(accountUID1).getDisplayName());
+			Assertions.assertEquals("Palmer Luckey", accountManager.getAccount(accountUID1).displayName());
 
 			//use cache
-			Assertions.assertEquals("Palmer Luckey", accountManager.getAccount(accountUID1).getDisplayName());
+			Assertions.assertEquals("Palmer Luckey", accountManager.getAccount(accountUID1).displayName());
 			//Assertions.assertEquals(10 + 4, identityManager.getAccountsCount());
 		}
 	}
@@ -111,10 +111,10 @@ public abstract class AbstractAccountManagerTest {
 	@Test
 	public void testGetGroups() {
 		try (VTransactionWritable tx = obtainTx()) {
-			Assertions.assertEquals("Everyone", accountManager.getGroup(groupAllURI).getDisplayName());
+			Assertions.assertEquals("Everyone", accountManager.getGroup(groupAllURI).displayName());
 
 			//use cache
-			Assertions.assertEquals("Everyone", accountManager.getGroup(groupAllURI).getDisplayName());
+			Assertions.assertEquals("Everyone", accountManager.getGroup(groupAllURI).displayName());
 		}
 	}
 

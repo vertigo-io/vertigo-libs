@@ -87,9 +87,9 @@ public final class RedisAccountCachePlugin implements AccountCachePlugin {
 		//-----
 		try (final Jedis jedis = redisConnector.getClient(REDIS_PREFIX)) {
 			try (final Transaction tx = jedis.multi()) {
-				tx.hmset(HACCOUNT_START_KEY + account.getId(), account2Map(account));
-				tx.hset(HAUTHTOKEN_INDEX_KEY, account.getAuthToken(), account.getId());
-				tx.sadd(SACCOUNTS_KEY, account.getId());
+				tx.hmset(HACCOUNT_START_KEY + account.id(), account2Map(account));
+				tx.hset(HAUTHTOKEN_INDEX_KEY, account.authToken(), account.id());
+				tx.sadd(SACCOUNTS_KEY, account.id());
 				tx.exec();
 			}
 		}
@@ -116,8 +116,8 @@ public final class RedisAccountCachePlugin implements AccountCachePlugin {
 		//----
 		try (final Jedis jedis = redisConnector.getClient(REDIS_PREFIX)) {
 			try (final Transaction tx = jedis.multi()) {
-				tx.hmset(HGROUP_START_KEY + group.getId(), group2Map(group));
-				tx.sadd(SGROUPS_KEY, group.getId());
+				tx.hmset(HGROUP_START_KEY + group.id(), group2Map(group));
+				tx.sadd(SGROUPS_KEY, group.id());
 				tx.exec();
 			}
 		}
@@ -229,10 +229,10 @@ public final class RedisAccountCachePlugin implements AccountCachePlugin {
 
 	private static Map<String, String> account2Map(final Account account) {
 		return new MapBuilder<String, String>()
-				.put("id", account.getId())
-				.put("authToken", account.getAuthToken())
-				.put("displayName", account.getDisplayName())
-				.putNullable("email", account.getEmail())
+				.put("id", account.id())
+				.put("authToken", account.authToken())
+				.put("displayName", account.displayName())
+				.putNullable("email", account.email())
 				.build();
 	}
 
@@ -246,8 +246,8 @@ public final class RedisAccountCachePlugin implements AccountCachePlugin {
 
 	private static Map<String, String> group2Map(final AccountGroup group) {
 		return new MapBuilder<String, String>()
-				.put("id", group.getId())
-				.put("displayName", group.getDisplayName())
+				.put("id", group.id())
+				.put("displayName", group.displayName())
 				.build();
 	}
 

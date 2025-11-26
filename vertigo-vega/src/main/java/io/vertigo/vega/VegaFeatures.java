@@ -108,8 +108,8 @@ public final class VegaFeatures extends Features<VegaFeatures> {
 	@Feature("webservices.token")
 	public VegaFeatures withWebServicesTokens(final Param... params) {
 		//-----
-		Assertion.check().isTrue(params.length == 1 && "tokens".equals(params[0].getName()), "tokens param should be provided ");
-		final String myTokens = params[0].getValue();
+		Assertion.check().isTrue(params.length == 1 && "tokens".equals(params[0].name()), "tokens param should be provided ");
+		final String myTokens = params[0].value();
 		Assertion.check().isNotBlank(myTokens);
 		//---
 		getModuleConfigBuilder()
