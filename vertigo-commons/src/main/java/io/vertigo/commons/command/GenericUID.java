@@ -35,7 +35,7 @@ import io.vertigo.core.util.StringUtil;
  * @author  pchretien
  * @param <O> the type of entity
  */
-public final class GenericUID<O> implements Serializable {
+public record GenericUID<O>(String type, Serializable id) implements Serializable {
 	private static final long serialVersionUID = -1L;
 	private static final char SEPARATOR = '@';
 
@@ -44,27 +44,13 @@ public final class GenericUID<O> implements Serializable {
 	 */
 	private static final Pattern REGEX_URN = Pattern.compile("[a-zA-Z0-9_:@$-]{5,80}");
 
-	private final String type;
-	private final Serializable id;
-
-	/** URN de la ressource (Nom complet).*/
-	private final String urn;
-
-	/**
-	 * Constructor.
-	 * @param definition the entity definition
-	 * @param id the entity id
-	 */
-	private GenericUID(final String type, final Serializable id) {
+	public GenericUID {
 		Assertion.check()
 				.isNotNull(id)
 				.isNotNull(type);
 		//-----
-		this.id = Serializable.class.cast(id);
-		this.type = type;
-		//---
-		//Calcul de l'urn
-		urn = toURN(this);
+		//Calcul de l'urn et validation
+		final String urn = toURN(type, id);
 		Assertion.check().isTrue(GenericUID.REGEX_URN.matcher(urn).matches(), "urn {0} doit matcher le pattern {1}", urn, GenericUID.REGEX_URN);
 	}
 
@@ -77,10 +63,10 @@ public final class GenericUID<O> implements Serializable {
 		Assertion.check().isNotNull(urn);
 		//-----
 		final int i = urn.indexOf(SEPARATOR);
-		final String dname = urn.substring(0, i);
+		final String type = urn.substring(0, i);
 		final Serializable id = stringToId(urn.substring(i + 1));
 
-		return new GenericUID<>(dname, id);
+		return new GenericUID<>(type, id);
 	}
 
 	/**
@@ -88,16 +74,12 @@ public final class GenericUID<O> implements Serializable {
 	 * - an id
 	 * - a definition
 	 *
-	 * @param definition the entity definition
+	 * @param type the entity type
 	 * @param id the entity id
 	 * @return the entity UID
 	 */
-	public static <O> GenericUID<O> of(final String dname, final Serializable id) {
-		return new GenericUID<>(dname, id);
-	}
-
-	public String getType() {
-		return type;
+	public static <O> GenericUID<O> of(final String type, final Serializable id) {
+		return new GenericUID<>(type, id);
 	}
 
 	/**
@@ -109,45 +91,23 @@ public final class GenericUID<O> implements Serializable {
 	 * @return URN de la ressource.
 	 */
 	public String urn() {
-		return urn;
-	}
-
-	/**
-	 * @return the entity id
-	 */
-	public Serializable getId() {
-		return id;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public int hashCode() {
-		return urn.hashCode();
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public boolean equals(final Object o) {
-		if (o instanceof GenericUID) {
-			return ((GenericUID) o).urn.equals(this.urn);
-		}
-		return false;
+		return toURN(type, id);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		//on surcharge le toString car il est utilisé dans les logs d'erreur. et celui par défaut utilise le hashcode.
-		return "urn[" + getClass().getName() + "]::" + urn;
+		return "urn[" + getClass().getName() + "]::" + urn();
 	}
 
 	//=========================================================================
 	//=============================STATIC======================================
 	//=========================================================================
 
-	private static String toURN(final GenericUID<?> uri) {
-		final String idAsText = idToString(uri.getId());
-		return uri.getType() + SEPARATOR + idAsText;
+	private static String toURN(final String type, final Serializable id) {
+		final String idAsText = idToString(id);
+		return type + SEPARATOR + idAsText;
 	}
 
 	/**

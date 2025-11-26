@@ -28,32 +28,17 @@ import io.vertigo.datamodel.data.stereotype.Field;
  *
  * @author pchretien
  */
-public final class Account implements Entity {
+public record Account(
+		@Field(type = "ID", smartType = "DoXAccountId", cardinality = Cardinality.ONE, label = "id") String id,
+		@Field(smartType = "DoXAccountName", label = "displayName") String displayName,
+		@Field(smartType = "DoXAccountEmail", label = "email") String email,
+		@Field(smartType = "DoXAccountPhoto", label = "photo") String photo,
+		@Field(smartType = "DoXAccountAuthToken", label = "authToken") String authToken) implements Entity {
+
 	private static final long serialVersionUID = 7509030642946579907L;
 
-	@Field(type = "ID", smartType = "DoXAccountId", cardinality = Cardinality.ONE, label = "id")
-	private final String id;
-
-	@Field(smartType = "DoXAccountName", label = "displayName")
-	private final String displayName;
-
-	@Field(smartType = "DoXAccountEmail", label = "email")
-	private final String email;
-
-	@Field(smartType = "DoXAccountPhoto", label = "photo")
-	private final String photo;
-
-	@Field(smartType = "DoXAccountAuthToken", label = "authToken")
-	private final String authToken;
-
-	Account(final String id, final String displayName, final String email, final String photo, final String authToken) {
+	public Account {
 		Assertion.check().isNotBlank(id);
-		//-----
-		this.id = id;
-		this.displayName = displayName;
-		this.email = email;
-		this.photo = photo;
-		this.authToken = authToken;
 	}
 
 	/**
@@ -69,40 +54,5 @@ public final class Account implements Entity {
 	@Override
 	public UID<Account> getUID() {
 		return UID.of(this);
-	}
-
-	/**
-	 * @return the id of the account
-	 */
-	public String getId() {
-		return id;
-	}
-
-	/**
-	 * @return the diplayName
-	 */
-	public String getDisplayName() {
-		return displayName;
-	}
-
-	/**
-	 * @return the email
-	 */
-	public String getEmail() {
-		return email;
-	}
-
-	/**
-	 * @return the photo
-	 */
-	public String getPhoto() {
-		return photo;
-	}
-
-	/**
-	 * @return the authToken
-	 */
-	public String getAuthToken() {
-		return authToken;
 	}
 }

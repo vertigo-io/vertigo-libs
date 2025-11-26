@@ -26,45 +26,21 @@ import io.vertigo.datamodel.data.stereotype.Field;
 /**
  * @author pchretien
  */
-public final class AccountGroup implements Entity {
+public record AccountGroup(
+		@Field(type = "ID", smartType = "DoXAccountId", cardinality = Cardinality.ONE, label = "id") String id,
+		@Field(smartType = "DoXAccountName", label = "displayName") String displayName) implements Entity {
+
 	private static final long serialVersionUID = -4463291583101516140L;
 
-	@Field(type = "ID", smartType = "DoXAccountId", cardinality = Cardinality.ONE, label = "id")
-	private final String id;
-
-	@Field(smartType = "DoXAccountName", label = "displayName")
-	private final String displayName;
-
-	/**
-	 * @param id Id
-	 * @param displayName Display name
-	 */
-	public AccountGroup(final String id, final String displayName) {
+	public AccountGroup {
 		Assertion.check()
 				.isNotBlank(id)
 				.isNotBlank(displayName);
-		//-----
-		this.displayName = displayName;
-		this.id = id;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public UID<AccountGroup> getUID() {
 		return UID.of(this);
-	}
-
-	/**
-	 * @return id
-	 */
-	public String getId() {
-		return id;
-	}
-
-	/**
-	 * @return Display name
-	 */
-	public String getDisplayName() {
-		return displayName;
 	}
 }
