@@ -15,7 +15,7 @@
 </th:block>
 
 <th:block
-        th:fragment="dsfr-button-submit-confirm(label, icon, action, componentId, title, loading, titleMessage, confirmMessage, labelOk, labelCancel, modal_attrs, other_attrs)"
+        th:fragment="dsfr-button-submit-confirm(label, icon, action, componentId, title, loading, titleMessage, confirmMessage, labelOk, labelCancel, modal_attrs, otherButton_attrs)"
         th:assert="(${label} != null or (${icon} != null and ${title} != null)) and ${action} != null"
         th:with="myComponentId=${componentId?:model.util.generateComponentUID('button', action, null, null)},
                    myLabelOk=${labelOk?:'Oui'},
@@ -31,7 +31,7 @@
                      th::title="${vTitle?:''}"
                      th:@click="|(event) => {if (event.target.closest('form').reportValidity()) componentStates['${myComponentId}'].confirm = true}|"
                      type="button"
-                     th:attr="ref=${myComponentId},__${other_attrs}__">
+                     th:attr="ref=${myComponentId},__${otherButton_attrs}__">
             <span class="sr-only" th:if="${label==null && vTitle==null}" vu:text="${title?:''}"></span>
             <span class="sr-only" th:if="${label==null && vTitle!=null}" th:text="|{{ ${vTitle?:''} }}|"></span>
         </dsfr-button>
@@ -49,7 +49,8 @@
                 <dsfr-button-group align="right" inline-layout-when="large" reverse>
                     <li :key="0">
                         <vu:dsfr-button-submit label="${myLabelOk}" action="${action}"
-                                               loading="${loading}"></vu:dsfr-button-submit>
+                                               loading="${loading}">
+                        </vu:dsfr-button-submit>
                     </li>
                     <li :key="1">
                         <dsfr-button th:label="${myLabelCancel}"

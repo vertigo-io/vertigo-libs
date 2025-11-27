@@ -3,7 +3,7 @@
           th:with="myComponentId=${componentId?:model.util.generateComponentUID('button', null, null, null)}">
 
     <li th:remove="${(inActionGroup != null && inActionGroup) ? 'none' : 'tag'}">
-        <dsfr-button style="position: relative"
+        <dsfr-button class="position-relative"
                      th:icon="${icon?:''}"
                      th::icon-only="${label==null}"
                      th:label="${label?:''}"
