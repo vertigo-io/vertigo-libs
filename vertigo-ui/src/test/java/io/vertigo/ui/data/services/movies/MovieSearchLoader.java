@@ -20,7 +20,7 @@ package io.vertigo.ui.data.services.movies;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.datafactory.impl.search.loader.AbstractSqlSearchLoader;

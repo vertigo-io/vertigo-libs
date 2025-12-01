@@ -19,7 +19,7 @@ package io.vertigo.vega.plugins.webservice.webserver.javalin;
 
 import java.io.IOException;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import io.vertigo.connectors.javalin.JavalinConnector;
 import io.vertigo.core.util.InjectorUtil;

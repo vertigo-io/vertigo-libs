@@ -17,7 +17,7 @@
  */
 package io.vertigo.stella.plugins.work.rest.master;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.stella.impl.master.MasterPlugin;

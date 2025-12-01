@@ -19,7 +19,7 @@ package io.vertigo.ui.impl.springmvc.config.interceptors;
 
 import java.util.List;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.springframework.web.servlet.HandlerInterceptor;
 

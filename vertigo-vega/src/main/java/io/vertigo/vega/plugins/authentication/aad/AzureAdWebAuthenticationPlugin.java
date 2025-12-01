@@ -32,7 +32,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.function.BiFunction;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import javax.naming.ServiceUnavailableException;
 
 import com.microsoft.aad.msal4j.AuthorizationCodeParameters;

@@ -23,7 +23,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.elasticsearch.core.List;
 import org.springframework.stereotype.Controller;

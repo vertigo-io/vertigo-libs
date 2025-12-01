@@ -21,7 +21,7 @@ import java.io.Reader;
 import java.io.Writer;
 import java.lang.reflect.Type;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.springframework.http.converter.json.AbstractJsonHttpMessageConverter;
 

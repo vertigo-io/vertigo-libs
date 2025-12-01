@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import io.vertigo.core.lang.VUserException;
 import io.vertigo.core.resource.ResourceManager;

@@ -20,7 +20,7 @@ package io.vertigo.ui.data.services.movies;
 import java.util.List;
 import java.util.Optional;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import io.vertigo.commons.transaction.Transactional;
 import io.vertigo.core.node.Node;

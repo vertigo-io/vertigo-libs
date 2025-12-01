@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import io.javalin.Javalin;
 import io.vertigo.connectors.javalin.JavalinConnector;

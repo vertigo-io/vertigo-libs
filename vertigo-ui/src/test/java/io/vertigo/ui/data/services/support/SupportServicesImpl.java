@@ -17,7 +17,7 @@
  */
 package io.vertigo.ui.data.services.support;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import io.vertigo.commons.transaction.Transactional;
 import io.vertigo.datastore.filestore.FileStoreManager;

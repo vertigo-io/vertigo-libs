@@ -20,7 +20,7 @@ package io.vertigo.account.impl.authorization;
 import java.lang.reflect.Parameter;
 import java.util.Arrays;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import io.vertigo.account.authorization.AuthorizationManager;
 import io.vertigo.account.authorization.VSecurityException;

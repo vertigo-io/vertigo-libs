@@ -20,7 +20,7 @@ package io.vertigo.account.plugins.authentication.ldap;
 import java.util.List;
 import java.util.Optional;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import javax.naming.NamingException;
 import javax.naming.ldap.LdapContext;
 

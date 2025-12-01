@@ -31,7 +31,7 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import io.vertigo.account.impl.identityprovider.IdentityProviderPlugin;
 import io.vertigo.core.lang.Assertion;

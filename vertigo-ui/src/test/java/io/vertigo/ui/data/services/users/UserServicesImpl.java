@@ -17,7 +17,7 @@
  */
 package io.vertigo.ui.data.services.users;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import io.vertigo.account.security.VSecurityManager;
 import io.vertigo.commons.transaction.Transactional;

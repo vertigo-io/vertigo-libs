@@ -19,7 +19,7 @@ package io.vertigo.vega.webservice.data.ws;
 
 import java.util.List;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import io.vertigo.account.authorization.AuthorizationManager;
 import io.vertigo.account.authorization.definitions.Authorization;

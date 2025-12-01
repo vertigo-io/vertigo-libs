@@ -19,7 +19,7 @@ package io.vertigo.stella.plugins.work.rest.workers;
 
 import java.util.Set;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.core.lang.Assertion;

@@ -20,7 +20,7 @@ package io.vertigo.vega.plugins.webservice.handler;
 import java.io.Serializable;
 import java.util.Optional;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import io.vertigo.account.authorization.VSecurityException;
 import io.vertigo.core.lang.Assertion;

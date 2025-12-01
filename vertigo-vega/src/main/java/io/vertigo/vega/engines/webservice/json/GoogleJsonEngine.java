@@ -33,7 +33,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

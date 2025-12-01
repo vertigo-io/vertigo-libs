@@ -19,7 +19,7 @@ package io.vertigo.vega.plugins.webservice.handler.converter;
 
 import java.util.Arrays;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.datastore.filestore.model.VFile;

@@ -20,7 +20,7 @@ package io.vertigo.basics.task;
 import java.sql.SQLException;
 import java.util.OptionalInt;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.commons.transaction.VTransactionManager;

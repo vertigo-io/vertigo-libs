@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.OptionalInt;
 import java.util.function.Function;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.analytics.trace.Tracer;

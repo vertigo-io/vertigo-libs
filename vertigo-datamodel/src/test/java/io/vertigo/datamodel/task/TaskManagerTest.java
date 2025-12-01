@@ -24,7 +24,7 @@ import static io.vertigo.datamodel.task.TaskEngineMock2.ATTR_IN_INTEGERS;
 
 import java.util.Arrays;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;

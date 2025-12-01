@@ -17,7 +17,7 @@
  */
 package io.vertigo.datastore.filestore.mimetype;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;

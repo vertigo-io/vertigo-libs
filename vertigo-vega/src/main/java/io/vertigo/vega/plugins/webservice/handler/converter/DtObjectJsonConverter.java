@@ -20,7 +20,7 @@ package io.vertigo.vega.plugins.webservice.handler.converter;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.datamodel.data.model.DataObject;

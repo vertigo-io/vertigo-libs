@@ -24,7 +24,7 @@ import java.lang.annotation.Target;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;

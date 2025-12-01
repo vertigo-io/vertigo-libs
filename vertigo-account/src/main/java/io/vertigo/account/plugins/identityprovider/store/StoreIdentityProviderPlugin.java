@@ -20,7 +20,7 @@ package io.vertigo.account.plugins.identityprovider.store;
 import java.util.List;
 import java.util.Optional;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import io.vertigo.account.impl.identityprovider.IdentityProviderPlugin;
 import io.vertigo.core.lang.Assertion;

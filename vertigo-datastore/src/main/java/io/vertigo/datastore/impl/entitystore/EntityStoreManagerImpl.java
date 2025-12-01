@@ -20,7 +20,7 @@ package io.vertigo.datastore.impl.entitystore;
 import java.util.Comparator;
 import java.util.List;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import io.vertigo.commons.eventbus.EventBusManager;
 import io.vertigo.commons.transaction.VTransactionManager;

@@ -22,7 +22,7 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.function.Supplier;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.ehcache.Cache;
 import org.ehcache.config.CacheConfiguration;

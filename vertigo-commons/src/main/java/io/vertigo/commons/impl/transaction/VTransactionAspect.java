@@ -17,7 +17,7 @@
  */
 package io.vertigo.commons.impl.transaction;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import io.vertigo.commons.transaction.Transactional;
 import io.vertigo.commons.transaction.VTransactionManager;

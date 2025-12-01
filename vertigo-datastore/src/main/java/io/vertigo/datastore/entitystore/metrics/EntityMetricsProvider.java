@@ -19,7 +19,7 @@ package io.vertigo.datastore.entitystore.metrics;
 
 import java.util.List;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import io.vertigo.basics.task.AbstractTaskEngineSQL;
 import io.vertigo.commons.transaction.VTransactionManager;

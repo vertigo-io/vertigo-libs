@@ -24,7 +24,7 @@ import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountGroup;
