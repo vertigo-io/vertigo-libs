@@ -41,6 +41,6 @@ public record AccountGroup(
 	/** {@inheritDoc} */
 	@Override
 	public UID<AccountGroup> getUID() {
-		return UID.of(this);
+		return UID.of(AccountGroup.class, this.id());
 	}
 }

@@ -53,6 +53,6 @@ public record Account(
 	/** {@inheritDoc} */
 	@Override
 	public UID<Account> getUID() {
-		return UID.of(this);
+		return UID.of(Account.class, this.id());
 	}
 }
