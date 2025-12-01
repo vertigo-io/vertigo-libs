@@ -18,6 +18,7 @@
 package io.vertigo.datamodel.bb.redis;
 
 import io.vertigo.connectors.redis.RedisFeatures;
+import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.datamodel.DataModelFeatures;
@@ -28,10 +29,14 @@ public class RedisBBBlackBoardTest extends AbstractBBBlackBoardTest {
 	@Override
 	protected NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
+				.withBoot(BootConfig.builder()
+						.withLocales("fr_FR")
+						.build())
 				.addModule(new RedisFeatures()
 						.withJedis(
 								Param.of("host", "docker-vertigo.part.klee.lan.net"),
 								Param.of("port", 6379),
+								Param.of("ssl", "false"),
 								Param.of("database", 0))
 						.build())
 				.addModule(

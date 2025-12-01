@@ -17,6 +17,7 @@
  */
 package io.vertigo.datamodel.bb.memory;
 
+import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.datamodel.DataModelFeatures;
 import io.vertigo.datamodel.bb.AbstractBBBlackBoardTest;
@@ -26,6 +27,9 @@ public class MemoryBBBlackBoardTest extends AbstractBBBlackBoardTest {
 	@Override
 	protected NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
+				.withBoot(BootConfig.builder()
+						.withLocales("fr_FR")
+						.build())
 				.addModule(
 						new DataModelFeatures()
 								.withBlackboard()
