@@ -116,17 +116,17 @@ const L = (e, t) => {
       });
     }
   }
-}, Zt = window.Vue.renderList, en = window.Vue.Fragment, U = window.Vue.openBlock, Qe = window.Vue.createElementBlock, xe = window.Vue.resolveComponent, ge = window.Vue.createVNode, Se = window.Vue.withCtx, le = window.Vue.createBlock, we = window.Vue.createCommentVNode, tn = window.Vue.toDisplayString, oe = window.Vue.createElementVNode, Hn = window.Vue.withKeys, Gn = { class: "bot" }, Jn = { class: "q-pr-md" }, Yn = { class: "sys-chat" }, Wn = { class: "q-pb-sm" }, Xn = { class: "sys-chat non-selectable" }, Kn = { class: "text-blue-2 q-caption" }, Qn = { class: "row docs-btn" }, Zn = { class: "message-processing sys-chat non-selectable" }, eo = { class: "non-selectable" }, to = { class: "message-response row docs-btn q-pl-sm non-selectable" };
+}, Zt = window.Vue.renderList, en = window.Vue.Fragment, U = window.Vue.openBlock, Ke = window.Vue.createElementBlock, xe = window.Vue.resolveComponent, ge = window.Vue.createVNode, Se = window.Vue.withCtx, le = window.Vue.createBlock, we = window.Vue.createCommentVNode, tn = window.Vue.toDisplayString, oe = window.Vue.createElementVNode, Hn = window.Vue.withKeys, Gn = { class: "bot" }, Jn = { class: "q-pr-md" }, Yn = { class: "sys-chat" }, Wn = { class: "q-pb-sm" }, Xn = { class: "sys-chat non-selectable" }, Qn = { class: "text-blue-2 q-caption" }, Kn = { class: "row docs-btn" }, Zn = { class: "message-processing sys-chat non-selectable" }, eo = { class: "non-selectable" }, to = { class: "message-response row docs-btn q-pl-sm non-selectable" };
 function no(e, t, n, i, s, o) {
   const a = xe("q-rating"), r = xe("q-chat-message"), l = xe("q-btn"), c = xe("q-spinner-dots"), u = xe("q-scroll-area"), p = xe("q-input");
-  return U(), Qe("div", Gn, [
+  return U(), Ke("div", Gn, [
     ge(u, {
       class: "bg-grey-2 col-grow row q-pa-sm",
       ref: "scroller"
     }, {
       default: Se(() => [
         oe("div", Jn, [
-          (U(!0), Qe(en, null, Zt(e.messages, (h, m) => (U(), Qe("div", { key: m }, [
+          (U(!0), Ke(en, null, Zt(e.messages, (h, m) => (U(), Ke("div", { key: m }, [
             h.rating ? (U(), le(r, {
               class: "animate-fade",
               key: "msgRating-" + m,
@@ -187,9 +187,9 @@ function no(e, t, n, i, s, o) {
               size: "12"
             }, {
               default: Se(() => [
-                oe("div", Kn, tn(e.$q.lang.vui.suggestedAnswers), 1),
-                oe("div", Qn, [
-                  (U(!0), Qe(en, null, Zt(e.inputConfig.buttons, (h, m) => (U(), le(l, {
+                oe("div", Qn, tn(e.$q.lang.vui.suggestedAnswers), 1),
+                oe("div", Kn, [
+                  (U(!0), Ke(en, null, Zt(e.inputConfig.buttons, (h, m) => (U(), le(l, {
                     class: "full-width",
                     key: "repChatBtn-" + m,
                     onClick: (d) => o.postAnswerBtn(h),
@@ -869,7 +869,7 @@ const To = /* @__PURE__ */ L(Co, [["render", Eo]]), Oo = {
       return this.isFacetExpanded(e) ? t : t.slice(0, this.maxValues);
     }
   }
-}, Fe = window.Vue.renderList, be = window.Vue.Fragment, S = window.Vue.openBlock, z = window.Vue.createElementBlock, ce = window.Vue.resolveComponent, D = window.Vue.createVNode, x = window.Vue.withCtx, H = window.Vue.toDisplayString, Q = window.Vue.createTextVNode, cn = window.Vue.mergeProps, Z = window.Vue.createBlock, ye = window.Vue.createCommentVNode, Mo = window.Vue.normalizeClass, Lo = {
+}, Fe = window.Vue.renderList, be = window.Vue.Fragment, S = window.Vue.openBlock, z = window.Vue.createElementBlock, ce = window.Vue.resolveComponent, D = window.Vue.createVNode, x = window.Vue.withCtx, H = window.Vue.toDisplayString, K = window.Vue.createTextVNode, cn = window.Vue.mergeProps, Z = window.Vue.createBlock, ye = window.Vue.createCommentVNode, Mo = window.Vue.normalizeClass, Lo = {
   key: 1,
   class: "facets"
 }, No = {
@@ -919,7 +919,7 @@ function Ao(e, t, n, i, s, o) {
                 default: x(() => [
                   D(l, null, {
                     default: x(() => [
-                      Q(H(g.label), 1)
+                      K(H(g.label), 1)
                     ]),
                     _: 2
                   }, 1024)
@@ -963,7 +963,7 @@ function Ao(e, t, n, i, s, o) {
                 default: x(() => [
                   D(l, null, {
                     default: x(() => [
-                      Q(H(g.label), 1)
+                      K(H(g.label), 1)
                     ]),
                     _: 2
                   }, 1024)
@@ -997,7 +997,7 @@ function Ao(e, t, n, i, s, o) {
           "icon-right": "cancel"
         }, {
           default: x(() => [
-            Q(H(o.facetLabelByCode(f)) + ": " + H(o.facetValueLabelByCode(f, g)), 1)
+            K(H(o.facetLabelByCode(f)) + ": " + H(o.facetValueLabelByCode(f, g)), 1)
           ]),
           _: 2
         }, 1032, ["onClick"]))), 128))
@@ -1012,7 +1012,7 @@ function Ao(e, t, n, i, s, o) {
         d.multiple || !o.isFacetSelected(d.code) ? (S(), z(be, { key: 0 }, [
           D(l, { header: "" }, {
             default: x(() => [
-              Q(H(d.label), 1)
+              K(H(d.label), 1)
             ]),
             _: 2
           }, 1024),
@@ -1038,13 +1038,13 @@ function Ao(e, t, n, i, s, o) {
               }, 1024)) : ye("", !0),
               D(r, null, {
                 default: x(() => [
-                  Q(H(o.facetValueLabelByCode(d.code, f.code)), 1)
+                  K(H(o.facetValueLabelByCode(d.code, f.code)), 1)
                 ]),
                 _: 2
               }, 1024),
               D(r, { side: "" }, {
                 default: x(() => [
-                  Q(H(f.count), 1)
+                  K(H(f.count), 1)
                 ]),
                 _: 2
               }, 1024)
@@ -1073,13 +1073,13 @@ function Ao(e, t, n, i, s, o) {
               }, 1024)) : ye("", !0),
               D(r, null, {
                 default: x(() => [
-                  Q(H(o.facetValueLabelByCode(d.code, f.code)), 1)
+                  K(H(o.facetValueLabelByCode(d.code, f.code)), 1)
                 ]),
                 _: 2
               }, 1024),
               D(r, { side: "" }, {
                 default: x(() => [
-                  Q(H(f.count), 1)
+                  K(H(f.count), 1)
                 ]),
                 _: 2
               }, 1024)
@@ -1095,7 +1095,7 @@ function Ao(e, t, n, i, s, o) {
                 class: "q-ma-none"
               }, {
                 default: x(() => [
-                  Q(H(e.$q.lang.vui.facets.showAll), 1)
+                  K(H(e.$q.lang.vui.facets.showAll), 1)
                 ]),
                 _: 2
               }, 1032, ["onClick"])) : ye("", !0),
@@ -1106,7 +1106,7 @@ function Ao(e, t, n, i, s, o) {
                 class: "q-ma-none"
               }, {
                 default: x(() => [
-                  Q(H(e.$q.lang.vui.facets.showLess), 1)
+                  K(H(e.$q.lang.vui.facets.showLess), 1)
                 ]),
                 _: 2
               }, 1032, ["onClick"])) : ye("", !0)
@@ -1195,8 +1195,8 @@ const jo = /* @__PURE__ */ L(Bo, [["render", zo]]), Ro = {
       }).bind(this));
     }
   }
-}, ze = window.Vue.resolveComponent, it = window.Vue.createVNode, at = window.Vue.withCtx, Ho = window.Vue.renderList, Go = window.Vue.Fragment, qt = window.Vue.openBlock, pn = window.Vue.createElementBlock, Jo = window.Vue.toDisplayString, Yo = window.Vue.createTextVNode, Wo = window.Vue.resolveDirective, Xo = window.Vue.createBlock, Ko = window.Vue.withDirectives;
-function Qo(e, t, n, i, s, o) {
+}, ze = window.Vue.resolveComponent, it = window.Vue.createVNode, at = window.Vue.withCtx, Ho = window.Vue.renderList, Go = window.Vue.Fragment, qt = window.Vue.openBlock, pn = window.Vue.createElementBlock, Jo = window.Vue.toDisplayString, Yo = window.Vue.createTextVNode, Wo = window.Vue.resolveDirective, Xo = window.Vue.createBlock, Qo = window.Vue.withDirectives;
+function Ko(e, t, n, i, s, o) {
   const a = ze("q-icon"), r = ze("q-input"), l = ze("q-item-section"), c = ze("q-item"), u = ze("q-list"), p = Wo("ripple");
   return qt(), pn("div", null, [
     it(r, {
@@ -1221,7 +1221,7 @@ function Qo(e, t, n, i, s, o) {
       separator: ""
     }, {
       default: at(() => [
-        (qt(!0), pn(Go, null, Ho(e.handles, (h) => Ko((qt(), Xo(c, {
+        (qt(!0), pn(Go, null, Ho(e.handles, (h) => Qo((qt(), Xo(c, {
           clickable: "",
           onClick: (m) => e.VUi.methods.goTo(n.baseUrl + "hw/" + h.code),
           key: h.code
@@ -1243,7 +1243,7 @@ function Qo(e, t, n, i, s, o) {
     })
   ]);
 }
-const Zo = /* @__PURE__ */ L(Ro, [["render", Qo]]), ei = {
+const Zo = /* @__PURE__ */ L(Ro, [["render", Ko]]), ei = {
   props: {
     modelValue: { type: String, required: !0 },
     readonly: { type: Boolean, required: !0 },
@@ -1486,30 +1486,30 @@ function bi() {
       return se = Me = void 0, Le = q, Ce = w.apply(Ae, re), Ce;
     }
     function Un(q) {
-      return Le = q, R = setTimeout(Ke, C), Wt ? _t(q) : Ce;
+      return Le = q, R = setTimeout(Qe, C), Wt ? _t(q) : Ce;
     }
     function In(q) {
-      var re = q - me, Ae = q - Le, Qt = C - re;
-      return Ne ? d(Qt, Xe - Ae) : Qt;
+      var re = q - me, Ae = q - Le, Kt = C - re;
+      return Ne ? d(Kt, Xe - Ae) : Kt;
     }
     function Xt(q) {
       var re = q - me, Ae = q - Le;
       return me === void 0 || re >= C || re < 0 || Ne && Ae >= Xe;
     }
-    function Ke() {
+    function Qe() {
       var q = f();
       if (Xt(q))
-        return Kt(q);
-      R = setTimeout(Ke, In(q));
+        return Qt(q);
+      R = setTimeout(Qe, In(q));
     }
-    function Kt(q) {
+    function Qt(q) {
       return R = void 0, $t && se ? _t(q) : (se = Me = void 0, Ce);
     }
     function zn() {
       R !== void 0 && clearTimeout(R), Le = 0, se = me = Me = R = void 0;
     }
     function jn() {
-      return R === void 0 ? Ce : Kt(f());
+      return R === void 0 ? Ce : Qt(f());
     }
     function Ct() {
       var q = f(), re = Xt(q);
@@ -1517,9 +1517,9 @@ function bi() {
         if (R === void 0)
           return Un(me);
         if (Ne)
-          return R = setTimeout(Ke, C), _t(me);
+          return R = setTimeout(Qe, C), _t(me);
       }
-      return R === void 0 && (R = setTimeout(Ke, C)), Ce;
+      return R === void 0 && (R = setTimeout(Qe, C)), Ce;
     }
     return Ct.cancel = zn, Ct.flush = jn, Ct;
   }
@@ -2065,7 +2065,7 @@ function Xi(e, t, n, i, s, o) {
     _: 1
   }, 16);
 }
-const Ki = /* @__PURE__ */ L(zi, [["render", Xi]]), Qi = window.Vue.ref, Zi = {
+const Qi = /* @__PURE__ */ L(zi, [["render", Xi]]), Ki = window.Vue.ref, Zi = {
   props: {
     inputId: String,
     readonly: Boolean,
@@ -2121,7 +2121,7 @@ const Ki = /* @__PURE__ */ L(zi, [["render", Xi]]), Qi = window.Vue.ref, Zi = {
       this.files = this.files.filter((t) => t.status != "ERROR");
       for (let t of e)
         if (this.canAddFiles()) {
-          let n = Qi({
+          let n = Ki({
             name: t.name,
             size: t.size,
             type: t.type,
@@ -2644,7 +2644,7 @@ function On(e, t) {
 }
 function We() {
 }
-var Je = 0.7, bt = 1 / Je, Te = "\\s*([+-]?\\d+)\\s*", Ye = "\\s*([+-]?(?:\\d*\\.)?\\d+(?:[eE][+-]?\\d+)?)\\s*", ne = "\\s*([+-]?(?:\\d*\\.)?\\d+(?:[eE][+-]?\\d+)?)%\\s*", Ha = /^#([0-9a-f]{3,8})$/, Ga = new RegExp(`^rgb\\(${Te},${Te},${Te}\\)$`), Ja = new RegExp(`^rgb\\(${ne},${ne},${ne}\\)$`), Ya = new RegExp(`^rgba\\(${Te},${Te},${Te},${Ye}\\)$`), Wa = new RegExp(`^rgba\\(${ne},${ne},${ne},${Ye}\\)$`), Xa = new RegExp(`^hsl\\(${Ye},${ne},${ne}\\)$`), Ka = new RegExp(`^hsla\\(${Ye},${ne},${ne},${Ye}\\)$`), _n = {
+var Je = 0.7, bt = 1 / Je, Te = "\\s*([+-]?\\d+)\\s*", Ye = "\\s*([+-]?(?:\\d*\\.)?\\d+(?:[eE][+-]?\\d+)?)\\s*", ne = "\\s*([+-]?(?:\\d*\\.)?\\d+(?:[eE][+-]?\\d+)?)%\\s*", Ha = /^#([0-9a-f]{3,8})$/, Ga = new RegExp(`^rgb\\(${Te},${Te},${Te}\\)$`), Ja = new RegExp(`^rgb\\(${ne},${ne},${ne}\\)$`), Ya = new RegExp(`^rgba\\(${Te},${Te},${Te},${Ye}\\)$`), Wa = new RegExp(`^rgba\\(${ne},${ne},${ne},${Ye}\\)$`), Xa = new RegExp(`^hsl\\(${Ye},${ne},${ne}\\)$`), Qa = new RegExp(`^hsla\\(${Ye},${ne},${ne},${Ye}\\)$`), _n = {
   aliceblue: 15792383,
   antiquewhite: 16444375,
   aqua: 65535,
@@ -2804,7 +2804,7 @@ Rt(We, vt, {
   hex: Cn,
   // Deprecated! Use color.formatHex.
   formatHex: Cn,
-  formatHex8: Qa,
+  formatHex8: Ka,
   formatHsl: Za,
   formatRgb: xn,
   toString: xn
@@ -2812,7 +2812,7 @@ Rt(We, vt, {
 function Cn() {
   return this.rgb().formatHex();
 }
-function Qa() {
+function Ka() {
   return this.rgb().formatHex8();
 }
 function Za() {
@@ -2823,7 +2823,7 @@ function xn() {
 }
 function vt(e) {
   var t, n;
-  return e = (e + "").trim().toLowerCase(), (t = Ha.exec(e)) ? (n = t[1].length, t = parseInt(t[1], 16), n === 6 ? Sn(t) : n === 3 ? new A(t >> 8 & 15 | t >> 4 & 240, t >> 4 & 15 | t & 240, (t & 15) << 4 | t & 15, 1) : n === 8 ? mt(t >> 24 & 255, t >> 16 & 255, t >> 8 & 255, (t & 255) / 255) : n === 4 ? mt(t >> 12 & 15 | t >> 8 & 240, t >> 8 & 15 | t >> 4 & 240, t >> 4 & 15 | t & 240, ((t & 15) << 4 | t & 15) / 255) : null) : (t = Ga.exec(e)) ? new A(t[1], t[2], t[3], 1) : (t = Ja.exec(e)) ? new A(t[1] * 255 / 100, t[2] * 255 / 100, t[3] * 255 / 100, 1) : (t = Ya.exec(e)) ? mt(t[1], t[2], t[3], t[4]) : (t = Wa.exec(e)) ? mt(t[1] * 255 / 100, t[2] * 255 / 100, t[3] * 255 / 100, t[4]) : (t = Xa.exec(e)) ? Dn(t[1], t[2] / 100, t[3] / 100, 1) : (t = Ka.exec(e)) ? Dn(t[1], t[2] / 100, t[3] / 100, t[4]) : _n.hasOwnProperty(e) ? Sn(_n[e]) : e === "transparent" ? new A(NaN, NaN, NaN, 0) : null;
+  return e = (e + "").trim().toLowerCase(), (t = Ha.exec(e)) ? (n = t[1].length, t = parseInt(t[1], 16), n === 6 ? Sn(t) : n === 3 ? new A(t >> 8 & 15 | t >> 4 & 240, t >> 4 & 15 | t & 240, (t & 15) << 4 | t & 15, 1) : n === 8 ? mt(t >> 24 & 255, t >> 16 & 255, t >> 8 & 255, (t & 255) / 255) : n === 4 ? mt(t >> 12 & 15 | t >> 8 & 240, t >> 8 & 15 | t >> 4 & 240, t >> 4 & 15 | t & 240, ((t & 15) << 4 | t & 15) / 255) : null) : (t = Ga.exec(e)) ? new A(t[1], t[2], t[3], 1) : (t = Ja.exec(e)) ? new A(t[1] * 255 / 100, t[2] * 255 / 100, t[3] * 255 / 100, 1) : (t = Ya.exec(e)) ? mt(t[1], t[2], t[3], t[4]) : (t = Wa.exec(e)) ? mt(t[1] * 255 / 100, t[2] * 255 / 100, t[3] * 255 / 100, t[4]) : (t = Xa.exec(e)) ? Dn(t[1], t[2] / 100, t[3] / 100, 1) : (t = Qa.exec(e)) ? Dn(t[1], t[2] / 100, t[3] / 100, t[4]) : _n.hasOwnProperty(e) ? Sn(_n[e]) : e === "transparent" ? new A(NaN, NaN, NaN, 0) : null;
 }
 function Sn(e) {
   return new A(e >> 16 & 255, e >> 8 & 255, e & 255, 1);
@@ -2883,28 +2883,28 @@ function $e(e) {
   return e = _e(e), (e < 16 ? "0" : "") + e.toString(16);
 }
 function Dn(e, t, n, i) {
-  return i <= 0 ? e = t = n = NaN : n <= 0 || n >= 1 ? e = t = NaN : t <= 0 && (e = NaN), new K(e, t, n, i);
+  return i <= 0 ? e = t = n = NaN : n <= 0 || n >= 1 ? e = t = NaN : t <= 0 && (e = NaN), new Q(e, t, n, i);
 }
 function Mn(e) {
-  if (e instanceof K) return new K(e.h, e.s, e.l, e.opacity);
-  if (e instanceof We || (e = vt(e)), !e) return new K();
-  if (e instanceof K) return e;
+  if (e instanceof Q) return new Q(e.h, e.s, e.l, e.opacity);
+  if (e instanceof We || (e = vt(e)), !e) return new Q();
+  if (e instanceof Q) return e;
   e = e.rgb();
   var t = e.r / 255, n = e.g / 255, i = e.b / 255, s = Math.min(t, n, i), o = Math.max(t, n, i), a = NaN, r = o - s, l = (o + s) / 2;
-  return r ? (t === o ? a = (n - i) / r + (n < i) * 6 : n === o ? a = (i - t) / r + 2 : a = (t - n) / r + 4, r /= l < 0.5 ? o + s : 2 - o - s, a *= 60) : r = l > 0 && l < 1 ? 0 : a, new K(a, r, l, e.opacity);
+  return r ? (t === o ? a = (n - i) / r + (n < i) * 6 : n === o ? a = (i - t) / r + 2 : a = (t - n) / r + 4, r /= l < 0.5 ? o + s : 2 - o - s, a *= 60) : r = l > 0 && l < 1 ? 0 : a, new Q(a, r, l, e.opacity);
 }
 function It(e, t, n, i) {
-  return arguments.length === 1 ? Mn(e) : new K(e, t, n, i ?? 1);
+  return arguments.length === 1 ? Mn(e) : new Q(e, t, n, i ?? 1);
 }
-function K(e, t, n, i) {
+function Q(e, t, n, i) {
   this.h = +e, this.s = +t, this.l = +n, this.opacity = +i;
 }
-Rt(K, It, On(We, {
+Rt(Q, It, On(We, {
   brighter(e) {
-    return e = e == null ? bt : Math.pow(bt, e), new K(this.h, this.s, this.l * e, this.opacity);
+    return e = e == null ? bt : Math.pow(bt, e), new Q(this.h, this.s, this.l * e, this.opacity);
   },
   darker(e) {
-    return e = e == null ? Je : Math.pow(Je, e), new K(this.h, this.s, this.l * e, this.opacity);
+    return e = e == null ? Je : Math.pow(Je, e), new Q(this.h, this.s, this.l * e, this.opacity);
   },
   rgb() {
     var e = this.h % 360 + (this.h < 0) * 360, t = isNaN(e) || isNaN(this.s) ? 0 : this.s, n = this.l, i = n + (n < 0.5 ? n : 1 - n) * t, s = 2 * n - i;
@@ -2916,7 +2916,7 @@ Rt(K, It, On(We, {
     );
   },
   clamp() {
-    return new K(Fn(this.h), gt(this.s), gt(this.l), yt(this.opacity));
+    return new Q(Fn(this.h), gt(this.s), gt(this.l), yt(this.opacity));
   },
   displayable() {
     return (0 <= this.s && this.s <= 1 || isNaN(this.s)) && 0 <= this.l && this.l <= 1 && 0 <= this.opacity && this.opacity <= 1;
@@ -4092,9 +4092,9 @@ const F = window.Quasar, Bt = {
       a && typeof a == "object" && Array.isArray(a) === !1 ? o ? this._vueDataParamsKey(t, s, o, a) : Object.keys(a).forEach((function(r) {
         r.includes("_") || this._vueDataParamsKey(t, s, r, a);
       }).bind(this)) : a && Array.isArray(a) === !0 ? a.forEach((function(r, l) {
-        o ? this._vueDataParamsKey(t, s + "][" + l, o, r) : Object.keys(r).forEach((function(c) {
+        typeof r == "object" ? o ? this._vueDataParamsKey(t, s + "][" + l, o, r) : Object.keys(r).forEach((function(c) {
           c.includes("_") || this._vueDataParamsKey(t, s + "][" + l, c, r);
-        }).bind(this));
+        }).bind(this)) : this.appendToFormData(t, "vContext[" + s + "]", r);
       }).bind(this)) : this.appendToFormData(t, "vContext[" + s + "]", a);
     }
     return t;
@@ -4280,7 +4280,7 @@ var Bn = {
     return Object.keys(t).forEach((i) => n[i] = t[i].bind(e)), n;
   },
   install: function(e, t) {
-    if (e.component("v-chatbot", oo), e.component("v-commands", mo), e.component("v-comments", _o), e.component("v-extensions-store", To), e.component("v-facets", Po), e.component("v-geopoint-input", jo), e.component("v-handles", Zo), e.component("v-json-editor", di), e.component("v-notifications", gi), e.component("v-map", Fi), e.component("v-map-layer", Ui), e.component("v-tree", Ki), e.component("v-file-upload", _a), e.component("v-file-upload-quasar", Ra), e.component("v-dashboard-chart", bs), e.directive("alert-unsaved-updates", ys), e.directive("autofocus", vs), e.directive("if-unsaved-updates", _s), e.directive("minify", Cs), e.directive("scroll-spy", Os), !t.axios) {
+    if (e.component("v-chatbot", oo), e.component("v-commands", mo), e.component("v-comments", _o), e.component("v-extensions-store", To), e.component("v-facets", Po), e.component("v-geopoint-input", jo), e.component("v-handles", Zo), e.component("v-json-editor", di), e.component("v-notifications", gi), e.component("v-map", Fi), e.component("v-map-layer", Ui), e.component("v-tree", Qi), e.component("v-file-upload", _a), e.component("v-file-upload-quasar", Ra), e.component("v-dashboard-chart", bs), e.directive("alert-unsaved-updates", ys), e.directive("autofocus", vs), e.directive("if-unsaved-updates", _s), e.directive("minify", Cs), e.directive("scroll-spy", Os), !t.axios) {
       console.error("You have to install axios");
       return;
     }
