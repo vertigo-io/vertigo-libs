@@ -22,10 +22,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 
-import org.eclipse.jetty.annotations.ServletContainerInitializersStarter;
+import org.eclipse.jetty.ee10.webapp.WebAppContext;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.webapp.WebAppClassLoader;
-import org.eclipse.jetty.webapp.WebAppContext;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.vega.webservice.data.MyNodeConfig;
@@ -50,21 +48,17 @@ public final class ConfigYamlManagerServletTest {
 
 	private static void startServer() throws IOException, Exception {
 		server = new Server(MyNodeConfig.WS_PORT);
-		final WebAppContext context = new WebAppContext(ConfigYamlManagerServletTest.class.getClassLoader().getResource("io/vertigo/vega/webAppYaml/").getFile(), "/");
-		System.setProperty("org.apache.jasper.compiler.disablejsr199", "false");
-		context.setAttribute("jacoco.exclClassLoaders", "*");
-		context.setAttribute("javax.servlet.context.tempdir", getScratchDir());
-		context.addBean(new ServletContainerInitializersStarter(context), true);
-		context.setClassLoader(getUrlClassLoader());
-		context.setClassLoader(new WebAppClassLoader(ConfigYamlManagerServletTest.class.getClassLoader(), context));
-
-		server.setHandler(context);
+		final var webapp = new WebAppContext();
+		webapp.setContextPath("/");
+		webapp.setWar(WebServiceManagerServletTest.class.getClassLoader().getResource("io/vertigo/vega/testWebApp/").toURI().toASCIIString());
+		webapp.setParentLoaderPriority(true);
+		server.setHandler(webapp);
 		server.start();
 	}
 
 	private static File getScratchDir() throws IOException {
-		final File tempDir = new File(System.getProperty("java.io.tmpdir"));
-		final File scratchDir = new File(tempDir.toString(), "embedded-jetty-jsp");
+		final var tempDir = new File(System.getProperty("java.io.tmpdir"));
+		final var scratchDir = new File(tempDir.toString(), "embedded-jetty-jsp");
 
 		if (!scratchDir.exists()) {
 			if (!scratchDir.mkdirs()) {

@@ -17,13 +17,15 @@
  */
 package io.vertigo.vega.webservice.boot;
 
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.eclipse.jetty.ee10.servlet.ServletContextRequest;
 
+import io.javalin.config.MultipartConfig;
+import io.javalin.config.SizeUnit;
 import io.vertigo.connectors.javalin.JavalinConnector;
 import io.vertigo.connectors.javalin.JettyMultipartCleaner;
 import io.vertigo.connectors.javalin.JettyMultipartConfig;
@@ -53,22 +55,29 @@ public final class TestAppServletContextListener implements ServletContextListen
 	 */
 	@Override
 	public void contextInitialized(final ServletContextEvent sce) {
-		final long start = System.currentTimeMillis();
+		final var start = System.currentTimeMillis();
 		try {
 			// Initialisation du web context de l'application (porteur des singletons applicatifs)
 			ServletResourceResolverPlugin.setServletContext(sce.getServletContext());
 			// Création de l'état de l'application
 			// Lecture des paramètres de configuration
-			final Map<String, Param> webAppConf = createWebParams(sce.getServletContext());
+			final var webAppConf = createWebParams(sce.getServletContext());
 			WebAppContextParamPlugin.setParams(webAppConf);
 
 			// Initialisation de l'état de l'application
 			node = new AutoCloseableNode(MyNodeConfig.config(false));
 
-			final JavalinConnector javalinConnector = node.getComponentSpace().resolve(JavalinConnector.class);
-			final String tempDir = System.getProperty("java.io.tmpdir");
-			javalinConnector.getClient().before(new JettyMultipartConfig(tempDir));
-			javalinConnector.getClient().after(new JettyMultipartCleaner());
+			final var javalinConnector = node.getComponentSpace().resolve(JavalinConnector.class);
+			final var tempDir = System.getProperty("java.io.tmpdir");
+
+			final var jettyMultipart = new JettyMultipartConfig(tempDir);
+			final var multipartConfig = new MultipartConfig();
+			multipartConfig.cacheDirectory(tempDir);
+			multipartConfig.maxFileSize(30, SizeUnit.MB);
+			multipartConfig.maxInMemoryFileSize(50, SizeUnit.MB);
+			javalinConnector.getClient().jettyServer().server().setAttribute(ServletContextRequest.MULTIPART_CONFIG_ELEMENT, jettyMultipart.getMultipartConfigElement());
+			//javalinConnector.getClient().unsafe.routes.before(new JettyMultipartConfig(tempDir));
+			javalinConnector.getClient().unsafe.routes.after(new JettyMultipartCleaner());
 
 		} catch (final Exception e) {
 			LOG.error(e.getMessage(), e);
@@ -94,7 +103,7 @@ public final class TestAppServletContextListener implements ServletContextListen
 		 * On récupère les paramètres du context (web.xml ou fichier tomcat par exemple) Ces paramètres peuvent
 		 * surcharger les paramètres de la servlet de façon à créer un paramétrage adhoc de développement par exemple.
 		 */
-		for (final Enumeration<String> enumeration = servletContext.getInitParameterNames(); enumeration.hasMoreElements();) {
+		for (final var enumeration = servletContext.getInitParameterNames(); enumeration.hasMoreElements();) {
 			name = enumeration.nextElement();
 			webParams.put(name, Param.of(name, servletContext.getInitParameter(name)));
 		}

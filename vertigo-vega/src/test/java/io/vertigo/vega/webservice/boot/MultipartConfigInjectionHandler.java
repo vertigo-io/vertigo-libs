@@ -15,23 +15,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.ui;
+package io.vertigo.vega.webservice.boot;
 
 import java.io.IOException;
-import java.util.Collection;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.eclipse.jetty.http.HttpHeader;
 import org.eclipse.jetty.http.HttpMethod;
+import org.eclipse.jetty.http.MultiPartFormData;
+import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Request;
-import org.eclipse.jetty.server.handler.HandlerWrapper;
+import org.eclipse.jetty.server.Response;
+import org.eclipse.jetty.util.Callback;
 
 import jakarta.servlet.MultipartConfigElement;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.Part;
 
 /**
  * Handler that adds the multipart config to the request that passes through if
@@ -53,15 +53,15 @@ import jakarta.servlet.http.Part;
  * from
  * {@link #handle(String, Request, HttpServletRequest, HttpServletResponse)}.
  */
-public class MultipartConfigInjectionHandler extends HandlerWrapper {
+public class MultipartConfigInjectionHandler extends Handler.Wrapper {
 	private static final Logger LOG = LogManager.getLogger(MultipartConfigInjectionHandler.class);
 	private static final String MULTIPART_FORMDATA_TYPE = "multipart/form-data";
 	private static final MultipartConfigElement MULTI_PART_CONFIG = new MultipartConfigElement(
 			System.getProperty("java.io.tmpdir"));
 
-	public static boolean isMultipartRequest(final ServletRequest request) {
-		return request.getContentType() != null
-				&& request.getContentType().startsWith(MULTIPART_FORMDATA_TYPE);
+	public static boolean isMultipartRequest(final Request request) {
+		return request.getHeaders().get(HttpHeader.CONTENT_TYPE) != null
+				&& request.getHeaders().get(HttpHeader.CONTENT_TYPE).startsWith(MULTIPART_FORMDATA_TYPE);
 	}
 
 	/**
@@ -88,41 +88,37 @@ public class MultipartConfigInjectionHandler extends HandlerWrapper {
 	 * @see <a href="http://dev.eclipse.org/mhonarc/lists/jetty-users/msg03294.html">Jetty
 	 *      users mailing list post.</a>
 	 */
-	public static void enableMultipartSupport(final HttpServletRequest request) {
-		request.setAttribute(Request.__MULTIPART_CONFIG_ELEMENT, MULTI_PART_CONFIG);
+	public static void enableMultipartSupport(final Request request) {
+		request.setAttribute(org.eclipse.jetty.ee10.servlet.ServletContextRequest.MULTIPART_CONFIG_ELEMENT, MULTI_PART_CONFIG);
 	}
 
 	@Override
-	public void handle(final String target, final Request baseRequest, final HttpServletRequest request,
-			final HttpServletResponse response) throws IOException, ServletException {
-		final boolean multipartRequest = HttpMethod.POST.is(request.getMethod())
+	public boolean handle(final Request request, final Response response, final Callback callback) throws Exception {
+		final var multipartRequest = HttpMethod.POST.is(request.getMethod())
 				&& isMultipartRequest(request);
 		if (multipartRequest) {
 			enableMultipartSupport(request);
 		}
 
 		try {
-			super.handle(target, baseRequest, request, response);
+			return super.handle(request, response, callback);
 		} finally {
 			if (multipartRequest) {
-				Collection<Part> multiParts;
-				try {
-					multiParts = request.getParts();
-					if (multiParts != null && !multiParts.isEmpty()) {
-						for (final Part part : multiParts) {
-							try {
-								// a multipart request to a servlet will have the parts cleaned up correctly, but
-								// the repeated call to deleteParts() here will safely do nothing.
-								part.delete();
-							} catch (final IOException e) {
-								LOG.warn("Error while deleting multipart request parts", e);
-							}
+				MultiPartFormData.Parts multiParts;
+				multiParts = MultiPartFormData.getParts(request);
+				if (multiParts != null && multiParts.size() > 0) {
+					multiParts.forEach(part -> {
+						try {
+							// a multipart request to a servlet will have the parts cleaned up correctly, but
+							// the repeated call to deleteParts() here will safely do nothing.
+							part.delete();
+						} catch (final IOException e) {
+							LOG.warn("Error while deleting multipart request parts", e);
 						}
-					}
-				} catch (IOException | ServletException errorParts) {
-					LOG.warn("Error while deleting multipart request parts", errorParts);
+					});
 				}
 			}
+			callback.succeeded();
 		}
 	}
 }

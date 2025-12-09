@@ -21,15 +21,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import jakarta.inject.Inject;
-
-import io.javalin.Javalin;
 import io.vertigo.connectors.javalin.JavalinConnector;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.vega.impl.webservice.WebServerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.HandlerChain;
 import io.vertigo.vega.webservice.definitions.WebServiceDefinition;
+import jakarta.inject.Inject;
 
 /**
  * RoutesRegisterPlugin use to register Javalin route.
@@ -53,7 +51,7 @@ public final class JavalinWebServerPlugin implements WebServerPlugin {
 		//-----
 		this.apiPrefix = apiPrefix;
 
-		final String connectorName = connectorNameOpt.orElse("main");
+		final var connectorName = connectorNameOpt.orElse("main");
 		javalinConnector = javalinConnectors.stream()
 				.filter(connector -> connectorName.equals(connector.getName()))
 				.findFirst().get();
@@ -66,24 +64,24 @@ public final class JavalinWebServerPlugin implements WebServerPlugin {
 				.isNotNull(handlerChain)
 				.isNotNull(webServiceDefinitions);
 		//-----
-		boolean corsProtected = false;
-		final Javalin javalinApp = javalinConnector.getClient();
+		var corsProtected = false;
+		final var javalinApp = javalinConnector.getClient();
 		for (final WebServiceDefinition webServiceDefinition : webServiceDefinitions) {
-			final String routePath = convertJaxRsPathToJavalin(apiPrefix.orElse("") + webServiceDefinition.getPath());
-			final JavalinRouteHandler javalinRouteHandler = new JavalinRouteHandler(webServiceDefinition, handlerChain);
+			final var routePath = convertJaxRsPathToJavalin(apiPrefix.orElse("") + webServiceDefinition.getPath());
+			final var javalinRouteHandler = new JavalinRouteHandler(webServiceDefinition, handlerChain);
 			switch (webServiceDefinition.getVerb()) {
-				case Get -> javalinApp.get(routePath, javalinRouteHandler);
-				case Post -> javalinApp.post(routePath, javalinRouteHandler);
-				case Put -> javalinApp.put(routePath, javalinRouteHandler);
-				case Patch -> javalinApp.patch(routePath, javalinRouteHandler);
-				case Delete -> javalinApp.delete(routePath, javalinRouteHandler);
+				case Get -> javalinApp.unsafe.routes.get(routePath, javalinRouteHandler);
+				case Post -> javalinApp.unsafe.routes.post(routePath, javalinRouteHandler);
+				case Put -> javalinApp.unsafe.routes.put(routePath, javalinRouteHandler);
+				case Patch -> javalinApp.unsafe.routes.patch(routePath, javalinRouteHandler);
+				case Delete -> javalinApp.unsafe.routes.delete(routePath, javalinRouteHandler);
 				default -> throw new UnsupportedOperationException();
 			}
 			corsProtected = corsProtected || webServiceDefinition.isCorsProtected();
 		}
 		if (corsProtected) {
-			final JavalinOptionsRouteHandler javalinOptionsRouteHandler = new JavalinOptionsRouteHandler(handlerChain);
-			javalinApp.options("*", javalinOptionsRouteHandler);
+			final var javalinOptionsRouteHandler = new JavalinOptionsRouteHandler(handlerChain);
+			javalinApp.unsafe.routes.options("*", javalinOptionsRouteHandler);
 		}
 	}
 

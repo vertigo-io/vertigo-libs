@@ -25,6 +25,9 @@ import org.springframework.web.WebApplicationInitializer;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
 
+/**
+ *
+ */
 public class JettyBootParamsBuilder implements Builder<JettyBootParams> {
 
 	private static final int portHttps = 8443;
@@ -44,6 +47,10 @@ public class JettyBootParamsBuilder implements Builder<JettyBootParams> {
 	private boolean myNoJettySessionCache;
 	//TODO parameter si cache null ou default (si on croit dans l'affinité de session ou non)
 	private boolean myJoin = true;// true by default
+	private String myMultiPartTempPath = System.getProperty("java.io.tmpdir");// temp dir by default
+	private int myMaxPartSizeMb = 30;
+	private int myMaxRequestSize = 5;
+	private int myMaxPartSizeInMemoryKb = 50;
 	private List<String> myAddonPaths = List.of();
 
 	public JettyBootParamsBuilder(final String contextRoot, final Class<? extends WebApplicationInitializer> webApplicationInitializerClass) {
@@ -106,6 +113,46 @@ public class JettyBootParamsBuilder implements Builder<JettyBootParams> {
 		return this;
 	}
 
+	/**
+	 * Configure the path to store parts
+	 * @param multiPartTempPath
+	 * @return this builder
+	 */
+	public JettyBootParamsBuilder withMultiPartTempPath(final String multiPartTempPath) {
+		myMultiPartTempPath = multiPartTempPath;
+		return this;
+	}
+
+	/**
+	 * Configure the maxPartSize in a multipart request
+	 * @param maxPartSize (in MB)
+	 * @return this builder
+	 */
+	public JettyBootParamsBuilder withMaxPartSize(final int maxPartSize) {
+		myMaxPartSizeMb = maxPartSize;
+		return this;
+	}
+
+	/**
+	 * Configure the maxixum size of a multipart request
+	 * @param maxRequestSize (in MB)
+	 * @return this builder
+	 */
+	public JettyBootParamsBuilder withMaxRequestSize(final int maxRequestSize) {
+		myMaxRequestSize = maxRequestSize;
+		return this;
+	}
+
+	/**
+	 * Configure the size threshold above which the part is written to disk and not kept in memory in a multipart request
+	 * @param maxPartSizeInMemory (in KB)
+	 * @return this builder
+	 */
+	public JettyBootParamsBuilder withMaxPartSizeInMemory(final int maxPartSizeInMemory) {
+		myMaxPartSizeInMemoryKb = maxPartSizeInMemory;
+		return this;
+	}
+
 	@Override
 	public JettyBootParams build() {
 		return new JettyBootParams(
@@ -122,6 +169,10 @@ public class JettyBootParamsBuilder implements Builder<JettyBootParams> {
 				Optional.ofNullable(myJettySessionStoreCollectionName),
 				myNoJettySessionCache,
 				myJoin,
+				myMultiPartTempPath,
+				myMaxPartSizeMb,
+				myMaxRequestSize,
+				myMaxPartSizeInMemoryKb,
 				myAddonPaths);
 	}
 

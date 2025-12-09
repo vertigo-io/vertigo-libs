@@ -17,39 +17,39 @@
  */
 package io.vertigo.ui.boot;
 
-import java.io.IOException;
 import java.net.URL;
 import java.security.KeyStore;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.eclipse.jetty.annotations.AnnotationConfiguration;
-import org.eclipse.jetty.annotations.AnnotationConfiguration.ClassInheritanceMap;
+import org.eclipse.jetty.ee.webapp.WebAppClassLoader;
+import org.eclipse.jetty.ee10.annotations.AnnotationConfiguration;
+import org.eclipse.jetty.ee10.annotations.AnnotationConfiguration.ClassInheritanceMap;
+import org.eclipse.jetty.ee10.servlet.DefaultServlet;
+import org.eclipse.jetty.ee10.servlet.ServletHolder;
+import org.eclipse.jetty.ee10.webapp.WebAppContext;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.Response;
 import org.eclipse.jetty.server.SecureRequestCustomizer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.SslConnectionFactory;
-import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.eclipse.jetty.server.handler.ErrorHandler;
-import org.eclipse.jetty.server.handler.HandlerList;
-import org.eclipse.jetty.server.session.DefaultSessionIdManager;
-import org.eclipse.jetty.server.session.NullSessionCacheFactory;
+import org.eclipse.jetty.session.DefaultSessionIdManager;
+import org.eclipse.jetty.session.NullSessionCacheFactory;
+import org.eclipse.jetty.util.Callback;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
-import org.eclipse.jetty.webapp.WebAppClassLoader;
-import org.eclipse.jetty.webapp.WebAppContext;
 import org.springframework.web.WebApplicationInitializer;
 
+import io.vertigo.ui.impl.jetty.multipart.JettyMultipartHandlerWrapper;
 import io.vertigo.ui.impl.jetty.session.KVSessionDataStoreFactory;
-import jakarta.servlet.DispatcherType;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 public class JettyBoot {
@@ -74,7 +74,7 @@ public class JettyBoot {
 		if (jettyNodeNameOpt.isPresent()) {
 			final var sessionIdManager = new DefaultSessionIdManager(server);
 			sessionIdManager.setWorkerName(jettyNodeNameOpt.get());
-			server.setSessionIdManager(sessionIdManager);
+			server.addBean(sessionIdManager, true);
 		}
 
 		final var jettySessionStoreCollectionNameOpt = jettyBootParams.getJettySessionStoreCollectionName();
@@ -109,7 +109,7 @@ public class JettyBoot {
 			final var keyStorePassword = jettyBootParams.getKeystorePassword();
 			final var jks = KeyStore.getInstance("PKCS12");
 			jks.load(new URL(jettyBootParams.getKeystoreUrl()).openStream(), keyStorePassword.toCharArray());
-			final SslContextFactory.Server sslContextFactory = new SslContextFactory.Server();
+			final var sslContextFactory = new SslContextFactory.Server();
 			sslContextFactory.setKeyStore(jks);
 			sslContextFactory.setKeyStoreType("PKCS12");
 			sslContextFactory.setCertAlias(jettyBootParams.getSslKeystoreAlias()); //Should manage if multiple alias are present ?
@@ -120,7 +120,7 @@ public class JettyBoot {
 
 			// SSL HTTP Configuration
 			final var httpsConfig = new HttpConfiguration(httpConfig);
-			final SecureRequestCustomizer secureRequestCustomizer = new SecureRequestCustomizer();
+			final var secureRequestCustomizer = new SecureRequestCustomizer();
 			secureRequestCustomizer.setSniHostCheck(!jettyBootParams.isSniHostCheckDisabled());
 			httpsConfig.addCustomizer(secureRequestCustomizer);
 
@@ -148,7 +148,7 @@ public class JettyBoot {
 		if (!jettyBootParams.getAddonPaths().isEmpty()) {
 			// Load addon paths dynamically
 			// Must be done before setting the classloader
-			final String addonPaths = String.join(";", jettyBootParams.getAddonPaths());
+			final var addonPaths = String.join(";", jettyBootParams.getAddonPaths());
 			context.setExtraClasspath(addonPaths);
 			context.setInitParameter("boot.addonPaths", addonPaths);
 		}
@@ -156,14 +156,32 @@ public class JettyBoot {
 
 		context.setThrowUnavailableOnStartupException(true);
 
+		// déclaration de la DefaultServlet pour servir les fichiers static
+		final var defaultHolder = new ServletHolder("default", DefaultServlet.class);
+		defaultHolder.setInitParameter("dirAllowed", "false");
+		defaultHolder.setInitParameter("resourceBase", "static");
+		// prevent Locking of static files on windows
+		defaultHolder.setInitParameter("useFileMappedBuffer", "false");
+		context.addServlet(defaultHolder, "/static/*");
+
+		final var multiPartHandlerWrapper = new JettyMultipartHandlerWrapper(
+				jettyBootParams.getMultiPartTempPath(),
+				jettyBootParams.getMaxPartSizeMb(),
+				jettyBootParams.getMaxRequestSize(),
+				jettyBootParams.getMaxPartSizeInMemoryKb());
+		multiPartHandlerWrapper.setHandler(context);
+
 		// Create a HandlerList.
-		final HandlerList handlerList = new HandlerList();
-		additionalHandlersProvider.apply(context)
-				.forEach(handlerList::addHandler);
-		// Add as last a NotFoundAllHandler.
-		handlerList.addHandler(new NotFoundAllHandler());
-		// Link the HandlerList to the Server.
-		server.setHandler(handlerList);
+		final Handler handlerSeq = new Handler.Sequence(
+				Stream.of(
+						additionalHandlersProvider.apply(context).stream(),
+						Stream.of(multiPartHandlerWrapper),
+						// Add as last a NotFoundAllHandler.
+						Stream.of(new NotFoundAllHandler()))
+						.flatMap(Function.identity())
+						.toList());
+		// Link the HandlerSequence to the Server.
+		server.setHandler(handlerSeq);
 
 		// Add errorHandler as NotFoundErrorHandler.
 		server.setErrorHandler(new NotFoundErrorHandler());
@@ -203,33 +221,36 @@ public class JettyBoot {
 		return map;
 	}
 
-	private static class NotFoundAllHandler extends AbstractHandler {
+	private static class NotFoundAllHandler extends Handler.Abstract {
 
 		@Override
-		public void handle(final String target, final Request baseRequest, final HttpServletRequest request, final HttpServletResponse response) throws IOException, ServletException {
-			if (response.isCommitted() || baseRequest.isHandled()) {
-				return;
+		public boolean handle(final Request request, final Response response, final Callback callback) throws Exception {
+
+			if (response.isCommitted()) {
+				callback.succeeded();
+				return false;
 			}
 
-			baseRequest.setHandled(true);
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+
+			callback.succeeded(); // signale que le handler a terminé
+			return true;
 		}
 	}
 
 	private static class NotFoundErrorHandler extends ErrorHandler {
 
 		@Override
-		public void handle(final String target, final Request baseRequest, final HttpServletRequest request,
-				final HttpServletResponse response) throws IOException, ServletException {
-			if (response.isCommitted() || baseRequest.isHandled()
-			//Check if we are in an error dispatch : Jetty HttpChannel.dispatch reopen the request and remove the isHandled flag
-					|| DispatcherType.ERROR.equals(baseRequest.getDispatcherType())) {
+		public boolean handle(final Request request, final Response response, final Callback callback) throws Exception {
 
-				return;
+			if (response.isCommitted()) {
+				callback.succeeded();
+				return false;
 			}
 
-			baseRequest.setHandled(true);
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+			callback.succeeded(); // signale que le handler a terminé
+			return true;
 		}
 	}
 

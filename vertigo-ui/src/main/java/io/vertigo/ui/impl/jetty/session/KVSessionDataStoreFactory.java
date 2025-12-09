@@ -17,9 +17,9 @@
  */
 package io.vertigo.ui.impl.jetty.session;
 
-import org.eclipse.jetty.server.session.AbstractSessionDataStoreFactory;
-import org.eclipse.jetty.server.session.SessionDataStore;
-import org.eclipse.jetty.server.session.SessionHandler;
+import org.eclipse.jetty.session.AbstractSessionDataStoreFactory;
+import org.eclipse.jetty.session.SessionDataStore;
+import org.eclipse.jetty.session.SessionManager;
 
 public class KVSessionDataStoreFactory extends AbstractSessionDataStoreFactory {
 
@@ -31,8 +31,8 @@ public class KVSessionDataStoreFactory extends AbstractSessionDataStoreFactory {
 	}
 
 	@Override
-	public SessionDataStore getSessionDataStore(final SessionHandler handler) throws Exception {
-		final KVSessionDataStore ds = new KVSessionDataStore(sessionCollectionName);
+	public SessionDataStore getSessionDataStore(final SessionManager manager) throws Exception {
+		final var ds = new KVSessionDataStore(sessionCollectionName);
 		ds.setGracePeriodSec(getGracePeriodSec());
 		ds.setSavePeriodSec(getSavePeriodSec());
 		return ds;

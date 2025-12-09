@@ -56,7 +56,7 @@ public class TestUi {
 				.timezone(Timezone.EUROPE_PARIS)
 				.headless(true) //use false for debug purpose
 				.build());*/
-		final FirefoxOptions options = new FirefoxOptions();
+		final var options = new FirefoxOptions();
 		options.addArguments("-headless");
 		driver = new FirefoxDriver(options);
 		//driver = new HtmlUnitDriver(BrowserVersion.FIREFOX, true);
@@ -77,11 +77,7 @@ public class TestUi {
 		}
 		final var jettyBootParams = jettyBootParamsBuilder.build();
 
-		JettyBoot.startServer(jettyBootParams, (context) -> {
-			final var multipartConfigInjectionHandler = new MultipartConfigInjectionHandler();
-			multipartConfigInjectionHandler.setHandler(context);
-			return List.of(multipartConfigInjectionHandler);
-		});
+		JettyBoot.startServer(jettyBootParams, context -> List.of());
 	}
 
 	@AfterAll
@@ -247,9 +243,9 @@ public class TestUi {
 	public void testDownload() throws Exception {
 		driver.get(baseUrl + "/test/componentsDemo/");
 
-		final FileDownloader4Tests fileDownloader4Tests = new FileDownloader4Tests(driver);
-		final WebElement downloadLink = findElement(By.linkText("insee.csv"));
-		final String downloadedFileAbsoluteLocation = fileDownloader4Tests.downloadFile(downloadLink);
+		final var fileDownloader4Tests = new FileDownloader4Tests(driver);
+		final var downloadLink = findElement(By.linkText("insee.csv"));
+		final var downloadedFileAbsoluteLocation = fileDownloader4Tests.downloadFile(downloadLink);
 
 		assertTrue(new File(downloadedFileAbsoluteLocation).exists());
 		assertEquals(fileDownloader4Tests.getHTTPStatusOfLastDownloadAttempt(), 200);
@@ -260,7 +256,7 @@ public class TestUi {
 	public void testUpload() {
 		driver.get(baseUrl + "/test/componentsDemo/");
 
-		final File file = new File(getClass().getResource("/data/insee.csv").getFile());
+		final var file = new File(getClass().getResource("/data/insee.csv").getFile());
 		dropFile("uploadermyFilesUris", file);
 
 		assertEquals("Fichier recu : insee.csv (application/octet-stream)", findElement(By.cssSelector("span")).getText());
@@ -301,13 +297,13 @@ public class TestUi {
 			"return input;";
 
 	static void dropFile(final String targetName, final File file) {
-		final WebElement createdInput = (WebElement) ((JavascriptExecutor) driver).executeScript(JS_CREATE_FILE);
+		final var createdInput = (WebElement) ((JavascriptExecutor) driver).executeScript(JS_CREATE_FILE);
 		createdInput.sendKeys(file.getAbsolutePath());
 		((JavascriptExecutor) driver).executeScript(JS_SEND_FILE, targetName, createdInput);
 	}
 
 	private void sendKeysJs(final By elementBy, final String keysToSend) {
-		final WebElement element = findElement(elementBy);
+		final var element = findElement(elementBy);
 		((JavascriptExecutor) driver).executeScript("document.getElementById(\"" + element.getAttribute("id") + "\").value = \"" + keysToSend + "\";\n");
 	}
 
@@ -316,7 +312,7 @@ public class TestUi {
 	}
 
 	private WebElement waitElement(final By byElement, final long timeout) throws InterruptedException {
-		final long start = System.currentTimeMillis();
+		final var start = System.currentTimeMillis();
 		do {
 			try {
 				if (isElementPresent(byElement)) {

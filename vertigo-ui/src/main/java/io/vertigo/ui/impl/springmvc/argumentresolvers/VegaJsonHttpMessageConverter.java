@@ -21,12 +21,11 @@ import java.io.Reader;
 import java.io.Writer;
 import java.lang.reflect.Type;
 
-import jakarta.inject.Inject;
-
 import org.springframework.http.converter.json.AbstractJsonHttpMessageConverter;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
+import jakarta.inject.Inject;
 
 /**
  * Implementation of {@link org.springframework.http.converter.HttpMessageConverter}
@@ -55,6 +54,7 @@ public class VegaJsonHttpMessageConverter extends AbstractJsonHttpMessageConvert
 	@Override
 	protected void writeInternal(final Object o, final Type type, final Writer writer) throws Exception {
 		writer.append(jsonEngine.toJson(o));
+		writer.flush();
 	}
 
 }

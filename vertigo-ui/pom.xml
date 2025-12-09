@@ -32,7 +32,7 @@
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-webmvc</artifactId>
-				<version>6.2.8</version> <!-- need same version as in vertigo-spring-connector-->
+				<version>7.0.1</version> <!-- need same version as in vertigo-spring-connector-->
 			</dependency>
 			<dependency>
 	        	<groupId>org.thymeleaf</groupId>
@@ -105,7 +105,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty.websocket</groupId>
-			<artifactId>websocket-jetty-server</artifactId>
+			<artifactId>jetty-websocket-jetty-server</artifactId>
 			<optional>true</optional>
 		</dependency>
 		
@@ -222,25 +222,25 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
-			<version>2.19.0</version> <!-- version for spring -->
+			<version>2.20.1</version> <!-- version for spring -->
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.dataformat</groupId>
     		<artifactId>jackson-dataformat-smile</artifactId>
-    		<version>2.19.0</version> <!-- version for spring -->
+    		<version>2.20.1</version> <!-- version for spring -->
     		<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.dataformat</groupId>
     		<artifactId>jackson-dataformat-yaml</artifactId>
-    		<version>2.19.0</version> <!-- version for spring -->
+    		<version>2.20.1</version> <!-- version for spring -->
     		<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.dataformat</groupId>
     		<artifactId>jackson-dataformat-cbor</artifactId>
-    		<version>2.19.0</version> <!-- version for spring -->
+    		<version>2.20.1</version> <!-- version for spring -->
     		<scope>test</scope>
 		</dependency>
 		

@@ -39,6 +39,10 @@ public class JettyBootParams {
 	private final Optional<String> jettySessionStoreCollectionName;
 	private final boolean noJettySessionCache;
 	private final boolean join;
+	private final String multiPartTempPath;
+	private final int maxPartSizeMb;
+	private final int maxRequestSize;
+	private final int maxPartSizeInMemoryKb;
 	private final List<String> addonPaths;
 
 	JettyBootParams(
@@ -55,11 +59,16 @@ public class JettyBootParams {
 			final Optional<String> jettySessionStoreCollectionName,
 			final boolean noJettySessionCache,
 			final boolean join,
+			final String multiPartTempPath,
+			final int maxPartSizeMb,
+			final int maxRequestSize,
+			final int maxPartSizeInMemoryKb,
 			final List<String> addonPaths) {
 		Assertion.check()
 				.isNotBlank(contextRoot)
 				.isNotNull(contextPath)
 				.isNotNull(webApplicationInitializerClass)
+				.isNotBlank(multiPartTempPath)
 				.isNotNull(addonPaths)
 				.when(
 						!sslDisabled,
@@ -85,6 +94,10 @@ public class JettyBootParams {
 		this.jettySessionStoreCollectionName = jettySessionStoreCollectionName;
 		this.noJettySessionCache = noJettySessionCache;
 		this.join = join;
+		this.multiPartTempPath = multiPartTempPath;
+		this.maxPartSizeMb = maxPartSizeMb;
+		this.maxRequestSize = maxRequestSize;
+		this.maxPartSizeInMemoryKb = maxPartSizeInMemoryKb;
 		this.addonPaths = addonPaths;
 	}
 
@@ -139,7 +152,23 @@ public class JettyBootParams {
 	public boolean isNoJettySessionCache() {
 		return noJettySessionCache;
 	}
-	
+
+	public String getMultiPartTempPath() {
+		return multiPartTempPath;
+	}
+
+	public int getMaxPartSizeMb() {
+		return maxPartSizeMb;
+	}
+
+	public int getMaxRequestSize() {
+		return maxRequestSize;
+	}
+
+	public int getMaxPartSizeInMemoryKb() {
+		return maxPartSizeInMemoryKb;
+	}
+
 	public List<String> getAddonPaths() {
 		return addonPaths;
 	}

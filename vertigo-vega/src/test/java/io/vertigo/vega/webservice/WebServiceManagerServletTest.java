@@ -21,12 +21,9 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.nio.file.Paths;
 
-import org.eclipse.jetty.annotations.ServletContainerInitializersStarter;
+import org.eclipse.jetty.ee10.webapp.WebAppContext;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.webapp.WebAppClassLoader;
-import org.eclipse.jetty.webapp.WebAppContext;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 
@@ -60,21 +57,19 @@ public final class WebServiceManagerServletTest extends AbstractWebServiceManage
 
 	private static void startServer() throws IOException, Exception {
 		server = new Server(MyNodeConfig.WS_PORT);
-		final WebAppContext context = new WebAppContext(Paths.get(WebServiceManagerServletTest.class.getClassLoader().getResource("io/vertigo/vega/testWebApp/").toURI()).toString(), "/");
-		System.setProperty("org.apache.jasper.compiler.disablejsr199", "false");
-		context.setAttribute("jacoco.exclClassLoaders", "*");
-		context.setAttribute("javax.servlet.context.tempdir", getScratchDir());
-		context.addBean(new ServletContainerInitializersStarter(context), true);
-		context.setClassLoader(getUrlClassLoader());
-		context.setClassLoader(new WebAppClassLoader(WebServiceManagerServletTest.class.getClassLoader(), context));
-
-		server.setHandler(context);
+		final var webapp = new WebAppContext();
+		webapp.setContextPath("/");
+		webapp.setWar(WebServiceManagerServletTest.class.getClassLoader().getResource("io/vertigo/vega/testWebApp/").toURI().toASCIIString());
+		webapp.setParentLoaderPriority(true);
+		final var multipartConfigInjectionHandler = new io.vertigo.vega.webservice.boot.MultipartConfigInjectionHandler();
+		multipartConfigInjectionHandler.setHandler(webapp);
+		server.setHandler(multipartConfigInjectionHandler);
 		server.start();
 	}
 
 	private static File getScratchDir() throws IOException {
-		final File tempDir = new File(System.getProperty("java.io.tmpdir"));
-		final File scratchDir = new File(tempDir.toString(), "embedded-jetty-jsp");
+		final var tempDir = new File(System.getProperty("java.io.tmpdir"));
+		final var scratchDir = new File(tempDir.toString(), "embedded-jetty-jsp");
 
 		if (!scratchDir.exists()) {
 			if (!scratchDir.mkdirs()) {

@@ -36,9 +36,9 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.eclipse.jetty.server.session.AbstractSessionDataStore;
-import org.eclipse.jetty.server.session.SessionData;
-import org.eclipse.jetty.server.session.UnreadableSessionDataException;
+import org.eclipse.jetty.session.AbstractSessionDataStore;
+import org.eclipse.jetty.session.SessionData;
+import org.eclipse.jetty.session.UnreadableSessionDataException;
 import org.eclipse.jetty.util.ClassLoadingObjectInputStream;
 import org.eclipse.jetty.util.annotation.ManagedAttribute;
 import org.eclipse.jetty.util.annotation.ManagedObject;
@@ -78,8 +78,8 @@ public class KVSessionDataStore extends AbstractSessionDataStore {
 
 	@Override
 	public boolean doExists(final String id) throws Exception {
-		final AtomicReference<Boolean> reference = new AtomicReference<Boolean>();
-		final AtomicReference<Exception> exception = new AtomicReference<Exception>();
+		final var reference = new AtomicReference<Boolean>();
+		final var exception = new AtomicReference<Exception>();
 
 		final Runnable r = new Runnable() {
 
@@ -107,7 +107,7 @@ public class KVSessionDataStore extends AbstractSessionDataStore {
 	@Override
 	public SessionData doLoad(final String id) throws Exception {
 		final AtomicReference<Optional<SessionData>> reference = new AtomicReference<Optional<SessionData>>();
-		final AtomicReference<Exception> exception = new AtomicReference<Exception>();
+		final var exception = new AtomicReference<Exception>();
 
 		final Runnable r = new Runnable() {
 
@@ -228,8 +228,8 @@ public class KVSessionDataStore extends AbstractSessionDataStore {
 	 * @throws IOException
 	 */
 	private byte[] sessionDataToBytes(final String id, final SessionData data) throws IOException {
-		try (ByteArrayOutputStream os = new ByteArrayOutputStream(1400)) {
-			final DataOutputStream out = new DataOutputStream(os);
+		try (var os = new ByteArrayOutputStream(1400)) {
+			final var out = new DataOutputStream(os);
 			out.writeUTF(id);
 			out.writeUTF(_context.getCanonicalContextPath());
 			out.writeUTF(_context.getVhost());
@@ -244,7 +244,7 @@ public class KVSessionDataStore extends AbstractSessionDataStore {
 
 			final List<String> keys = new ArrayList<String>(data.getKeys());
 			out.writeInt(keys.size());
-			final ObjectOutputStream oos = new ObjectOutputStream(out);
+			final var oos = new ObjectOutputStream(out);
 			for (final String name : keys) {
 				oos.writeUTF(name);
 				oos.writeObject(data.getAttribute(name));
@@ -264,21 +264,21 @@ public class KVSessionDataStore extends AbstractSessionDataStore {
 	private SessionData bytesToSessionData(final byte[] bytes, final String expectedId) throws Exception {
 		String id = null; //the actual id from inside the file
 
-		try (ByteArrayInputStream bin = new ByteArrayInputStream(bytes)) {
+		try (var bin = new ByteArrayInputStream(bytes)) {
 			SessionData data = null;
-			final DataInputStream di = new DataInputStream(bin);
+			final var di = new DataInputStream(bin);
 
 			id = di.readUTF();
-			final String contextPath = di.readUTF();
-			final String vhost = di.readUTF();
-			final String lastNode = di.readUTF();
-			final long created = di.readLong();
-			final long accessed = di.readLong();
-			final long lastAccessed = di.readLong();
-			final long cookieSet = di.readLong();
-			final long expiry = di.readLong();
-			final long maxIdle = di.readLong();
-			final long lastSaved = di.readLong();
+			final var contextPath = di.readUTF();
+			final var vhost = di.readUTF();
+			final var lastNode = di.readUTF();
+			final var created = di.readLong();
+			final var accessed = di.readLong();
+			final var lastAccessed = di.readLong();
+			final var cookieSet = di.readLong();
+			final var expiry = di.readLong();
+			final var maxIdle = di.readLong();
+			final var lastSaved = di.readLong();
 
 			data = newSessionData(id, created, accessed, lastAccessed, maxIdle);
 			data.setContextPath(contextPath);
@@ -308,10 +308,10 @@ public class KVSessionDataStore extends AbstractSessionDataStore {
 		if (size > 0) {
 			// input stream should not be closed here
 			final Map<String, Object> attributes = new HashMap<String, Object>();
-			final ClassLoadingObjectInputStream ois = new ClassLoadingObjectInputStream(is);
-			for (int i = 0; i < size; i++) {
-				final String key = ois.readUTF();
-				final Object value = ois.readObject();
+			final var ois = new ClassLoadingObjectInputStream(is);
+			for (var i = 0; i < size; i++) {
+				final var key = ois.readUTF();
+				final var value = ois.readObject();
 				attributes.put(key, value);
 			}
 			data.putAllAttributes(attributes);
