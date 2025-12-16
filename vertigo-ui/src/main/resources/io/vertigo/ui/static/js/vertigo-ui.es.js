@@ -3071,7 +3071,7 @@ const us = {
     maxTime: { type: String },
     fillGapDim: { type: String },
     fillGapValue: { type: Number },
-    timeFormat: { type: String, default: "DD/MM/YYYY HH:mm" },
+    timeFormat: { type: String, default: "YYYY-MM-DDTHH:mm" },
     verticalLines: { type: Array },
     /** {x, label, color} */
     additionalOptions: { type: Object }
@@ -4032,7 +4032,7 @@ const F = window.Quasar, Bt = {
         for (var l = 0; l < n.updatedKeys.length; l++) {
           var c = n.updatedKeys[l].split(".", 2), u = c[0], p = c[1];
           let m = r.data.model[u];
-          m && typeof m == "object" && Array.isArray(m) === !1 ? p ? s[u][p] = r.data.model[u][p] : s[u] = r.data.model[u] : (m && Array.isArray(m), s[u] = r.data.model[u]);
+          m && (typeof m == "object" && Array.isArray(m) === !1 ? p ? s[u][p] = r.data.model[u][p] : s[u] = r.data.model[u] : (Array.isArray(m), s[u] = r.data.model[u]));
         }
       else
         Object.keys(r.data.model).forEach(function(m) {

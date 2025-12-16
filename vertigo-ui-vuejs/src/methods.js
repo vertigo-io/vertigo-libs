@@ -532,19 +532,21 @@ export default {
                     var contextKey = attribs[0];
                     var attribute = attribs[1];
                     let modelValue = response.data.model[contextKey]
-                    if (modelValue && typeof modelValue === 'object' && Array.isArray(modelValue) === false) {
-                        // object
-                        if (attribute) {
-                            vueData[contextKey][attribute] = response.data.model[contextKey][attribute]
+                    if (modelValue) {
+                        if (typeof modelValue === 'object' && Array.isArray(modelValue) === false) {
+                            // object
+                            if (attribute) {
+                                vueData[contextKey][attribute] = response.data.model[contextKey][attribute]
+                            } else {
+                                vueData[contextKey] = response.data.model[contextKey];
+                            }
+                        } else if (Array.isArray(modelValue) === true) {
+                            // array
+                            vueData[contextKey] = response.data.model[contextKey];
                         } else {
+                            // primitive
                             vueData[contextKey] = response.data.model[contextKey];
                         }
-                    } else if (modelValue && Array.isArray(modelValue) === true) {
-                        // array
-                        vueData[contextKey] = response.data.model[contextKey];
-                    } else {
-                        // primitive
-                        vueData[contextKey] = response.data.model[contextKey];
                     }
                 }
             } else {
