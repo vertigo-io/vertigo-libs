@@ -86,7 +86,7 @@ export default {
         maxTime:                        { type: String, },
 		fillGapDim:                     { type: String, },
 		fillGapValue:					{ type: Number, },
-		timeFormat:                     { type: String, default:'DD/MM/YYYY HH:mm' },
+		timeFormat:                     { type: String, default:'YYYY-MM-DDTHH:mm' },
 		verticalLines: 					{ type: Array,  }, /** {x, label, color} */
         additionalOptions: 				{ type: Object, },
 	},

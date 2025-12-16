@@ -32,7 +32,7 @@
     <div class="readonly" th:attr="__${label_attrs}__">
         <span class="fr-label" vu:text="${myLabel}"></span>
         <pre th:if="${value != null}"
-             th:text="${__${model.util.contextGet(object, field, rowIndex)}__}"
+             vu:text="${__${model.util.contextGet(object, field, rowIndex)}__}"
              th:attr="__${input_attrs}__"></pre>
         <span class="no-value" th:if="${value==null}"
               th:text="${myEmptyValue}"></span>

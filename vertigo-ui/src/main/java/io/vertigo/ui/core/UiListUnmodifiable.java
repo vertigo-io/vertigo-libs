@@ -29,6 +29,7 @@ import io.vertigo.vega.webservice.validation.UiMessageStack;
 
 /**
  * Wrapper d'affichage des listes d'objets métier.
+ * 
  * @author npiedeloup
  * @param <O> the type of entity
  */
@@ -39,13 +40,14 @@ public final class UiListUnmodifiable<O extends DataObject> extends AbstractUiLi
 
 	/**
 	 * Constructeur.
+	 * 
 	 * @param dtList Liste à encapsuler
 	 */
 	public UiListUnmodifiable(final DtList<O> dtList, final Optional<DataFieldName<O>> keyFieldNameOpt) {
 		super(dtList.getDefinition(), keyFieldNameOpt);
 		//-----
 		this.dtList = dtList;
-		if (dtList.size() < 1000) {
+		if (dtList.size() < NB_MAX_ELEMENTS) {
 			initUiObjectByIdIndex();
 		}
 	}
@@ -60,6 +62,7 @@ public final class UiListUnmodifiable<O extends DataObject> extends AbstractUiLi
 
 	/**
 	 * Vérifie les UiObjects de la liste, met à jour les objets métiers et retourne la liste.
+	 * 
 	 * @param validators Validateur à utilisé, peut-être spécifique à l'objet.
 	 * @param uiMessageStack Pile des messages qui sera mise à jour
 	 * @return Liste métier validée.
@@ -71,6 +74,7 @@ public final class UiListUnmodifiable<O extends DataObject> extends AbstractUiLi
 
 	/**
 	 * Vérifie les UiObjects de la liste et remplis la pile d'erreur.
+	 * 
 	 * @param uiMessageStack Pile des messages qui sera mise à jour
 	 */
 	@Override
