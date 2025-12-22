@@ -1,6 +1,7 @@
 <template>
   <div>
-    <div class="fr-mb-2w flex flex-column gap--sm" v-if="isAnyFacetValueSelected()">
+    <div class="fr-mb-2w flex flex-column gap--sm" v-if="isAnyFacetValueSelected()" aria-live="polite">
+      <span class="fr-sr-only">Liste des filtres selectionnés :</span>
       <template v-for="(selectedFacetValues, selectedFacet) in selectedFacets" :key="selectedFacet">
         <template v-if="!facetMultipleByCode(selectedFacet)">
           <DsfrTag class="fr-tag--dismiss"
@@ -9,77 +10,82 @@
                    :key="selectedFacetValue.code"
                    @click="$emit('toogle-facet', selectedFacet, selectedFacetValue, contextKey)">
             {{ facetLabelByCode(selectedFacet) }}: {{ facetValueLabelByCode(selectedFacet, selectedFacetValue) }}
+            <span class="fr-sr-only">Cliquez pour supprimer le filtre</span>
           </DsfrTag>
         </template>
       </template>
     </div>
-    <div v-for="facet in facets.filter(facetFilter)" :key="facet.code" class="facets">
-      <template v-if="facet.multiple || !isFacetSelected(facet.code)">
-        <component :is="heading" class="fr-mb-1w fr-text--md" :id="facet.code">{{ facet.label }}</component>
+    <ul>
+      <li v-for="facet in facets" :key="facet.code" class="facets">
+        <template v-if="facet.multiple || !isFacetSelected(facet.code)">
+          <component :is="heading" class="fr-mb-1w fr-text--md" :id="facet.code">{{ facet.label }}</component>
 
-        <div v-if="selectedInvisibleFacets(facet.code, facet.values).length > 0" role="group"
-             :aria-labelledby="facet.code">
-          <template v-for="(value) in selectedInvisibleFacets(facet.code)" :key="value.code">
-            <div class="facet" v-if="facet.multiple">
-              <DsfrCheckbox small v-bind:modelValue="true"
-                            @update:modelValue="$emit('toogle-facet', facet.code, value.code, contextKey)">
-                <template #label>
+          <div v-if="selectedInvisibleFacets(facet.code, facet.values).length > 0" role="group"
+               :aria-labelledby="facet.code">
+            <ul>
+              <li v-for="(value) in selectedInvisibleFacets(facet.code)" :key="value.code">
+                <div class="facet" v-if="facet.multiple">
+                  <DsfrCheckbox small v-bind:modelValue="true"
+                                @update:modelValue="$emit('toogle-facet', facet.code, value.code, contextKey)">
+                    <template #label>
                     <span class="flex justify-between w-full fr-mb-0">
                       {{ facetValueLabelByCode(facet.code, value.code) }}
                       <span class="facet--count" aria-hidden="true">{{ value.count }}</span>
                       <span class="fr-sr-only">({{ value.count }} élément(s))</span>
                     </span>
-                </template>
-              </DsfrCheckbox>
-            </div>
-            <DsfrButton tertiary no-outline v-else
-                        @click="$emit('toogle-facet', facet.code, value.code, contextKey)">
+                    </template>
+                  </DsfrCheckbox>
+                </div>
+                <DsfrButton tertiary no-outline v-else
+                            @click="$emit('toogle-facet', facet.code, value.code, contextKey)">
                 <span class="flex justify-between w-full">
                   {{ facetValueLabelByCode(facet.code, value.code) }}
                   <span class="facet--count" aria-hidden="true">{{ value.count }}</span>
                   <span class="fr-sr-only">({{ value.count }} élément(s))</span>
                 </span>
-            </DsfrButton>
-          </template>
-        </div>
+                </DsfrButton>
+              </li>
+            </ul>
+          </div>
 
-        <div v-if="visibleFacets(facet.code, facet.values).length > 0" role="group" :aria-labelledby="facet.code">
-          <template v-for="(value) in visibleFacets(facet.code, facet.values)" :key="value.code">
-            <div class="facet" v-if="facet.multiple">
-              <DsfrCheckbox small v-bind:modelValue="isFacetValueSelected(facet.code, value.code)" class="facet"
-                            @update:modelValue="$emit('toogle-facet', facet.code, value.code, contextKey)">
-                <template #label>
+          <div v-if="visibleFacets(facet.code, facet.values).length > 0" role="group" :aria-labelledby="facet.code">
+            <template v-for="(value) in visibleFacets(facet.code, facet.values)" :key="value.code">
+              <div class="facet" v-if="facet.multiple">
+                <DsfrCheckbox small v-bind:modelValue="isFacetValueSelected(facet.code, value.code)" class="facet"
+                              @update:modelValue="$emit('toogle-facet', facet.code, value.code, contextKey)">
+                  <template #label>
                     <span class="flex justify-between w-full fr-mb-0">
                       {{ facetValueLabelByCode(facet.code, value.code) }}
                       <span class="facet--count" aria-hidden="true">{{ value.count }}</span>
                       <span class="fr-sr-only">({{ value.count }} élément(s))</span>
                     </span>
-                </template>
-              </DsfrCheckbox>
-            </div>
-            <DsfrButton tertiary no-outline v-else
-                        @click="$emit('toogle-facet', facet.code, value.code, contextKey)">
+                  </template>
+                </DsfrCheckbox>
+              </div>
+              <DsfrButton tertiary no-outline v-else
+                          @click="$emit('toogle-facet', facet.code, value.code, contextKey)">
                 <span class="flex justify-between w-full">
                   {{ facetValueLabelByCode(facet.code, value.code) }}
                   <span class="facet--count" aria-hidden="true">{{ value.count }}</span>
                   <span class="fr-sr-only">({{ value.count }} élément(s))</span>
                 </span>
-            </DsfrButton>
-          </template>
-        </div>
+              </DsfrButton>
+            </template>
+          </div>
 
-        <div class="fr-mb-2w">
-          <DsfrButton size="sm" tertiary v-if="facet.values.length > maxValues && !isFacetExpanded(facet.code)"
-                      @click="expandFacet(facet.code)">
-            Voir plus
-          </DsfrButton>
-          <DsfrButton size="sm" tertiary v-if="facet.values.length > maxValues && isFacetExpanded(facet.code)"
-                      @click="reduceFacet(facet.code)">
-            Voir moins
-          </DsfrButton>
-        </div>
-      </template>
-    </div>
+          <div class="fr-mb-2w">
+            <DsfrButton size="sm" tertiary v-if="facet.values.length > maxValues && !isFacetExpanded(facet.code)"
+                        @click="expandFacet(facet.code)">
+              Voir plus
+            </DsfrButton>
+            <DsfrButton size="sm" tertiary v-if="facet.values.length > maxValues && isFacetExpanded(facet.code)"
+                        @click="reduceFacet(facet.code)">
+              Voir moins
+            </DsfrButton>
+          </div>
+        </template>
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -110,7 +116,7 @@ export default {
     return {
       expandedFacets: [],
       codeToLabelTranslater: {} /** facetCode : function (facetCode, facetValueCode) return facetValueLabel */
-    }
+    };
   },
   created: function () {
     if (this.facetValueTranslatorProvider !== undefined) this.facetValueTranslatorProvider(this);
@@ -187,7 +193,7 @@ export default {
       return facetValues;
     }
   }
-}
+};
 </script>
 
 <style scoped>
