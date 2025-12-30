@@ -17,7 +17,6 @@
  */
 package io.vertigo.database.plugins.migration.liquibase;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -32,7 +31,6 @@ import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.database.impl.migration.MigrationPlugin;
 import io.vertigo.database.sql.SqlManager;
-import io.vertigo.database.sql.connection.SqlConnection;
 import liquibase.Contexts;
 import liquibase.LabelExpression;
 import liquibase.Liquibase;
@@ -91,13 +89,11 @@ public final class LiquibaseMigrationPlugin implements MigrationPlugin {
 	@Override
 	public void update() {
 		LOGGER.info("Liquibase  : checking  on connection {}", connectionName);
-
-		try (final SqlConnection sqlConnection = sqlManager.getConnectionProvider(connectionName).obtainConnection()) {
-			final Liquibase lb = createLiquibase();
+		try (final Liquibase lb = createLiquibase()) {
 			final Collection<RanChangeSet> unexpectedChangeSets = lb.listUnexpectedChangeSets(getContexts(), new LabelExpression());
 			Assertion.check().isTrue(unexpectedChangeSets.isEmpty(), "Database is too recent. Please make sure you run the correct version of the node.");
 			lb.update(getContexts());
-		} catch (final LiquibaseException | SQLException e) {
+		} catch (final LiquibaseException e) {
 			throw WrappedException.wrap(e);
 		}
 		LOGGER.info("Liquibase  : finished checking on connection {}", connectionName);
@@ -114,8 +110,7 @@ public final class LiquibaseMigrationPlugin implements MigrationPlugin {
 	@Override
 	public void check() {
 		LOGGER.info("Liquibase  : updating  on connection {}", connectionName);
-		try {
-			final Liquibase lb = createLiquibase();
+		try (final Liquibase lb = createLiquibase()) {
 			final List<ChangeSet> changeSetList = lb.listUnrunChangeSets(getContexts(), new LabelExpression());
 			Assertion.check().isTrue(changeSetList.isEmpty(), "Database is not up to date. Please update it before launching the node.");
 			final Collection<RanChangeSet> unexpectedChangeSets = lb.listUnexpectedChangeSets(getContexts(), new LabelExpression());
