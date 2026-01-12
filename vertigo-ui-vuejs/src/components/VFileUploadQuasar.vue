@@ -29,10 +29,11 @@
                     <q-btn v-if="slotProps.isUploading  && !slotProps.readonly" type="a" href="#" :icon="$q.iconSet.uploader.clear" flat dense @click="slotProps.abort">
                         <q-tooltip>{{$q.lang.vui.uploader.abort}}</q-tooltip>
                     </q-btn>
-                    <q-btn v-if="globalCanAddFiles(slotProps.files) && !slotProps.readonly" :icon="$q.iconSet.uploader.add" flat dense @click="slotProps.pickFiles">
-                        <q-uploader-add-trigger :id="$props.inputId"></q-uploader-add-trigger>
+					<div v-if="globalCanAddFiles(slotProps.files) && !slotProps.readonly" class="relative-position">
+	                    <q-btn :icon="$q.iconSet.uploader.add" flat dense @click="slotProps.pickFiles"></q-btn>
                         <q-tooltip>{{$q.lang.vui.uploader.add}}</q-tooltip>
-                    </q-btn>
+                        <q-uploader-add-trigger :id="$props.inputId"></q-uploader-add-trigger>
+					</div>
                 </div>
             </template> 
             <template v-slot:list="slotProps">
@@ -86,9 +87,11 @@
                     </q-field>
                     <div class="q-field__after q-field__marginal row no-wrap items-center" v-if="$props.simple && !$props.readonly">
                             <q-spinner v-if="slotProps.isUploading" class="q-uploader__spinner"></q-spinner> 
-                            <q-btn v-if="globalCanAddFiles(slotProps.files)" type="a" :icon="$q.iconSet.uploader.add" flat dense>
-                                <q-uploader-add-trigger></q-uploader-add-trigger>
-                            </q-btn>
+							<div v-if="globalCanAddFiles(slotProps.files)" class="relative-position">
+								<q-btn :icon="$q.iconSet.uploader.add" flat dense @click="slotProps.pickFiles"></q-btn>
+								<q-tooltip>{{$q.lang.vui.uploader.add}}</q-tooltip>
+                                <q-uploader-add-trigger :id="$props.inputId"></q-uploader-add-trigger>
+							</div>
                             <q-btn v-if="slotProps.isUploading" type="a" :icon="$q.iconSet.uploader.clear" flat dense 
                                 @click="slotProps.abort">
                                 <q-tooltip>{{$q.lang.vui.uploader.abort}}</q-tooltip>
