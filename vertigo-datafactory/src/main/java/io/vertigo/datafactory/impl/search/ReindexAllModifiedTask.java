@@ -21,6 +21,8 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
@@ -51,8 +53,8 @@ final class ReindexAllModifiedTask<S extends KeyConcept> implements Runnable {
 	private static final int MAX_DELETED_INDEX_PER_CHUNK = 200;
 
 	private static final Logger LOGGER = LogManager.getLogger(ReindexAllModifiedTask.class);
-	private static volatile boolean REINDEXATION_IN_PROGRESS;
-	private static volatile long REINDEX_COUNT;
+	private static AtomicBoolean REINDEXATION_IN_PROGRESS;
+	private static AtomicLong REINDEX_COUNT;
 	private final WritableFuture<Long> reindexFuture;
 	private final SearchIndexDefinition searchIndexDefinition;
 	private final SearchManager searchManager;
@@ -117,6 +119,7 @@ final class ReindexAllModifiedTask<S extends KeyConcept> implements Runnable {
 					reindexCount += chunkOfModifiedAndRemovedUid.val1().getAllUIDs().size();
 					reindexCount += chunkOfModifiedAndRemovedUid.val2().size();
 					updateReindexCount(reindexCount);
+					LOGGER.trace("Full reindexation (modified only) of {} in progess ({} elements done)", searchIndexDefinition.getName(), reindexCount);					
 				}
 				//On vide la suite, pour le cas ou les dernières données ne sont plus là
 				searchManager.removeAll(searchIndexDefinition, urisRangeToListFilter("docId", lastUID, null)); //remove by id
@@ -134,23 +137,23 @@ final class ReindexAllModifiedTask<S extends KeyConcept> implements Runnable {
 	}
 
 	private static boolean isReindexInProgress() {
-		return REINDEXATION_IN_PROGRESS;
+		return REINDEXATION_IN_PROGRESS.get();
 	}
 
 	private static void startReindex() {
-		REINDEXATION_IN_PROGRESS = true;
+		REINDEXATION_IN_PROGRESS.set(true);
 	}
 
 	private static void stopReindex() {
-		REINDEXATION_IN_PROGRESS = false;
+		REINDEXATION_IN_PROGRESS.set(false);
 	}
 
 	private static void updateReindexCount(final long reindexCount) {
-		REINDEX_COUNT = reindexCount;
+		REINDEX_COUNT.set(reindexCount);
 	}
 
 	private static long getReindexCount() {
-		return REINDEX_COUNT;
+		return REINDEX_COUNT.get();
 	}
 
 	private static ListFilter urisRangeToListFilter(final String indexFieldName, final Serializable firstUri, final Serializable lastUri) {

@@ -140,23 +140,14 @@ public final class IndexType {
 			basicType = smartTypeDefinition.getAdapterConfig("search").targetBasicType();
 		}
 
-		switch (basicType) {
-			case Boolean:
-			case Double:
-			case Integer:
-			case Long:
-				return basicType.name().toLowerCase(Locale.ROOT);
-			case String:
-				return "text";
-			case LocalDate:
-			case Instant:
-				return "date";
-			case BigDecimal:
-				return "scaled_float";
-			case DataStream:
-			default:
-				throw new IllegalArgumentException("Type de donnée non pris en charge pour l'indexation [" + smartTypeDefinition.getName() + "].");
-		}
+		return switch (basicType) {
+			case Boolean, Double, Integer, Long -> basicType.name().toLowerCase(Locale.ROOT);
+			case String -> "text";
+			case LocalDate, Instant -> "date";
+			case BigDecimal -> "scaled_float";
+			case DataStream -> throw new IllegalArgumentException("Type de donnée non pris en charge pour l'indexation [" + smartTypeDefinition.getName() + "].");
+			default -> throw new IllegalArgumentException("Type de donnée non pris en charge pour l'indexation [" + smartTypeDefinition.getName() + "].");
+		};
 	}
 
 	private static void checkIndexType(final String indexType, final SmartTypeDefinition smartTypeDefinition) {
@@ -169,7 +160,9 @@ public final class IndexType {
 		if (smartTypeDefinition.getScope().isBasicType()) {
 			basicType = smartTypeDefinition.getBasicType();
 		} else { // smartTypeDefinition.getScope().isValueObject()
-			basicType = smartTypeDefinition.getAdapterConfig("search").targetBasicType();
+			var adapterConfig = smartTypeDefinition.getAdapterConfig("search");
+			Assertion.check().isNotNull(adapterConfig, "Précisez un @Adapter de type \"search\" pour le smart type [" + smartTypeDefinition.getName() + "]");
+			basicType = adapterConfig.targetBasicType();
 		}
 		switch (basicType) {
 			case Boolean:

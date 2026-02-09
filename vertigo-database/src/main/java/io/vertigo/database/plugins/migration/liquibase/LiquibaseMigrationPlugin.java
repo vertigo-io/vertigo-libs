@@ -17,41 +17,36 @@
  */
 package io.vertigo.database.plugins.migration.liquibase;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import jakarta.inject.Inject;
+import javax.inject.Inject;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
-import io.vertigo.core.node.Node;
 import io.vertigo.core.param.ParamValue;
-import io.vertigo.core.util.StringUtil;
 import io.vertigo.database.impl.migration.MigrationPlugin;
 import io.vertigo.database.sql.SqlManager;
-import io.vertigo.database.sql.connection.SqlConnection;
 import liquibase.Contexts;
 import liquibase.LabelExpression;
 import liquibase.Liquibase;
-import liquibase.UpdateSummaryOutputEnum;
 import liquibase.changelog.ChangeSet;
 import liquibase.changelog.RanChangeSet;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
+import liquibase.exception.DatabaseException;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
 
 /**
  * Liquibase Plugin to perform migration tasks on SQL Databases
  *
- * @author mlaroche, skerdudou
+ * @author mlaroche
  */
 public final class LiquibaseMigrationPlugin implements MigrationPlugin {
 
@@ -61,11 +56,11 @@ public final class LiquibaseMigrationPlugin implements MigrationPlugin {
 
 	private final String connectionName;
 	private final String masterFile;
-	private final Contexts liquibaseContexts;
+	private final String contexts;
 
 	/**
 	 * @param masterFile configPath of liquibase
-	 * @param connectionNameOpt connectionName to use to perform the tasks (by default {@link SqlManager}.MAIN_CONNECTION_PROVIDER_NAME)
+	 * @param connectionNameOpt connectionName to use to performs the tasks (by default {@link SqlManager}.MAIN_CONNECTION_PROVIDER_NAME
 	 * @param contexts contexts to launch liquibase with. Multiple contexts can be provided with ','.
 	 * @param sqlManager sqlManager
 	 */
@@ -82,66 +77,48 @@ public final class LiquibaseMigrationPlugin implements MigrationPlugin {
 		//---
 		this.masterFile = masterFile;
 		connectionName = connectionNameOpt.orElse(SqlManager.MAIN_CONNECTION_PROVIDER_NAME);
-		// Liquibase needs at least 1 context to perform context filtering on changesets
-		// See: https://docs.liquibase.com/concepts/changelogs/attributes/contexts.html
+		// Liquibase need at least 1 context to perform context filter on changesets
+		// cf : https://docs.liquibase.com/concepts/changelogs/attributes/contexts.html
 		// "If you add a contextFilter to a changeset, it only runs when you specify that context, but unmarked changesets still run.
 		//  If you do not specify any contexts at runtime, every changeset in your changelog runs, even if they have contextFilters attached"
-		final String contexts = "vertigo," + contextsOpt.orElse("");
-		liquibaseContexts = new Contexts(contexts);
+		contexts = "vertigo," + contextsOpt.orElse("");
 		this.sqlManager = sqlManager;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void update() {
-		LOGGER.info("Updating on connection {}", connectionName);
-		// Processing the masterFile
-		processLiquibaseScript(null, masterFile, true);
-		// Processing additional scripts
-		for (final LiquibaseScriptDefinition scriptDef : getLiquibaseAdditionalScriptDefinitions()) {
-			processLiquibaseScript(scriptDef.getPrefix(), scriptDef.getFilePath(), true);
+		LOGGER.info("Liquibase  : checking  on connection {}", connectionName);
+		try (final Liquibase lb = createLiquibase()) {
+			final Collection<RanChangeSet> unexpectedChangeSets = lb.listUnexpectedChangeSets(getContexts(), new LabelExpression());
+			Assertion.check().isTrue(unexpectedChangeSets.isEmpty(), "Database is too recent. Please make sure you run the correct version of the node.");
+			lb.update(getContexts());
+		} catch (final LiquibaseException e) {
+			throw WrappedException.wrap(e);
 		}
-		LOGGER.info("Finished updating on connection {}", connectionName);
+		LOGGER.info("Liquibase  : finished checking on connection {}", connectionName);
+
+	}
+
+	private Liquibase createLiquibase() throws DatabaseException {
+		final JdbcConnection jdbcConnection = new JdbcConnection(sqlManager.getConnectionProvider(connectionName).obtainConnection().getJdbcConnection());
+		final Database db = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(jdbcConnection);
+		return new Liquibase(masterFile, new ClassLoaderResourceAccessor(), db);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void check() {
-		LOGGER.info("Checking on connection {}", connectionName);
-		// Processing the masterFile
-		processLiquibaseScript(null, masterFile, false);
-		// Processing additional scripts
-		for (final LiquibaseScriptDefinition scriptDef : getLiquibaseAdditionalScriptDefinitions()) {
-			processLiquibaseScript(scriptDef.getPrefix(), scriptDef.getFilePath(), false);
-		}
-		LOGGER.info("Finished checking on connection {}", connectionName);
-	}
-
-	private void processLiquibaseScript(final String prefix, final String file, final boolean doUpdate) {
-		LOGGER.debug("Processing script '{}'", file);
-		try (final SqlConnection sqlConnection = sqlManager.getConnectionProvider(connectionName).obtainConnection()) {
-			final JdbcConnection jdbcConnection = new JdbcConnection(sqlConnection.getJdbcConnection());
-			final Database db = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(jdbcConnection);
-			if (!StringUtil.isBlank(prefix)) {
-				db.setDatabaseChangeLogTableName(prefix + "_DATABASECHANGELOG");
-			}
-			final Liquibase lb = new Liquibase(file, new ClassLoaderResourceAccessor(), db);
-			lb.setShowSummaryOutput(UpdateSummaryOutputEnum.LOG);
-			final Collection<RanChangeSet> unexpectedChangeSets = lb.listUnexpectedChangeSets(liquibaseContexts, new LabelExpression());
-			Assertion.check().isTrue(unexpectedChangeSets.isEmpty(), "Database is too recent for script '{0}'. Please make sure you run the correct version of the node.", file);
-			if (doUpdate) {
-				lb.update(liquibaseContexts);
-			} else {
-				final List<ChangeSet> changeSetList = lb.listUnrunChangeSets(liquibaseContexts, new LabelExpression());
-				Assertion.check().isTrue(changeSetList.isEmpty(), "Database is not up to date for script '{0}'. Please update it before launching the node.", file);
-			}
-		} catch (final LiquibaseException | SQLException e) {
+		LOGGER.info("Liquibase  : updating  on connection {}", connectionName);
+		try (final Liquibase lb = createLiquibase()) {
+			final List<ChangeSet> changeSetList = lb.listUnrunChangeSets(getContexts(), new LabelExpression());
+			Assertion.check().isTrue(changeSetList.isEmpty(), "Database is not up to date. Please update it before launching the node.");
+			final Collection<RanChangeSet> unexpectedChangeSets = lb.listUnexpectedChangeSets(getContexts(), new LabelExpression());
+			Assertion.check().isTrue(unexpectedChangeSets.isEmpty(), "Database is too recent. Please make sure you run the correct version of the node.");
+		} catch (final LiquibaseException e) {
 			throw WrappedException.wrap(e);
 		}
-	}
-
-	private List<LiquibaseScriptDefinition> getLiquibaseAdditionalScriptDefinitions() {
-		return new ArrayList<>(Node.getNode().getDefinitionSpace().getAll(LiquibaseScriptDefinition.class));
+		LOGGER.info("Liquibase  : finished updating on connection {}", connectionName);
 	}
 
 	/** {@inheritDoc} */
@@ -149,4 +126,9 @@ public final class LiquibaseMigrationPlugin implements MigrationPlugin {
 	public String getConnectionName() {
 		return connectionName;
 	}
+
+	private Contexts getContexts() {
+		return new Contexts(contexts);
+	}
+
 }
