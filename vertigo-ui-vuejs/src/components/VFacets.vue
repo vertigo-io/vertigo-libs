@@ -3,7 +3,7 @@
         <div class="row col q-gutter-md" :class="{ 'horizontal-facets' : layout === 'horizontal'}" >
             <template v-for="facet in facets.filter(facetFilter)" :key="facet.code">
                 <div class="facet-select">
-                    <q-select v-if="facet.multiple"  :label="facet.label" :model-value="selectedFacets[facet.code]" multiple @add="selected =>  $emit('toogle-facet', facet.code, selected.value.code, contextKey) " @remove="removed => $emit('toogle-facet', facet.code, removed.value, contextKey)"
+                    <q-select v-if="facet.multiple"  :label="facetLabelByCode(facet.code)" :model-value="selectedFacets[facet.code]" multiple @add="selected =>  $emit('toogle-facet', facet.code, selected.value.code, contextKey) " @remove="removed => $emit('toogle-facet', facet.code, removed.value, contextKey)"
                         :options="selectedInvisibleFacets(facet.code).concat(facet.values)" option-value="code" use-chips outlined input-class="no-wrap">
                         <template v-slot:option="{ itemProps, opt, selected, toggleOption }">
                             <q-item v-bind="itemProps" class="facet-selection-option" dense>
@@ -21,7 +21,7 @@
                     
                     </q-select>
 
-                    <q-select v-else :label="facet.label" :model-value="selectedFacets[facet.code].length > 0 ? selectedFacets[facet.code][0] : null"  @update:modelValue="selected => $emit('toogle-facet', facet.code,  selected ? selected : selectedFacets[facet.code][0], contextKey)"
+                    <q-select v-else :label="facetLabelByCode(facet.code)" :model-value="selectedFacets[facet.code].length > 0 ? selectedFacets[facet.code][0] : null"  @update:modelValue="selected => $emit('toogle-facet', facet.code,  selected ? selected : selectedFacets[facet.code][0], contextKey)"
                         :options="selectedInvisibleFacets(facet.code).concat(facet.values)" option-value="code" clearable emit-value map-options outlined input-class="no-wrap">
                         <template v-slot:option="{ itemProps, opt, selected, toggleOption }">
                             <q-item v-bind="itemProps" class="facet-selection-option" dense>
@@ -54,7 +54,7 @@
             </div>
             <q-list v-for="facet in facets.filter(facetFilter)" :key="facet.code" class="facetValues q-py-none" dense >
                 <template v-if="facet.multiple || !isFacetSelected(facet.code)">
-                    <q-item-label header>{{facet.label}}</q-item-label>
+                    <q-item-label header>{{facetLabelByCode(facet.code)}}</q-item-label>
                     <q-item v-for="(value) in selectedInvisibleFacets(facet.code)" :key="value.code" class="facetValue q-ml-md" clickable @click="$emit('toogle-facet', facet.code, value.code, contextKey)">
                         <q-item-section side v-if="facet.multiple" >
                             <q-checkbox dense v-bind:modelValue="true" @update:modelValue="$emit('toogle-facet', facet.code, value.code, contextKey)" ></q-checkbox>
@@ -86,6 +86,7 @@ export default {
         selectedFacets: Object,
         contextKey: String,
         facetValueTranslatorProvider : Function,
+        facetTranslatorProvider : Function,
         layout : { type: String, 'default': 'vertical' },
         render : { type: String, 'default': 'list' },
         facetFilter : { type: Function, 'default': () => true },
@@ -121,7 +122,11 @@ export default {
           })[0];
       },
       facetLabelByCode(facetCode) {
-          return this.facetByCode(facetCode).label;
+          let facet = this.facetByCode(facetCode);
+          if(this.facetTranslatorProvider) {
+            return this.facetTranslatorProvider(facet);
+          }
+          return facet.label;
       },      
       facetMultipleByCode(facetCode) {
           return this.facetByCode(facetCode).multiple;

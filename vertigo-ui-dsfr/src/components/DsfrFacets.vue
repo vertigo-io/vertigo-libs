@@ -19,7 +19,7 @@
     <ul>
       <li v-for="facet in facets" :key="facet.code" class="facets">
         <template v-if="facet.multiple || !isFacetSelected(facet.code)">
-          <component :is="heading" class="fr-mb-1w fr-text--md" :id="facet.code">{{ facet.label }}</component>
+          <component :is="heading" class="fr-mb-1w fr-text--md" :id="facet.code">{{ facetLabelByCode(facet.code) }}</component>
 
           <div v-if="selectedInvisibleFacets(facet.code, facet.values).length > 0" role="group"
                :aria-labelledby="facet.code">
@@ -103,6 +103,7 @@ export default {
     selectedFacets: Object,
     contextKey: String,
     facetValueTranslatorProvider: Function,
+    facetTranslatorProvider : Function,
     facetFilter : { type: Function, 'default': () => true },
     heading: {
       type: String,
@@ -139,8 +140,12 @@ export default {
       })[0];
     },
     facetLabelByCode(facetCode) {
-      return this.facetByCode(facetCode).label;
-    },
+      let facet = this.facetByCode(facetCode);
+      if(this.facetTranslatorProvider) {
+        return this.facetTranslatorProvider(facet);
+      }
+      return facet.label;
+    }, 
     facetMultipleByCode(facetCode) {
       return this.facetByCode(facetCode).multiple;
     },

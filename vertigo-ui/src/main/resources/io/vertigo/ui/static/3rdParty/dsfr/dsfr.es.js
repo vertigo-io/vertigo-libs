@@ -10177,6 +10177,7 @@ const Ec = {
     selectedFacets: Object,
     contextKey: String,
     facetValueTranslatorProvider: Function,
+    facetTranslatorProvider: Function,
     facetFilter: { type: Function, default: () => !0 },
     heading: {
       type: String,
@@ -10214,7 +10215,8 @@ const Ec = {
       })[0];
     },
     facetLabelByCode(e) {
-      return this.facetByCode(e).label;
+      let l = this.facetByCode(e);
+      return this.facetTranslatorProvider ? this.facetTranslatorProvider(l) : l.label;
     },
     facetMultipleByCode(e) {
       return this.facetByCode(e).multiple;
@@ -10314,7 +10316,7 @@ function uh(e, l, a, t, r, o) {
             id: h.code
           }, {
             default: n0(() => [
-              o0(S1(h.label), 1)
+              o0(S1(o.facetLabelByCode(h.code)), 1)
             ]),
             _: 2
           }, 1032, ["id"])),
@@ -10434,7 +10436,7 @@ function uh(e, l, a, t, r, o) {
     ])
   ]);
 }
-const fh = /* @__PURE__ */ F1(Qc, [["render", uh], ["__scopeId", "data-v-d38efad1"]]), o4 = window.Vue.ref, i5 = () => {
+const fh = /* @__PURE__ */ F1(Qc, [["render", uh], ["__scopeId", "data-v-57fe14a9"]]), o4 = window.Vue.ref, i5 = () => {
   const e = o4(), l = o4(!1), a = o4(!1), t = () => {
     if (!e.value)
       return;
