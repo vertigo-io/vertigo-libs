@@ -35,7 +35,7 @@ import io.vertigo.datafactory.collections.definitions.ListFilterBuilder;
 import io.vertigo.datafactory.impl.search.dsl.DslListFilterBuilder;
 
 /**
- * @author  npiedeloup
+ * @author npiedeloup
  */
 public final class DslListFilterBuilderTest {
 
@@ -343,10 +343,13 @@ public final class DslListFilterBuilderTest {
 				{ "ALL:#+query*#", "l'avion n'est pas là", "ALL:(+l'avion* +n'est* +pas* +là*)" }, //17
 				{ "ALL:#\"query\"#", "Andrey Mariette", "ALL:(\"Andrey\" \"Mariette\")" }, //18
 				{ "ALL:\"#query#\"", "Andrey Mariette", "ALL:\"Andrey Mariette\"" }, //19
-				{ "ALL:+\"#query#\"", "Andrey Mariette", "ALL:(+\"Andrey Mariette\")" }, //20
-				{ "ALL:(\"#query#\")", "Andrey Mariette", "ALL:\"Andrey Mariette\"" }, //21
-				{ "ALL:(#query# #query#)", "Andrey Mariette", "ALL:((Andrey Mariette) (Andrey Mariette))" }, //22
-				{ "ALL:#query#", "Noisy\\ Le\\ Sec*", "ALL:(Noisy\\ Le\\ Sec*)" }, //23
+				{ "ALL:\"#query#\"", "\"Andrey Mariette\"", "ALL:\"Andrey Mariette\"" }, //20
+				{ "ALL:\"#query#\"", "\"Andrey Mariette", "ALL:\"Andrey Mariette\"" }, //21
+				{ "ALL:\"#query#\"", "\"Andrey Mariette\" Test", "ALL:\"Andrey Mariette Test\"" }, //22
+				{ "ALL:+\"#query#\"", "Andrey Mariette", "ALL:(+\"Andrey Mariette\")" }, //23
+				{ "ALL:(\"#query#\")", "Andrey Mariette", "ALL:\"Andrey Mariette\"" }, //24
+				{ "ALL:(#query# #query#)", "Andrey Mariette", "ALL:((Andrey Mariette) (Andrey Mariette))" }, //25
+				{ "ALL:#query#", "Noisy\\ Le\\ Sec*", "ALL:(Noisy\\ Le\\ Sec*)" }, //26
 
 		};
 		testStringFixedQuery(testQueries);
@@ -411,8 +414,10 @@ public final class DslListFilterBuilderTest {
 				{ "+DATE_SESSION:[* to #instant1#}", testBean, "+DATE_SESSION:[* TO \"2015-07-23T12:30:00Z\"}" }, //22
 				{ "+DATE_SESSION:[#date1# to *}", testBean, "+DATE_SESSION:[\"2015-07-23\" TO *}" }, //23
 				{ "+DATE_SESSION:[#instant1# to *}", testBean, "+DATE_SESSION:[\"2015-07-23T12:30:00Z\" TO *}" }, //24
-				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str2# +DATE_MODIFICATION_DEPUIS:[#instant1#!(*) TO *] +DATE_NAISSANCE:#instant2#!(*)", testBean, "+(NOM_NAISSANCE:(+Test) OR NOM:(+Test)) +PRENOM:(+Test +test2) +DATE_MODIFICATION_DEPUIS:[\"2015-07-23T12:30:00Z\" TO *] +DATE_NAISSANCE:\"2015-07-23T16:45:00Z\"" }, //25
-				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str2# +DATE_MODIFICATION_DEPUIS:[#date1#!(*) TO *] +DATE_NAISSANCE:#date2#!(*)", testBean, "+(NOM_NAISSANCE:(+Test) OR NOM:(+Test)) +PRENOM:(+Test +test2) +DATE_MODIFICATION_DEPUIS:[\"2015-07-23\" TO *] +DATE_NAISSANCE:\"2015-07-23\"" }, //26
+				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str2# +DATE_MODIFICATION_DEPUIS:[#instant1#!(*) TO *] +DATE_NAISSANCE:#instant2#!(*)", testBean,
+						"+(NOM_NAISSANCE:(+Test) OR NOM:(+Test)) +PRENOM:(+Test +test2) +DATE_MODIFICATION_DEPUIS:[\"2015-07-23T12:30:00Z\" TO *] +DATE_NAISSANCE:\"2015-07-23T16:45:00Z\"" }, //25
+				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str2# +DATE_MODIFICATION_DEPUIS:[#date1#!(*) TO *] +DATE_NAISSANCE:#date2#!(*)", testBean,
+						"+(NOM_NAISSANCE:(+Test) OR NOM:(+Test)) +PRENOM:(+Test +test2) +DATE_MODIFICATION_DEPUIS:[\"2015-07-23\" TO *] +DATE_NAISSANCE:\"2015-07-23\"" }, //26
 
 		};
 		testObjectFixedQuery(testQueries);
@@ -489,12 +494,18 @@ public final class DslListFilterBuilderTest {
 				{ "+PRO_ID:#str1# +ALL:#str2#", testBeanMultipleCode, "+PRO_ID:(CODE_1 CODE_3) +ALL:(Test test2)" }, //5
 				{ "+PRO_ID:#+str1# +ALL:#str2#", testBeanMultipleCode, "+PRO_ID:(+CODE_1 +CODE_3) +ALL:(Test test2)" }, //6
 				{ "+(PRO_ID:#str1#) +ALL:#str2#", testBeanNull, "+ALL:(Test test2)" }, //7
-				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str1# +DATE_MODIFICATION_DEPUIS:[#date2#!(*) TO *] +DATE_NAISSANCE:#date1#!(*)", testBeanNull, "+DATE_MODIFICATION_DEPUIS:[\"2015-07-23\" TO *] +DATE_NAISSANCE:*" }, //8
-				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str1# +DATE_MODIFICATION_DEPUIS:[#date2#!(*) TO *] +DATE_NAISSANCE:#date1#!(*)", testBeanEmpty, "+(NOM_NAISSANCE:* OR NOM:*) +PRENOM:* +DATE_MODIFICATION_DEPUIS:[\"2015-07-23\" TO *] +DATE_NAISSANCE:*" }, //9
-				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str1# +DATE_MODIFICATION_DEPUIS:[#date2#!(*) TO *] +DATE_NAISSANCE:#date1#!(*)", testBeanNull, "+DATE_MODIFICATION_DEPUIS:[\"2015-07-23\" TO *] +DATE_NAISSANCE:*" }, //10
-				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str1# +DATE_MODIFICATION_DEPUIS:[#instant2#!(*) TO *] +DATE_NAISSANCE:#instant1#!(*)", testBeanNull, "+DATE_MODIFICATION_DEPUIS:[\"2015-07-23T12:30:00Z\" TO *] +DATE_NAISSANCE:*" }, //11
-				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str1# +DATE_MODIFICATION_DEPUIS:[#instant2#!(*) TO *] +DATE_NAISSANCE:#instant1#!(*)", testBeanEmpty, "+(NOM_NAISSANCE:* OR NOM:*) +PRENOM:* +DATE_MODIFICATION_DEPUIS:[\"2015-07-23T12:30:00Z\" TO *] +DATE_NAISSANCE:*" }, //12
-				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str1# +DATE_MODIFICATION_DEPUIS:[#instant2#!(*) TO *] +DATE_NAISSANCE:#instant1#!(*)", testBeanNull, "+DATE_MODIFICATION_DEPUIS:[\"2015-07-23T12:30:00Z\" TO *] +DATE_NAISSANCE:*" }, //13
+				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str1# +DATE_MODIFICATION_DEPUIS:[#date2#!(*) TO *] +DATE_NAISSANCE:#date1#!(*)", testBeanNull,
+						"+DATE_MODIFICATION_DEPUIS:[\"2015-07-23\" TO *] +DATE_NAISSANCE:*" }, //8
+				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str1# +DATE_MODIFICATION_DEPUIS:[#date2#!(*) TO *] +DATE_NAISSANCE:#date1#!(*)", testBeanEmpty,
+						"+(NOM_NAISSANCE:* OR NOM:*) +PRENOM:* +DATE_MODIFICATION_DEPUIS:[\"2015-07-23\" TO *] +DATE_NAISSANCE:*" }, //9
+				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str1# +DATE_MODIFICATION_DEPUIS:[#date2#!(*) TO *] +DATE_NAISSANCE:#date1#!(*)", testBeanNull,
+						"+DATE_MODIFICATION_DEPUIS:[\"2015-07-23\" TO *] +DATE_NAISSANCE:*" }, //10
+				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str1# +DATE_MODIFICATION_DEPUIS:[#instant2#!(*) TO *] +DATE_NAISSANCE:#instant1#!(*)", testBeanNull,
+						"+DATE_MODIFICATION_DEPUIS:[\"2015-07-23T12:30:00Z\" TO *] +DATE_NAISSANCE:*" }, //11
+				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str1# +DATE_MODIFICATION_DEPUIS:[#instant2#!(*) TO *] +DATE_NAISSANCE:#instant1#!(*)", testBeanEmpty,
+						"+(NOM_NAISSANCE:* OR NOM:*) +PRENOM:* +DATE_MODIFICATION_DEPUIS:[\"2015-07-23T12:30:00Z\" TO *] +DATE_NAISSANCE:*" }, //12
+				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str1# +DATE_MODIFICATION_DEPUIS:[#instant2#!(*) TO *] +DATE_NAISSANCE:#instant1#!(*)", testBeanNull,
+						"+DATE_MODIFICATION_DEPUIS:[\"2015-07-23T12:30:00Z\" TO *] +DATE_NAISSANCE:*" }, //13
 				{ "+ITM_ID:#int1# +OPE_STATUS_CODE_NOT_ANALYZED:#str2# PART_NUMBER:#str1#^10 +[PART_NUMBER^10,DESCRIPTION_TRACKIT,COLLECTIONS,FAMILY]:#+str2*#", testBeanMultipleTrackIt,
 						"+OPE_STATUS_CODE_NOT_ANALYZED:item +(+(PART_NUMBER:(item*)^10 DESCRIPTION_TRACKIT:(item*) COLLECTIONS:(item*) FAMILY:(item*)))" }, //14
 				{ "+COM_ID:#str1# +INC_AGENTS_ACTIFS:#str1# +QUA_ID:#str1# +COR_ID:#str1# +COG_ID:#str1# +STR_ID:#str1# +MCL_ID_1:#str1# +MCL_ID_2:#str1# +MCL_ID_3:#str1# +MCL_ID_4:#str1# +MCL_ID_5:#str1# +(LISTE_MCL_ID:#str2#) +MOT_CLE_SUP:#str2# +(DATE_SEANCE:[#date1#!(*) to #date1#!(*)] INC_SEANCES_NULL:#booTrue#)",
