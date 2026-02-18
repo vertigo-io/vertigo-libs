@@ -24,11 +24,13 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.OptionalLong;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -57,7 +59,8 @@ import io.vertigo.datamodel.data.util.DataModelUtil;
 import io.vertigo.datastore.entitystore.StoreEvent;
 
 /**
- * Implémentation standard du gestionnaire des indexes de recherche.
+ * Standard implementation of the search index manager.
+ *
  * @author dchallas, npiedeloup
  */
 public final class SearchManagerImpl implements SearchManager, Activeable {
@@ -66,11 +69,15 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	private final AnalyticsManager analyticsManager;
 	private final SearchServicesPlugin searchServicesPlugin;
 
-	private final ScheduledExecutorService executorService; //TODO : replace by WorkManager to make distributed work easier
+	private final ScheduledExecutorService executorServiceLightWork; //TODO : replace by WorkManager to make distributed work easier
+	private final ScheduledExecutorService executorServiceHardWork; //TODO : replace by WorkManager to make distributed work easier
+	private final ScheduledExecutorService executorServiceFullWork; //TODO : replace by WorkManager to make distributed work easier
+	private final Map<String, WritableFuture<Long>> reindexRegistry = new ConcurrentHashMap<>();
 	private final Map<String, Set<UID<? extends KeyConcept>>> dirtyElementsPerIndexName = new HashMap<>();
 
 	/**
 	 * Constructor.
+	 *
 	 * @param searchServicesPlugin the searchServicesPlugin
 	 * @param localeManager the localeManager
 	 * @param analyticsManager the analyticsManager
@@ -88,7 +95,9 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 		this.analyticsManager = analyticsManager;
 		localeManager.add(io.vertigo.datafactory.impl.search.SearchResource.class.getName(), io.vertigo.datafactory.impl.search.SearchResource.values());
 
-		executorService = Executors.newSingleThreadScheduledExecutor(new NamedThreadFactory("v-search-reindex-"));
+		executorServiceLightWork = Executors.newSingleThreadScheduledExecutor(new NamedThreadFactory("v-search-reindex-fast-"));
+		executorServiceHardWork = Executors.newSingleThreadScheduledExecutor(new NamedThreadFactory("v-search-reindex-slow-"));
+		executorServiceFullWork = Executors.newSingleThreadScheduledExecutor(new NamedThreadFactory("v-search-reindex-full-"));
 	}
 
 	/** {@inheritDoc} */
@@ -97,7 +106,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 		for (final SearchIndexDefinition indexDefinition : Node.getNode().getDefinitionSpace().getAll(SearchIndexDefinition.class)) {
 			final Set<UID<? extends KeyConcept>> dirtyElements = new LinkedHashSet<>();
 			dirtyElementsPerIndexName.put(indexDefinition.getName(), dirtyElements);
-			executorService.scheduleWithFixedDelay(new ReindexTask(indexDefinition, dirtyElements, this), 1, 1, TimeUnit.SECONDS); //on dépile les dirtyElements toutes les 1 secondes
+			executorServiceLightWork.scheduleWithFixedDelay(new ReindexTask(indexDefinition, dirtyElements, this), 1, 1, TimeUnit.SECONDS); //process dirty elements every second
 		}
 	}
 
@@ -107,7 +116,9 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 		try {
 			indexLastDirtyElements(5);
 		} finally {
-			executorService.shutdown();
+			executorServiceLightWork.shutdown();
+			executorServiceHardWork.shutdown();
+			executorServiceFullWork.shutdown();
 		}
 	}
 
@@ -118,7 +129,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 			try {
 				Thread.sleep(100);
 			} catch (final InterruptedException e) {
-				Thread.currentThread().interrupt(); //si interrupt on relance
+				Thread.currentThread().interrupt(); //if interrupted, reassert interrupt flag
 			}
 			remaningDirty = 0;
 			for (final Set<UID<? extends KeyConcept>> dirtyElements : dirtyElementsPerIndexName.values()) {
@@ -126,7 +137,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 			}
 		} while (remaningDirty > 0 && System.currentTimeMillis() - time < timeoutSeconds * 1000);
 		if (remaningDirty > 0) {
-			//TODO garder le nom des entity desynchronisees
+			//TODO keep the names of desynchronized entities
 			throw new VSystemException("Timeout ({1}s) while waiting for last dirty elements to index ({0} remaining). Index may be desync with data store.", remaningDirty, timeoutSeconds);
 		}
 	}
@@ -260,26 +271,33 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 
 	/** {@inheritDoc} */
 	@Override
-	public Future<Long> reindexAll(final SearchIndexDefinition searchIndexDefinition) {
-		final WritableFuture<Long> reindexFuture = new WritableFuture<>();
-		executorService.schedule(new ReindexAllTask(searchIndexDefinition, reindexFuture, this), 5, TimeUnit.SECONDS); //une reindexation total dans max 5s
-		return reindexFuture;
+	public OptionalLong getReindexAllProgress(final SearchIndexDefinition indexDefinition) {
+		final var indexName = indexDefinition.getName();
+		final var reindexRegistryKey = computeReindexRegistryKey(ReindexAllTask.class, indexName);
+
+		final var reindexFuture = reindexRegistry.get(reindexRegistryKey);
+		if (reindexFuture != null) {
+			return OptionalLong.of(reindexFuture.getProgress());
+		}
+		return OptionalLong.empty();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Future<Long> reindexAllModified(final SearchIndexDefinition searchIndexDefinition) {
-		final WritableFuture<Long> reindexFuture = new WritableFuture<>();
-		executorService.schedule(new ReindexAllModifiedTask(searchIndexDefinition, reindexFuture, this, searchServicesPlugin), 5, TimeUnit.SECONDS); //une reindexation total dans max 5s
-		return reindexFuture;
+	public WritableFuture<Long> reindexAll(final SearchIndexDefinition searchIndexDefinition) {
+		return scheduleReindexTask(searchIndexDefinition, ReindexAllTask.class, reindexFuture -> new ReindexAllTask(searchIndexDefinition, reindexFuture, this));
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Future<Long> reindexDelta(final SearchIndexDefinition searchIndexDefinition) {
-		final WritableFuture<Long> reindexFuture = new WritableFuture<>();
-		executorService.schedule(new ReindexDeltaTask(searchIndexDefinition, reindexFuture, this, searchServicesPlugin), 5, TimeUnit.SECONDS); //une reindexation delta dans max 5s
-		return reindexFuture;
+	public WritableFuture<Long> reindexAllModified(final SearchIndexDefinition searchIndexDefinition) {
+		return scheduleReindexTask(searchIndexDefinition, ReindexAllModifiedTask.class, reindexFuture -> new ReindexAllModifiedTask(searchIndexDefinition, reindexFuture, this, searchServicesPlugin));
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public WritableFuture<Long> reindexDelta(final SearchIndexDefinition searchIndexDefinition) {
+		return scheduleReindexTask(searchIndexDefinition, ReindexDeltaTask.class, reindexFuture -> new ReindexDeltaTask(searchIndexDefinition, reindexFuture, this, searchServicesPlugin));
 	}
 
 	/** {@inheritDoc} */
@@ -294,14 +312,43 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 		return searchServicesPlugin.getMetaData(indexDefinition, dataPath);
 	}
 
+	private WritableFuture<Long> scheduleReindexTask(final SearchIndexDefinition searchIndexDefinition, final Class<?> runnerClass, final Function<WritableFuture<Long>, Runnable> taskSupplier) {
+		final var indexName = searchIndexDefinition.getName();
+		final var reindexRegistryKey = computeReindexRegistryKey(runnerClass, indexName);
+		final WritableFuture<Long> reindexFuture = new WritableFuture<>();
+		// 1. Attempt to register the task (lock)
+		final var previousReindexFuture = reindexRegistry.putIfAbsent(reindexRegistryKey, reindexFuture);
+		if (previousReindexFuture != null) {
+			reindexFuture.setProgress(previousReindexFuture.getProgress());
+			reindexFuture.fail(new VSystemException("Reindexation of " + indexName + " already in progress (" + previousReindexFuture.getProgress() + " elements done)"));
+			return reindexFuture;
+		}
+		// 2. Wrap execution
+		final var executorService = ReindexAllTask.class.equals(runnerClass) ? executorServiceFullWork : executorServiceHardWork;
+		executorService.submit(() -> {
+			try {
+				taskSupplier.apply(reindexFuture).run();
+			} finally {
+				// 3. Release lock at the very end
+				reindexRegistry.remove(reindexRegistryKey);
+			}
+		});
+		return reindexFuture;
+	}
+
+	private String computeReindexRegistryKey(final Class<?> runnerClass, final String indexName) {
+		return indexName + "_" + runnerClass.getSimpleName();
+	}
+
 	/**
 	 * Receive Store event.
+	 *
 	 * @param storeEvent Store event
 	 */
 	@EventBusSubscribed
 	public void onEvent(final StoreEvent storeEvent) {
 		final List<UID<? extends KeyConcept>> keyConceptUris = (List) storeEvent.getUIDs().stream()
-				//On ne traite l'event que si il porte sur un KeyConcept
+				//Process event only if it targets a KeyConcept
 				.filter(uid -> uid.getDefinition().getStereotype() == DataStereotype.KeyConcept
 						&& hasIndexDefinitionByKeyConcept(uid.getDefinition()))
 				.toList();

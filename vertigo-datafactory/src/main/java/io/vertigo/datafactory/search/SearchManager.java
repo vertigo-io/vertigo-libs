@@ -20,11 +20,12 @@ package io.vertigo.datafactory.search;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.Future;
+import java.util.OptionalLong;
 
 import io.vertigo.core.node.component.Manager;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.collections.model.FacetedQueryResult;
+import io.vertigo.datafactory.impl.search.WritableFuture;
 import io.vertigo.datafactory.search.definitions.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchIndex;
 import io.vertigo.datafactory.search.model.SearchQuery;
@@ -34,7 +35,7 @@ import io.vertigo.datamodel.data.model.KeyConcept;
 import io.vertigo.datamodel.data.model.UID;
 
 /**
- * Gestionnaire des indexes de recherche.
+ * Search indexes manager.
  *
  * @author dchallas, npiedeloup
  */
@@ -42,6 +43,7 @@ public interface SearchManager extends Manager {
 
 	/**
 	 * Find IndexDefinition for a keyConcept. It must be one and only one IndexDefinition.
+	 *
 	 * @param keyConceptClass keyConcept class
 	 * @return SearchIndexDefinition for this keyConcept (not null)
 	 */
@@ -49,6 +51,7 @@ public interface SearchManager extends Manager {
 
 	/**
 	 * Find IndexDefinition for a keyConcept. It must be one and only one IndexDefinition.
+	 *
 	 * @param keyConceptClass keyConcept class
 	 * @return SearchIndexDefinition for this keyConcept (not null)
 	 * @deprecated use findFirstIndexDefinitionByKeyConcept instead
@@ -57,109 +60,129 @@ public interface SearchManager extends Manager {
 	SearchIndexDefinition findIndexDefinitionByKeyConcept(Class<? extends KeyConcept> keyConceptClass);
 
 	/**
-	 * Mark an uid list as dirty. Index of these elements will be reindexed.
-	 * Reindexation isn't synchrone, strategy is dependant of plugin's parameters.
+	 * Mark a UID list as dirty. Index entries for these elements will be reindexed.
+	 * Reindexing is asynchronous; strategy depends on plugin parameters.
+	 *
 	 * @param keyConceptUIDs UID of keyConcept marked as dirty.
 	 */
 	void markAsDirty(List<UID<? extends KeyConcept>> keyConceptUIDs);
 
 	/**
-	 * Launch a complete reindexation of an index.
-	 * @param indexDefinition Type de l'index
-	 * @return Future of number elements indexed
+	 * Get progress of a complete reindex of an index.
+	 *
+	 * @param indexDefinition Index type
+	 * @return Progress of reindex, empty if no complete reindex in progress
 	 */
-	Future<Long> reindexAll(SearchIndexDefinition indexDefinition);
+	OptionalLong getReindexAllProgress(SearchIndexDefinition indexDefinition);
 
 	/**
-	 * Launch a full reindexation of an index, with check modified data to limit updates (based on version field)
-	 * @param indexDefinition Type de l'index
+	 * Launch a full reindex of an index.
+	 *
+	 * @param indexDefinition Index type
 	 * @return Future of number elements indexed
 	 */
-	Future<Long> reindexAllModified(SearchIndexDefinition searchIndexDefinition);
+	WritableFuture<Long> reindexAll(SearchIndexDefinition indexDefinition);
 
 	/**
-	 * Launch a delta reindexation of an index based on a version field (like lastModified or version).
-	 * Last value of this version field is store into index (as metadata).
-	 * @param indexDefinition Type de l'index
+	 * Launch a full reindex of an index, checking modified data to limit updates (based on a version field).
+	 *
+	 * @param indexDefinition Index type
 	 * @return Future of number elements indexed
 	 */
-	Future<Long> reindexDelta(SearchIndexDefinition searchIndexDefinition);
+	WritableFuture<Long> reindexAllModified(SearchIndexDefinition searchIndexDefinition);
 
 	/**
-	 * Ajout de plusieurs ressources à l'index.
-	 * Si les éléments étaient déjà dans l'index ils sont remplacés.
-	 * @param <I> Type de l'objet représentant l'index
-	 * @param <K> Type du keyConcept métier indexé
-	 * @param indexDefinition Type de l'index
-	 * @param indexCollection Liste des objets à pousser dans l'index
+	 * Launch a delta reindex of an index based on a version field (like lastModified or version).
+	 * Last value of this version field is stored into the index (as metadata).
+	 *
+	 * @param indexDefinition Index type
+	 * @return Future of number elements indexed
+	 */
+	WritableFuture<Long> reindexDelta(SearchIndexDefinition searchIndexDefinition);
+
+	/**
+	 * Add multiple resources to the index.
+	 * If the items were already in the index they are replaced.
+	 *
+	 * @param <I> Type of the object representing the index
+	 * @param <K> Type of the keyConcept indexed
+	 * @param indexDefinition Index type
+	 * @param indexCollection List of objects to push into the index
 	 */
 	<K extends KeyConcept, I extends DataObject> void putAll(SearchIndexDefinition indexDefinition, Collection<SearchIndex<K, I>> indexCollection);
 
 	/**
-	 * Ajout d'une ressource à l'index.
-	 * Si l'élément était déjà dans l'index il est remplacé.
-	 * @param <I> Type de l'objet représentant l'index
-	 * @param <K> Type du keyConcept métier indexé
-	 * @param indexDefinition Type de l'index
-	 * @param index Objet à pousser dans l'index
+	 * Add a resource to the index.
+	 * If the item was already in the index it is replaced.
+	 *
+	 * @param <I> Type of the object representing the index
+	 * @param <K> Type of the keyConcept indexed
+	 * @param indexDefinition Index type
+	 * @param index Object to push into the index
 	 */
 	<K extends KeyConcept, I extends DataObject> void put(SearchIndexDefinition indexDefinition, SearchIndex<K, I> index);
 
 	/**
-	 * Récupération du résultat issu d'une requête.
-	 * @param searchQuery critères initiaux
-	 * @param indexDefinition Type de l'index
-	 * @param listState Etat de la liste (tri et pagination)
-	 * @return Résultat correspondant à la requête
-	 * @param <I> Type de l'objet resultant de la recherche
+	 * Retrieve the result of a query.
+	 *
+	 * @param searchQuery Initial criteria
+	 * @param indexDefinition Index type
+	 * @param listState List state (sorting and pagination)
+	 * @return Result matching the query
+	 * @param <I> Type of the object returned by the search
 	 */
 	<I extends DataObject> FacetedQueryResult<I, SearchQuery> loadList(SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final DtListState listState);
 
 	/**
-	 * Récupération du résultat issu d'une requête.
-	 * @param searchQuery critères initiaux
-	 * @param indexDefinition Type de l'index
-	 * @param listState Etat de la liste (tri et pagination)
-	 * @return Résultat correspondant à la requête
-	 * @param <I> Type de l'objet resultant de la recherche
+	 * Retrieve the result of a query.
+	 *
+	 * @param searchQuery Initial criteria
+	 * @param indexDefinition Index type
+	 * @param listState List state (sorting and pagination)
+	 * @return Result matching the query
+	 * @param <I> Type of the object returned by the search
 	 */
 	<I extends DataObject> FacetedQueryResult<I, SearchQuery> loadList(List<SearchIndexDefinition> indexDefinitions, final SearchQuery searchQuery, final DtListState listState);
 
 	/**
-	 * @param indexDefinition  Type de l'index
-	 * @return Nombre de document indexés
+	 * @param indexDefinition Index type
+	 * @return Number of indexed documents
 	 */
 	long count(SearchIndexDefinition indexDefinition);
 
 	/**
-	 * Suppression d'une ressource de l'index.
-	 * @param <K> Type du keyConcept métier indexé
-	 * @param indexDefinition Type de l'index
-	 * @param uid UID de la ressource à supprimer
+	 * Delete a resource from the index.
+	 *
+	 * @param <K> Type of the keyConcept indexed
+	 * @param indexDefinition Index type
+	 * @param uid UID of the resource to delete
 	 */
 	<K extends KeyConcept> void remove(SearchIndexDefinition indexDefinition, final UID<K> uid);
 
 	/**
-	 * Suppression des données correspondant à un filtre.
-	 * @param indexDefinition Type de l'index
-	 * @param listFilter Filtre des éléments à supprimer
+	 * Delete data matching a filter.
+	 *
+	 * @param indexDefinition Index type
+	 * @param listFilter Filter of items to delete
 	 */
 	void removeAll(SearchIndexDefinition indexDefinition, final ListFilter listFilter);
 
 	/**
-	 * Ajout de meta data à l'index.
-	 * Si l'élément était déjà dans l'index il est remplacé.
-	 * @param indexDefinition Type de l'index
-	 * @param dataPath Clé de la métadonnée
-	 * @param dataValue Valeur de la métadonnée
+	 * Add metadata to the index.
+	 * If the item was already in the index it is replaced.
+	 *
+	 * @param indexDefinition Index type
+	 * @param dataPath Metadata key
+	 * @param dataValue Metadata value
 	 */
 	void putMetaData(final SearchIndexDefinition indexDefinition, final String dataPath, final Serializable dataValue);
 
 	/**
-	 * Lecture de meta data à l'index.
-	 * @param indexDefinition Type de l'index
-	 * @param dataPath Clé de la métadonnée
-	 * @return Valeur de la métadonnée, null si pas de donnée
+	 * Read metadata from the index.
+	 *
+	 * @param indexDefinition Index type
+	 * @param dataPath Metadata key
+	 * @return Metadata value, null if no data
 	 */
 	Serializable getMetaData(final SearchIndexDefinition indexDefinition, final String dataPath);
 
