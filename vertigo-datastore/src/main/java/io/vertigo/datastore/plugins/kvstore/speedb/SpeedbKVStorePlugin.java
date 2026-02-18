@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 import javax.inject.Inject;
 
@@ -47,7 +46,6 @@ import io.vertigo.commons.transaction.VTransaction;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionResourceId;
 import io.vertigo.core.analytics.AnalyticsManager;
-import io.vertigo.core.daemon.Daemon;
 import io.vertigo.core.daemon.definitions.DaemonDefinition;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.ListBuilder;
@@ -148,8 +146,7 @@ public final class SpeedbKVStorePlugin implements KVStorePlugin, Activeable, Sim
 	@Override
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
 		final var name = "DmnPurgeSpeedbKvStore$a" + Math.abs(dbFilePathTranslated.hashCode()); //more stable in time
-		final Supplier<Daemon> daemonSupplier = () -> () -> analyticsManager.trace("daemon", name, tracer -> removeTooOldElements());
-		return Collections.singletonList(new DaemonDefinition(name, daemonSupplier, REMOVED_TOO_OLD_ELEMENTS_PERIODE_SECONDS));
+		return Collections.singletonList(new DaemonDefinition(name, () -> this::removeTooOldElements, REMOVED_TOO_OLD_ELEMENTS_PERIODE_SECONDS));
 	}
 
 	private static List<SpeedbCollectionConfig> parseCollectionConfigs(final String collections) {

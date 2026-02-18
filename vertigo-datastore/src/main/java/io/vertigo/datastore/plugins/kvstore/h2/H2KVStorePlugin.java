@@ -79,6 +79,7 @@ public final class H2KVStorePlugin implements KVStorePlugin, SimpleDefinitionPro
 
 	/**
 	 * Constructor.
+	 *
 	 * @param collections List of collections managed by this plugin (comma separated)
 	 * @param timeToLiveSeconds life time of elements (seconde)
 	 */
@@ -163,7 +164,7 @@ public final class H2KVStorePlugin implements KVStorePlugin, SimpleDefinitionPro
 
 	@Override
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
-		return Collections.singletonList(new DaemonDefinition(dmnUniqueName, () -> this::removeTooOldElements, REMOVED_TOO_OLD_ELEMENTS_PERIODE_SECONDS));
+		return Collections.singletonList(new DaemonDefinition(dmnUniqueName, () -> this::removeTooOldElements, REMOVED_TOO_OLD_ELEMENTS_PERIODE_SECONDS, false));
 	}
 
 	private H2Resource getCurrentH2Resource(final KVCollection collection) {
