@@ -502,7 +502,7 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 				query.append(userCriteria.getPostMissingPart());
 			} else {
 				criteriaOnDefinitionField++;
-				final var isInsideQuote = dslTermDefinition.getPreBody().equals("\"") && dslTermDefinition.getPostBody().equals("\"");
+				final var isInsideQuote = dslTermDefinition.getPreBody().contains("\"") && dslTermDefinition.getPostBody().contains("\"");
 				if (!(isInsideQuote && userCriteria.getPreMissingPart().equals("\""))) {
 					query.append(userCriteria.getPreMissingPart());
 				}
