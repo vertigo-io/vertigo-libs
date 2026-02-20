@@ -109,9 +109,11 @@ final class SqlStatementDriver {
 						statement, index + 1, javaDataType, parameter.value());
 			} else {
 				// complex we find the adapter
-				final var adapter = basicTypeAdapters.get(parameter.dataType());
+				final BasicTypeAdapter adapter = basicTypeAdapters.get(parameter.dataType());
 				connection.getDataBase().getSqlMapping().setValueOnStatement(
-						statement, index + 1, adapter.getBasicType().getJavaClass(), adapter.toBasic(parameter.value()));
+						statement, index + 1,
+						(Class) adapter.getBasicType().getJavaClass(),
+						adapter.toBasic(parameter.value()));
 			}
 		}
 	}
