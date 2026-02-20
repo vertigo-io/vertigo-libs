@@ -143,11 +143,6 @@
 			<optional>true</optional>
 		</dependency>
 		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
 			<groupId>com.j256.simplemagic</groupId>
 			<artifactId>simplemagic</artifactId>
 			<optional>true</optional>
