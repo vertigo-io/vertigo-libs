@@ -17,10 +17,7 @@
  */
 package io.vertigo.vega.webservice;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.URL;
-import java.net.URLClassLoader;
 
 import org.eclipse.jetty.ee10.webapp.WebAppContext;
 import org.eclipse.jetty.server.Server;
@@ -51,9 +48,9 @@ public final class WebServiceManagerServletTest extends AbstractWebServiceManage
 		}
 	}
 
-	private static ClassLoader getUrlClassLoader() {
-		return new URLClassLoader(new URL[0], WebServiceManagerServletTest.class.getClassLoader());
-	}
+	//	private static ClassLoader getUrlClassLoader() {
+	//		return new URLClassLoader(new URL[0], WebServiceManagerServletTest.class.getClassLoader());
+	//	}
 
 	private static void startServer() throws IOException, Exception {
 		server = new Server(MyNodeConfig.WS_PORT);
@@ -67,15 +64,15 @@ public final class WebServiceManagerServletTest extends AbstractWebServiceManage
 		server.start();
 	}
 
-	private static File getScratchDir() throws IOException {
-		final var tempDir = new File(System.getProperty("java.io.tmpdir"));
-		final var scratchDir = new File(tempDir.toString(), "embedded-jetty-jsp");
-
-		if (!scratchDir.exists()) {
-			if (!scratchDir.mkdirs()) {
-				throw new IOException("Unable to create scratch directory: " + scratchDir);
-			}
-		}
-		return scratchDir;
-	}
+	//	private static File getScratchDir() throws IOException {
+	//		final var tempDir = new File(System.getProperty("java.io.tmpdir"));
+	//		final var scratchDir = new File(tempDir.toString(), "embedded-jetty-jsp");
+	//
+	//		if (!scratchDir.exists()) {
+	//			if (!scratchDir.mkdirs()) {
+	//				throw new IOException("Unable to create scratch directory: " + scratchDir);
+	//			}
+	//		}
+	//		return scratchDir;
+	//	}
 }
