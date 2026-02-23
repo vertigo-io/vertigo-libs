@@ -343,6 +343,9 @@ public final class MapUiObject<D extends DataObject> extends VegaUiObject<D> imp
 		final var value = getTypedValue(keyFieldName, Serializable.class);
 
 		if (dtField.cardinality().hasMany()) {
+			if (value == null) {
+				return null;
+			}
 			if (value instanceof final Collection<?> list) {
 				return list.stream()
 						.map(v -> doEncodeValue((Serializable) v, dtField, smartType))
