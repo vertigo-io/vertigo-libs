@@ -346,10 +346,11 @@ public final class DslListFilterBuilderTest {
 				{ "ALL:\"#query#\"", "\"Andrey Mariette\"", "ALL:\"Andrey Mariette\"" }, //20
 				{ "ALL:\"#query#\"", "\"Andrey Mariette", "ALL:\"Andrey Mariette\"" }, //21
 				{ "ALL:\"#query#\"", "\"Andrey Mariette\" Test", "ALL:\"Andrey Mariette Test\"" }, //22
-				{ "ALL:+\"#query#\"", "Andrey Mariette", "ALL:(+\"Andrey Mariette\")" }, //23
-				{ "ALL:(\"#query#\")", "Andrey Mariette", "ALL:\"Andrey Mariette\"" }, //24
-				{ "ALL:(#query# #query#)", "Andrey Mariette", "ALL:((Andrey Mariette) (Andrey Mariette))" }, //25
-				{ "ALL:#query#", "Noisy\\ Le\\ Sec*", "ALL:(Noisy\\ Le\\ Sec*)" }, //26
+				{ "ALL:#\"query\"#", "\"Andrey Mariette\" Test", "ALL:(\"Andrey Mariette\" \"Test\")" }, //23
+				{ "ALL:+\"#query#\"", "Andrey Mariette", "ALL:(+\"Andrey Mariette\")" }, //24
+				{ "ALL:(\"#query#\")", "Andrey Mariette", "ALL:\"Andrey Mariette\"" }, //25
+				{ "ALL:(#query# #query#)", "Andrey Mariette", "ALL:((Andrey Mariette) (Andrey Mariette))" }, //26
+				{ "ALL:#query#", "Noisy\\ Le\\ Sec*", "ALL:(Noisy\\ Le\\ Sec*)" }, //27
 
 		};
 		testStringFixedQuery(testQueries);
