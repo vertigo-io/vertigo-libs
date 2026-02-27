@@ -17,20 +17,29 @@
  */
 package io.vertigo.datafactory.plugins.search.elasticsearch.rest;
 
+import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
+import co.elastic.clients.elasticsearch._types.GeoLocation;
 import co.elastic.clients.elasticsearch._types.SortOptions;
 import co.elastic.clients.elasticsearch._types.SortOrder;
 import co.elastic.clients.elasticsearch._types.aggregations.Aggregation;
+import co.elastic.clients.elasticsearch._types.aggregations.AggregationRange;
 import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
 import co.elastic.clients.util.NamedValue;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.core.lang.VSystemException;
+import io.vertigo.core.util.BeanUtil;
 import io.vertigo.datafactory.collections.definitions.FacetDefinition;
 import io.vertigo.datafactory.collections.model.FacetValue;
 import io.vertigo.datafactory.collections.model.FacetedQuery;
@@ -40,6 +49,7 @@ import io.vertigo.datafactory.impl.search.dsl.model.DslGeoExpression;
 import io.vertigo.datafactory.impl.search.dsl.model.DslGeoRangeQuery;
 import io.vertigo.datafactory.impl.search.dsl.rules.DslParserUtil;
 import io.vertigo.datafactory.plugins.search.elasticsearch.DslGeoToQueryBuilderUtil;
+import io.vertigo.datafactory.plugins.search.elasticsearch.ESDistanceUnit;
 import io.vertigo.datafactory.plugins.search.elasticsearch.ESDocumentCodec;
 import io.vertigo.datafactory.plugins.search.elasticsearch.IndexType;
 import io.vertigo.datafactory.search.model.SearchQuery;
@@ -53,8 +63,8 @@ final class ESAggregationBuilder {
 	private static final int TOPHITS_SUBAGGREGATION_SIZE = 10; // max 10 documents per cluster when clusterization is used
 	private static final String TOPHITS_SUBAGGREGATION_NAME = "top";
 	private static final String DATE_PATTERN = "dd/MM/yyyy";
-	private static final Pattern RANGE_PATTERN = Pattern
-			.compile("([a-z][a-zA-Z0-9]*):([\\[\\{])(.*) TO (.*)([\\}\\]])");
+	private static final Pattern RANGE_PATTERN = Pattern.compile("([a-z][a-zA-Z0-9]*):([\\[\\{])(.*) TO (.*)([\\}\\]])");
+	private static final Pattern SIMPLE_CRITERIA_PATTERN = Pattern.compile("#([a-z][a-zA-Z0-9]*)#");
 
 	private ESAggregationBuilder() {
 		// private
@@ -168,7 +178,7 @@ final class ESAggregationBuilder {
 			// Actually Custom Facet in Vertigo usually means "Terms" with scripts or specific JSON.
 			// Since CustomAggregationBuilder is broken, we might assume it is a Terms aggregation with custom params.
 			// Let's implement standard terms for now as fallback.
-			return termFacetToAggregation(facetDefinition, dtField, subAggregations);
+			return customFacetToAggregation(facetDefinition, criteria, subAggregations);
 		} else if (facetDefinition.isRangeFacet()) {
 			return rangeFacetToAggregation(facetDefinition, dtField, criteria, typeAdapters, subAggregations);
 		}
@@ -298,82 +308,148 @@ final class ESAggregationBuilder {
 				.aggregations(subAggregations));
 	}
 
-	private static Aggregation (final FacetDefinition facetDefinition,
-			final DataField dtField, final Object criteria,
+	private static Aggregation geoRangeFacetToAggregation(final FacetDefinition facetDefinition, final DataField dtField, final Object myCriteria,
 			final Map<Class, BasicTypeAdapter> typeAdapters, final Map<String, Aggregation> subAggregations) {
 
-		// Geo Distance Aggregation
-		// Need to compute origin.
-		// Assuming first range gives the origin strategy (fixed or from criteria)
-		// Logic copied from AbstractESSearchRequestBuilder
+		Assertion.check().isFalse(facetDefinition.getFacetRanges().isEmpty(), "Range facet can't be empty {0}", facetDefinition.getName());
 
-		if (facetDefinition.getFacetRanges().isEmpty()) {
-			return null;
+		String originExpression = null;
+		String geoFieldName = null;
+
+		//On prépare les données avant de construire l'agrégation
+		GeoLocation originGeoLocation = null;
+		final List<AggregationRange> ranges = new ArrayList<>();
+
+		for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
+			final String filterValue = facetRange.listFilter().getFilterValue();
+			final DslGeoExpression dslGeoExpression = DslParserUtil.parseGeoExpression(filterValue);
+
+			final String currentGeoFieldName = dslGeoExpression.getField().getFieldName();
+			Assertion.check().isTrue(currentGeoFieldName.contains(dtField.name()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.name(), filterValue);
+
+			// On stocke le field (tous les ranges ont le même de toutes façons)
+			geoFieldName = currentGeoFieldName;
+
+			final DslGeoDistanceQuery geoStartDistanceQuery;
+			final DslGeoDistanceQuery geoEndDistanceQuery;
+
+			if (dslGeoExpression.getGeoQuery() instanceof DslGeoDistanceQuery) {
+				geoEndDistanceQuery = (DslGeoDistanceQuery) dslGeoExpression.getGeoQuery();
+				geoStartDistanceQuery = new DslGeoDistanceQuery(geoEndDistanceQuery.getGeoPoint(), 0, "m");
+
+				if (originExpression == null) {
+					final var geoPoint = DslGeoToQueryBuilderUtil.computeGeoPoint(geoEndDistanceQuery.getGeoPoint(), myCriteria, typeAdapters);
+					originExpression = geoEndDistanceQuery.getGeoPoint().toString();
+
+					// Création du GeoLocation à partir du point
+					originGeoLocation = GeoLocation.of(gl -> gl
+							// Attention: adapte .getLat()/.getLon() selon ta classe GeoPoint
+							.latlon(ll -> ll.lat(geoPoint.lat()).lon(geoPoint.lon())));
+				} else {
+					Assertion.check().isTrue(geoEndDistanceQuery.getGeoPoint().toString().equals(originExpression), "All facets must have the same origin : {0} != {1} in {2}",
+							geoEndDistanceQuery.getGeoPoint().toString(), originExpression, facetDefinition.getName());
+				}
+			} else if (dslGeoExpression.getGeoQuery() instanceof DslGeoRangeQuery) {
+				final DslGeoRangeQuery geoRangeQuery = (DslGeoRangeQuery) dslGeoExpression.getGeoQuery();
+				geoStartDistanceQuery = (DslGeoDistanceQuery) geoRangeQuery.getStartGeoPoint();
+				geoEndDistanceQuery = (DslGeoDistanceQuery) geoRangeQuery.getEndGeoPoint();
+
+				if (originExpression == null) {
+					final var geoPoint = DslGeoToQueryBuilderUtil.computeGeoPoint(geoStartDistanceQuery.getGeoPoint(), myCriteria, typeAdapters);
+					originExpression = geoStartDistanceQuery.getGeoPoint().toString();
+
+					// ES9 : Création du GeoLocation
+					originGeoLocation = GeoLocation.of(gl -> gl
+							.latlon(ll -> ll.lat(geoPoint.lat()).lon(geoPoint.lon())));
+				} else {
+					Assertion.check()
+							.isTrue(geoStartDistanceQuery.getGeoPoint().toString().equals(originExpression), "All facets must have the same origin : {0} != {1} in {2}",
+									geoStartDistanceQuery.getGeoPoint().toString(), originExpression, facetDefinition.getName())
+							.isTrue(geoEndDistanceQuery.getGeoPoint().toString().equals(originExpression), "All facets must have the same origin : {0} != {1} in {2}",
+									geoEndDistanceQuery.getGeoPoint().toString(), originExpression, facetDefinition.getName());
+				}
+			} else {
+				throw new IllegalArgumentException("Only GeoDistanceQuery or Range of GeoDistanceQuery are supported in range facet (in " + facetDefinition.getName() + ")");
+			}
+
+			// NOTA : Si DistanceUnit (issu de ES7) compile toujours car tu as gardé les classes, ça marchera.
+			// Sinon il faudra refaire un simple switch case pour multiplier la valeur par 1000 (km -> mètres)
+			final ESDistanceUnit startDistanceUnit = ESDistanceUnit.fromString(geoStartDistanceQuery.getDistanceUnit());
+			final ESDistanceUnit endDistanceUnit = ESDistanceUnit.fromString(geoEndDistanceQuery.getDistanceUnit());
+
+			final double startMeters = startDistanceUnit.toMeters(geoStartDistanceQuery.getDistance());
+			final double endMeters = endDistanceUnit.toMeters(geoEndDistanceQuery.getDistance());
+
+			// ES9 : Au lieu de rangeBuilder.addRange, on ajoute dans notre liste
+			ranges.add(AggregationRange.of(r -> r
+					.key(facetRange.code())
+					.from(startMeters)
+					.to(endMeters)));
 		}
 
-		final String filterValueFirst = facetDefinition.getFacetRanges().get(0).listFilter().getFilterValue();
-		final DslGeoExpression dslGeoExpressionFirst = DslParserUtil.parseGeoExpression(filterValueFirst);
-		final String geoFieldName = dslGeoExpressionFirst.getField().getFieldName();
+		// Les lambdas ES9 réclament des variables "effectively final"
+		final String finalGeoFieldName = geoFieldName;
+		final GeoLocation finalOrigin = originGeoLocation;
 
-		co.elastic.clients.elasticsearch._types.LatLonGeoLocation origin = null;
-
-		// Determine origin from first range
-		if (dslGeoExpressionFirst.getGeoQuery() instanceof DslGeoDistanceQuery) {
-			final DslGeoDistanceQuery geoEndDistanceQuery = (DslGeoDistanceQuery) dslGeoExpressionFirst.getGeoQuery();
-			origin = DslGeoToQueryBuilderUtil.computeGeoPoint(geoEndDistanceQuery.getGeoPoint(), criteria,
-					typeAdapters);
-		} else if (dslGeoExpressionFirst.getGeoQuery() instanceof DslGeoRangeQuery) {
-			final DslGeoRangeQuery geoRangeQuery = (DslGeoRangeQuery) dslGeoExpressionFirst.getGeoQuery();
-			final DslGeoDistanceQuery geoStartDistanceQuery = (DslGeoDistanceQuery) geoRangeQuery.getStartGeoPoint();
-			origin = DslGeoToQueryBuilderUtil.computeGeoPoint(geoStartDistanceQuery.getGeoPoint(), criteria,
-					typeAdapters);
-		}
-
-		final co.elastic.clients.elasticsearch._types.LatLonGeoLocation finalOrigin = origin;
-
+		// ES9 : On construit l'agrégation finale en injectant la liste préparée
 		return Aggregation.of(a -> a
-				.geoDistance(gd -> {
-					gd.field(geoFieldName);
-					.location(finalOrigin);
-
-					for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
-						final String filterValue = facetRange.listFilter().getFilterValue();
-						final DslGeoExpression dslGeoExpression = DslParserUtil.parseGeoExpression(filterValue);
-
-						// Extract distances
-						final double fromFn = 0;
-						final double toFn = Double.MAX_VALUE; // Infinity
-
-						if (dslGeoExpression.getGeoQuery() instanceof DslGeoDistanceQuery) {
-							// Distance < X
-							final DslGeoDistanceQuery geoDist = (DslGeoDistanceQuery) dslGeoExpression.getGeoQuery();
-							toFn = DistanceUnit.fromString(geoDist.getDistanceUnit()).toMeters(geoDist.getDistance());
-						} else if (dslGeoExpression.getGeoQuery() instanceof DslGeoRangeQuery) {
-							final DslGeoRangeQuery geoRange = (DslGeoRangeQuery) dslGeoExpression.getGeoQuery();
-							final DslGeoDistanceQuery startDist = (DslGeoDistanceQuery) geoRange.getStartGeoPoint();
-							final DslGeoDistanceQuery endDist = (DslGeoDistanceQuery) geoRange.getEndGeoPoint();
-
-							fromFn = DistanceUnit.fromString(startDist.getDistanceUnit()).toMeters(startDist.getDistance());
-							toFn = DistanceUnit.fromString(endDist.getDistanceUnit()).toMeters(endDist.getDistance());
-						}
-
-						final double finalFrom = fromFn;
-						final double finalTo = toFn;
-
-						gd.ranges(r -> {
-							r.key(facetRange.code());
-							if (finalFrom > 0) {
-								r.from(finalFrom);
-							}
-							if (finalTo < Double.MAX_VALUE) {
-								r.to(finalTo);
-							}
-							return r;
-						});
-					}
-					return gd;
-				})
+				.geoDistance(gd -> gd
+						.field(finalGeoFieldName)
+						.origin(finalOrigin)
+						.ranges(ranges)
+						// ES9: Comme on a tout converti en mètres juste avant, on précise l'unité
+						.unit(co.elastic.clients.elasticsearch._types.DistanceUnit.Meters))
 				.aggregations(subAggregations));
+	}
+
+	private static Aggregation customFacetToAggregation(final FacetDefinition facetDefinition, final Object myCriteria, final Map<String, Aggregation> subAggregations) {
+		// 1. On applique ton remplacement de variables (ex: #precision# -> 5)
+		final Map<String, String> customParams = replaceCriteria(facetDefinition.getCustomParams(), myCriteria);
+
+		// 2. On détermine le type de l'agrégation (comme tu le faisais dans ton constructeur ES7)
+		String typeParam = customParams.get("_type");
+		if (typeParam == null) {
+			typeParam = customParams.keySet().stream()
+					.filter(k -> !k.equals("_type") && !k.equals("_innerWriteTo") && !k.equals("_decimalPrecision"))
+					.findFirst()
+					.orElseThrow(() -> new IllegalStateException("Impossible de déduire le type de l'agrégation custom"));
+		}
+
+		// 3. On récupère le corps JSON (ex: {"field" : "localisation","precision" : 5 })
+		final String jsonBody = customParams.get(typeParam);
+
+		// 4. On crée le JSON final attendu par l'API ES9
+		// Résultat: { "geohash_grid": {"field" : "localisation","precision" : 5 } }
+		final String es9Json = "{ \"" + typeParam + "\": " + jsonBody + " }";
+
+		// 5. On laisse la magie d'ES9 parser le JSON et on attache les sous-agrégations
+		return Aggregation.of(a -> {
+			a.withJson(new StringReader(es9Json));
+
+			// Si on a des sous-agrégations (comme ton fameux top_hits)
+			if (subAggregations != null && !subAggregations.isEmpty()) {
+				a.aggregations(subAggregations);
+			}
+
+			return a;
+		});
+	}
+
+	private static Map<String, String> replaceCriteria(final Map<String, String> customParams, final Object myCriteria) {
+		return customParams.entrySet().stream()
+				.collect(Collectors.toMap(Entry::getKey,
+						v -> {
+							final Matcher matcher = SIMPLE_CRITERIA_PATTERN.matcher(v.getValue());
+							String result = v.getValue();
+							while (matcher.find()) {
+								final String fieldName = matcher.group(1);
+								final Object fieldValue = BeanUtil.getValue(myCriteria, fieldName);
+								if (fieldValue != null) {
+									result = result.replaceAll("#" + fieldName + "#", String.valueOf(fieldValue));
+								}
+							}
+							return result;
+						}));
 	}
 
 	private static Optional<Double> convertToDouble(final String valueToConvert) {

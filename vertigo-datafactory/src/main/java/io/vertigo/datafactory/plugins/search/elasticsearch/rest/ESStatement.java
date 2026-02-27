@@ -278,7 +278,7 @@ final class ESStatement<K extends KeyConcept, I extends DataObject> {
 			vue.initCause(e);
 			return vue;
 		}
-		return WrappedException.wrap(e, "Error in {0} on {1}", methodName, indexName);
+		return WrappedException.wrap(e, "Error in {0} on {1} : {2}", methodName, indexName, errorMessage);
 	}
 
 	/**

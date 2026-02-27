@@ -17,6 +17,7 @@
  */
 package io.vertigo.datafactory.plugins.search.elasticsearch;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -26,6 +27,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import co.elastic.clients.elasticsearch._types.aggregations.Aggregate;
+import co.elastic.clients.elasticsearch._types.aggregations.Buckets;
 import co.elastic.clients.elasticsearch._types.aggregations.DoubleTermsBucket;
 import co.elastic.clients.elasticsearch._types.aggregations.LongTermsBucket;
 import co.elastic.clients.elasticsearch._types.aggregations.MultiBucketBase;
@@ -293,28 +295,96 @@ public final class ESFacetedQueryResultBuilder<I extends DataObject> implements 
 			return aggregate.dateRange().buckets().array();
 		} else if (aggregate.isGeoDistance()) {
 			return aggregate.geoDistance().buckets().array();
+		} else if (aggregate.isGeohashGrid()) {
+			return aggregate.geohashGrid().buckets().array();
 		} else if (aggregate.isFilters()) {
 			// filters aggregation uses keyed buckets
 			return new ArrayList<>(aggregate.filters().buckets().keyed().values());
 		}
-		throw new VSystemException("Unsupported aggregate type: {0}", aggregate._kind());
+		return extractCustomBuckets(aggregate);
+	}
+
+	/**
+	 * Extracts the list of buckets from an Aggregate generically using reflection.
+	 * This avoids maintaining an exhaustive list of all possible ES9 aggregation types,
+	 * ensuring full support for CustomFacets (geohash, hex_grid, date_histogram...).
+	 */
+	private static List<? extends MultiBucketBase> extractCustomBuckets(final Aggregate aggregate) {
+		// _get() renvoie l'instance spécifique (ex: StringTermsAggregate, GeohashGridAggregate, etc.)
+		final Object specificAggregation = aggregate._get();
+
+		try {
+			// 1. On appelle dynamiquement la méthode buckets()
+			final var bucketsMethod = specificAggregation.getClass().getMethod("buckets");
+			final Buckets bucketsContainer = (Buckets) bucketsMethod.invoke(specificAggregation);
+
+			if (bucketsContainer == null) {
+				return List.of();
+			}
+
+			// 2. On tente de récupérer la liste via .array() (Cas de 90% des agrégations : terms, geohash, range...)
+			if (bucketsContainer.isArray()) {
+				return bucketsContainer.array();
+			} else if (bucketsContainer.isKeyed()) {
+				return new ArrayList<>(bucketsContainer.keyed().values());
+			} else {
+				throw new NoSuchMethodException("Neither array() nor keyed() method found on buckets container");
+			}
+		} catch (final NoSuchMethodException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			throw new VSystemException(e, "L'agrégation {0} ne possède pas de buckets extractibles", aggregate._kind());
+		}
 	}
 
 	/**
 	 * Gets the key string from a bucket, regardless of its concrete bucket type.
 	 */
 	private static String getBucketKey(final MultiBucketBase bucket) {
-		if (bucket instanceof StringTermsBucket stb) {
+		if (bucket instanceof final StringTermsBucket stb) {
 			return stb.key().stringValue();
-		} else if (bucket instanceof LongTermsBucket ltb) {
+		} else if (bucket instanceof final LongTermsBucket ltb) {
 			return ltb.keyAsString() != null ? ltb.keyAsString() : String.valueOf(ltb.key());
-		} else if (bucket instanceof DoubleTermsBucket dtb) {
+		} else if (bucket instanceof final DoubleTermsBucket dtb) {
 			return dtb.keyAsString() != null ? dtb.keyAsString() : String.valueOf(dtb.key());
-		} else if (bucket instanceof RangeBucket rb) {
+		} else if (bucket instanceof final RangeBucket rb) {
 			return rb.key();
 		}
 		// Fallback
-		return bucket.toString();
+		return extractBucketKey(bucket);
+	}
+
+	/**
+	 * Extrait le "code" (la clé) du bucket de manière dynamique.
+	 * Indispensable car l'interface MultiBucketBase ne définit pas de méthode key().
+	 */
+	private static String extractBucketKey(final MultiBucketBase bucket) {
+		try {
+			// 1. Tente d'appeler la méthode "key()" (cas des Terms, Geohash, etc.)
+			final var keyMethod = bucket.getClass().getMethod("key");
+			final Object keyObj = keyMethod.invoke(bucket);
+
+			if (keyObj != null) {
+				// Selon la version d'ES9, la clé peut être encapsulée dans un "FieldValue".
+				// On tente d'appeler stringValue() si ça existe.
+				try {
+					return (String) keyObj.getClass().getMethod("stringValue").invoke(keyObj);
+				} catch (final NoSuchMethodException e) {
+					// Sinon (ex: String, Long, Double natif), le toString() suffit largement
+					return keyObj.toString();
+				}
+			}
+		} catch (final NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+			// 2. Fallback pour les RangeBuckets (qui n'ont pas key() mais keyAsString() ou from/to)
+			try {
+				final var keyAsStringMethod = bucket.getClass().getMethod("keyAsString");
+				final Object keyAsStringObj = keyAsStringMethod.invoke(bucket);
+				if (keyAsStringObj != null) {
+					return keyAsStringObj.toString();
+				}
+			} catch (final Exception ex) {
+				// Ignoré, on gère l'erreur globale juste en dessous
+			}
+		}
+		throw new VSystemException("Impossible de récupérer le code (clé) pour le bucket de type {0}", bucket.getClass().getSimpleName());
 	}
 
 }
