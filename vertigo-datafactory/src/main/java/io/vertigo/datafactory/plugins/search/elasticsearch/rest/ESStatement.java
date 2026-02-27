@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.ElasticsearchException;
 import co.elastic.clients.elasticsearch._types.Refresh;
@@ -33,14 +34,11 @@ import co.elastic.clients.elasticsearch._types.Result;
 import co.elastic.clients.elasticsearch.core.BulkRequest;
 import co.elastic.clients.elasticsearch.core.BulkResponse;
 import co.elastic.clients.elasticsearch.core.CountResponse;
-import co.elastic.clients.elasticsearch.core.DeleteByQueryRequest;
 import co.elastic.clients.elasticsearch.core.DeleteByQueryResponse;
 import co.elastic.clients.elasticsearch.core.DeleteResponse;
 import co.elastic.clients.elasticsearch.core.SearchRequest;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
-import co.elastic.clients.elasticsearch.core.bulk.BulkOperation;
 import co.elastic.clients.elasticsearch.core.search.Hit;
-import co.elastic.clients.json.JsonData;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.lang.BasicTypeAdapter;
@@ -107,7 +105,7 @@ final class ESStatement<K extends KeyConcept, I extends DataObject> {
 	void putAll(final Collection<SearchIndex<K, I>> indexCollection) {
 		//Injection spécifique au moteur d'indexation.
 		try {
-			BulkRequest.Builder br = new BulkRequest.Builder().refresh(BULK_REFRESH);
+			final BulkRequest.Builder br = new BulkRequest.Builder().refresh(BULK_REFRESH);
 
 			for (final SearchIndex<K, I> index : indexCollection) {
 				final var document = esDocumentCodec.index2Json(index);
@@ -117,7 +115,7 @@ final class ESStatement<K extends KeyConcept, I extends DataObject> {
 								.id(index.getUID().urn())
 								.document(document)));
 			}
-			BulkResponse bulkResponse = esClient.bulk(br.build());
+			final BulkResponse bulkResponse = esClient.bulk(br.build());
 			if (bulkResponse.errors()) {
 				throw new VSystemException("Can't putAll into {0} index.\nCause by {1}", indexName, bulkResponse.items());
 			}
@@ -136,8 +134,8 @@ final class ESStatement<K extends KeyConcept, I extends DataObject> {
 	void put(final SearchIndex<K, I> index) {
 		//Injection spécifique au moteur d'indexation.
 		try {
-			var document = esDocumentCodec.index2Json(index);
-			var indexeResponse = esClient.index(i -> i
+			final var document = esDocumentCodec.index2Json(index);
+			final var indexeResponse = esClient.index(i -> i
 					.index(indexName)
 					.id(index.getUID().urn())
 					.refresh(DEFAULT_REFRESH)
@@ -160,7 +158,7 @@ final class ESStatement<K extends KeyConcept, I extends DataObject> {
 		//-----
 		try {
 			//final QueryBuilder queryBuilder = AsbtractESSearchRequestBuilder.translateToQueryBuilder(query);
-			DeleteByQueryResponse deleteByQueryResponse = esClient.deleteByQuery(d -> d
+			final DeleteByQueryResponse deleteByQueryResponse = esClient.deleteByQuery(d -> d
 					.index(indexName)
 					.query(q -> q.queryString(qs -> qs.query(query.getFilterValue()).analyzeWildcard(true))) // TODO a refactorer avec AsbtractESSearchRequestBuilder.translateToQueryBuilder(query)
 			);
@@ -168,13 +166,7 @@ final class ESStatement<K extends KeyConcept, I extends DataObject> {
 			final long deleted = deleteByQueryResponse.deleted();
 			LOGGER.debug("Removed {} elements", deleted);
 		} catch (final ElasticsearchException e) {
-			final String errorMessage = e.getMessage();
-			if (errorMessage != null && (errorMessage.contains("Failed to parse") || errorMessage.contains("search_phase_execution_exception"))) {
-				final VUserException vue = new VUserException(SearchResource.DATAFACTORY_SEARCH_QUERY_SYNTAX_ERROR);
-				vue.initCause(e);
-				throw vue;
-			}
-			throw WrappedException.wrap(e, "Error in remove() on {0}", indexName);
+			throw handleElasticsearchException("remove()", e);
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e, "Error in remove() on {0}", indexName);
 		}
@@ -185,7 +177,7 @@ final class ESStatement<K extends KeyConcept, I extends DataObject> {
 		//-----
 		try {
 			// On précise Map.class car on veut récupérer le JSON brut sous forme de Map
-			SearchResponse<Map> searchResponse = esClient.search(s -> s
+			final SearchResponse<Map> searchResponse = esClient.search(s -> s
 					.index(indexName)
 					.size(maxElements)
 					.trackTotalHits(t -> t.count(10_000))
@@ -193,20 +185,14 @@ final class ESStatement<K extends KeyConcept, I extends DataObject> {
 					.source(src -> src.filter(f -> f.includes(versionField.name()))), Map.class);
 
 			final Map<UID<K>, Serializable> result = new HashMap<>();
-			for (Hit<Map> hit : searchResponse.hits().hits()) {
+			for (final Hit<Map> hit : searchResponse.hits().hits()) {
 				final String urn = hit.id();
 				final Serializable value = decodeVersionValue(versionField, hit.source().get(versionField.name()));
 				result.put(UID.of(urn), value);
 			}
 			return result;
 		} catch (final ElasticsearchException e) {
-			final String errorMessage = e.getMessage();
-			if (errorMessage != null && (errorMessage.contains("Failed to parse") || errorMessage.contains("search_phase_execution_exception"))) {
-				final VUserException vue = new VUserException(SearchResource.DATAFACTORY_SEARCH_QUERY_SYNTAX_ERROR);
-				vue.initCause(e);
-				throw vue;
-			}
-			throw WrappedException.wrap(e, "Error in loadVersions() on {0}", indexName);
+			throw handleElasticsearchException("loadVersions()", e);
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e, "Error in loadVersions() on {0}", indexName);
 		}
@@ -222,9 +208,9 @@ final class ESStatement<K extends KeyConcept, I extends DataObject> {
 		}
 		final BasicType versionFieldDataType = versionField.smartTypeDefinition().getBasicType();
 		return switch (versionFieldDataType) {
-			case Integer -> value instanceof Integer i ? i : Integer.valueOf(String.valueOf(value));
-			case Long -> value instanceof Long l ? l : Long.valueOf(String.valueOf(value));
-			case Instant -> value instanceof Instant i ? i : Instant.parse(String.valueOf(value));
+			case Integer -> value instanceof final Integer i ? i : Integer.valueOf(String.valueOf(value));
+			case Long -> value instanceof final Long l ? l : Long.valueOf(String.valueOf(value));
+			case Instant -> value instanceof final Instant i ? i : Instant.parse(String.valueOf(value));
 			case String -> String.valueOf(value);
 			default -> throw new IllegalArgumentException("Type's versionField " + versionFieldDataType.name() + " from "
 					+ indexName + " is not supported, prefer int, long, Instant or String.");
@@ -274,20 +260,25 @@ final class ESStatement<K extends KeyConcept, I extends DataObject> {
 			return new ESFacetedQueryResultBuilder(esDocumentCodec, indexDtDefinition, searchResponse, searchQuery)
 					.build();
 		} catch (final ElasticsearchException e) {
-			final String errorMessage = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
-			if (errorMessage.contains("set fielddata=true")) {
-				final VUserException vue = new VUserException(SearchResource.DATAFACTORY_SEARCH_INDEX_FIELDDATA_ERROR);
-				vue.initCause(e);
-				throw vue;
-			} else if (errorMessage.contains("Failed to parse query") || errorMessage.contains("type=search_phase_execution_exception")) {
-				final VUserException vue = new VUserException(SearchResource.DATAFACTORY_SEARCH_QUERY_SYNTAX_ERROR);
-				vue.initCause(e);
-				throw vue;
-			}
-			throw WrappedException.wrap(e, "Error in loadList() on {0}", indexName);
+			throw handleElasticsearchException("loadList()", e);
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e, "Error in loadList() on {0}", indexName);
 		}
+	}
+
+	private RuntimeException handleElasticsearchException(final String methodName, final ElasticsearchException e) {
+		final String errorMessage = e.error() != null && e.error().causedBy() != null && e.error().causedBy().reason() != null ? e.error().causedBy().reason()
+				: e.getMessage() != null ? e.getMessage() : "";
+		if (errorMessage.contains("set fielddata=true")) {
+			final VUserException vue = new VUserException(SearchResource.DATAFACTORY_SEARCH_INDEX_FIELDDATA_ERROR);
+			vue.initCause(e);
+			return vue;
+		} else if (errorMessage.contains("Failed to parse") || errorMessage.contains("search_phase_execution_exception")) {
+			final VUserException vue = new VUserException(SearchResource.DATAFACTORY_SEARCH_QUERY_SYNTAX_ERROR);
+			vue.initCause(e);
+			return vue;
+		}
+		return WrappedException.wrap(e, "Error in {0} on {1}", methodName, indexName);
 	}
 
 	/**

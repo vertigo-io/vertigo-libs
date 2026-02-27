@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import co.elastic.clients.elasticsearch.core.search.Hit;
+import co.elastic.clients.json.JsonData;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicTypeAdapter;
@@ -101,11 +102,12 @@ public final class ESDocumentCodec {
 		/* 2 : Result stocké */
 		final I resultDtObject;
 		final var source = searchHit.source();
+		final var sourceMap = source instanceof final Map m ? m : source instanceof final JsonData j ? j.to(Map.class) : source;
 		Assertion.check()
-				.isNotNull(source)
-				.isTrue(source instanceof Map, "L'api de recherche ne retourne pas le type attendu : Map, return:{0}", source.getClass().toString())
-				.isTrue(((Map) source).containsKey(FULL_RESULT), "La structure de l'index est incorrect, manque {0}, (keys:{1})", source.getClass().toString());
-		resultDtObject = decode((String) ((Map) source).get(FULL_RESULT));
+				.isNotNull(sourceMap)
+				.isTrue(sourceMap instanceof Map, "L'api de recherche ne retourne pas le type attendu : Map, return:{0}", source.getClass().toString())
+				.isTrue(((Map) sourceMap).containsKey(FULL_RESULT), "La structure de l'index est incorrect, manque {0}, (keys:{1})", source.getClass().toString());
+		resultDtObject = decode((String) ((Map) sourceMap).get(FULL_RESULT));
 		//-----
 		final var resultDtDefinition = DataModelUtil.findDataDefinition(resultDtObject);
 		Assertion.check()

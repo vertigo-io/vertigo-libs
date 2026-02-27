@@ -45,8 +45,9 @@ import io.vertigo.datamodel.data.model.DtListState;
  */
 final class ESSearchRequestBuilder implements Builder<SearchRequest> {
 
-	private static final int MAX_TOTAL_HIT = 1_000_000; //maximum total hit count
-	private static final int TOPHITS_SUBAGGREGATION_MAXSIZE = 100; //max 100 documents per cluster when clusterization is used
+	private static final int MAX_TOTAL_HIT = 1_000_000; // maximum total hit count
+	private static final int TOPHITS_SUBAGGREGATION_MAXSIZE = 100; // max 100 documents per cluster when clusterization
+																	// is used
 
 	private final String[] indexNames;
 	private final Map<Class, BasicTypeAdapter> typeAdapters;
@@ -62,12 +63,13 @@ final class ESSearchRequestBuilder implements Builder<SearchRequest> {
 	 * @param esClient ElasticSearch client
 	 * @param typeAdapters Mapping to basic type adapter
 	 */
-	ESSearchRequestBuilder(final String[] indexNames, final ElasticsearchClient esClient, final Map<Class, BasicTypeAdapter> typeAdapters) {
+	ESSearchRequestBuilder(final String[] indexNames, final ElasticsearchClient esClient,
+			final Map<Class, BasicTypeAdapter> typeAdapters) {
 		Assertion.check()
 				.isNotNull(indexNames)
 				.isNotNull(esClient)
 				.isNotNull(typeAdapters);
-		//-----
+		// -----
 		this.indexNames = indexNames;
 		this.typeAdapters = typeAdapters;
 	}
@@ -78,7 +80,7 @@ final class ESSearchRequestBuilder implements Builder<SearchRequest> {
 	 */
 	ESSearchRequestBuilder withIndexDtDefinition(final DataDefinition indexDtDefinition) {
 		Assertion.check().isNotNull(indexDtDefinition);
-		//-----
+		// -----
 		myIndexDtDefinition = indexDtDefinition;
 		return this;
 	}
@@ -89,7 +91,7 @@ final class ESSearchRequestBuilder implements Builder<SearchRequest> {
 	 */
 	ESSearchRequestBuilder withSearchQuery(final SearchQuery searchQuery) {
 		Assertion.check().isNotNull(searchQuery);
-		//-----
+		// -----
 		mySearchQuery = searchQuery;
 		return this;
 	}
@@ -101,7 +103,7 @@ final class ESSearchRequestBuilder implements Builder<SearchRequest> {
 	 */
 	ESSearchRequestBuilder withListState(final DtListState listState, final int defaultMaxRows) {
 		Assertion.check().isNotNull(listState);
-		//-----
+		// -----
 		myListState = listState;
 		myDefaultMaxRows = defaultMaxRows;
 		return this;
@@ -124,18 +126,21 @@ final class ESSearchRequestBuilder implements Builder<SearchRequest> {
 				.isNotNull(myListState, "You must set ListState")
 				.when(mySearchQuery.isClusteringFacet() && myListState.getMaxRows().isPresent(), () -> Assertion.check()
 						.isTrue(myListState.getMaxRows().get() < TOPHITS_SUBAGGREGATION_MAXSIZE,
-								"ListState.top = {0} invalid. Can't show more than {1} elements when grouping", myListState.getMaxRows().orElse(null), TOPHITS_SUBAGGREGATION_MAXSIZE));
-		//-----
+								"ListState.top = {0} invalid. Can't show more than {1} elements when grouping",
+								myListState.getMaxRows().orElse(null), TOPHITS_SUBAGGREGATION_MAXSIZE));
+		// -----
 
 		// 1. Build Query and PostFilter
 		final Query requestQuery = ESSearchQueryBuilder.buildQuery(mySearchQuery, typeAdapters);
 		final Query postFilter = ESSearchQueryBuilder.buildPostFilter(mySearchQuery, typeAdapters);
 
 		// 2. Build Sort Options
-		final List<SortOptions> sortOptions = ESSortBuilder.buildSortOptions(mySearchQuery, myListState, myIndexDtDefinition, typeAdapters);
+		final List<SortOptions> sortOptions = ESSortBuilder.buildSortOptions(mySearchQuery, myListState,
+				myIndexDtDefinition, typeAdapters);
 
 		// 3. Build Aggregations
-		final Map<String, Aggregation> aggregations = ESAggregationBuilder.build(mySearchQuery, myIndexDtDefinition, myListState, typeAdapters);
+		final Map<String, Aggregation> aggregations = ESAggregationBuilder.build(mySearchQuery,
+				myListState, sortOptions, myIndexDtDefinition, typeAdapters);
 
 		// 4. Assemble SearchRequest
 		final SearchRequest.Builder searchRequestBuilder = new SearchRequest.Builder()
