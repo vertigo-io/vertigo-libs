@@ -19,12 +19,8 @@ package io.vertigo.datafactory.plugins.search.elasticsearch;
 
 import java.util.Map;
 
-import org.elasticsearch.common.geo.GeoPoint;
-import org.elasticsearch.common.unit.DistanceUnit;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-
+import co.elastic.clients.elasticsearch._types.LatLonGeoLocation;
+import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.core.lang.VSystemException;
@@ -43,57 +39,72 @@ public final class DslGeoToQueryBuilderUtil {
 		//private for util class
 	}
 
-	public static QueryBuilder translateToQueryBuilder(final DslGeoExpression dslGeoExpression, final Object myCriteria, final Map<Class, BasicTypeAdapter> typeAdapters) {
+	public static Query translateToQuery(final DslGeoExpression dslGeoExpression, final Object myCriteria, final Map<Class, BasicTypeAdapter> typeAdapters) {
 		final String fieldName = dslGeoExpression.getField().getFieldName();
 		final DslQuery geoQuery = dslGeoExpression.getGeoQuery();
+
 		if (geoQuery instanceof DslGeoDistanceQuery) {
 			return translateToGeoDistanceQuery(fieldName, (DslGeoDistanceQuery) geoQuery, myCriteria, typeAdapters);
-		} else if (geoQuery instanceof DslGeoRangeQuery) {
+		} else if (geoQuery instanceof final DslGeoRangeQuery geoRangeQuery) {
 			//range : boundingbox or distance range
-			final DslGeoRangeQuery geoRangeQuery = (DslGeoRangeQuery) geoQuery;
 			final DslQuery dslStartGeoPoint = geoRangeQuery.getStartGeoPoint();
 			final DslQuery dslEndGeoPoint = geoRangeQuery.getEndGeoPoint();
-			if (dslStartGeoPoint instanceof DslGeoDistanceQuery || dslEndGeoPoint instanceof DslGeoDistanceQuery) { //range by distance
-				Assertion.check().isTrue(dslStartGeoPoint instanceof DslGeoDistanceQuery && dslEndGeoPoint instanceof DslGeoDistanceQuery, "When using query by range geo distance, start AND end must be GeoDistanceQuery ({0})", dslGeoExpression);
-				//----
-				final QueryBuilder startGeoDistanceQuery = translateToGeoDistanceQuery(fieldName, (DslGeoDistanceQuery) dslStartGeoPoint, myCriteria, typeAdapters);
-				final QueryBuilder endGeoDistanceQuery = translateToGeoDistanceQuery(fieldName, (DslGeoDistanceQuery) dslEndGeoPoint, myCriteria, typeAdapters);
-				final BoolQueryBuilder rangeDistanceBoolQueryBuilder = QueryBuilders.boolQuery();
-				return rangeDistanceBoolQueryBuilder //ie: !(dist <= min) && (dist <= max)
-						.must(endGeoDistanceQuery)
-						.mustNot(startGeoDistanceQuery);
-			}
-			final GeoPoint geoPointTopLeft = computeGeoPoint(geoRangeQuery.getStartGeoPoint(), myCriteria, typeAdapters);
-			final GeoPoint geoPointBottomRight = computeGeoPoint(geoRangeQuery.getEndGeoPoint(), myCriteria, typeAdapters);
-			if (geoPointTopLeft != null || geoPointBottomRight != null) {
-				return QueryBuilders.geoBoundingBoxQuery(fieldName)
-						.setCorners(geoPointTopLeft, geoPointBottomRight);
-			}
-			return QueryBuilders.matchAllQuery();
 
+			// Cas 1 : Range par distance (Donut)
+			if (dslStartGeoPoint instanceof DslGeoDistanceQuery || dslEndGeoPoint instanceof DslGeoDistanceQuery) {
+				Assertion.check().isTrue(dslStartGeoPoint instanceof DslGeoDistanceQuery && dslEndGeoPoint instanceof DslGeoDistanceQuery,
+						"When using query by range geo distance, start AND end must be GeoDistanceQuery ({0})", dslGeoExpression);
+
+				final Query startGeoDistanceQuery = translateToGeoDistanceQuery(fieldName, (DslGeoDistanceQuery) dslStartGeoPoint, myCriteria, typeAdapters);
+				final Query endGeoDistanceQuery = translateToGeoDistanceQuery(fieldName, (DslGeoDistanceQuery) dslEndGeoPoint, myCriteria, typeAdapters);
+				return Query.of(q -> q
+						.bool(b -> b
+								.must(endGeoDistanceQuery)
+								.mustNot(startGeoDistanceQuery)));
+			}
+
+			// Cas 2 : Bounding Box
+			final LatLonGeoLocation geoPointTopLeft = computeGeoPoint(geoRangeQuery.getStartGeoPoint(), myCriteria, typeAdapters);
+			final LatLonGeoLocation geoPointBottomRight = computeGeoPoint(geoRangeQuery.getEndGeoPoint(), myCriteria, typeAdapters);
+
+			if (geoPointTopLeft != null && geoPointBottomRight != null) {
+				return Query.of(q -> q
+						.geoBoundingBox(bb -> bb
+								.field(fieldName)
+								.boundingBox(b -> b
+										.tlbr(tlbr -> tlbr
+												.topLeft(l -> l.latlon(geoPointTopLeft))
+												.bottomRight(l -> l.latlon(geoPointBottomRight))))));
+			}
+			return Query.of(q -> q.matchAll(m -> m));
 		}
 		throw new VSystemException("Can't translate toGeoQuery " + dslGeoExpression);
 	}
 
-	private static QueryBuilder translateToGeoDistanceQuery(final String fieldName, final DslGeoDistanceQuery dslGeoDistanceQuery, final Object myCriteria, final Map<Class, BasicTypeAdapter> typeAdapters) {
-		final GeoPoint geoPoint = computeGeoPoint(dslGeoDistanceQuery.getGeoPoint(), myCriteria, typeAdapters);
+	private static Query translateToGeoDistanceQuery(final String fieldName, final DslGeoDistanceQuery dslGeoDistanceQuery, final Object myCriteria, final Map<Class, BasicTypeAdapter> typeAdapters) {
+		final LatLonGeoLocation geoPoint = computeGeoPoint(dslGeoDistanceQuery.getGeoPoint(), myCriteria, typeAdapters);
 		if (geoPoint != null) {
-			return QueryBuilders.geoDistanceQuery(fieldName)
-					.point(geoPoint)
-					.distance(dslGeoDistanceQuery.getDistance(), DistanceUnit.fromString(dslGeoDistanceQuery.getDistanceUnit()));
+			final String distanceString = dslGeoDistanceQuery.getDistance() + dslGeoDistanceQuery.getDistanceUnit();
+			return Query.of(q -> q
+					.geoDistance(gd -> gd
+							.field(fieldName)
+							.location(l -> l.latlon(geoPoint))
+							.distance(distanceString)));
 		}
-		return QueryBuilders.matchAllQuery();
+		return Query.of(q -> q.matchAll(m -> m));
 	}
 
-	public static GeoPoint computeGeoPoint(final DslQuery dslGeoPoint, final Object myCriteria, final Map<Class, BasicTypeAdapter> typeAdapters) {
+	public static LatLonGeoLocation computeGeoPoint(final DslQuery dslGeoPoint, final Object myCriteria, final Map<Class, BasicTypeAdapter> typeAdapters) {
 		Assertion.check().isTrue(dslGeoPoint instanceof DslGeoPointFixed
-				|| dslGeoPoint instanceof DslGeoPointCriteria, "geoPoint must be a fixed gedoPoint or a criteria ({0})", dslGeoPoint);
-		final GeoPoint esGeoPoint;
+				|| dslGeoPoint instanceof DslGeoPointCriteria, "geoPoint must be a fixed geoPoint or a criteria ({0})", dslGeoPoint);
+
+		final String geoPointValue;
+
 		if (dslGeoPoint instanceof DslGeoPointFixed) {
-			esGeoPoint = new GeoPoint(((DslGeoPointFixed) dslGeoPoint).getGeoPointValue());
+			geoPointValue = ((DslGeoPointFixed) dslGeoPoint).getGeoPointValue();
 		} else if (dslGeoPoint instanceof DslGeoPointCriteria) {
 			final String fieldName = ((DslGeoPointCriteria) dslGeoPoint).getGeoPointFieldName();
-			final String geoPointValue;
+
 			if (USER_QUERY_KEYWORD.equalsIgnoreCase(fieldName)) {
 				geoPointValue = cleanGeoCriteria(myCriteria);
 			} else {
@@ -103,14 +114,15 @@ public final class DslGeoToQueryBuilderUtil {
 				}
 				geoPointValue = cleanGeoCriteria(geoPoint);
 			}
-			if (geoPointValue == null) {
-				return null;
-			}
-			esGeoPoint = new GeoPoint(geoPointValue);
 		} else {
 			throw new VSystemException("Can't compute geoPoint for " + dslGeoPoint);
 		}
-		return esGeoPoint;
+
+		if (geoPointValue == null) {
+			return null;
+		}
+
+		return parseStringToLatLon(geoPointValue);
 	}
 
 	private static String cleanGeoCriteria(final Object geoPointValue) {
@@ -120,5 +132,30 @@ public final class DslGeoToQueryBuilderUtil {
 		return String.valueOf(geoPointValue);
 		//replaceAll "(?i)((?<=\\S\\s)(or|and)(?=\\s\\S))"
 		//replaceAll "(?i)((?<=\\s)(or|and)(?=\\s))"
+	}
+
+	/**
+	 * Helper pour parser "lat,lon" qui était géré auto par GeoPoint(String) en ES 7.
+	 * ES 8+ demande explicitement des doubles ou un objet LatLon.
+	 */
+	private static LatLonGeoLocation parseStringToLatLon(final String geoString) {
+		if (geoString == null || geoString.isBlank()) {
+			return null;
+		}
+		try {
+			// Format Attendu : "lat,lon"
+			final String[] parts = geoString.split(",");
+			if (parts.length == 2) {
+				final double lat = Double.parseDouble(parts[0].trim());
+				final double lon = Double.parseDouble(parts[1].trim());
+
+				return LatLonGeoLocation.of(l -> l
+						.lat(lat)
+						.lon(lon));
+			}
+			throw new VSystemException("Invalid geo format: " + geoString + ". Expected 'lat,lon'");
+		} catch (final NumberFormatException e) {
+			throw new VSystemException("Invalid geo number format: " + geoString, e);
+		}
 	}
 }

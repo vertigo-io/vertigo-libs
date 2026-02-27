@@ -29,18 +29,18 @@
 		<dependencies>
 			<dependency>
 				<groupId>org.apache.lucene</groupId>
-				<artifactId>lucene-core</artifactId> <!-- 8.11.3 compatible with ElasticSearch 7.17.28 -->
-				<version>8.11.3</version>
+				<artifactId>lucene-core</artifactId> <!-- 10.3.2 compatible with ElasticSearch 9.2.3 -->
+				<version>10.3.2</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.lucene</groupId>
-				<artifactId>lucene-analyzers-common</artifactId> <!-- 8.11.3 compatible with ElasticSearch 7.17.28 -->
-				<version>8.11.3</version>
+				<artifactId>lucene-analysis-common</artifactId> <!-- 10.3.2 compatible with ElasticSearch 9.2.3 -->
+				<version>10.3.2</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.lucene</groupId>
-				<artifactId>lucene-queryparser</artifactId> <!-- 8.11.3 compatible with ElasticSearch 7.17.28 -->
-				<version>8.11.3</version>
+				<artifactId>lucene-queryparser</artifactId> <!-- 10.3.2 compatible with ElasticSearch 9.2.3 -->
+				<version>10.3.2</version>
 			</dependency>
 			<dependency>
 				<groupId>io.vertigo</groupId>
@@ -84,7 +84,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
-			<artifactId>lucene-analyzers-common</artifactId>
+		    <artifactId>lucene-analysis-common</artifactId>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
@@ -96,27 +96,24 @@
 		
 
 		<!-- Dépendances à des librairies spécifiques au module -->
+
 		<dependency>
-		    <groupId>org.elasticsearch.client</groupId>
-		    <artifactId>x-pack-transport</artifactId>
-		    <scope>test</scope> <!-- TransportSearchServicesPlugin -->
+			<groupId>co.elastic.clients</groupId>
+		    <artifactId>elasticsearch-java</artifactId>
+		    <optional>true</optional> <!-- RestSearchServicesPlugin -->
 		</dependency>
-		<dependency>
-		    <groupId>org.elasticsearch.client</groupId>
-		    <artifactId>elasticsearch-rest-high-level-client</artifactId>
-		    <optional>true</optional> <!-- RestHighLevelSearchServicesPlugin -->
-		</dependency>
-		<dependency>
-            <groupId>org.codelibs.elasticsearch.module</groupId>
-            <artifactId>analysis-common</artifactId>  <!-- required by EmbeddedSearchServicesPlugin -->
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.codelibs.elasticsearch.module</groupId>
-            <artifactId>mapper-extras</artifactId> <!-- required by ESEmbeddedSearchServicesPlugin -->
-            <optional>true</optional>
-        </dependency>
         
+        <!--<dependency>
+			<groupId>org.elasticsearch</groupId>
+			<artifactId>elasticsearch</artifactId>
+			<version>9.2.3</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>-->
         
         
         <!-- tests -->

@@ -49,15 +49,13 @@ public final class DataFactoryFeatures extends Features<DataFactoryFeatures> {
 
 	@Feature("search.elasticsearch.client")
 	public DataFactoryFeatures withESClient(final Param... params) {
-		getModuleConfigBuilder()
-				.addPlugin(io.vertigo.datafactory.plugins.search.elasticsearch.client.ClientESSearchServicesPlugin.class, params);
-		return this;
+		throw new UnsupportedOperationException("client node no more supported in ES9, use RestClient instead");
 	}
 
 	@Feature("search.elasticsearch.restHL")
 	public DataFactoryFeatures withESHL(final Param... params) {
 		getModuleConfigBuilder()
-				.addPlugin(io.vertigo.datafactory.plugins.search.elasticsearch.rest.RestHLClientESSearchServicesPlugin.class, params);
+				.addPlugin(io.vertigo.datafactory.plugins.search.elasticsearch.rest.RestClientESSearchServicesPlugin.class, params);
 		return this;
 	}
 

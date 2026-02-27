@@ -19,7 +19,6 @@ package io.vertigo.datafactory.search;
 
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.connectors.elasticsearch.ElasticSearchFeatures;
-import io.vertigo.connectors.elasticsearch.EmbeddedElasticSearchServer;
 import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
@@ -43,23 +42,22 @@ public final class MyNodeConfig {
 		final DataFactoryFeatures dataFactoryFeatures = new DataFactoryFeatures();
 		dataFactoryFeatures.withSearch();
 
-		final ElasticSearchFeatures elasticSearchFeatures = new ElasticSearchFeatures()
-				.withEmbeddedServer(
-						Param.of("home", "io/vertigo/datafactory/search/indexconfig"));
+		final ElasticSearchFeatures elasticSearchFeatures = new ElasticSearchFeatures();
+		//				.withEmbeddedServer(Param.of("home", "io/vertigo/datafactory/search/indexconfig"));
 		if (esHL) {
-			elasticSearchFeatures.withRestHL(
+			elasticSearchFeatures.withRest(
 					Param.of("servers.names", "localhost:9200"),
 					Param.of("ssl", "false"));
 
 			dataFactoryFeatures.withESHL(
-					Param.of("config.file", "io/vertigo/datafactory/search/indexconfig/elasticsearch.yml"),
+					Param.of("config.file", "io/vertigo/datafactory/search/indexconfig/elasticsearch.json"),
 					Param.of("envIndexPrefix", "TuTest"),
 					Param.of("rowsPerQuery", "50"));
 		} else {
-			elasticSearchFeatures.withTransport(
+			/*elasticSearchFeatures.withTransport(
 					Param.of("servers.names", "localhost:9300"),
 					Param.of("cluster.name", EmbeddedElasticSearchServer.DEFAULT_VERTIGO_ES_CLUSTER_NAME));
-
+			*/
 			dataFactoryFeatures.withESClient(
 					Param.of("config.file", "io/vertigo/datafactory/search/indexconfig/elasticsearch.yml"),
 					Param.of("envIndexPrefix", "TuTest"),
