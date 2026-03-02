@@ -229,12 +229,72 @@ public final class ESFacetedQueryResultBuilder<I extends DataObject> implements 
 	}
 
 	private static Facet createFacet(final FacetDefinition facetDefinition, final Aggregate aggregate) {
-		if (facetDefinition.isRangeFacet()) {
-			//Cas des facettes par 'range'
-			return createFacetRange(facetDefinition, aggregate);
+		// On route selon la nature de l'agrégation ES9
+		switch (aggregate._kind()) {
+			// --- 1. Famille des Métriques (Single Value) ---
+			case Avg:
+			case Cardinality:
+			case Max:
+			case Min:
+			case Sum:
+			case ValueCount:
+			case WeightedAvg:
+			case SimpleValue:
+			case SimpleLongValue:
+				return createMetricFacet(facetDefinition, aggregate);
+
+			// --- 2. Famille des Buckets ---
+			case AdjacencyMatrix:
+			case AutoDateHistogram:
+			case Children:
+			case Composite:
+			case DateHistogram:
+			case DateRange:
+			case Dterms:
+			case Filter:
+			case Filters:
+			case GeoDistance:
+			case GeohashGrid:
+			case GeohexGrid:
+			case GeotileGrid:
+			case Global:
+			case Histogram:
+			case IpPrefix:
+			case IpRange:
+			case Lrareterms:
+			case Lterms:
+			case Missing:
+			case MultiTerms:
+			case Nested:
+			case Parent:
+			case Range:
+			case ReverseNested:
+			case Sampler:
+			case Siglterms:
+			case Sigsterms:
+			case Srareterms:
+			case Sterms:
+			case Umrareterms:
+			case UnmappedSampler:
+			case Umsigterms:
+			case Umterms:
+			case VariableWidthHistogram:
+				if (facetDefinition.isRangeFacet()) {
+					return createFacetRange(facetDefinition, aggregate);
+				}
+				return createTermFacet(facetDefinition, aggregate);
+
+			// --- 3. Cas des CustomFacets (agrégations futures/inconnues) ---
+			default:
+				// Fallback dynamique si tu ajoutes un jour un nouveau type via JSON Custom
+				if (isSingleValueMetric(aggregate)) {
+					return createMetricFacet(facetDefinition, aggregate);
+				}
+				if (facetDefinition.isRangeFacet()) {
+					return createFacetRange(facetDefinition, aggregate);
+				}
+				return createTermFacet(facetDefinition, aggregate);
 		}
-		//Cas des facettes par 'term'
-		return createTermFacet(facetDefinition, aggregate);
 	}
 
 	private static Facet createTermFacet(final FacetDefinition facetDefinition, final Aggregate aggregate) {
@@ -274,6 +334,57 @@ public final class ESFacetedQueryResultBuilder<I extends DataObject> implements 
 			rangeValues.put(facetRange, bucket.docCount());
 		}
 		return new Facet(facetDefinition, rangeValues);
+	}
+
+	private static Facet createMetricFacet(final FacetDefinition facetDefinition, final Aggregate aggregate) {
+		final Map<FacetValue, Long> facetValues = new LinkedHashMap<>();
+
+		double metricValue = 0.0;
+
+		// Extraction de la valeur selon le Kind
+		metricValue = switch (aggregate._kind()) {
+			case Avg -> aggregate.avg().value();
+			case Cardinality -> (double) aggregate.cardinality().value(); //ES return long
+			case Max -> aggregate.max().value();
+			case Min -> aggregate.min().value();
+			case Sum -> aggregate.sum().value();
+			case ValueCount -> (double) aggregate.valueCount().value(); //ES return long
+			case WeightedAvg -> aggregate.weightedAvg().value();
+			case SimpleValue -> aggregate.simpleValue().value();
+			case SimpleLongValue -> (double) aggregate.simpleLongValue().value();//ES return long
+			default -> extractMetricValueDynamically(aggregate); // Fallback pour les _Custom ou métriques complexes qu'on essaierait d'extraire dynamiquement 
+		};
+
+		final FacetValue facetValue = new FacetValue(facetDefinition.getName(), ListFilter.of("_noOp:_"), LocaleMessageText.of(facetDefinition.getName()));
+
+		// Application de la précision décimale
+		final int decimalPrecision = Integer.parseInt(facetDefinition.getCustomParams().getOrDefault("_decimalPrecision", "0"));
+		final long precisionMult = (long) Math.pow(10, decimalPrecision);
+
+		facetValues.put(facetValue, Math.round(metricValue * precisionMult));
+
+		return new Facet(facetDefinition, facetValues);
+	}
+
+	/** Vérifie si l'agrégation possède une méthode value() (typique des SingleValueMetrics) */
+	private static boolean isSingleValueMetric(final Aggregate aggregate) {
+		try {
+			aggregate._get().getClass().getMethod("value");
+			return true;
+		} catch (final NoSuchMethodException e) {
+			return false;
+		}
+	}
+
+	/** Extrait la valeur d'une métrique par réflexion si elle n'est pas dans les 'if' standards */
+	private static double extractMetricValueDynamically(final Aggregate aggregate) {
+		try {
+			final Object specificAggregation = aggregate._get();
+			final var valueMethod = specificAggregation.getClass().getMethod("value");
+			return (double) valueMethod.invoke(specificAggregation);
+		} catch (final Exception e) {
+			throw new VSystemException(e, "Impossible d'extraire la valeur pour l'agrégation de métrique {0}", aggregate._kind());
+		}
 	}
 
 	// --- Utility methods for ES9 Aggregate/Bucket extraction ---
