@@ -41,9 +41,9 @@ import io.vertigo.datafactory.search.model.SearchQuery;
 import io.vertigo.datamodel.data.model.DataObject;
 
 /**
- * @author  npiedeloup
+ * @author npiedeloup
  */
-public class RestHLSearchManagerMultiIndexTest {
+public class RestSearchManagerMultiIndexTest {
 	//Index
 	private static final String IDX_ITEM = "IdxItem";
 
@@ -87,7 +87,6 @@ public class RestHLSearchManagerMultiIndexTest {
 		for (final Item item : itemDataBase.getAllItems()) {
 			final SearchIndex<Item, Item> index = SearchIndex.createIndex(itemIndexDefinition, item.getUID(), item);
 			searchManager.put(itemIndexDefinition, index);
-
 		}
 		waitIndexation();
 

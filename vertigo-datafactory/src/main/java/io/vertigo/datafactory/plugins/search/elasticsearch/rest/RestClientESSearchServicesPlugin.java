@@ -389,14 +389,19 @@ public final class RestClientESSearchServicesPlugin implements SearchServicesPlu
 			if (esClient.indices().exists(b -> b.index(metaDataIndex)).value()) {
 				final GetResponse<Map> response = esClient.get(b -> b.index(metaDataIndex).id(dataPath), Map.class);
 				if (response.found()) {
-					final var type = (String) response.source().get("type");
-					final var value = Serializable.class.cast(response.source().get("value"));
-					if (value instanceof Integer && "Long".equals(type)) {
-						return Long.valueOf((Integer) value); //ES use integer to store short long : and forget the source type
-					} else if (value instanceof String && "Instant".equals(type)) {
-						return Instant.parse(String.valueOf(value)); //ES use String to Instant
+					final String type = (String) response.source().get("type");
+					final Serializable rawValue = Serializable.class.cast(response.source().get("value"));
+					// rawValue peut être un Integer ou un Long selon sa taille dans le JSON
+					if (rawValue instanceof Number && "Long".equals(type)) {
+						return ((Number) rawValue).longValue(); //ES use integer to store short long : and forget the source type
+					} else if (rawValue instanceof Number && "Double".equals(type)) {
+						return ((Number) rawValue).doubleValue(); //ES use integer to store short long : and forget the source type
+					} else if (rawValue instanceof String && "Instant".equals(type)) {
+						return Instant.parse(String.valueOf(rawValue)); //ES use String to Instant
+					} else if (rawValue instanceof String && "LocalDate".equals(type)) {
+						return java.time.LocalDate.parse(String.valueOf(rawValue)); //ES use String to LocalDate
 					}
-					return value;
+					return rawValue;
 				}
 			} //no metadata index => return null
 			return null;

@@ -29,18 +29,18 @@
 		<dependencies>
 			<dependency>
 				<groupId>org.apache.lucene</groupId>
-				<artifactId>lucene-core</artifactId> <!-- 10.3.2 compatible with ElasticSearch 9.2.3 -->
-				<version>10.3.2</version>
+				<artifactId>lucene-core</artifactId> <!-- 9.12.3 last for jdk17, 10.3.2 compatible with ElasticSearch 9.3.2 needs jdk21 -->
+				<version>9.12.3</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.lucene</groupId>
-				<artifactId>lucene-analysis-common</artifactId> <!-- 10.3.2 compatible with ElasticSearch 9.2.3 -->
-				<version>10.3.2</version>
+				<artifactId>lucene-analysis-common</artifactId>
+				<version>9.12.3</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.lucene</groupId>
-				<artifactId>lucene-queryparser</artifactId> <!-- 10.3.2 compatible with ElasticSearch 9.2.3 -->
-				<version>10.3.2</version>
+				<artifactId>lucene-queryparser</artifactId>
+				<version>9.12.3</version>
 			</dependency>
 			<dependency>
 				<groupId>io.vertigo</groupId>

@@ -22,13 +22,13 @@ import io.vertigo.datafactory.search.AbstractSearchManagerTest;
 import io.vertigo.datafactory.search.MyNodeConfig;
 
 /**
- * @author  npiedeloup
+ * @author npiedeloup
  */
-public class RestHLSearchManagerTest extends AbstractSearchManagerTest {
+public class RestSearchManagerTest extends AbstractSearchManagerTest {
 	//Index
 	private static final String IDX_ITEM = "IdxItem";
 
-	/**{@inheritDoc}*/
+	/** {@inheritDoc} */
 	@Override
 	protected void doSetUp() {
 		init(IDX_ITEM);

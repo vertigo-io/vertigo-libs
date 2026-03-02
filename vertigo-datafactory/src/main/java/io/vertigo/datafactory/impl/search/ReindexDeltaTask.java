@@ -97,7 +97,7 @@ final class ReindexDeltaTask<S extends KeyConcept> implements Runnable {
 				final Class<S> keyConceptClass = (Class<S>) ClassUtil.classForName(searchIndexDefinition.getKeyConceptDtDefinition().getClassCanonicalName(), KeyConcept.class);
 				final SearchLoader<S, DataObject> searchLoader = Node.getNode().getComponentSpace().resolve(searchIndexDefinition.getSearchLoaderId(), SearchLoader.class);
 				Assertion.check()
-						.isNotNull(searchLoader.getVersionFieldName().isPresent(),
+						.isTrue(searchLoader.getVersionFieldName().isPresent(),
 								"To use this reindexDelta, indexed keyConcept need a version field use to iterate throught all entity table. Check getVersionFieldName() in {0}",
 								searchLoader.getClass().getName());
 				//---

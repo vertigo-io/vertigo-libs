@@ -21,6 +21,8 @@ import java.io.File;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -115,6 +117,7 @@ public abstract class AbstractSearchManagerTest {
 
 	/**
 	 * Initialise l'index.
+	 * 
 	 * @param indexName Nom de l'index
 	 */
 	protected final void init(final String indexName) {
@@ -196,6 +199,7 @@ public abstract class AbstractSearchManagerTest {
 	/**
 	 * Test de reindexation de l'index.
 	 * La création s'effectue dans une seule transaction.
+	 * 
 	 * @throws ExecutionException
 	 * @throws InterruptedException
 	 * @throws TimeoutException
@@ -1991,6 +1995,104 @@ public abstract class AbstractSearchManagerTest {
 		}
 	}
 
+	@Test
+	public void testIndexMetaData() {
+		searchManager.putMetaData(itemIndexDefinition, "metadata/testString", "testValue");
+		var value = searchManager.getMetaData(itemIndexDefinition, "metadata/testString");
+		Assertions.assertEquals("testValue", value);
+
+		searchManager.putMetaData(itemIndexDefinition, "metadata/testInteger", 1337);
+		value = searchManager.getMetaData(itemIndexDefinition, "metadata/testInteger");
+		Assertions.assertEquals(1337, value);
+
+		searchManager.putMetaData(itemIndexDefinition, "metadata/testLong", 132456789132L);
+		value = searchManager.getMetaData(itemIndexDefinition, "metadata/testLong");
+		Assertions.assertEquals(132456789132L, value);
+
+		searchManager.putMetaData(itemIndexDefinition, "metadata/testShortLong", 1338L);
+		value = searchManager.getMetaData(itemIndexDefinition, "metadata/testShortLong");
+		Assertions.assertEquals(1338L, value);
+
+		searchManager.putMetaData(itemIndexDefinition, "metadata/testDouble", 3.14);
+		value = searchManager.getMetaData(itemIndexDefinition, "metadata/testDouble");
+		Assertions.assertEquals(3.14, value);
+
+		searchManager.putMetaData(itemIndexDefinition, "metadata/testLocalDate", LocalDate.of(2024, 6, 1));
+		value = searchManager.getMetaData(itemIndexDefinition, "metadata/testLocalDate");
+		Assertions.assertEquals(LocalDate.of(2024, 6, 1), value);
+
+		searchManager.putMetaData(itemIndexDefinition, "metadata/testInstant", Instant.parse("2024-06-01T12:00:00Z"));
+		value = searchManager.getMetaData(itemIndexDefinition, "metadata/testInstant");
+		Assertions.assertEquals(Instant.parse("2024-06-01T12:00:00Z"), value);
+	}
+
+	/**
+	 * Test de reindexation de l'index.
+	 * La création s'effectue dans une seule transaction.
+	 * 
+	 * @throws ExecutionException
+	 * @throws InterruptedException
+	 * @throws TimeoutException
+	 */
+	@Test
+	public void testReIndexModified() throws InterruptedException, ExecutionException, TimeoutException {
+		index(true);
+		long size = doCount();
+		Assertions.assertEquals(itemDataBase.size(), size);
+
+		//On supprime tout
+		removeAll();
+		waitAndExpectIndexation(0);
+		size = doCount();
+		Assertions.assertEquals(0L, size);
+
+		//on reindex
+		var sizeFuture = searchManager.reindexAllModified(itemIndexDefinition);
+		var currentReindex = searchManager.getReindexAllProgress(itemIndexDefinition);
+		log.info("====== currentReindex: " + currentReindex.orElse(-1L));
+		size = sizeFuture.get(10, TimeUnit.SECONDS);
+
+		//on attend 5s + le temps de reindexation
+		Assertions.assertEquals(itemDataBase.size(), size);
+		waitAndExpectIndexation(itemDataBase.size());
+
+		size = doCount();
+		Assertions.assertEquals(itemDataBase.size(), size);
+	}
+
+	/**
+	 * Test de reindexation de l'index.
+	 * La création s'effectue dans une seule transaction.
+	 * 
+	 * @throws ExecutionException
+	 * @throws InterruptedException
+	 * @throws TimeoutException
+	 */
+	@Test
+	public void testReIndexDelta() throws InterruptedException, ExecutionException, TimeoutException {
+		index(true);
+		long size = doCount();
+		Assertions.assertEquals(itemDataBase.size(), size);
+
+		//On supprime tout
+		removeAll();
+		waitAndExpectIndexation(0);
+		size = doCount();
+		Assertions.assertEquals(0L, size);
+
+		//on reindex
+		var sizeFuture = searchManager.reindexDelta(itemIndexDefinition);
+		var currentReindex = searchManager.getReindexAllProgress(itemIndexDefinition);
+		log.info("====== currentReindex: " + currentReindex.orElse(-1L));
+		size = sizeFuture.get(20, TimeUnit.SECONDS);
+		//on attend 5s + le temps de reindexation
+		Assertions.assertEquals(itemDataBase.size(), size);
+		waitAndExpectIndexation(itemDataBase.size());
+
+		size = doCount();
+		Assertions.assertEquals(itemDataBase.size(), size);
+	}
+
 	/**
 	 * Test le facettage par geo range d'une liste.
 	 */
@@ -2166,7 +2268,7 @@ public abstract class AbstractSearchManagerTest {
 					break; //si le nombre est atteint on sort.
 				}
 
-			} while (System.currentTimeMillis() - time < 5000);//timeout 5s
+			} while (System.currentTimeMillis() - time < 10000);//timeout 10s
 		} catch (final InterruptedException e) {
 			Thread.currentThread().interrupt(); //si interrupt on relance
 		}

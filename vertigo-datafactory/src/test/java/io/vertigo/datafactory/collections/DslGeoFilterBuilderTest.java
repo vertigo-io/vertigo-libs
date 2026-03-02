@@ -26,27 +26,33 @@ import org.junit.jupiter.api.Test;
 import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.datafactory.impl.search.dsl.model.DslGeoExpression;
 import io.vertigo.datafactory.impl.search.dsl.rules.DslParserUtil;
-import io.vertigo.datafactory.plugins.search.elasticsearch.DslGeoToQueryBuilderUtil;
 import io.vertigo.datafactory.search.data.domain.GeoPoint;
 import io.vertigo.datafactory.search.data.domain.GeoPointAdapter;
 
 /**
- * @author  npiedeloup
+ * @author npiedeloup
  */
 public final class DslGeoFilterBuilderTest {
 	private static final Map<Class, BasicTypeAdapter> testTypeAdapters = Collections.singletonMap(GeoPoint.class, new GeoPointAdapter());
 
 	@Test
 	public void testStringGeoQuery() {
-		final String[][] testQueries = new String[][] {
+		final String[][] testQueries = {
 				//QueryPattern, UserQuery, EspectedResult, OtherAcceptedResult ...
-				{ "localisation:#query#~10km", "10.0,20.0", "{\"geo_distance\":{\"localisation\":[20.0,10.0],\"distance\":10000.0,\"distance_type\":\"arc\",\"validation_method\":\"STRICT\",\"ignore_unmapped\":false,\"boost\":1.0}}" }, //0
-				{ "localisation:#query#~10m", "10.05,20.05", "{\"geo_distance\":{\"localisation\":[20.05,10.05],\"distance\":10.0,\"distance_type\":\"arc\",\"validation_method\":\"STRICT\",\"ignore_unmapped\":false,\"boost\":1.0}}" }, //1
-				{ "localisation:\"10.0,20.0\"~10m", "", "{\"geo_distance\":{\"localisation\":[20.0,10.0],\"distance\":10.0,\"distance_type\":\"arc\",\"validation_method\":\"STRICT\",\"ignore_unmapped\":false,\"boost\":1.0}}" }, //1
-				{ "localisation:#query#~10km", "-10.0,-20.0", "{\"geo_distance\":{\"localisation\":[-20.0,-10.0],\"distance\":10000.0,\"distance_type\":\"arc\",\"validation_method\":\"STRICT\",\"ignore_unmapped\":false,\"boost\":1.0}}" }, //0
-				{ "localisation:\"-10.0,-20.0\"~10m", "", "{\"geo_distance\":{\"localisation\":[-20.0,-10.0],\"distance\":10.0,\"distance_type\":\"arc\",\"validation_method\":\"STRICT\",\"ignore_unmapped\":false,\"boost\":1.0}}" }, //1
-				{ "localisation:[#query# to \"08.0,22.0\"]", "10.0,20.0", "{\"geo_bounding_box\":{\"localisation\":{\"top_left\":[20.0,10.0],\"bottom_right\":[22.0,8.0]},\"validation_method\":\"STRICT\",\"type\":\"MEMORY\",\"ignore_unmapped\":false,\"boost\":1.0}}" }, //2
-				{ "localisation:[\"12.0,18.0\" to #query#]", "10.0,20.0", "{\"geo_bounding_box\":{\"localisation\":{\"top_left\":[18.0,12.0],\"bottom_right\":[20.0,10.0]},\"validation_method\":\"STRICT\",\"type\":\"MEMORY\",\"ignore_unmapped\":false,\"boost\":1.0}}" }, //3
+				{ "localisation:#query#~10km", "10.0,20.0",
+						"{\"geo_distance\":{\"localisation\":[20.0,10.0],\"distance\":10000.0,\"distance_type\":\"arc\",\"validation_method\":\"STRICT\",\"ignore_unmapped\":false,\"boost\":1.0}}" }, //0
+				{ "localisation:#query#~10m", "10.05,20.05",
+						"{\"geo_distance\":{\"localisation\":[20.05,10.05],\"distance\":10.0,\"distance_type\":\"arc\",\"validation_method\":\"STRICT\",\"ignore_unmapped\":false,\"boost\":1.0}}" }, //1
+				{ "localisation:\"10.0,20.0\"~10m", "",
+						"{\"geo_distance\":{\"localisation\":[20.0,10.0],\"distance\":10.0,\"distance_type\":\"arc\",\"validation_method\":\"STRICT\",\"ignore_unmapped\":false,\"boost\":1.0}}" }, //1
+				{ "localisation:#query#~10km", "-10.0,-20.0",
+						"{\"geo_distance\":{\"localisation\":[-20.0,-10.0],\"distance\":10000.0,\"distance_type\":\"arc\",\"validation_method\":\"STRICT\",\"ignore_unmapped\":false,\"boost\":1.0}}" }, //0
+				{ "localisation:\"-10.0,-20.0\"~10m", "",
+						"{\"geo_distance\":{\"localisation\":[-20.0,-10.0],\"distance\":10.0,\"distance_type\":\"arc\",\"validation_method\":\"STRICT\",\"ignore_unmapped\":false,\"boost\":1.0}}" }, //1
+				{ "localisation:[#query# to \"08.0,22.0\"]", "10.0,20.0",
+						"{\"geo_bounding_box\":{\"localisation\":{\"top_left\":[20.0,10.0],\"bottom_right\":[22.0,8.0]},\"validation_method\":\"STRICT\",\"type\":\"MEMORY\",\"ignore_unmapped\":false,\"boost\":1.0}}" }, //2
+				{ "localisation:[\"12.0,18.0\" to #query#]", "10.0,20.0",
+						"{\"geo_bounding_box\":{\"localisation\":{\"top_left\":[18.0,12.0],\"bottom_right\":[20.0,10.0]},\"validation_method\":\"STRICT\",\"type\":\"MEMORY\",\"ignore_unmapped\":false,\"boost\":1.0}}" }, //3
 
 		};
 		testStringFixedGeoQuery(testQueries);
@@ -58,13 +64,17 @@ public final class DslGeoFilterBuilderTest {
 		final GeoPoint geo2 = new GeoPoint(8, 18);
 
 		final TestBean testBean = new TestBean("10.05,20.0", "10.0,20.05", geo1, geo2);
-		final Object[][] testQueries = new Object[][] {
+		final Object[][] testQueries = {
 				//QueryPattern, UserQuery, EspectedResult
-				{ "localisation:#str1#~10m", testBean, "{\"geo_distance\":{\"localisation\":[20.0,10.05],\"distance\":10.0,\"distance_type\":\"arc\",\"validation_method\":\"STRICT\",\"ignore_unmapped\":false,\"boost\":1.0}}" }, //0
-				{ "localisation:#geo1#~10m", testBean, "{\"geo_distance\":{\"localisation\":[22.0,12.0],\"distance\":10.0,\"distance_type\":\"arc\",\"validation_method\":\"STRICT\",\"ignore_unmapped\":false,\"boost\":1.0}}" }, //1
+				{ "localisation:#str1#~10m", testBean,
+						"{\"geo_distance\":{\"localisation\":[20.0,10.05],\"distance\":10.0,\"distance_type\":\"arc\",\"validation_method\":\"STRICT\",\"ignore_unmapped\":false,\"boost\":1.0}}" }, //0
+				{ "localisation:#geo1#~10m", testBean,
+						"{\"geo_distance\":{\"localisation\":[22.0,12.0],\"distance\":10.0,\"distance_type\":\"arc\",\"validation_method\":\"STRICT\",\"ignore_unmapped\":false,\"boost\":1.0}}" }, //1
 				{ "localisation:#null#~10m", testBean, "{\"match_all\":{\"boost\":1.0}}" }, //1
-				{ "localisation:[#str1# to #str2#]", testBean, "{\"geo_bounding_box\":{\"localisation\":{\"top_left\":[20.0,10.05],\"bottom_right\":[20.05,10.0]},\"validation_method\":\"STRICT\",\"type\":\"MEMORY\",\"ignore_unmapped\":false,\"boost\":1.0}}" }, //2
-				{ "localisation:[#geo1# to #geo2#]", testBean, "{\"geo_bounding_box\":{\"localisation\":{\"top_left\":[22.0,12.0],\"bottom_right\":[18.0,8.0]},\"validation_method\":\"STRICT\",\"type\":\"MEMORY\",\"ignore_unmapped\":false,\"boost\":1.0}}" }, //2
+				{ "localisation:[#str1# to #str2#]", testBean,
+						"{\"geo_bounding_box\":{\"localisation\":{\"top_left\":[20.0,10.05],\"bottom_right\":[20.05,10.0]},\"validation_method\":\"STRICT\",\"type\":\"MEMORY\",\"ignore_unmapped\":false,\"boost\":1.0}}" }, //2
+				{ "localisation:[#geo1# to #geo2#]", testBean,
+						"{\"geo_bounding_box\":{\"localisation\":{\"top_left\":[22.0,12.0],\"bottom_right\":[18.0,8.0]},\"validation_method\":\"STRICT\",\"type\":\"MEMORY\",\"ignore_unmapped\":false,\"boost\":1.0}}" }, //2
 				//{ "localisation:[#geo1# to #null#]", testBean, "{\"geo_bounding_box\":{\"localisation\":{\"top_left\":[20.0,10.0],\"bottom_right\":[22.0,8.0]},\"validation_method\":\"STRICT\",\"type\":\"MEMORY\",\"ignore_unmapped\":false,\"boost\":1.0}}" }, //2
 				//{ "localisation:[#null# to #geo2#]", testBean, "{\"geo_bounding_box\":{\"localisation\":{\"top_left\":[20.0,10.0],\"bottom_right\":[22.0,8.0]},\"validation_method\":\"STRICT\",\"type\":\"MEMORY\",\"ignore_unmapped\":false,\"boost\":1.0}}" }, //2
 				{ "localisation:[#null# to #null#]", testBean, "{\"match_all\":{\"boost\":1.0}}" }, //2
