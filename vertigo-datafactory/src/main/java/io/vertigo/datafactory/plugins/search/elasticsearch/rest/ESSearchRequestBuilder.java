@@ -27,7 +27,9 @@ import co.elastic.clients.elasticsearch._types.aggregations.Aggregation;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import co.elastic.clients.elasticsearch.core.SearchRequest;
 import co.elastic.clients.elasticsearch.core.search.Highlight;
+import co.elastic.clients.elasticsearch.core.search.HighlightField;
 import co.elastic.clients.elasticsearch.core.search.TrackHits;
+import co.elastic.clients.util.NamedValue;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.core.lang.Builder;
@@ -158,7 +160,10 @@ final class ESSearchRequestBuilder implements Builder<SearchRequest> {
 
 		// 5. Highlight
 		if (myUseHighlight) {
-			searchRequestBuilder.highlight(Highlight.of(h -> h.numberOfFragments(3).preTags("<em>").postTags("</em>")));
+			searchRequestBuilder.highlight(Highlight.of(h -> h.numberOfFragments(3)
+					.preTags("<em>")
+					.postTags("</em>")
+					.fields(NamedValue.of("*", HighlightField.of(hf -> hf)))));
 		}
 
 		return searchRequestBuilder.build();

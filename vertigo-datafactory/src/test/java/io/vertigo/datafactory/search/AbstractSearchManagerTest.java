@@ -66,6 +66,7 @@ import io.vertigo.datafactory.search.data.domain.ItemSearchLoader;
 import io.vertigo.datafactory.search.definitions.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchIndex;
 import io.vertigo.datafactory.search.model.SearchQuery;
+import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.datamodel.data.model.DtListState;
 import io.vertigo.datamodel.data.model.UID;
@@ -2131,6 +2132,28 @@ public abstract class AbstractSearchManagerTest {
 				Assertions.fail("Unexpected facet " + searchFacetLabel);
 			}
 		}
+	}
+
+	@Test
+	public void testHighlight() {
+		index(false);
+		// search for a term present in descriptions (case/accents handled by analyzer)
+		final SearchQuery searchQuery = SearchQuery.builder("QryItemFacet")
+				.withCriteria("panoramique")
+				.withHighlight()
+				.build();
+
+		final FacetedQueryResult<Item, SearchQuery> result = doQuery(searchQuery, null);
+		Assertions.assertTrue(result.getCount() > 0, "Expected at least one result for highlight test");
+
+		final Item first = result.getDtList().get(0);
+		final var highlights = result.getHighlights(first);
+		// We expect description field to be highlighted for matches
+		final DataField descriptionField = itemIndexDefinition.getIndexDtDefinition().getField("description");
+		final String descHighlight = highlights.get(descriptionField);
+		Assertions.assertNotNull(descHighlight, "Description highlight should be present");
+		Assertions.assertTrue(descHighlight.toLowerCase(Locale.ROOT).contains("panoramique"), "Highlight should contain the matched term");
+		Assertions.assertTrue(descHighlight.contains("<hlfrag>"), "Highlight fragments should be wrapped by <hlfrag> tags");
 	}
 
 	private void logResult(final FacetedQueryResult<Item, SearchQuery> result) {

@@ -249,11 +249,14 @@ final class ESStatement<K extends KeyConcept, I extends DataObject> {
 			final int defaultMaxRows) {
 		Assertion.check().isNotNull(searchQuery);
 		//-----
-		final SearchRequest searchRequest = new ESSearchRequestBuilder(indexNames, esClient, typeAdapters)
+		final ESSearchRequestBuilder builder = new ESSearchRequestBuilder(indexNames, esClient, typeAdapters)
 				.withIndexDtDefinition(indexDtDefinition)
 				.withSearchQuery(searchQuery)
-				.withListState(listState, defaultMaxRows)
-				.build();
+				.withListState(listState, defaultMaxRows);
+		if (searchQuery.isUseHighlight()) {
+			builder.withHighlight();
+		}
+		final SearchRequest searchRequest = builder.build();
 		LOGGER.info("loadList {}", searchRequest);
 		try {
 			final SearchResponse<Map> searchResponse = esClient.search(searchRequest, Map.class);
