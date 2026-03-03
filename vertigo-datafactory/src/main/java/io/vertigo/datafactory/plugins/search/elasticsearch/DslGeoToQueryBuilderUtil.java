@@ -100,17 +100,20 @@ public final class DslGeoToQueryBuilderUtil {
 
 		final String geoPointValue;
 
-		if (dslGeoPoint instanceof DslGeoPointFixed) {
-			geoPointValue = ((DslGeoPointFixed) dslGeoPoint).getGeoPointValue();
-		} else if (dslGeoPoint instanceof DslGeoPointCriteria) {
-			final String fieldName = ((DslGeoPointCriteria) dslGeoPoint).getGeoPointFieldName();
+		if (dslGeoPoint instanceof final DslGeoPointFixed geoPointFixed) {
+			geoPointValue = geoPointFixed.getGeoPointValue();
+		} else if (dslGeoPoint instanceof final DslGeoPointCriteria geoPointCriteria) {
+			final String fieldName = geoPointCriteria.getGeoPointFieldName();
 
 			if (USER_QUERY_KEYWORD.equalsIgnoreCase(fieldName)) {
 				geoPointValue = cleanGeoCriteria(myCriteria);
 			} else {
 				Object geoPoint = BeanUtil.getValue(myCriteria, fieldName);
-				if (geoPoint != null && typeAdapters.get(geoPoint.getClass()) != null) {
-					geoPoint = typeAdapters.get(geoPoint.getClass()).toBasic(geoPoint);
+				if (geoPoint != null) {
+					final BasicTypeAdapter adapter = typeAdapters.get(geoPoint.getClass());
+					if (adapter != null) {
+						geoPoint = adapter.toBasic(geoPoint);
+					}
 				}
 				geoPointValue = cleanGeoCriteria(geoPoint);
 			}
