@@ -44,6 +44,7 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.store.ByteBuffersDirectory;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.util.BytesRef;
 
@@ -101,7 +102,7 @@ final class RamLuceneIndex<D extends DataObject> {
 		luceneQueryFactory = new RamLuceneQueryFactory(indexAnalyser);
 		this.dataDefinition = dataDefinition;
 		this.smartTypeManager = smartTypeManager;
-		directory = null; // TODO new RAMDirectory();
+		directory = new ByteBuffersDirectory();
 		idFieldOpt = dataDefinition.getIdField();
 		idFieldName = idFieldOpt.isPresent() ? idFieldOpt.get().name() : "_id";
 		// l'index est crée automatiquement la premiere fois.
@@ -132,7 +133,7 @@ final class RamLuceneIndex<D extends DataObject> {
 	 * Associe une clé à un objet.
 	 * 
 	 * @param pkValue Valeur de la clé
-	 * @param dto     Objet associé
+	 * @param dto Objet associé
 	 */
 	private void mapDocument(final String pkValue, final D dto) {
 		indexedObjectPerPk.put(pkValue, dto);
@@ -171,7 +172,7 @@ final class RamLuceneIndex<D extends DataObject> {
 		if (resultLength > skip) {
 			for (int i = skip; i < Math.min(skip + top, resultLength); i++) {
 				final ScoreDoc scoreDoc = topDocs.scoreDocs[i];
-				final Document document = null; // TODO searcher.doc(scoreDoc.doc);
+				final Document document = searcher.doc(scoreDoc.doc);
 				dtcResult.add(getDataIndexed(document.get(idFieldName)));
 			}
 		}
@@ -181,7 +182,7 @@ final class RamLuceneIndex<D extends DataObject> {
 	/**
 	 * Add element to index.
 	 * 
-	 * @param fullDtc    Full Dtc to index
+	 * @param fullDtc Full Dtc to index
 	 * @param storeValue if data are store in index
 	 * @throws IOException Indexation error
 	 */
@@ -262,11 +263,11 @@ final class RamLuceneIndex<D extends DataObject> {
 	/**
 	 * Querying index.
 	 * 
-	 * @param keywords       Keywords
+	 * @param keywords Keywords
 	 * @param searchedFields Searched field list
-	 * @param listFilters    Added filters
-	 * @param dtListState    Sort and page list state
-	 * @param boostedField   Field use for boosting score
+	 * @param listFilters Added filters
+	 * @param dtListState Sort and page list state
+	 * @param boostedField Field use for boosting score
 	 * @return Filtered ordered list
 	 * @throws IOException Query error
 	 */
