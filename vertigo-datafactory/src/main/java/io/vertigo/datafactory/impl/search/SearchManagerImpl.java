@@ -264,6 +264,13 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 
 	/** {@inheritDoc} */
 	@Override
+	public void waitForRefresh(final Class<? extends KeyConcept> keyConceptClass) {
+		var indexDefinitions = findIndexDefinitionByKeyConcept(DataModelUtil.findDataDefinition(keyConceptClass));
+		searchServicesPlugin.waitForRefresh(indexDefinitions);
+	}
+
+	/** {@inheritDoc} */
+	@Override
 	public OptionalLong getReindexAllProgress(final SearchIndexDefinition indexDefinition) {
 		final var indexName = indexDefinition.getName();
 		final var reindexRegistryKey = computeReindexRegistryKey(ReindexAllTask.class, indexName);

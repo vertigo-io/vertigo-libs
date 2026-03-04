@@ -176,4 +176,11 @@ public interface SearchManager extends Manager {
 	 */
 	Serializable getMetaData(final SearchIndexDefinition indexDefinition, final String dataPath);
 
+	/**
+	 * Wait for the end of the refresh of the index corresponding to the keyConcept class.
+	 * 
+	 * @param keyConceptClass keyConcept class
+	 */
+	void waitForRefresh(Class<? extends KeyConcept> keyConceptClass);
+
 }
