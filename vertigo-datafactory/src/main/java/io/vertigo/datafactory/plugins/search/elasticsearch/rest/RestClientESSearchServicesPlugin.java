@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
@@ -609,6 +610,15 @@ public final class RestClientESSearchServicesPlugin implements SearchServicesPlu
 			healthMeasureBuilder.withRedStatus(e.getMessage());
 		}
 		return healthMeasureBuilder.build();
+	}
+
+	@Override
+	public void waitForRefresh(List<SearchIndexDefinition> indexDefinitions) {
+		try {
+			esClient.indices().refresh(b -> b.index(Arrays.asList(obtainIndicesNames(indexDefinitions))));
+		} catch (final IOException e) {
+			throw WrappedException.wrap(e, "Error on waitForRefresh");
+		}
 	}
 
 }

@@ -18,8 +18,13 @@
 package io.vertigo.datafactory.search;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -45,6 +50,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import io.vertigo.connectors.elasticsearch.ElasticSearchConnector;
 import io.vertigo.core.lang.VUserException;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.AutoCloseableNode;
@@ -134,16 +140,39 @@ public abstract class AbstractSearchManagerTest {
 		geoCircleFacetDefinition = definitionSpace.resolve("FctLocalisationCircleItem", FacetDefinition.class);
 		geoHashClusterFacetDefinition = definitionSpace.resolve("FctLocalisationHashItem", FacetDefinition.class);
 		itemIndexDefinition = definitionSpace.resolve(indexName, SearchIndexDefinition.class);
+
 		removeAll();
 	}
 
 	@BeforeAll
 	public static void doBeforeClass() throws Exception {
-		//We must remove data dir in index, in order to support versions updates when testing on PIC
+		//For Embedded ElasticSearch, we must remove data dir in index, in order to support versions updates when testing on PIC
 		final URL esDataURL = Thread.currentThread().getContextClassLoader().getResource("io/vertigo/datafactory/search/indexconfig");
 		final File esData = new File(URLDecoder.decode(esDataURL.getFile() + "/data", StandardCharsets.UTF_8.name()));
 		if (esData.exists() && esData.isDirectory()) {
 			recursiveDelete(esData);
+		}
+
+		//for Rest ElasticSearch, we call delete index
+		try {
+			HttpClient client = HttpClient.newHttpClient();
+			deleteIndex("http://localhost:9200/tu_test_idx_item", client);
+			deleteIndex("http://localhost:9200/tu_test_idx_item.metadata", client);
+			deleteIndex("http://localhost:9200/tu_test_idx_item_2", client);
+		} catch (Exception e) {
+			System.err.println("Impossible de contacter Elasticsearch pour supprimer l'index");
+			e.printStackTrace();
+		}
+	}
+
+	private static void deleteIndex(final String ES_URL, HttpClient client) throws IOException, InterruptedException {
+		HttpRequest request = HttpRequest.newBuilder().uri(URI.create(ES_URL)).DELETE()
+				.build();
+		HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+		// Code 200 = supprimé avec succès
+		// Code 404 = l'index n'existait pas (ex: premier lancement), on ignore
+		if (response.statusCode() != 200 && response.statusCode() != 404) {
+			System.err.println("Erreur inattendue lors de la suppression de l'index : " + response.body());
 		}
 	}
 
@@ -2280,6 +2309,7 @@ public abstract class AbstractSearchManagerTest {
 	}
 
 	private void waitAndExpectIndexation(final long expectedCount, final String queryStr) {
+		searchManager.waitForRefresh(Item.class);
 		final long time = System.currentTimeMillis();
 		long size = -1;
 		try {
