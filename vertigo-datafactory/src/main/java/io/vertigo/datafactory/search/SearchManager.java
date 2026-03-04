@@ -50,16 +50,6 @@ public interface SearchManager extends Manager {
 	SearchIndexDefinition findFirstIndexDefinitionByKeyConcept(Class<? extends KeyConcept> keyConceptClass);
 
 	/**
-	 * Find IndexDefinition for a keyConcept. It must be one and only one IndexDefinition.
-	 *
-	 * @param keyConceptClass keyConcept class
-	 * @return SearchIndexDefinition for this keyConcept (not null)
-	 * @deprecated use findFirstIndexDefinitionByKeyConcept instead
-	 */
-	@Deprecated
-	SearchIndexDefinition findIndexDefinitionByKeyConcept(Class<? extends KeyConcept> keyConceptClass);
-
-	/**
 	 * Mark a UID list as dirty. Index entries for these elements will be reindexed.
 	 * Reindexing is asynchronous; strategy depends on plugin parameters.
 	 *
