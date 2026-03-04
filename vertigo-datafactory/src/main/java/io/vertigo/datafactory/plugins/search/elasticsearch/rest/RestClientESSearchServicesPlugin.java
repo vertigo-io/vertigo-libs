@@ -314,7 +314,6 @@ public final class RestClientESSearchServicesPlugin implements SearchServicesPlu
 				.isNotNull(indexDefinition);
 		//-----
 		createElasticStatement(indexDefinition).remove(uri);
-		markToOptimize(obtainIndexName(indexDefinition));
 	}
 
 	/** {@inheritDoc} */
@@ -565,7 +564,7 @@ public final class RestClientESSearchServicesPlugin implements SearchServicesPlu
 			try {
 				esClient.indices().forcemerge(f -> f
 						.index(indexName)
-						.maxNumSegments(OPTIMIZE_MAX_NUM_SEGMENT)
+						.onlyExpungeDeletes(true)
 						.flush(true));
 				LOGGER.debug("markToOptimize ok");
 			} catch (final Exception e) {
