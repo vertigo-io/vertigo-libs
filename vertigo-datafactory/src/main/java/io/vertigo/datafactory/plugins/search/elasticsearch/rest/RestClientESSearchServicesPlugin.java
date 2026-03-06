@@ -91,7 +91,6 @@ import jakarta.json.stream.JsonGenerator;
 public final class RestClientESSearchServicesPlugin implements SearchServicesPlugin, Activeable {
 	private static final int DEFAULT_SCALING_FACTOR = 1000;
 	private static final String DEFAULT_DATE_FORMAT = "dd/MM/yyyy||strict_date_optional_time||epoch_second";
-	private static final long OPTIMIZE_MAX_NUM_SEGMENT = 32;
 	/** field suffix for keyword fields added by this plugin. */
 	public static final String SUFFIX_SORT_FIELD = ".keyword";
 
@@ -573,6 +572,16 @@ public final class RestClientESSearchServicesPlugin implements SearchServicesPlu
 		});
 	}
 
+	/** {@inheritDoc} */
+	@Override
+	public void waitForRefresh(List<SearchIndexDefinition> indexDefinitions) {
+		try {
+			esClient.indices().refresh(b -> b.index(Arrays.asList(obtainIndicesNames(indexDefinitions))));
+		} catch (final IOException e) {
+			throw WrappedException.wrap(e, "Error on waitForRefresh");
+		}
+	}
+
 	private void waitForYellowStatus() {
 		try {
 			final var response = esClient.cluster().health(b -> b
@@ -609,15 +618,6 @@ public final class RestClientESSearchServicesPlugin implements SearchServicesPlu
 			healthMeasureBuilder.withRedStatus(e.getMessage());
 		}
 		return healthMeasureBuilder.build();
-	}
-
-	@Override
-	public void waitForRefresh(List<SearchIndexDefinition> indexDefinitions) {
-		try {
-			esClient.indices().refresh(b -> b.index(Arrays.asList(obtainIndicesNames(indexDefinitions))));
-		} catch (final IOException e) {
-			throw WrappedException.wrap(e, "Error on waitForRefresh");
-		}
 	}
 
 }

@@ -42,14 +42,15 @@ public final class MyNodeConfig {
 		final DataFactoryFeatures dataFactoryFeatures = new DataFactoryFeatures();
 		dataFactoryFeatures.withSearch();
 
-		final ElasticSearchFeatures elasticSearchFeatures = new ElasticSearchFeatures();
-		//				.withEmbeddedServer(Param.of("home", "io/vertigo/datafactory/search/indexconfig"));
+		final ElasticSearchFeatures elasticSearchFeatures = new ElasticSearchFeatures()
+				.withEmbeddedServer();
+
 		if (esHL) {
-			elasticSearchFeatures.withRest(
+			elasticSearchFeatures.withRest( //connector
 					Param.of("servers.names", "localhost:9200"),
 					Param.of("ssl", "false"));
 
-			dataFactoryFeatures.withESHL(
+			dataFactoryFeatures.withESRest(
 					Param.of("config.file", "io/vertigo/datafactory/search/indexconfig/elasticsearch.json"),
 					Param.of("envIndexPrefix", "TuTest"),
 					Param.of("rowsPerQuery", "50"));

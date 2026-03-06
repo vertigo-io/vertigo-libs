@@ -127,6 +127,11 @@
 			<artifactId>c3p0</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+		    <groupId>org.testcontainers</groupId>
+		    <artifactId>elasticsearch</artifactId>
+			<scope>test</scope> <!-- required by EmbeddedSearchServicesPlugin -->
+		</dependency>
 
 	</dependencies>
 	<build>
