@@ -26,31 +26,19 @@ import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.elasticsearch.ElasticsearchStatusException;
-import org.elasticsearch.action.DocWriteResponse;
-import org.elasticsearch.action.bulk.BulkRequest;
-import org.elasticsearch.action.bulk.BulkResponse;
-import org.elasticsearch.action.delete.DeleteRequest;
-import org.elasticsearch.action.delete.DeleteResponse;
-import org.elasticsearch.action.index.IndexRequest;
-import org.elasticsearch.action.index.IndexResponse;
-import org.elasticsearch.action.search.SearchPhaseExecutionException;
-import org.elasticsearch.action.search.SearchRequest;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.action.search.SearchType;
-import org.elasticsearch.action.support.WriteRequest.RefreshPolicy;
-import org.elasticsearch.client.RequestOptions;
-import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.client.core.CountRequest;
-import org.elasticsearch.client.core.CountResponse;
-import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.reindex.BulkByScrollResponse;
-import org.elasticsearch.index.reindex.DeleteByQueryRequest;
-import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.elasticsearch.xcontent.XContentBuilder;
 
+import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import co.elastic.clients.elasticsearch._types.ElasticsearchException;
+import co.elastic.clients.elasticsearch._types.Refresh;
+import co.elastic.clients.elasticsearch._types.Result;
+import co.elastic.clients.elasticsearch.core.BulkRequest;
+import co.elastic.clients.elasticsearch.core.BulkResponse;
+import co.elastic.clients.elasticsearch.core.CountResponse;
+import co.elastic.clients.elasticsearch.core.DeleteByQueryResponse;
+import co.elastic.clients.elasticsearch.core.DeleteResponse;
+import co.elastic.clients.elasticsearch.core.SearchRequest;
+import co.elastic.clients.elasticsearch.core.SearchResponse;
+import co.elastic.clients.elasticsearch.core.search.Hit;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.lang.BasicTypeAdapter;
@@ -60,7 +48,6 @@ import io.vertigo.core.lang.WrappedException;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.collections.model.FacetedQueryResult;
 import io.vertigo.datafactory.impl.search.SearchResource;
-import io.vertigo.datafactory.plugins.search.elasticsearch.AsbtractESSearchRequestBuilder;
 import io.vertigo.datafactory.plugins.search.elasticsearch.ESDocumentCodec;
 import io.vertigo.datafactory.plugins.search.elasticsearch.ESFacetedQueryResultBuilder;
 import io.vertigo.datafactory.search.model.SearchIndex;
@@ -76,28 +63,30 @@ import io.vertigo.datamodel.data.model.UID;
 /**
  * Requête physique d'accès à ElasticSearch.
  * Le driver exécute les requêtes de façon synchrone dans le contexte transactionnelle de la ressource.
+ * 
  * @author pchretien, npiedeloup
  * @param <I> Type de l'objet représentant l'index
  * @param <K> Type du keyConcept métier indexé
  */
 final class ESStatement<K extends KeyConcept, I extends DataObject> {
 
-	private static final RefreshPolicy DEFAULT_REFRESH = RefreshPolicy.NONE; //mettre a true pour TU uniquement
-	private static final RefreshPolicy BULK_REFRESH = RefreshPolicy.NONE; //mettre a RefreshPolicy.IMMEDIATE pour TU uniquement
+	private static final Refresh DEFAULT_REFRESH = Refresh.False; //mettre a true pour TU uniquement
+	private static final Refresh BULK_REFRESH = Refresh.False; //mettre a RefreshPolicy.IMMEDIATE pour TU uniquement
 	private static final Logger LOGGER = LogManager.getLogger(ESStatement.class);
 
 	private final String indexName;
-	private final RestHighLevelClient esClient;
+	private final ElasticsearchClient esClient;
 	private final ESDocumentCodec esDocumentCodec;
 	private final Map<Class, BasicTypeAdapter> typeAdapters;
 
 	/**
 	 * Constructor.
+	 * 
 	 * @param esDocumentCodec Codec de traduction (bi-directionnelle) des objets métiers en document
 	 * @param indexName Index name
 	 * @param esClient Client ElasticSearch.
 	 */
-	ESStatement(final ESDocumentCodec esDocumentCodec, final String indexName, final RestHighLevelClient esClient, final Map<Class, BasicTypeAdapter> typeAdapters) {
+	ESStatement(final ESDocumentCodec esDocumentCodec, final String indexName, final ElasticsearchClient esClient, final Map<Class, BasicTypeAdapter> typeAdapters) {
 		Assertion.check()
 				.isNotBlank(indexName)
 				.isNotNull(esDocumentCodec)
@@ -116,20 +105,19 @@ final class ESStatement<K extends KeyConcept, I extends DataObject> {
 	void putAll(final Collection<SearchIndex<K, I>> indexCollection) {
 		//Injection spécifique au moteur d'indexation.
 		try {
-			final BulkRequest bulkRequest = new BulkRequest()
-					.setRefreshPolicy(BULK_REFRESH);
+			final BulkRequest.Builder br = new BulkRequest.Builder().refresh(BULK_REFRESH);
 
 			for (final SearchIndex<K, I> index : indexCollection) {
-				try (final XContentBuilder xContentBuilder = esDocumentCodec.index2XContentBuilder(index)) {
-					final IndexRequest indexRequest = new IndexRequest(indexName)
-							.id(index.getUID().urn())
-							.source(xContentBuilder);
-					bulkRequest.add(indexRequest);
-				}
+				final var document = esDocumentCodec.index2Json(index);
+				br.operations(op -> op
+						.index(idx -> idx
+								.index(indexName)
+								.id(index.getUID().urn())
+								.document(document)));
 			}
-			final BulkResponse bulkResponse = esClient.bulk(bulkRequest, RequestOptions.DEFAULT);
-			if (bulkResponse.hasFailures()) {
-				throw new VSystemException("Can't putAll into {1} index.\nCause by {2}", indexName, bulkResponse.buildFailureMessage());
+			final BulkResponse bulkResponse = esClient.bulk(br.build());
+			if (bulkResponse.errors()) {
+				throw new VSystemException("Can't putAll into {0} index.\nCause by {1}", indexName, bulkResponse.items());
 			}
 		} catch (final IOException e) {
 			handleIOException(e);
@@ -145,15 +133,16 @@ final class ESStatement<K extends KeyConcept, I extends DataObject> {
 	 */
 	void put(final SearchIndex<K, I> index) {
 		//Injection spécifique au moteur d'indexation.
-		try (final XContentBuilder xContentBuilder = esDocumentCodec.index2XContentBuilder(index)) {
-			final IndexRequest indexRequest = new IndexRequest(indexName)
+		try {
+			final var document = esDocumentCodec.index2Json(index);
+			final var indexeResponse = esClient.index(i -> i
+					.index(indexName)
 					.id(index.getUID().urn())
-					.source(xContentBuilder)
-					.setRefreshPolicy(DEFAULT_REFRESH);
-			final IndexResponse indexeResponse = esClient.index(indexRequest, RequestOptions.DEFAULT);
+					.refresh(DEFAULT_REFRESH)
+					.document(document));
 			//-----
-			Assertion.check().isTrue(indexeResponse.getResult() == DocWriteResponse.Result.CREATED
-					|| indexeResponse.getResult() == DocWriteResponse.Result.UPDATED, "Can't put on {0}", indexName);
+			Assertion.check().isTrue(indexeResponse.result() == Result.Created
+					|| indexeResponse.result() == Result.Updated, "Can't put on {0}", indexName);
 		} catch (final IOException e) {
 			handleIOException(e);
 		}
@@ -161,22 +150,23 @@ final class ESStatement<K extends KeyConcept, I extends DataObject> {
 
 	/**
 	 * Supprime des documents.
+	 * 
 	 * @param query Requete de filtrage des documents à supprimer
 	 */
 	void remove(final ListFilter query) {
 		Assertion.check().isNotNull(query);
 		//-----
 		try {
-			final QueryBuilder queryBuilder = AsbtractESSearchRequestBuilder.translateToQueryBuilder(query);
-			final DeleteByQueryRequest request = new DeleteByQueryRequest(indexName)
-					.setQuery(queryBuilder);
-			final BulkByScrollResponse response = esClient.deleteByQuery(request, RequestOptions.DEFAULT);
-			final long deleted = response.getDeleted();
+			//final QueryBuilder queryBuilder = AsbtractESSearchRequestBuilder.translateToQueryBuilder(query);
+			final DeleteByQueryResponse deleteByQueryResponse = esClient.deleteByQuery(d -> d
+					.index(indexName)
+					.query(q -> q.queryString(qs -> qs.query(query.getFilterValue()).analyzeWildcard(true))) // TODO a refactorer avec AsbtractESSearchRequestBuilder.translateToQueryBuilder(query)
+			);
+
+			final long deleted = deleteByQueryResponse.deleted();
 			LOGGER.debug("Removed {} elements", deleted);
-		} catch (final SearchPhaseExecutionException e) {
-			final VUserException vue = new VUserException(SearchResource.DATAFACTORY_SEARCH_QUERY_SYNTAX_ERROR);
-			vue.initCause(e);
-			throw vue;
+		} catch (final ElasticsearchException e) {
+			throw handleElasticsearchException("remove()", e);
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e, "Error in remove() on {0}", indexName);
 		}
@@ -186,30 +176,23 @@ final class ESStatement<K extends KeyConcept, I extends DataObject> {
 		Assertion.check().isNotNull(versionField).isNotNull(listFilter);
 		//-----
 		try {
-			final QueryBuilder queryfilterBuilder = QueryBuilders
-					.queryStringQuery(listFilter.getFilterValue())
-					.analyzeWildcard(true);
+			// On précise Map.class car on veut récupérer le JSON brut sous forme de Map
+			final SearchResponse<Map> searchResponse = esClient.search(s -> s
+					.index(indexName)
+					.size(maxElements)
+					.trackTotalHits(t -> t.count(10_000))
+					.query(q -> q.queryString(qs -> qs.query(listFilter.getFilterValue()).analyzeWildcard(true)))
+					.source(src -> src.filter(f -> f.includes(versionField.name()))), Map.class);
 
-			final var searchRequest = new SearchRequest(indexName)
-					.searchType(SearchType.QUERY_THEN_FETCH)
-					.source(new SearchSourceBuilder()
-							.size(maxElements)
-							.trackTotalHitsUpTo(10_000)
-							.query(queryfilterBuilder)
-							.fetchSource(new String[] { versionField.name() }, null));
-
-			final SearchResponse searchResponse = esClient.search(searchRequest, RequestOptions.DEFAULT);
 			final Map<UID<K>, Serializable> result = new HashMap<>();
-			for (final SearchHit searchHit : searchResponse.getHits()) {
-				final String urn = searchHit.getId();
-				final Serializable value = decodeVersionValue(versionField, searchHit.getSourceAsMap().get(versionField.name()));
+			for (final Hit<Map> hit : searchResponse.hits().hits()) {
+				final String urn = hit.id();
+				final Serializable value = decodeVersionValue(versionField, hit.source().get(versionField.name()));
 				result.put(UID.of(urn), value);
 			}
 			return result;
-		} catch (final SearchPhaseExecutionException e) {
-			final VUserException vue = new VUserException(SearchResource.DATAFACTORY_SEARCH_QUERY_SYNTAX_ERROR);
-			vue.initCause(e);
-			throw vue;
+		} catch (final ElasticsearchException e) {
+			throw handleElasticsearchException("loadVersions()", e);
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e, "Error in loadVersions() on {0}", indexName);
 		}
@@ -225,28 +208,30 @@ final class ESStatement<K extends KeyConcept, I extends DataObject> {
 		}
 		final BasicType versionFieldDataType = versionField.smartTypeDefinition().getBasicType();
 		return switch (versionFieldDataType) {
-			case Integer -> value instanceof Integer ? (Integer) value : Integer.valueOf(String.valueOf(value));
-			case Long -> value instanceof Long ? (Long) value : Long.valueOf(String.valueOf(value));
-			case Instant -> value instanceof Instant ? (Instant) value : Instant.parse(String.valueOf(value));
+			case Integer -> value instanceof final Integer i ? i : Integer.valueOf(String.valueOf(value));
+			case Long -> value instanceof final Long l ? l : Long.valueOf(String.valueOf(value));
+			case Instant -> value instanceof final Instant i ? i : Instant.parse(String.valueOf(value));
 			case String -> String.valueOf(value);
-			case BigDecimal, DataStream, Boolean, Double, LocalDate -> throw new IllegalArgumentException("Type's versionField " + versionFieldDataType.name() + " from "
+			default -> throw new IllegalArgumentException("Type's versionField " + versionFieldDataType.name() + " from "
 					+ indexName + " is not supported, prefer int, long, Instant or String.");
 		};
 	}
 
 	/**
 	 * Supprime un document.
+	 * 
 	 * @param uid UID du document à supprimer
 	 */
 	void remove(final UID uid) {
 		Assertion.check().isNotNull(uid);
 		//-----
 		try {
-			final DeleteRequest request = new DeleteRequest(indexName, uid.urn()) //index, doc_id
-					.setRefreshPolicy(DEFAULT_REFRESH);
-			final DeleteResponse deleteResponse = esClient.delete(request, RequestOptions.DEFAULT);
+			final DeleteResponse deleteResponse = esClient.delete(d -> d
+					.index(indexName)
+					.id(uid.urn())
+					.refresh(DEFAULT_REFRESH));
 			//----
-			Assertion.check().isTrue(deleteResponse.getResult() == DocWriteResponse.Result.DELETED,
+			Assertion.check().isTrue(deleteResponse.result() == Result.Deleted,
 					"Can't remove on {0}", indexName);
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e, "Error in remove() on {0}", indexName);
@@ -260,34 +245,43 @@ final class ESStatement<K extends KeyConcept, I extends DataObject> {
 	 * @param defaultMaxRows Nombre de ligne max par defaut
 	 * @return Résultat de la recherche
 	 */
-	FacetedQueryResult<I, SearchQuery> loadList(final DataDefinition indexDtDefinition, final String[] indexNames, final SearchQuery searchQuery, final DtListState listState, final int defaultMaxRows) {
+	FacetedQueryResult<I, SearchQuery> loadList(final DataDefinition indexDtDefinition, final String[] indexNames, final SearchQuery searchQuery, final DtListState listState,
+			final int defaultMaxRows) {
 		Assertion.check().isNotNull(searchQuery);
 		//-----
-		final SearchRequest searchRequest = new ESSearchRequestBuilder(indexNames, esClient, typeAdapters)
+		final ESSearchRequestBuilder builder = new ESSearchRequestBuilder(indexNames, esClient, typeAdapters)
 				.withIndexDtDefinition(indexDtDefinition)
 				.withSearchQuery(searchQuery)
-				.withListState(listState, defaultMaxRows)
-				.build();
+				.withListState(listState, defaultMaxRows);
+		if (searchQuery.isUseHighlight()) {
+			builder.withHighlight();
+		}
+		final SearchRequest searchRequest = builder.build();
 		LOGGER.info("loadList {}", searchRequest);
 		try {
-			final SearchResponse searchResponse = esClient.search(searchRequest, RequestOptions.DEFAULT);
+			final SearchResponse<Map> searchResponse = esClient.search(searchRequest, Map.class);
 			return new ESFacetedQueryResultBuilder(esDocumentCodec, indexDtDefinition, searchResponse, searchQuery)
 					.build();
-		} catch (final ElasticsearchStatusException e) {
-			final String errorMessage = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
-			if (errorMessage.contains("set fielddata=true")) {
-				final VUserException vue = new VUserException(SearchResource.DATAFACTORY_SEARCH_INDEX_FIELDDATA_ERROR);
-				vue.initCause(e);
-				throw vue;
-			} else if (errorMessage.contains("Failed to parse query") || errorMessage.contains("type=search_phase_execution_exception")) {
-				final VUserException vue = new VUserException(SearchResource.DATAFACTORY_SEARCH_QUERY_SYNTAX_ERROR);
-				vue.initCause(e);
-				throw vue;
-			}
-			throw WrappedException.wrap(e, "Error in loadList() on {0}", indexName);
+		} catch (final ElasticsearchException e) {
+			throw handleElasticsearchException("loadList()", e);
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e, "Error in loadList() on {0}", indexName);
 		}
+	}
+
+	private RuntimeException handleElasticsearchException(final String methodName, final ElasticsearchException e) {
+		final String errorMessage = e.error() != null && e.error().causedBy() != null && e.error().causedBy().reason() != null ? e.error().causedBy().reason()
+				: e.getMessage() != null ? e.getMessage() : "";
+		if (errorMessage.contains("set fielddata=true")) {
+			final VUserException vue = new VUserException(SearchResource.DATAFACTORY_SEARCH_INDEX_FIELDDATA_ERROR);
+			vue.initCause(e);
+			return vue;
+		} else if (errorMessage.contains("Failed to parse") || errorMessage.contains("search_phase_execution_exception")) {
+			final VUserException vue = new VUserException(SearchResource.DATAFACTORY_SEARCH_QUERY_SYNTAX_ERROR);
+			vue.initCause(e);
+			return vue;
+		}
+		return WrappedException.wrap(e, "Error in {0} on {1} : {2}", methodName, indexName, errorMessage);
 	}
 
 	/**
@@ -295,9 +289,9 @@ final class ESStatement<K extends KeyConcept, I extends DataObject> {
 	 */
 	public long count() {
 		try {
-			final CountRequest countRequest = new CountRequest(indexName);
-			final CountResponse countResponse = esClient.count(countRequest, RequestOptions.DEFAULT);
-			return countResponse.getCount();
+			final CountResponse countResponse = esClient.count(c -> c
+					.index(indexName));
+			return countResponse.count();
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e, "Error in count() on {0}", indexName);
 		}

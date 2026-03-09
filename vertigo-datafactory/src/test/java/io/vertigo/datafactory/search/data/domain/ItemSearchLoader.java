@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.inject.Inject;
 
@@ -33,6 +34,7 @@ import io.vertigo.datafactory.search.definitions.SearchChunk;
 import io.vertigo.datafactory.search.definitions.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchIndex;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
+import io.vertigo.datamodel.data.definitions.DataFieldName;
 import io.vertigo.datamodel.data.model.UID;
 
 public final class ItemSearchLoader extends AbstractSearchLoader<Item, Item> {
@@ -83,13 +85,20 @@ public final class ItemSearchLoader extends AbstractSearchLoader<Item, Item> {
 		//call loader service
 		final List<Tuple<UID<Item>, Serializable>> uids = new ArrayList<>(itemDataBase.getAllItems().size());
 		for (final Item item : itemDataBase.getAllItems()) {
-			if (item.getId() > (Long) lastValue) {
+			if (!orderByVersion && item.getId() > (Long) lastValue) {
 				uids.add(Tuple.of(item.getUID(), item.getId()));
+			} else if (orderByVersion && item.getLastModified().isAfter((java.time.Instant) lastValue)) {
+				uids.add(Tuple.of(item.getUID(), item.getLastModified()));
 			}
 			if (uris.size() >= SEARCH_CHUNK_SIZE) {
 				break;
 			}
 		}
 		return uids;
+	}
+
+	@Override
+	public Optional<DataFieldName<Item>> getVersionFieldName() {
+		return Optional.of(() -> "lastModified");
 	}
 }

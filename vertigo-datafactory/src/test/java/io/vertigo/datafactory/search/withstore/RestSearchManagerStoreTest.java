@@ -25,7 +25,7 @@ import io.vertigo.datafactory.search.MyNodeConfig;
  *
  * @author npiedeloup
  */
-public class RestELSearchManagerStoreTest extends AbstractSearchManagerStoreTest {
+public class RestSearchManagerStoreTest extends AbstractSearchManagerStoreTest {
 
 	@Override
 	protected NodeConfig buildNodeConfig() {

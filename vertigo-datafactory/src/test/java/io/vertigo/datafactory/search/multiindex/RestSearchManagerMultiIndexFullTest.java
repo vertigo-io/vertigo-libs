@@ -34,13 +34,13 @@ import io.vertigo.datamodel.data.model.DtListState;
 /**
  * @author  npiedeloup
  */
-public class SearchManagerMultiIndexFullTest extends AbstractSearchManagerTest {
+public class RestSearchManagerMultiIndexFullTest extends AbstractSearchManagerTest {
 	//Index
 	private static final String IDX_ITEM = "IdxItem";
 	private static final String IDX_ITEM_2 = "IdxItem2";
 	protected SearchIndexDefinition itemIndex2Definition;
 
-	/**{@inheritDoc}*/
+	/** {@inheritDoc} */
 	@Override
 	protected void doSetUp() {
 		final DefinitionSpace definitionSpace = node.getDefinitionSpace();
@@ -50,7 +50,7 @@ public class SearchManagerMultiIndexFullTest extends AbstractSearchManagerTest {
 
 	@Override
 	protected NodeConfig buildNodeConfig() {
-		return MyNodeConfig.config(false, false);
+		return MyNodeConfig.config(true, false);
 	}
 
 	/**
@@ -91,8 +91,8 @@ public class SearchManagerMultiIndexFullTest extends AbstractSearchManagerTest {
 		//Suppression de n voitures
 		final List<Long> ids = itemDataBase.getAllIds();
 		for (int i = 0; i < count; i++) {
-			searchManager.remove(itemIndexDefinition, createURI(ids.get(i)));
-			searchManager.remove(itemIndex2Definition, createURI(ids.get(i)));
+			final SearchIndexDefinition itemDataIndexDefinition = i % 2 == 0 ? itemIndexDefinition : itemIndex2Definition;
+			searchManager.remove(itemDataIndexDefinition, createURI(ids.get(i)));
 		}
 	}
 

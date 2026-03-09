@@ -1,0 +1,25 @@
+version: '3.7'
+services:
+#Search
+  elasticsearch:
+    image: elasticsearch:9.2.3
+    ports:
+      - 9200:9200
+      - 9300:9300
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - ELASTIC_PASSWORD=foobared
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - xpack.security.enabled=false
+      - xpack.security.http.ssl.enabled=false
+#      - xpack.security.http.ssl.key=/usr/share/elasticsearch/config/ssl/es01.key
+#      - xpack.security.http.ssl.certificate_authorities=/usr/share/elasticsearch/config/ssl/ca.crt
+#      - xpack.security.http.ssl.certificate=/usr/share/elasticsearch/config/ssl/es01.crt
+    ulimits:
+          memlock:
+            soft: -1
+            hard: -1
+    volumes: 
+      - ./elastic/ssl/:/usr/share/elasticsearch/config/ssl/:ro
+

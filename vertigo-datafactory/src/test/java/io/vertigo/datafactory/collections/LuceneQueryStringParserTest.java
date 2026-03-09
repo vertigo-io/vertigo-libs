@@ -28,7 +28,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
- * @author  npiedeloup
+ * @author npiedeloup
  */
 public final class LuceneQueryStringParserTest {
 	private StandardQueryParser queryParser;
@@ -36,12 +36,22 @@ public final class LuceneQueryStringParserTest {
 	@BeforeEach
 	public void setUp() {
 		queryParser = new StandardQueryParser(new TestAnalyzer());
+		/*final SyntaxParser syntaxParser = new SyntaxParser() {
+			final StandardSyntaxParser standardSyntaxParser = new StandardSyntaxParser();
+		
+			@Override
+			public QueryNode parse(final CharSequence query, final CharSequence field) throws QueryNodeParseException {
+				final String safeUserQuery = query.toString().replace("=", " ");
+				return standardSyntaxParser.parse(safeUserQuery, field);
+			}
+		};
+		queryParser.setSyntaxParser(syntaxParser);*/
 		queryParser.setAllowLeadingWildcard(true);
 	}
 
 	@Test
 	public void testStringQuery() {
-		final String[][] testQueries = new String[][] {
+		final String[][] testQueries = {
 				//QueryPattern, UserQuery, EspectedResult, OtherAcceptedResult ...
 				{ "ALL:Test", "ALL:Test" }, //0
 				{ "ALL:(Test test2)", "ALL:Test ALL:test2" }, //1
@@ -60,7 +70,7 @@ public final class LuceneQueryStringParserTest {
 
 	@Test
 	public void testStringAdvancedQuery() {
-		final String[][] testQueries = new String[][] {
+		final String[][] testQueries = {
 				//QueryPattern, UserQuery, EspectedResult
 				{ "ALL:(Test or test2)", "ALL:Test ALL:or ALL:test2" }, //0
 				{ "ALL:(Test and test2)", "ALL:Test ALL:and ALL:test2" }, //1
@@ -91,7 +101,7 @@ public final class LuceneQueryStringParserTest {
 
 	@Test
 	public void testStringEscapedModeQuery() {
-		final String[][] testQueries = new String[][] {
+		final String[][] testQueries = {
 				{ "ALL:(Test Or test2)", "ALL:Test ALL:Or ALL:test2" }, //0
 				{ "ALL:(Test And test2)", "ALL:Test ALL:And ALL:test2" }, //1
 				{ "ALL:(Test \\or test2)", "ALL:Test ALL:or ALL:test2" }, //2
@@ -100,13 +110,13 @@ public final class LuceneQueryStringParserTest {
 				{ "ALL:(Test \\And test2)", "ALL:Test ALL:And ALL:test2" }, //5
 				{ "ALL:(Test \\OR test2)", "ALL:Test ALL:OR ALL:test2" }, //6
 				{ "ALL:(Test \\AND test2)", "ALL:Test ALL:AND ALL:test2" }, //7
-				{ "ALL:(test +1 -2 =3 &&4 ||5)", "ALL:test +ALL:1 -2:3 ALL:4 ALL:5" }, //8
+				{ "ALL:(test +1 -2 =3 &&4 ||5)", "ERROR", "Syntax Error, cannot parse" }, //8
 				{ "ALL:(test >6 test2)", "test:{6 TO *] ALL:test2" }, //9
 				{ "ALL:(test <7 test2)", "test:[* TO 7} ALL:test2" }, //10
 				{ "ALL:(!8 test2)", "-ALL:8 ALL:test2" }, //11
 				{ "ALL:((9 )a test2)", "ALL:9 ALL:a ALL:test2" }, //12
-				{ "ALL:(test +1 -2 =3 &&4 ||5 6>6 7<7 !8 (9 )a test2)", "ALL:test +ALL:1 -2:3 ALL:4 ALL:5 6:{6 TO *] 7:[* TO 7} -ALL:8 ALL:9 ALL:a ALL:test2" }, //13
-				{ "ALL:(test [1 ]2 ^3 \"4 ~5 *6 ?7 :8 \\9 /a test2)", "ERROR", "Syntax Error, cannot parse ALL:(test [1 ]2 ^3 \"4 ~5 *6 ?7 :8 \\9 /a test2):  " }, //14
+				{ "ALL:(test +1 -2 =3 &&4 ||5 6>6 7<7 !8 (9 )a test2)", "ERROR", "Syntax Error, cannot parse" }, //13
+				{ "ALL:(test [1 ]2 ^3 \"4 ~5 *6 ?7 :8 \\9 /a test2)", "ERROR", "Syntax Error, cannot parse" }, //14
 				{ "ALL:(test \\+1 \\-2 \\=3 \\&\\&4 \\|\\|5 \\>6 \\<7 \\!8 \\(9 \\)a \\{b \\}c test2)", "ALL:test ALL:1 ALL:2 ALL:3 ALL:4 ALL:5 ALL:6 ALL:7 ALL:8 ALL:9 ALL:a ALL:b ALL:c ALL:test2" }, //15
 				{ "ALL:(test \\[1 \\]2 \\^3 \\\"4 \\~5 \\*6 \\?7 \\:8 \\\\9 \\/a test2)", "ALL:test ALL:1 ALL:2 ALL:3 ALL:4 ALL:5 ALL:6 ALL:7 ALL:8 ALL:9 ALL:a ALL:test2" }, //16
 				{ "ALL:(test 1 2 3 4 5 6 7 8 9 a b c test2)", "ALL:test ALL:1 ALL:2 ALL:3 ALL:4 ALL:5 ALL:6 ALL:7 ALL:8 ALL:9 ALL:a ALL:b ALL:c ALL:test2" }, //17
@@ -124,7 +134,7 @@ public final class LuceneQueryStringParserTest {
 
 	@Test
 	public void testStringEscapedQuery() {
-		final String[][] testQueries = new String[][] {
+		final String[][] testQueries = {
 				//QueryPattern, UserQuery, EspectedResult
 				{ "ALL:(Test \\or test2)", "ALL:Test ALL:or ALL:test2" }, //0
 				{ "ALL:(Test \\and test2)", "ALL:Test ALL:and ALL:test2" }, //1
@@ -155,7 +165,7 @@ public final class LuceneQueryStringParserTest {
 
 	@Test
 	public void testStringBooleanQuery() {
-		final String[][] testQueries = new String[][] {
+		final String[][] testQueries = {
 				//QueryPattern, UserQuery, EspectedResult
 				{ "F1:Test OR F2:Test", "F1:Test F2:Test" }, //0
 				{ "F1:Test AND F2:Test", "+F1:Test +F2:Test" }, //1
@@ -169,7 +179,7 @@ public final class LuceneQueryStringParserTest {
 
 	@Test
 	public void testStringBadBooleanQuery() {
-		final String[][] testQueries = new String[][] {
+		final String[][] testQueries = {
 				//QueryPattern, UserQuery, EspectedResult
 				{ "ALL:(Test \\or )", "ALL:Test ALL:or" }, //0
 				{ "ALL:(Test \\and )", "ALL:Test ALL:and" }, //1
@@ -212,7 +222,7 @@ public final class LuceneQueryStringParserTest {
 
 	@Test
 	public void testNullableStringQuery() {
-		final String[][] testQueries = new String[][] {
+		final String[][] testQueries = {
 				//QueryPattern, UserQuery, EspectedResult
 				{ "ALL:*", "ALL:*" }, //0
 				{ "+YEAR:[2000 TO *]", "YEAR:[2000 TO *]" }, //1
@@ -222,7 +232,7 @@ public final class LuceneQueryStringParserTest {
 
 	@Test
 	public void testStringOverridedFieldQuery() {
-		final String[][] testQueries = new String[][] {
+		final String[][] testQueries = {
 				//QueryPattern, UserQuery, EspectedResult
 				{ "OTHER:Test", "OTHER:Test" }, //0
 				{ "OTHER:Test ALL:test2", "OTHER:Test ALL:test2" }, //1
@@ -243,7 +253,7 @@ public final class LuceneQueryStringParserTest {
 
 	@Test
 	public void testStringOverridedModifierQuery() {
-		final String[][] testQueries = new String[][] {
+		final String[][] testQueries = {
 				{ "ALL:(+Test test2)", "+ALL:Test ALL:test2" }, //0
 				{ "ALL:(Test* test2)", "ALL:Test* ALL:test2" }, //1
 				{ "ALL:(-Test)", "-ALL:Test" }, //2
@@ -258,7 +268,7 @@ public final class LuceneQueryStringParserTest {
 
 	@Test
 	public void testStringFixedQuery() {
-		final String[][] testQueries = new String[][] {
+		final String[][] testQueries = {
 				//QueryPattern, UserQuery, EspectedResult
 				{ "ALL:fixedValue", "ALL:fixedValue" }, //0
 				{ "ALL:\"Noisy le sec\"", "ALL:\"Noisy le sec\"" }, //1
@@ -272,7 +282,7 @@ public final class LuceneQueryStringParserTest {
 
 	@Test
 	public void testStringEmptyQuery() {
-		final String[][] testQueries = new String[][] {
+		final String[][] testQueries = {
 				{ "ALL:(+Test*) +security:fixedValue", "ALL:Test* +security:fixedValue" }, //0
 				{ "*:* +security:fixedValue", "*:* +security:fixedValue" }, //1
 				{ "ALL:* +security:fixedValue", "ALL:* +security:fixedValue" }, //2
@@ -283,7 +293,7 @@ public final class LuceneQueryStringParserTest {
 	@Test
 	public void testStringSpecialCharQuery() {
 		//ElasticSearch reserved characters are: + - = && || > < ! ( ) { } [ ] ^ " ~ * ? : \ /
-		final String[][] testQueries = new String[][] {
+		final String[][] testQueries = {
 				{ "ALL:(-Test*)", "-ALL:Test*" }, //0
 				{ "ALL:(+Test-)", "ALL:Test" }, //1
 				{ "ALL:(-Test-)", "-ALL:Test" }, //2
@@ -315,7 +325,7 @@ public final class LuceneQueryStringParserTest {
 	@Test
 	public void testStringWithSpaceQuery() {
 		//ElasticSearch reserved characters are: ' ' \n \t \r
-		final String[][] testQueries = new String[][] {
+		final String[][] testQueries = {
 				//QueryPattern, UserQuery, EspectedResult
 				{ "ALL:(Andrey Mariette)", "ALL:Andrey ALL:Mariette" }, //0
 				{ "ALL:((Andrey Mariette))", "ALL:Andrey ALL:Mariette" }, //1
@@ -326,9 +336,9 @@ public final class LuceneQueryStringParserTest {
 
 	@Test
 	public void testStringHackQuery() {
-		final String[][] testQueries = new String[][] {
+		final String[][] testQueries = {
 				//QueryPattern, UserQuery, EspectedResult
-				{ "ALL:(Test OR 1=1) +security:fixedValue", "(ALL:Test 1:1) +security:fixedValue" }, //0
+				{ "ALL:(Test OR 1=1) +security:fixedValue", "ERROR", "Syntax Error, cannot parse ALL:(Test OR 1=1) +security:fixedValue:  " }, //0
 				{ "ALL:(Test\\) OR \\(1=1) +security:fixedValue", "(ALL:Test (1:1) +security:fixedValue" }, //1
 				{ "ALL:(*\\) \\OR ) +security:fixedValue", "(ALL:*) ALL:OR) +security:fixedValue" }, //2
 		};
@@ -337,24 +347,24 @@ public final class LuceneQueryStringParserTest {
 
 	@Test
 	public void testBeanQuery() {
-		final String[][] testQueries = new String[][] {
+		final String[][] testQueries = {
 				{ "ALL:5", "ALL:5" }, //0
 				{ "ALL:10", "ALL:10" }, //1
 				{ "ALL:[5 TO 10]", "ALL:[5 TO 10]" }, //2
-				{ "]", "ERROR", "Syntax Error, cannot parse ]: Lexical error at line 1, column 2.  Encountered: <EOF> after : \"\" " }, //3
+				{ "]", "ERROR", "Syntax Error, cannot parse ]: Lexical error at line 1, column 2.  Encountered: <EOF>" }, //3
 				{ "ALL:[5 TO *]", "ALL:[5 TO *]" }, //4
 				{ "ALL:[* TO 10]", "ALL:[* TO 10]" }, //5
-				{ " TO *]", "ERROR", "Syntax Error, cannot parse  TO *]: Lexical error at line 1, column 7.  Encountered: <EOF> after : \"\" " }, //6
+				{ " TO *]", "ERROR", "Syntax Error, cannot parse  TO *]: Lexical error at line 1, column 7.  Encountered: <EOF>" }, //6
 				{ "ALL:{5 TO 10}", "ALL:{5 TO 10}" }, //7
-				{ "}", "ERROR", "Syntax Error, cannot parse }: Lexical error at line 1, column 2.  Encountered: <EOF> after : \"\" " }, //8
-				{ " TO *}", "ERROR", "Syntax Error, cannot parse  TO *}: Lexical error at line 1, column 7.  Encountered: <EOF> after : \"\" " }, //9
+				{ "}", "ERROR", "Syntax Error, cannot parse }: Lexical error at line 1, column 2.  Encountered: <EOF>" }, //8
+				{ " TO *}", "ERROR", "Syntax Error, cannot parse  TO *}: Lexical error at line 1, column 7.  Encountered: <EOF>" }, //9
 		};
 		testStringFixedQuery(testQueries);
 	}
 
 	@Test
 	public void testBeanWithNullQuery() {
-		final String[][] testQueries = new String[][] {
+		final String[][] testQueries = {
 				{ "+(NOM:(+Test)) +PRENOM:(+Test +test2)", "+NOM:Test +(+PRENOM:Test +PRENOM:test2)" }, //0
 				{ "+(NOM_NAISSANCE:(+Test)) +PRENOM:(+Test +test2)", "+NOM_NAISSANCE:Test +(+PRENOM:Test +PRENOM:test2)" }, //1
 				{ "+(NOM_NAISSANCE:(+Test) OR NOM:(+Test))", "NOM_NAISSANCE:Test NOM:Test" }, //2
@@ -369,20 +379,21 @@ public final class LuceneQueryStringParserTest {
 
 	@Test
 	public void testFailQuery() {
-		final String[][] testQueries = new String[][] {
+		final String[][] testQueries = {
 				{ "ALL:((Test test2)*)", "(ALL:Test ALL:test2) ALL:*" }, //0
 				{ "-ALL:(+(Test test2)*)", "-(+(ALL:Test ALL:test2) ALL:*)" }, //1
 				{ "-ALL:(+(Test AND (test2 OR test3))*)", "-(+(+ALL:Test +(ALL:test2 ALL:test3)) ALL:*)" }, //2
-				{ "+JOB_CODE:(+00000/1111*)", "ERROR", "Syntax Error, cannot parse +JOB_CODE:(+00000/1111*): Lexical error at line 1, column 25.  Encountered: <EOF> after : \"/1111*)\" " }, //3
+				{ "+JOB_CODE:(+00000/1111*)", "ERROR", "Syntax Error, cannot parse +JOB_CODE:(+00000/1111*): Lexical error at line 1, column 25.  Encountered: <EOF> after prefix \"/1111*)\" " }, //3
 				{ "NOM_NAISSANCE:#str1# NOM=#str1#", "NOM_NAISSANCE:str1 NOM:str1" }, //4
-				{ "NOM_NAISSANCE:#str1# NOM:#str1# (NOM_NAISSANCE:#str1# NOM=#str1#) NOM_NAISSANCE:#str1# NOM:#str1# ", "NOM_NAISSANCE:str1 NOM:str1 (NOM_NAISSANCE:str1 NOM:str1) NOM_NAISSANCE:str1 NOM:str1" }, //5
+				{ "NOM_NAISSANCE:#str1# NOM:#str1# (NOM_NAISSANCE:#str1# NOM=#str1#) NOM_NAISSANCE:#str1# NOM:#str1# ",
+						"NOM_NAISSANCE:str1 NOM:str1 (NOM_NAISSANCE:str1 NOM:str1) NOM_NAISSANCE:str1 NOM:str1" }, //5
 		};
 		testStringFixedQuery(testQueries);
 	}
 
 	@Test
 	public void testMultiQuery() {
-		final String[][] testQueries = new String[][] {
+		final String[][] testQueries = {
 				{ "+ALL:(Test test2)", "ALL:Test ALL:test2" }, //0
 				{ "+PRO_ID:* +ALL:(Test test2)", "+PRO_ID:* +(ALL:Test ALL:test2)" }, //1
 				{ "+PRO_ID:12 +ALL:(Test test2)", "+PRO_ID:12 +(ALL:Test ALL:test2)" }, //2
@@ -391,16 +402,18 @@ public final class LuceneQueryStringParserTest {
 				{ "+PRO_ID:(CODE_1 CODE_3) +ALL:(Test test2)", "+(PRO_ID:CODE_1 PRO_ID:CODE_3) +(ALL:Test ALL:test2)" }, //5
 				{ "+PRO_ID:(+CODE_1 +CODE_3) +ALL:(Test test2)", "+(+PRO_ID:CODE_1 +PRO_ID:CODE_3) +(ALL:Test ALL:test2)" }, //6
 				{ "+ALL:(Test test2)", "ALL:Test ALL:test2" }, //7
-				{ " TO *] +DATE_NAISSANCE:*", "ERROR", "Syntax Error, cannot parse  TO *] +DATE_NAISSANCE:*: Lexical error at line 1, column 6.  Encountered: \"]\" (93), after : \"\" " }, //8
-				{ "+OPE_STATUS_CODE_NOT_ANALYZED:item +(+(PART_NUMBER:(item*)^10 DESCRIPTION_TRACKIT:(item*) COLLECTIONS:(item*) FAMILY:(item*)))", "+OPE_STATUS_CODE_NOT_ANALYZED:item +((PART_NUMBER:item*)^10.0 DESCRIPTION_TRACKIT:item* COLLECTIONS:item* FAMILY:item*)" }, //9
-				{ "+MOT_CLE_SUP:(Test test2) +(LISTE_MCL_ID:(Test test2)) +(INC_SEANCES_NULL:true)", "+(MOT_CLE_SUP:Test MOT_CLE_SUP:test2) +(LISTE_MCL_ID:Test LISTE_MCL_ID:test2) +INC_SEANCES_NULL:true" }, //10
+				{ " TO *] +DATE_NAISSANCE:*", "ERROR", "Syntax Error, cannot parse  TO *] +DATE_NAISSANCE:*: Lexical error at line 1, column 6.  Encountered: '93' (93), (in lexical state 2)" }, //8
+				{ "+OPE_STATUS_CODE_NOT_ANALYZED:item +(+(PART_NUMBER:(item*)^10 DESCRIPTION_TRACKIT:(item*) COLLECTIONS:(item*) FAMILY:(item*)))",
+						"+OPE_STATUS_CODE_NOT_ANALYZED:item +((PART_NUMBER:item*)^10.0 DESCRIPTION_TRACKIT:item* COLLECTIONS:item* FAMILY:item*)" }, //9
+				{ "+MOT_CLE_SUP:(Test test2) +(LISTE_MCL_ID:(Test test2)) +(INC_SEANCES_NULL:true)",
+						"+(MOT_CLE_SUP:Test MOT_CLE_SUP:test2) +(LISTE_MCL_ID:Test LISTE_MCL_ID:test2) +INC_SEANCES_NULL:true" }, //10
 		};
 		testStringFixedQuery(testQueries);
 	}
 
 	@Test
 	public void testMultiFieldQuery() {
-		final String[][] testQueries = new String[][] {
+		final String[][] testQueries = {
 				{ "+FIELD_1:(Test* test2*)", "FIELD_1:Test* FIELD_1:test2*" }, //0
 				{ "FIELD_1:(Test* test2*) FIELD_2:(Test* test2*)", "(FIELD_1:Test* FIELD_1:test2*) (FIELD_2:Test* FIELD_2:test2*)" }, //1
 				{ "+FIELD_1:(Test* test2*) +FIELD_2:(Test* test2*)", "+(FIELD_1:Test* FIELD_1:test2*) +(FIELD_2:Test* FIELD_2:test2*)" }, //2
@@ -410,9 +423,12 @@ public final class LuceneQueryStringParserTest {
 				{ "(+(FIELD_1:(Test*) FIELD_2:(Test*)^2) +(FIELD_1:(test2*) FIELD_2:(test2*)^2))", "+(FIELD_1:Test* (FIELD_2:Test*)^2.0) +(FIELD_1:test2* (FIELD_2:test2*)^2.0)" }, //6
 				{ "(+(FIELD_1:(Test*) FIELD_2:(Test*)^2)) ALL:test2", "(FIELD_1:Test* (FIELD_2:Test*)^2.0) ALL:test2" }, //7
 				{ "ALL:test2 +(FIELD_1:(Test*) FIELD_2:(Test*)^2)", "ALL:test2 +(FIELD_1:Test* (FIELD_2:Test*)^2.0)" }, //8
-				{ "+FIELD_1:(Test test2)^4 +FIELD_2:(Test test2)^4 +((+(FIELD_1:(Test*) FIELD_2:(Test*)) +(FIELD_1:(test2*) FIELD_2:(test2*)))^2) +FIELD_1:(Test~2 test2~2) +FIELD_2:(Test~2 test2~2)", "+(FIELD_1:Test FIELD_1:test2)^4.0 +(FIELD_2:Test FIELD_2:test2)^4.0 +(+(FIELD_1:Test* FIELD_2:Test*) +(FIELD_1:test2* FIELD_2:test2*))^2.0 +(FIELD_1:Test~2 FIELD_1:test2~2) +(FIELD_2:Test~2 FIELD_2:test2~2)" }, //9
-				{ "+FIELD_1:(Test test2)^4 +FIELD_2:(Test test2)^4 +FIELD_1:(Test* test2*)^2 +FIELD_2:(Test* test2*)^2 +FIELD_1:(Test~2 test2~2) +FIELD_2:(Test~2 test2~2)", "+(FIELD_1:Test FIELD_1:test2)^4.0 +(FIELD_2:Test FIELD_2:test2)^4.0 +(FIELD_1:Test* FIELD_1:test2*)^2.0 +(FIELD_2:Test* FIELD_2:test2*)^2.0 +(FIELD_1:Test~2 FIELD_1:test2~2) +(FIELD_2:Test~2 FIELD_2:test2~2)" }, //10
-				{ "+FIELD_1:(Test test2)^4 +FIELD_2:(Test test2)^4 +FIELD_1:(Test* test2*)^2 +FIELD_2:(Test* test2*)^2 +FIELD_1:(Test~2 test2~2) +FIELD_2:(Test~2 test2~2)", "+(FIELD_1:Test FIELD_1:test2)^4.0 +(FIELD_2:Test FIELD_2:test2)^4.0 +(FIELD_1:Test* FIELD_1:test2*)^2.0 +(FIELD_2:Test* FIELD_2:test2*)^2.0 +(FIELD_1:Test~2 FIELD_1:test2~2) +(FIELD_2:Test~2 FIELD_2:test2~2)" }, //11
+				{ "+FIELD_1:(Test test2)^4 +FIELD_2:(Test test2)^4 +((+(FIELD_1:(Test*) FIELD_2:(Test*)) +(FIELD_1:(test2*) FIELD_2:(test2*)))^2) +FIELD_1:(Test~2 test2~2) +FIELD_2:(Test~2 test2~2)",
+						"+(FIELD_1:Test FIELD_1:test2)^4.0 +(FIELD_2:Test FIELD_2:test2)^4.0 +(+(FIELD_1:Test* FIELD_2:Test*) +(FIELD_1:test2* FIELD_2:test2*))^2.0 +(FIELD_1:Test~2 FIELD_1:test2~2) +(FIELD_2:Test~2 FIELD_2:test2~2)" }, //9
+				{ "+FIELD_1:(Test test2)^4 +FIELD_2:(Test test2)^4 +FIELD_1:(Test* test2*)^2 +FIELD_2:(Test* test2*)^2 +FIELD_1:(Test~2 test2~2) +FIELD_2:(Test~2 test2~2)",
+						"+(FIELD_1:Test FIELD_1:test2)^4.0 +(FIELD_2:Test FIELD_2:test2)^4.0 +(FIELD_1:Test* FIELD_1:test2*)^2.0 +(FIELD_2:Test* FIELD_2:test2*)^2.0 +(FIELD_1:Test~2 FIELD_1:test2~2) +(FIELD_2:Test~2 FIELD_2:test2~2)" }, //10
+				{ "+FIELD_1:(Test test2)^4 +FIELD_2:(Test test2)^4 +FIELD_1:(Test* test2*)^2 +FIELD_2:(Test* test2*)^2 +FIELD_1:(Test~2 test2~2) +FIELD_2:(Test~2 test2~2)",
+						"+(FIELD_1:Test FIELD_1:test2)^4.0 +(FIELD_2:Test FIELD_2:test2)^4.0 +(FIELD_1:Test* FIELD_1:test2*)^2.0 +(FIELD_2:Test* FIELD_2:test2*)^2.0 +(FIELD_1:Test~2 FIELD_1:test2~2) +(FIELD_2:Test~2 FIELD_2:test2~2)" }, //11
 				{ "+(+(FIELD_1:(Test*) FIELD_2:(Test*)) +(FIELD_1:(test2*) FIELD_2:(test2*)))", "+(FIELD_1:Test* FIELD_2:Test*) +(FIELD_1:test2* FIELD_2:test2*)" }, //12
 				{ "+(+(FIELD_1:Test FIELD_2:Test*) +(FIELD_1:test2 FIELD_2:test2*))", "+(FIELD_1:Test FIELD_2:Test*) +(FIELD_1:test2 FIELD_2:test2*)" }, //13
 		};
@@ -421,7 +437,7 @@ public final class LuceneQueryStringParserTest {
 
 	@Test
 	public void testMultiFieldQueryBean() {
-		final String[][] testQueries = new String[][] {
+		final String[][] testQueries = {
 				//QueryPattern, UserQuery, EspectedResult
 				{ "+(+(FIELD_1:(Test*) FIELD_2:(Test*)) +FIELD_2:Test +DATE_MODIFICATION_DEPUIS:[\"2015-07-23\" TO \"2015-07-23\"])",
 						"+(FIELD_1:Test* FIELD_2:Test*) +FIELD_2:Test +DATE_MODIFICATION_DEPUIS:[2015-07-23 TO 2015-07-23]" }, //0

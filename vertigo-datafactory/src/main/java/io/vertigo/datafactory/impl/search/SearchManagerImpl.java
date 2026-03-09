@@ -226,13 +226,6 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 		return indexDefinition.get();
 	}
 
-	/** {@inheritDoc} */
-	@Deprecated
-	@Override
-	public SearchIndexDefinition findIndexDefinitionByKeyConcept(final Class<? extends KeyConcept> keyConceptClass) {
-		return findFirstIndexDefinitionByKeyConcept(keyConceptClass);
-	}
-
 	private static boolean hasIndexDefinitionByKeyConcept(final DataDefinition keyConceptDefinition) {
 		final List<SearchIndexDefinition> indexDefinitions = findIndexDefinitionByKeyConcept(keyConceptDefinition);
 		return !indexDefinitions.isEmpty();
@@ -267,6 +260,13 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 				dirtyElements.addAll(keyConceptUris);
 			}
 		}
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void waitForRefresh(final Class<? extends KeyConcept> keyConceptClass) {
+		var indexDefinitions = findIndexDefinitionByKeyConcept(DataModelUtil.findDataDefinition(keyConceptClass));
+		searchServicesPlugin.waitForRefresh(indexDefinitions);
 	}
 
 	/** {@inheritDoc} */

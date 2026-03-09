@@ -47,6 +47,7 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 	private Integer myMostRecentBoost;
 	private FacetedQuery myFacetedQuery;
 	private FacetDefinition myClusteringFacetDefinition;
+	private boolean myUseHighlight = false; // new flag
 
 	/**
 	 * Constructor.
@@ -158,6 +159,15 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 		return this;
 	}
 
+	/**
+	 * Enable highlight in search response
+	 * @return this builder
+	 */
+	public SearchQueryBuilder withHighlight() {
+		this.myUseHighlight = true;
+		return this;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public SearchQuery build() {
@@ -171,6 +181,7 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 				myClusteringFacetDefinition,
 				myDateField,
 				myNumDaysOfBoostRef,
-				myMostRecentBoost);
+				myMostRecentBoost,
+				myUseHighlight);
 	}
 }

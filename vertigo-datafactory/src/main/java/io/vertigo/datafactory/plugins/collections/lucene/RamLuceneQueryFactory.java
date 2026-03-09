@@ -37,8 +37,6 @@ import org.apache.lucene.search.BoostQuery;
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.PrefixQuery;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.spans.SpanFirstQuery;
-import org.apache.lucene.search.spans.SpanMultiTermQueryWrapper;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
@@ -51,11 +49,13 @@ final class RamLuceneQueryFactory {
 
 	RamLuceneQueryFactory(final Analyzer queryAnalyzer) {
 		Assertion.check().isNotNull(queryAnalyzer);
-		//-----
+		// -----
 		this.queryAnalyzer = queryAnalyzer;
 	}
 
-	Query createFilterQuery(final String keywords, final Collection<DataField> searchedFields, final List<ListFilter> listFilters, final Optional<DataField> pkField, final Optional<DataField> boostedField) throws IOException {
+	Query createFilterQuery(final String keywords, final Collection<DataField> searchedFields,
+			final List<ListFilter> listFilters, final Optional<DataField> pkField,
+			final Optional<DataField> boostedField) throws IOException {
 		final Query filteredQuery;
 		final Query keywordsQuery = createKeywordQuery(queryAnalyzer, keywords, searchedFields, pkField, boostedField);
 		if (!listFilters.isEmpty()) {
@@ -66,14 +66,17 @@ final class RamLuceneQueryFactory {
 		return filteredQuery;
 	}
 
-	private static Query createKeywordQuery(final Analyzer queryAnalyser, final String keywords, final Collection<DataField> searchedFieldList, final Optional<DataField> pkField, final Optional<DataField> boostedField) throws IOException {
+	private static Query createKeywordQuery(final Analyzer queryAnalyser, final String keywords,
+			final Collection<DataField> searchedFieldList, final Optional<DataField> pkField,
+			final Optional<DataField> boostedField) throws IOException {
 		if (StringUtil.isBlank(keywords)) {
 			return new MatchAllDocsQuery();
 		}
-		//-----
+		// -----
 		final Builder queryBuilder = new BooleanQuery.Builder();
 		for (final DataField dtField : searchedFieldList) {
-			Query queryWord = createParsedKeywordsQuery(queryAnalyser, dtField.name(), keywords, pkField.isEmpty() || !dtField.equals(pkField.get()));
+			Query queryWord = createParsedKeywordsQuery(queryAnalyser, dtField.name(), keywords,
+					pkField.isEmpty() || !dtField.equals(pkField.get()));
 			if (boostedField.isPresent() && dtField.equals(boostedField.get())) {
 				queryWord = new BoostQuery(queryWord, 4);
 			}
@@ -82,14 +85,16 @@ final class RamLuceneQueryFactory {
 		return queryBuilder.build();
 	}
 
-	private static Query createFilteredQuery(final Analyzer queryAnalyser, final Query keywordsQuery, final List<ListFilter> filters) {
+	private static Query createFilteredQuery(final Analyzer queryAnalyser, final Query keywordsQuery,
+			final List<ListFilter> filters) {
 		final Builder queryBuilder = new BooleanQuery.Builder()
 				.add(keywordsQuery, BooleanClause.Occur.MUST);
 
 		final StandardQueryParser queryParser = new StandardQueryParser(queryAnalyser);
 		for (final ListFilter filter : filters) {
 			try {
-				queryBuilder.add(queryParser.parse(filter.getFilterValue(), null), isExclusion(filter) ? BooleanClause.Occur.MUST_NOT : BooleanClause.Occur.MUST);
+				queryBuilder.add(queryParser.parse(filter.getFilterValue(), null),
+						isExclusion(filter) ? BooleanClause.Occur.MUST_NOT : BooleanClause.Occur.MUST);
 			} catch (final QueryNodeException e) {
 				throw WrappedException.wrap(e, "Erreur lors de la création du filtrage de la requete");
 			}
@@ -102,7 +107,8 @@ final class RamLuceneQueryFactory {
 		return listFilterValue.startsWith("-");
 	}
 
-	private static Query createParsedKeywordsQuery(final Analyzer queryAnalyser, final String fieldName, final String keywords, final boolean useSpanFirst) throws IOException {
+	private static Query createParsedKeywordsQuery(final Analyzer queryAnalyser, final String fieldName,
+			final String keywords, final boolean useSpanFirst) throws IOException {
 		final Builder queryBuilder = new BooleanQuery.Builder();
 		final Reader reader = new StringReader(keywords);
 		try (final TokenStream tokenStream = queryAnalyser.tokenStream(fieldName, reader)) {
@@ -114,8 +120,12 @@ final class RamLuceneQueryFactory {
 					final PrefixQuery prefixQuery = new PrefixQuery(new Term(fieldName, term));
 					queryBuilder.add(prefixQuery, BooleanClause.Occur.MUST);
 					if (useSpanFirst) {
-						final SpanFirstQuery spanSecondQuery = new SpanFirstQuery(new SpanMultiTermQueryWrapper<>(prefixQuery), 1);
-						queryBuilder.add(spanSecondQuery, BooleanClause.Occur.SHOULD);
+						/*
+						 * TODO
+						 * final SpanFirstQuery spanSecondQuery = new SpanFirstQuery(new
+						 * SpanMultiTermQueryWrapper<>(prefixQuery), 1);
+						 * queryBuilder.add(spanSecondQuery, BooleanClause.Occur.SHOULD);
+						 */
 					}
 				}
 			} finally {

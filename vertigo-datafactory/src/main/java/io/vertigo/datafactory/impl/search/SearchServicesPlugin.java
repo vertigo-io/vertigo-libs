@@ -44,6 +44,7 @@ public interface SearchServicesPlugin extends Plugin {
 	/**
 	 * Ajout de plusieurs ressources à l'index.
 	 * Si les éléments étaient déjà dans l'index ils sont remplacés.
+	 * 
 	 * @param <I> Type de l'objet représentant l'index
 	 * @param <K> Type du keyConcept métier indexé
 	 * @param indexDefinition Type de l'index
@@ -54,6 +55,7 @@ public interface SearchServicesPlugin extends Plugin {
 	/**
 	 * Ajout d'une ressource à l'index.
 	 * Si l'élément était déjà dans l'index il est remplacé.
+	 * 
 	 * @param <I> Type de l'objet représentant l'index
 	 * @param <K> Type du keyConcept métier indexé
 	 * @param indexDefinition Type de l'index
@@ -64,6 +66,7 @@ public interface SearchServicesPlugin extends Plugin {
 	/**
 	 * Ajout de meta data à l'index.
 	 * Si l'élément était déjà dans l'index il est remplacé.
+	 * 
 	 * @param indexDefinition Type de l'index
 	 * @param dataPath Clé de la métadonnée
 	 * @param dataValue Valeur de la métadonnée
@@ -72,6 +75,7 @@ public interface SearchServicesPlugin extends Plugin {
 
 	/**
 	 * Lecture de meta data à l'index.
+	 * 
 	 * @param indexDefinition Type de l'index
 	 * @param dataPath Clé de la métadonnée
 	 * @return Valeur de la métadonnée, null si pas de donnée
@@ -80,6 +84,7 @@ public interface SearchServicesPlugin extends Plugin {
 
 	/**
 	 * Récupération du résultat issu d'une requête.
+	 * 
 	 * @param searchQuery critères initiaux
 	 * @param indexDefinition Type de l'index
 	 * @param listState Etat de la liste (tri et pagination)
@@ -97,16 +102,18 @@ public interface SearchServicesPlugin extends Plugin {
 	 * @param maxElements Nb Max elements to return
 	 * @return Map des versions par UID
 	 */
-	<K extends KeyConcept> Map<UID<K>, Serializable> loadVersions(final SearchIndexDefinition indexDefinitions, final DataFieldName<K> versionFieldName, final ListFilter listFilter, final int maxElements);
+	<K extends KeyConcept> Map<UID<K>, Serializable> loadVersions(final SearchIndexDefinition indexDefinitions, final DataFieldName<K> versionFieldName, final ListFilter listFilter,
+			final int maxElements);
 
 	/**
-	 * @param indexDefinition  Type de l'index
+	 * @param indexDefinition Type de l'index
 	 * @return Nombre de document indexés
 	 */
 	long count(SearchIndexDefinition indexDefinition);
 
 	/**
 	 * Suppression d'une ressource de l'index.
+	 * 
 	 * @param <K> Type du keyConcept métier indexé
 	 * @param indexDefinition Type de l'index
 	 * @param uid UID de la ressource à supprimer
@@ -115,8 +122,16 @@ public interface SearchServicesPlugin extends Plugin {
 
 	/**
 	 * Suppression des données correspondant à un filtre.
+	 * 
 	 * @param indexDefinition Type de l'index
 	 * @param listFilter Filtre des éléments à supprimer
 	 */
 	void remove(SearchIndexDefinition indexDefinition, final ListFilter listFilter);
+
+	/**
+	 * Attente de la prise en compte des données dans l'index.
+	 * 
+	 * @param indexDefinitions Type de l'index
+	 */
+	void waitForRefresh(List<SearchIndexDefinition> indexDefinitions);
 }
