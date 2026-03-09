@@ -105,6 +105,7 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 
 	/**
 	 * Constructor.
+	 *
 	 * @param optDataSpace the dataSpace (option)
 	 * @param optConnectionName the name of the connection
 	 * @param optSequencePrefix the prefix of sequences
@@ -322,7 +323,7 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 		//---
 		final var entityName = getEntityName(dataDefinition);
 		final var tableName = StringUtil.camelToConstCase(entityName);
-		final var taskName = TASK.TkCount + entityName + (Criterions.alwaysTrue().equals(criteria) ? "ByCriteria" : "");
+		final var taskName = TASK.TkCount + entityName + (!Criterions.alwaysTrue().equals(criteria) ? "ByCriteria" : "");
 		final var tuple = criteria.toStringAnCtx(criteriaEncoder);
 		final var where = tuple.val1();
 		final var request = new StringBuilder("select count(1) as totalCount")
