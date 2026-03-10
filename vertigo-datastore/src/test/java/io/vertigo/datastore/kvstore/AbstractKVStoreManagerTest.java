@@ -57,6 +57,7 @@ public abstract class AbstractKVStoreManagerTest {
 	private AutoCloseableNode node;
 
 	protected static final KVCollection FLOWERS = new KVCollection("flowers");
+	protected static final KVCollection FLOWERS_TEMP = new KVCollection("flowersTemp");
 	protected static final int TTL = 10;
 	protected final String storagePath = System.getProperty("user.home") + "/datastore-tmp";
 	//protected final String storagePath = "d:\\datastore-tmp";
@@ -220,20 +221,17 @@ public abstract class AbstractKVStoreManagerTest {
 	@Disabled
 	@Test
 	public void testInsertMassConcurrent() throws InterruptedException {
-		final Runnable task = new Runnable() {
-			@Override
-			public void run() {
-				for (int j = 0; j < 50 && !Thread.currentThread().isInterrupted(); j++) {
-					try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-						for (int i = 0; i < 50 && !Thread.currentThread().isInterrupted(); i++) {
-							kvStoreManager.put(FLOWERS, String.valueOf(j * 1000 + i), buildFlower("Test", 60));
-						}
-						transaction.commit();
-						try {
-							Thread.sleep(100);
-						} catch (final InterruptedException e) {
-							break;
-						}
+		final Runnable task = () -> {
+			for (int j = 0; j < 50 && !Thread.currentThread().isInterrupted(); j++) {
+				try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+					for (int i = 0; i < 50 && !Thread.currentThread().isInterrupted(); i++) {
+						kvStoreManager.put(FLOWERS, String.valueOf(j * 1000 + i), buildFlower("Test", 60));
+					}
+					transaction.commit();
+					try {
+						Thread.sleep(100);
+					} catch (final InterruptedException e) {
+						break;
 					}
 				}
 			}
@@ -363,7 +361,8 @@ public abstract class AbstractKVStoreManagerTest {
 				final var perS = 1000 * 100d / (System.currentTimeMillis() - startLoop) * 1000;
 				final var searchFlower = kvStoreManager.find(FLOWERS, String.valueOf(flowerId - 10), Flower.class);
 				final var time = System.currentTimeMillis() - start;
-				System.out.println(time / 1000 + "; get " + searchFlower.isPresent() + " over " + kvStoreManager.count(FLOWERS) + " time:" + time / 1000 + "s , " + perS + " insert/s (" + getDirectorySizeJava8(Path.of(storagePath)) / (1024 * 1024) + "Mo)");
+				System.out.println(time / 1000 + "; get " + searchFlower.isPresent() + " over " + kvStoreManager.count(FLOWERS) + " time:" + time / 1000 + "s , " + perS + " insert/s ("
+						+ getDirectorySizeJava8(Path.of(storagePath)) / (1024 * 1024) + "Mo)");
 				int rollCountTmp = 0;
 				for (int c = 0; c < TTL; c++) {
 					rollCountTmp += rollCount[c];
@@ -547,7 +546,7 @@ public abstract class AbstractKVStoreManagerTest {
 		}
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			//count after 3 inserts and T+6s
-			final long nbFlowers2 = countFlowersFrom("1", "2", "3");
+			final long nbFlowers2 = countFlowersFrom(FLOWERS, "1", "2", "3");
 			Assertions.assertEquals(3, nbFlowers2);
 
 			sleep(3);
@@ -557,23 +556,23 @@ public abstract class AbstractKVStoreManagerTest {
 			Assertions.assertTrue(tulip1Load.isPresent());
 
 			//count after 3 inserts and T+9s
-			final long nbFlowers3 = countFlowersFrom("1", "2", "3");
+			final long nbFlowers3 = countFlowersFrom(FLOWERS, "1", "2", "3");
 			Assertions.assertEquals(3, nbFlowers3);
 
 			sleep(2);
 
 			//count after 3 inserts and T+11s
-			final long nbFlowers4 = countFlowersFrom("1", "2", "3");
+			final long nbFlowers4 = countFlowersFrom(FLOWERS, "1", "2", "3");
 			Assertions.assertEquals(2, nbFlowers4);
 			sleep(2);
 
 			//count after 3 inserts and T+13s
-			final long nbFlowers5 = countFlowersFrom("1", "2", "3");
+			final long nbFlowers5 = countFlowersFrom(FLOWERS, "1", "2", "3");
 			Assertions.assertEquals(1, nbFlowers5);
 			sleep(2);
 
 			//count after 3 inserts and 15s
-			final long nbFlowers6 = countFlowersFrom("1", "2", "3");
+			final long nbFlowers6 = countFlowersFrom(FLOWERS, "1", "2", "3");
 			Assertions.assertEquals(0, nbFlowers6);
 
 			//find expired element
@@ -582,13 +581,65 @@ public abstract class AbstractKVStoreManagerTest {
 		}
 	}
 
-	private long countFlowersFrom(final String... ids) {
+	@Test
+	public void testTimeToLiveTemp() {
+		//NEED set TTL to 10 !! => FlowerTemp TTL is Flower TTL/2
+		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			final int nbFlowers = kvStoreManager.count(FLOWERS_TEMP);
+			Assertions.assertEquals(0, nbFlowers);
+			//put a flowerTemp a t+0s (expire a T+5s)
+			final Flower tulip1 = buildFlower("tulip", 50);
+			kvStoreManager.put(FLOWERS_TEMP, "1", tulip1);
+			sleep(1);
+
+			//put a flower a t+2s (expire a T+6s)
+			final Flower tulip2 = buildFlower("tulip", 55);
+			kvStoreManager.put(FLOWERS_TEMP, "2", tulip2);
+			sleep(2);
+
+			//put a flower a t+4s (expire a T+7s)
+			final Flower tulip3 = buildFlower("tulip", 60);
+			kvStoreManager.put(FLOWERS_TEMP, "3", tulip3);
+			transaction.commit();
+		}
+		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			//count after 3 inserts and T+4s
+			final long nbFlowers2 = countFlowersFrom(FLOWERS_TEMP, "1", "2", "3");
+			Assertions.assertEquals(3, nbFlowers2);
+
+			//find unexpired element
+			final Optional<Flower> tulip1Load = kvStoreManager.find(FLOWERS_TEMP, "1", Flower.class);
+			Assertions.assertTrue(tulip1Load.isPresent());
+
+			sleep(2);
+			//count after 3 inserts and T+6s
+			final long nbFlowers3 = countFlowersFrom(FLOWERS_TEMP, "1", "2", "3");
+			Assertions.assertEquals(2, nbFlowers3);
+
+			sleep(2);
+
+			//count after 3 inserts and T+8s
+			final long nbFlowers4 = countFlowersFrom(FLOWERS_TEMP, "1", "2", "3");
+			Assertions.assertEquals(1, nbFlowers4);
+			sleep(2);
+
+			//count after 3 inserts and T+10s
+			final long nbFlowers5 = countFlowersFrom(FLOWERS_TEMP, "1", "2", "3");
+			Assertions.assertEquals(0, nbFlowers5);
+
+			//find expired element
+			final Optional<Flower> tulip1Reload = kvStoreManager.find(FLOWERS_TEMP, "1", Flower.class);
+			Assertions.assertFalse(tulip1Reload.isPresent());
+		}
+	}
+
+	private long countFlowersFrom(KVCollection collection, final String... ids) {
 		long nbFlowers = 0;
 		if (supportFindAll()) {
-			nbFlowers = kvStoreManager.findAll(FLOWERS, 0, 1000, Flower.class).size(); //can't use count as it doesnt detect too old element (needs daemon)
+			nbFlowers = kvStoreManager.findAll(collection, 0, 1000, Flower.class).size(); //can't use count as it doesnt detect too old element (needs daemon)
 		} else {
 			for (final String id : ids) {
-				nbFlowers += kvStoreManager.find(FLOWERS, id, Flower.class).isPresent() ? 1 : 0;
+				nbFlowers += kvStoreManager.find(collection, id, Flower.class).isPresent() ? 1 : 0;
 			}
 		}
 		return nbFlowers;

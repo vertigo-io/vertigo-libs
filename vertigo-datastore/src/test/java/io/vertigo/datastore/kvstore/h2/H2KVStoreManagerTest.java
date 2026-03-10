@@ -54,7 +54,7 @@ public final class H2KVStoreManagerTest extends AbstractKVStoreManagerTest {
 						.withMemoryCache()
 						.withKVStore()
 						.withH2KV(
-								Param.of("collections", "flowers;TTL=" + TTL + ", trees;inMemory"),
+								Param.of("collections", "flowers;TTL=" + TTL + ",flowersTemp;TTL=" + TTL / 2 + ", trees;inMemory"),
 								Param.of("dbFilePath", storagePath))
 						.build())
 				.build();
