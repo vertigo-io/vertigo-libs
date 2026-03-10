@@ -41,6 +41,7 @@ import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.transaction.VTransaction;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionResourceId;
+import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.daemon.definitions.DaemonDefinition;
 import io.vertigo.core.lang.Assertion;
@@ -137,18 +138,25 @@ public final class H2KVStorePlugin implements KVStorePlugin, SimpleDefinitionPro
 	@Override
 	public void start() {
 		for (final H2CollectionConfig collectionConfig : collectionConfigs.values()) {
-			final MVStore store = new MVStore.Builder()
+			final var store = new MVStore.Builder()
 					.fileName(dbFilePathTranslated + "/" + collectionConfig.getCollectionName())
 					//.autoCompactFillRate(100)
 					.cacheSize(50)
 					.compress()
 					.open();
 			store.setVersionsToKeep(0);
-			stores.put(new KVCollection(collectionConfig.getCollectionName()), store);
-
+			var collection = new KVCollection(collectionConfig.getCollectionName());
+			stores.put(collection, store);
 			final TransactionStore txStore = new TransactionStore(store, new MetaType<>(null, store.backgroundExceptionHandler), new ObjectDataType(), 5000);
 			txStore.init();
-			txStores.put(new KVCollection(collectionConfig.getCollectionName()), txStore);
+			txStores.put(collection, txStore);
+		}
+
+		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
+			for (KVCollection collection : stores.keySet()) {
+				getMap(collection); // L'appel à getMap dans cette transaction force H2 à les créer correctement
+				getIndexMap(collection); // L'appel à getMap dans cette transaction force H2 à les créer correctement
+			}
 		}
 	}
 
@@ -171,7 +179,7 @@ public final class H2KVStorePlugin implements KVStorePlugin, SimpleDefinitionPro
 		final VTransaction transaction = transactionManager.getCurrentTransaction();
 		H2Resource h2Resource = transaction.getResource(h2ResourceId);
 		if (h2Resource == null) {
-			//On a rien trouvé il faut créer la resourceLucene et l'ajouter à la transaction
+			//On a rien trouvé il faut créer la resourceH2 et l'ajouter à la transaction
 			h2Resource = new H2Resource(txStores.get(collection));
 			transaction.addResource(h2ResourceId, h2Resource);
 		}
@@ -203,7 +211,7 @@ public final class H2KVStorePlugin implements KVStorePlugin, SimpleDefinitionPro
 			tracer.setTag("collection", collection.name());
 			final MVStore store = stores.get(collection);
 			return store.openMap(collection.name()).size(); //count not TX
-			//return getMap(collection).size();
+			//return getMap(collection).size(); //must create TX, instead if collections is created here it stay uncompatible with TX after that
 		});
 	}
 
@@ -213,7 +221,11 @@ public final class H2KVStorePlugin implements KVStorePlugin, SimpleDefinitionPro
 		analyticsManager.trace(ANALYTICS_CATEGORY, "put", tracer -> {
 			tracer.setTag("collection", collection.name());
 			getMap(collection).put(key, new H2KVEntry(Instant.now().getEpochSecond(), codec.encode(Serializable.class.cast(element))));
-			((TransactionMap<Long, Set<String>>) getIndexMap(collection)).computeIfAbsent(Instant.now().getEpochSecond(), k -> ConcurrentHashMap.newKeySet()).add(key);
+
+			var indexMap = (TransactionMap<Long, Set<String>>) getIndexMap(collection);
+			var indexKeysPerSeconds = indexMap.computeIfAbsent(Instant.now().getEpochSecond(), k -> ConcurrentHashMap.newKeySet());
+			indexKeysPerSeconds.add(key);
+			indexMap.put(Instant.now().getEpochSecond(), indexKeysPerSeconds);
 		});
 	}
 

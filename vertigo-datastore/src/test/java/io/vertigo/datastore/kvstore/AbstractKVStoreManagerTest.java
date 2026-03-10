@@ -84,6 +84,7 @@ public abstract class AbstractKVStoreManagerTest {
 	protected void doSetUp() throws Exception {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			kvStoreManager.clear(FLOWERS);
+			kvStoreManager.clear(FLOWERS_TEMP);
 		}
 	}
 
@@ -590,7 +591,7 @@ public abstract class AbstractKVStoreManagerTest {
 			//put a flowerTemp a t+0s (expire a T+5s)
 			final Flower tulip1 = buildFlower("tulip", 50);
 			kvStoreManager.put(FLOWERS_TEMP, "1", tulip1);
-			sleep(1);
+			sleep(2);
 
 			//put a flower a t+2s (expire a T+6s)
 			final Flower tulip2 = buildFlower("tulip", 55);
@@ -645,9 +646,9 @@ public abstract class AbstractKVStoreManagerTest {
 		return nbFlowers;
 	}
 
-	private void sleep(final int timeSecond) {
+	protected void sleep(final double timeSecond) {
 		try {
-			Thread.sleep(timeSecond * 1000);
+			Thread.sleep((int) (timeSecond * 1000));
 		} catch (final InterruptedException e) {
 			Thread.currentThread().interrupt(); //si interrupt on relance
 		}

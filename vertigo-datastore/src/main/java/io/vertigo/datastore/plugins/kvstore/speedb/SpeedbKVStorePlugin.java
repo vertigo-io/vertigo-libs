@@ -74,7 +74,7 @@ public final class SpeedbKVStorePlugin implements KVStorePlugin, Activeable, Sim
 	private final List<KVCollection> collections;
 
 	private final Codec<Serializable, byte[]> codec;
-	private final VTransactionResourceId<SpeedbResource> speedbResourceId = new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, "speedb");
+	private final Map<KVCollection, VTransactionResourceId<SpeedbResource>> speedbResourceIds = new HashMap<>();
 
 	private final VTransactionManager transactionManager;
 	private final AnalyticsManager analyticsManager;
@@ -186,18 +186,18 @@ public final class SpeedbKVStorePlugin implements KVStorePlugin, Activeable, Sim
 
 		for (final SpeedbCollectionConfig collectionConfig : collectionConfigs.values()) {
 			final RocksDB speeDb;
-			String path = dbFilePathTranslated;
+			String path;
 			Options options = fsOptions;
 			if (collectionConfig.isInMemory()) {
 				options = memOptions;
 				path = "/dir/db";
 			} else {
-				new File(dbFilePathTranslated).mkdirs();
+				path = dbFilePathTranslated + File.separator + collectionConfig.getCollectionName();
+				new File(path).mkdirs();
 			}
 			if (collectionConfig.getTimeToLiveSeconds() > 0) {
 				try {
 					speeDb = TtlDB.open(options, path, (int) collectionConfig.getTimeToLiveSeconds(), readOnly);
-
 				} catch (final RocksDBException e) {
 					throw WrappedException.wrap(e);
 				}
@@ -208,7 +208,9 @@ public final class SpeedbKVStorePlugin implements KVStorePlugin, Activeable, Sim
 					throw WrappedException.wrap(e);
 				}
 			}
-			databases.put(new KVCollection(collectionConfig.getCollectionName()), speeDb);
+			var collection = new KVCollection(collectionConfig.getCollectionName());
+			databases.put(collection, speeDb);
+			speedbResourceIds.put(collection, new VTransactionResourceId<>(VTransactionResourceId.Priority.NORMAL, "speedb-" + collectionConfig.getCollectionName()));
 		}
 	}
 
@@ -221,6 +223,14 @@ public final class SpeedbKVStorePlugin implements KVStorePlugin, Activeable, Sim
 		}
 		memOptions.close();
 		fsOptions.close();
+	}
+
+	/**
+	 * Force remove too old elements.
+	 * For test purpose.
+	 */
+	public void forceRemoveTooOldElements() {
+		removeTooOldElements();
 	}
 
 	/**
@@ -242,12 +252,13 @@ public final class SpeedbKVStorePlugin implements KVStorePlugin, Activeable, Sim
 	}
 
 	private WriteBatch getCurrentSpeedbWriteBatch(final KVCollection collection) {
+		final VTransactionResourceId<SpeedbResource> resourceId = speedbResourceIds.get(collection);
 		final VTransaction transaction = transactionManager.getCurrentTransaction();
-		SpeedbResource speedbResource = transaction.getResource(speedbResourceId);
+		SpeedbResource speedbResource = transaction.getResource(resourceId);
 		if (speedbResource == null) {
 			//On a rien trouvé il faut créer la resourceLucene et l'ajouter à la transaction
 			speedbResource = new SpeedbResource(new WriteBatch(), getDatabase(collection));
-			transaction.addResource(speedbResourceId, speedbResource);
+			transaction.addResource(resourceId, speedbResource);
 		}
 		return speedbResource.getWriteBatch();
 	}
