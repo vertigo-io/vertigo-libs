@@ -136,29 +136,21 @@ public final class ESFacetedQueryResultBuilder<I extends DataObject> implements 
 		final Map<FacetValue, DtList<I>> resultCluster = new LinkedHashMap<>();
 		final FacetDefinition facetDefinition = searchQuery.getClusteringFacetDefinition();
 		final Aggregate facetAggregate = obtainAggregate(queryResponse, facetDefinition.getName());
+		final Map<String, MultiBucketBase> buckets = extractKeyedBuckets(facetAggregate);
+
 		if (facetDefinition.isRangeFacet()) {
-			//Cas des facettes par 'range'
-			final List<? extends MultiBucketBase> buckets = extractBuckets(facetAggregate);
 			for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
-				final MultiBucketBase bucket = getBucketByKey(buckets, facetRange.code());
+				final MultiBucketBase bucket = buckets.get(facetRange.code());
+				Assertion.check().isNotNull(bucket, "No bucket {0} found", facetRange.code());
 				populateCluster(bucket, facetRange, resultCluster, dtcIndex, resultHighlights);
 			}
 		} else {
-			//Cas des facettes par 'term'
-			final List<? extends MultiBucketBase> buckets = extractBuckets(facetAggregate);
-			for (final MultiBucketBase bucket : buckets) {
-				final FacetValue facetValue = createFacetTermValue(bucket, facetDefinition);
-				populateCluster(bucket, facetValue, resultCluster, dtcIndex, resultHighlights);
+			for (final var entry : buckets.entrySet()) {
+				final FacetValue facetValue = createFacetTermValue(entry.getKey(), facetDefinition);
+				populateCluster(entry.getValue(), facetValue, resultCluster, dtcIndex, resultHighlights);
 			}
 		}
 		return resultCluster;
-	}
-
-	private static MultiBucketBase getBucketByKey(final List<? extends MultiBucketBase> buckets, final String facetName) {
-		return buckets.stream()
-				.filter(bucket -> getBucketKey(bucket).equals(facetName))
-				.findFirst()
-				.orElseThrow(() -> new VSystemException("No facet {0} found in result", facetName));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -299,25 +291,24 @@ public final class ESFacetedQueryResultBuilder<I extends DataObject> implements 
 
 	private static Facet createTermFacet(final FacetDefinition facetDefinition, final Aggregate aggregate) {
 		final Map<FacetValue, Long> facetValues = new LinkedHashMap<>();
-		final List<? extends MultiBucketBase> buckets = extractBuckets(aggregate);
-		for (final MultiBucketBase bucket : buckets) {
-			final FacetValue facetValue = createFacetTermValue(bucket, facetDefinition);
-			facetValues.put(facetValue, bucket.docCount());
+		final Map<String, Long> buckets = extractKeyedDocCounts(aggregate);
+		for (final Map.Entry<String, Long> bucket : buckets.entrySet()) {
+			final FacetValue facetValue = createFacetTermValue(bucket.getKey(), facetDefinition);
+			facetValues.put(facetValue, bucket.getValue());
 		}
 		return new Facet(facetDefinition, facetValues);
 	}
 
-	private static FacetValue createFacetTermValue(final MultiBucketBase bucket, final FacetDefinition facetDefinition) {
-		final String valueAsString = getBucketKey(bucket);
+	private static FacetValue createFacetTermValue(final String bucketValueAsString, final FacetDefinition facetDefinition) {
 		final String label;
 		final String query;
-		if (!StringUtil.isBlank(valueAsString)) {
-			label = valueAsString;
+		if (!StringUtil.isBlank(bucketValueAsString)) {
+			label = bucketValueAsString;
 		} else {
 			label = EMPTY_TERM;
 		}
-		if (valueAsString != null) {
-			query = facetDefinition.getDataField().name() + ":\"" + valueAsString + "\"";
+		if (bucketValueAsString != null) {
+			query = facetDefinition.getDataField().name() + ":\"" + bucketValueAsString + "\"";
 		} else {
 			query = "!_exists_:" + facetDefinition.getDataField().name(); //only for null value, empty ones use FIELD:""
 		}
@@ -326,12 +317,13 @@ public final class ESFacetedQueryResultBuilder<I extends DataObject> implements 
 	}
 
 	private static Facet createFacetRange(final FacetDefinition facetDefinition, final Aggregate aggregate) {
-		//Cas des facettes par range
 		final Map<FacetValue, Long> rangeValues = new LinkedHashMap<>();
-		final List<? extends MultiBucketBase> buckets = extractBuckets(aggregate);
+
+		final Map<String, Long> buckets = extractKeyedDocCounts(aggregate);
 		for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
-			final MultiBucketBase bucket = getBucketByKey(buckets, facetRange.code());
-			rangeValues.put(facetRange, bucket.docCount());
+			var bucketCount = buckets.get(facetRange.code());
+			Assertion.check().isNotNull(bucketCount, "No facet {0} found in result", facetRange.code());
+			rangeValues.put(facetRange, bucketCount);
 		}
 		return new Facet(facetDefinition, rangeValues);
 	}
@@ -390,29 +382,34 @@ public final class ESFacetedQueryResultBuilder<I extends DataObject> implements 
 	// --- Utility methods for ES9 Aggregate/Bucket extraction ---
 
 	/**
-	 * Extracts the list of buckets from an Aggregate, regardless of its concrete type
-	 * (sterms, lterms, dterms, range, dateRange, geoDistance, filters).
+	 * Extracts a map of (key -> docCount) from any bucket aggregate.
+	 * Works for both array buckets (terms, range...) and keyed buckets (filters).
 	 */
-	private static List<? extends MultiBucketBase> extractBuckets(final Aggregate aggregate) {
-		if (aggregate.isSterms()) {
-			return aggregate.sterms().buckets().array();
-		} else if (aggregate.isLterms()) {
-			return aggregate.lterms().buckets().array();
-		} else if (aggregate.isDterms()) {
-			return aggregate.dterms().buckets().array();
-		} else if (aggregate.isRange()) {
-			return aggregate.range().buckets().array();
-		} else if (aggregate.isDateRange()) {
-			return aggregate.dateRange().buckets().array();
-		} else if (aggregate.isGeoDistance()) {
-			return aggregate.geoDistance().buckets().array();
-		} else if (aggregate.isGeohashGrid()) {
-			return aggregate.geohashGrid().buckets().array();
-		} else if (aggregate.isFilters()) {
-			// filters aggregation uses keyed buckets
-			return new ArrayList<>(aggregate.filters().buckets().keyed().values());
+	private static Map<String, Long> extractKeyedDocCounts(final Aggregate aggregate) {
+		final Map<String, Long> result = new LinkedHashMap<>();
+		extractKeyedBuckets(aggregate).forEach((key, bucket) -> result.put(key, bucket.docCount()));
+		return result;
+	}
+
+	private static Map<String, MultiBucketBase> extractKeyedBuckets(final Aggregate aggregate) {
+		final Map<String, MultiBucketBase> result = new LinkedHashMap<>();
+		final Object specificAggregation = aggregate._get();
+
+		try {
+			final var bucketsMethod = specificAggregation.getClass().getMethod("buckets");
+			final Buckets<?> bucketsContainer = (Buckets<?>) bucketsMethod.invoke(specificAggregation);
+
+			if (bucketsContainer.isKeyed()) {
+				bucketsContainer.keyed().forEach((key, bucket) -> result.put(key, (MultiBucketBase) bucket));
+			} else {
+				for (final var bucket : bucketsContainer.array()) {
+					result.put(getBucketKey((MultiBucketBase) bucket), (MultiBucketBase) bucket);
+				}
+			}
+		} catch (final ReflectiveOperationException e) {
+			throw new VSystemException(e, "Cannot extract buckets from {0}", aggregate._kind());
 		}
-		return extractCustomBuckets(aggregate);
+		return result;
 	}
 
 	/**

@@ -42,8 +42,7 @@ public final class MyNodeConfig {
 		final DataFactoryFeatures dataFactoryFeatures = new DataFactoryFeatures();
 		dataFactoryFeatures.withSearch();
 
-		final ElasticSearchFeatures elasticSearchFeatures = new ElasticSearchFeatures()
-				.withEmbeddedServer();
+		final ElasticSearchFeatures elasticSearchFeatures = new ElasticSearchFeatures();//.withEmbeddedServer();
 
 		if (esHL) {
 			elasticSearchFeatures.withRest( //connector

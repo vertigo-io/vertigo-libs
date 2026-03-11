@@ -20,6 +20,7 @@ package io.vertigo.datafactory.plugins.search.elasticsearch.rest;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -33,7 +34,9 @@ import co.elastic.clients.elasticsearch._types.SortOptions;
 import co.elastic.clients.elasticsearch._types.SortOrder;
 import co.elastic.clients.elasticsearch._types.aggregations.Aggregation;
 import co.elastic.clients.elasticsearch._types.aggregations.AggregationRange;
+import co.elastic.clients.elasticsearch._types.aggregations.Buckets;
 import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
+import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import co.elastic.clients.util.NamedValue;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
@@ -225,8 +228,7 @@ final class ESAggregationBuilder {
 		return indexType.isIndexSubKeyword();
 	}
 
-	private static Aggregation rangeFacetToAggregation(final FacetDefinition facetDefinition, final DataField dtField,
-			final Object criteria,
+	private static Aggregation rangeFacetToAggregation(final FacetDefinition facetDefinition, final DataField dtField, final Object criteria,
 			final Map<Class, BasicTypeAdapter> typeAdapters, final Map<String, Aggregation> subAggregations) {
 
 		switch (dtField.smartTypeDefinition().getScope()) {
@@ -242,11 +244,32 @@ final class ESAggregationBuilder {
 				return geoRangeFacetToAggregation(facetDefinition, dtField, criteria, typeAdapters, subAggregations);
 			case DATA_TYPE:
 			default:
-				throw new IllegalArgumentException(
-						"Type de donnée non pris en charge comme Facet pour le keyconcept indexé ["
-								+ dtField.smartTypeDefinition() + "].");
+				throw new IllegalArgumentException("Type de donnée non pris en charge comme Facet pour le keyconcept indexé [" + dtField.smartTypeDefinition() + "].");
 		}
-		return null; // Should not happen
+
+		return stringRangeFacetToAggregation(facetDefinition, dtField, subAggregations);
+	}
+
+	private static Aggregation stringRangeFacetToAggregation(final FacetDefinition facetDefinition, final DataField dtField, final Map<String, Aggregation> subAggregations) {
+		// Construction d'une agrégation "filters" avec des filtres nommés
+		final Map<String, Query> namedFilters = new LinkedHashMap<>();
+
+		for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
+			final String filterValue = facetRange.listFilter().getFilterValue();
+			Assertion.check().isTrue(filterValue.contains(dtField.name()),
+					"RangeFilter query ({1}) should use defined fieldName {0}", dtField.name(), filterValue);
+
+			final Query filterQuery = Query.of(q -> q.queryString(qs -> qs.query(filterValue)));
+			namedFilters.put(facetRange.code(), filterQuery);
+		}
+
+		return Aggregation.of(a -> {
+			a.filters(f -> f.filters(Buckets.of(b -> b.keyed(namedFilters))));
+			if (subAggregations != null && !subAggregations.isEmpty()) {
+				a.aggregations(subAggregations);
+			}
+			return a;
+		});
 	}
 
 	private static Aggregation numberRangeFacetToAggregation(final FacetDefinition facetDefinition,

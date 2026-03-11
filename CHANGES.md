@@ -3,9 +3,17 @@ Version history
 
 Running 5.0.0
 ----------------------
-[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-431-to-500)
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-433-to-500)
 
 more to come :)
+
+Running 4.4.0
+----------------------
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-433-to-440)
+
+* **[DataFactor] Upgrade Search plugin to ElasticSearch v9**. You may use plugin in libs-lts, if you need previous versions (ES7/ES8)
+  ES9 : removed EmbeddedServer, removed _all field
+
 
 Release 4.3.3 - 
 ----------------------

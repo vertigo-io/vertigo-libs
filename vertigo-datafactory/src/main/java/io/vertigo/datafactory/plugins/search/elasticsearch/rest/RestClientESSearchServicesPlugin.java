@@ -221,6 +221,21 @@ public final class RestClientESSearchServicesPlugin implements SearchServicesPlu
 
 				indexSettingsValid = indexSettingsValid && !isIndexSettingsDirty(myIndexName, expectedSettings);
 			}
+
+			/**
+			 * check index settings validity : if not valid, we must recreate index to avoid issue on indexation and search (mapping update is not possible for some settings)
+			 * Settings defined how data are indexed and searched : if they changed, index can be corrupted and return wrong search result without any error (ex : if normalizer is missing, no error is
+			 * throw but search on keyword field will not work as expected).
+			 * To accepts settings changes:
+			 * - for added analyzer only : must be done on a closed index : POST /mon_index/_close, PUT /mon_index/_settings, POST /mon_index/_open, PUT /mon_index/_mapping
+			 * - for removed or changed analyzer : index must be recreated to avoid issue on indexed data : stop server, delete your index data folder, restart server and launch indexation job.
+			 * - or : on crée un alias le temps de la miggration : un nouvel index avec la nouvelle config, on lance une commande de reindex de l'ancien index vers le nouvel index, puis on bascule
+			 * l'alias sur le nouvel index et on supprime l'ancien index.
+			 **/
+			Assertion.check()
+					.isTrue(indexSettingsValid,
+							"Index settings have changed and are no more compatible, you must remove your index like : curl -X DELETE \"http://localhost:9200/" + myIndexName + "\"");
+			//-----
 		}
 	}
 
@@ -237,15 +252,21 @@ public final class RestClientESSearchServicesPlugin implements SearchServicesPlu
 
 		var indexSettingsDirty = false;
 		// Comparaison des analyseurs (la partie la plus critique dans votre YAML)
-		boolean analysisChanged = !Objects.equals(currentSettings.analysis(), expectedSettings.analysis());
+		var currentAnalysis = currentSettings.index().analysis();
+		var expectedAnalysis = expectedSettings.index().analysis();
+		boolean analysisChanged = !Objects.equals(normalizeWhitespace(currentAnalysis.toString()), normalizeWhitespace(currentAnalysis.toString()));
 		if (analysisChanged) {
 			boolean subSettingsDirty = false;
-			subSettingsDirty = subSettingsDirty || isSubSettingsChanges(myIndexName, "analysis.normalizer", currentSettings.analysis().normalizer(), expectedSettings.analysis().normalizer());
-			subSettingsDirty = subSettingsDirty || isSubSettingsChanges(myIndexName, "analysis.tokenizer", currentSettings.analysis().tokenizer(), expectedSettings.analysis().tokenizer());
-			subSettingsDirty = subSettingsDirty || isSubSettingsChanges(myIndexName, "analysis.analyzer", currentSettings.analysis().analyzer(), expectedSettings.analysis().analyzer());
-			subSettingsDirty = subSettingsDirty || isSubSettingsChanges(myIndexName, "analysis.filter", currentSettings.analysis().filter(), expectedSettings.analysis().filter());
+			subSettingsDirty = subSettingsDirty
+					|| isSubSettingsChanges(myIndexName, "analysis.normalizer", currentAnalysis.normalizer(), expectedAnalysis.normalizer());
+			subSettingsDirty = subSettingsDirty
+					|| isSubSettingsChanges(myIndexName, "analysis.tokenizer", currentAnalysis.tokenizer(), expectedAnalysis.tokenizer());
+			subSettingsDirty = subSettingsDirty
+					|| isSubSettingsChanges(myIndexName, "analysis.analyzer", currentAnalysis.analyzer(), expectedAnalysis.analyzer());
+			subSettingsDirty = subSettingsDirty || isSubSettingsChanges(myIndexName, "analysis.filter", currentAnalysis.filter(), expectedAnalysis.filter());
 			if (!subSettingsDirty) {
-				LOGGER.warn("[{}] : settings changed on others properties current={}, expected={}", currentSettings.analysis(), expectedSettings.analysis());
+				LOGGER.warn("[{}] : settings changed on some properties. {}", myIndexName,
+						showStringDifference(currentAnalysis.toString(), expectedAnalysis.toString()));
 			}
 		}
 		indexSettingsDirty = indexSettingsDirty || analysisChanged;
@@ -263,14 +284,67 @@ public final class RestClientESSearchServicesPlugin implements SearchServicesPlu
 				LOGGER.warn("[{}] {}.{} : missing, expected={}", myIndexName, settingsName, propertyName, expectedValue);
 				break;
 			}
-			if (!currentValue.equals(expectedValue)) {
+			if (!currentValue.toString().equals(expectedValue.toString())) {
 				subSettingsDirty = true;
-				LOGGER.warn("[{}] {}.{} : current={}, expected={}", myIndexName, settingsName, propertyName, currentValue, expectedValue);
+				LOGGER.warn("[{}] {}.{} : {}", myIndexName, settingsName, propertyName, showStringDifference(currentValue.toString(), expectedValue.toString()));
 				break;
 			}
 		}
 
 		return subSettingsDirty;
+	}
+
+	public static String showStringDifference(final String current, final String expected) {
+		// 1. Nettoyage des chaînes (suppression du formatage)
+		final String cleanCurrent = normalizeWhitespace(current);
+		final String cleanExpected = normalizeWhitespace(expected);
+
+		if (cleanCurrent.equals(cleanExpected)) {
+			return "Les deux chaînes sont identiques après nettoyage.";
+		}
+
+		// 2. Recherche de la première différence
+		final int minLen = Math.min(cleanCurrent.length(), cleanExpected.length());
+		int diffIndex = minLen;
+
+		for (int i = 0; i < minLen; i++) {
+			if (cleanCurrent.charAt(i) != cleanExpected.charAt(i)) {
+				diffIndex = i;
+				break;
+			}
+		}
+
+		// 3. Construction de l'affichage (fenêtre de 30 caractères)
+		final int contextSize = 30;
+		final int startIndex = Math.max(0, diffIndex - contextSize);
+
+		final String partCurrent = cleanCurrent.substring(startIndex, Math.min(cleanCurrent.length(), diffIndex + contextSize));
+		final String partExpected = cleanExpected.substring(startIndex, Math.min(cleanExpected.length(), diffIndex + contextSize));
+
+		final String prefix = startIndex > 0 ? "..." : "";
+		// On calcule la position du curseur
+		final int pointerPos = prefix.length() + diffIndex - startIndex;
+
+		final StringBuilder sb = new StringBuilder();
+		sb.append("Différence de configuration trouvée à l'index ").append(diffIndex).append(" :\n");
+		// "Expected : " et "Current  : " font 11 caractères, on aligne tout
+		sb.append("Expected : ").append(prefix).append(partExpected).append(partExpected.length() < cleanExpected.length() - startIndex ? "..." : "").append("\n");
+		sb.append("Current  : ").append(prefix).append(partCurrent).append(partCurrent.length() < cleanCurrent.length() - startIndex ? "..." : "").append("\n");
+		// On ajoute 11 espaces pour compenser le préfixe "Current  : "
+		sb.append("           ").append(" ".repeat(pointerPos)).append("^\n");
+
+		return sb.toString();
+	}
+
+	/**
+	 * Remplace toutes les séquences d'espaces, tabulations et retours à la ligne
+	 * par un seul espace, et retire les espaces aux extrémités.
+	 */
+	private static String normalizeWhitespace(final String input) {
+		if (input == null) {
+			return "null";
+		}
+		return input.replaceAll("\\s+", " ").trim();
 	}
 
 	private void logMappings(final String myIndexName) throws IOException {
