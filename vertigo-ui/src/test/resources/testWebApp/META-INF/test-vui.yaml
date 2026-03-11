@@ -16,11 +16,13 @@ modules:
       - script.janino:
   io.vertigo.connectors.elasticsearch.ElasticSearchFeatures:
     features:
-      - embeddedServer:
-          home: esconfig
-      - transport:
-          servers.names: localhost:9300
-          cluster.name: vertigo-elasticsearch-embedded
+#      - embeddedServer:
+      - rest:
+          servers.names: localhost:9200
+          ssl: false
+#      - transport:
+#          servers.names: localhost:9300
+#          cluster.name: vertigo-elasticsearch-embedded
   io.vertigo.database.DatabaseFeatures:
     features:
       - sql:
@@ -55,10 +57,10 @@ modules:
       - search:
     featuresConfig:
       - collections.luceneIndex:
-      - search.elasticsearch.client:          
+      - search.elasticsearch.rest:
           envIndexPrefix: tuTest
           rowsPerQuery: 50
-          config.file: esconfig/elasticsearch.yml
+          config.file: esconfig/elasticsearch.json
   io.vertigo.account.AccountFeatures:
     features:
       - authorization:

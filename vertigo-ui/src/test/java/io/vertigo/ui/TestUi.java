@@ -42,7 +42,6 @@ import org.openqa.selenium.firefox.FirefoxOptions;
 import io.vertigo.ui.boot.JettyBoot;
 import io.vertigo.ui.boot.JettyBootParams;
 
-@Disabled
 public class TestUi {
 
 	private static final int port = 18080;
@@ -77,7 +76,7 @@ public class TestUi {
 		}
 		final var jettyBootParams = jettyBootParamsBuilder.build();
 
-		JettyBoot.startServer(jettyBootParams, (context) -> {
+		JettyBoot.startServer(jettyBootParams, context -> {
 			final var multipartConfigInjectionHandler = new MultipartConfigInjectionHandler();
 			multipartConfigInjectionHandler.setHandler(context);
 			return List.of(multipartConfigInjectionHandler);
@@ -86,7 +85,9 @@ public class TestUi {
 
 	@AfterAll
 	public static void tearDown() throws Exception {
-		driver.quit();
+		if (driver != null) {
+			driver.quit();
+		}
 		JettyBoot.stop();
 	}
 
@@ -212,9 +213,10 @@ public class TestUi {
 
 		findElement(By.name("vContext[movie][title]")).clear();
 		sendKeysJs(By.name("vContext[movie][title]"),
-				"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa "
-						+ "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa "
-						+ "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa ");
+				"""
+						aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa \
+						aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa \
+						aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\s""");
 		findElement(By.id("saveAction")).click();
 		Thread.sleep(5000);
 		assertTrue(findElement(By.cssSelector(".fieldTitle")).getAttribute("class").contains("q-field--error"));
@@ -289,16 +291,18 @@ public class TestUi {
 
 	}
 
-	private static final String JS_SEND_FILE = "var targetName = arguments[0],"
-			+ "myFile = arguments[1];" +
-			"    VUiPage.$refs[targetName].addFiles(myFile.files);";
-	private static final String JS_CREATE_FILE = "var input = document.createElement('INPUT');" +
-			"input.type = 'file';" +
-			"input.onchange = function () {" +
-			"  setTimeout(function () { document.body.removeChild(input); }, 500);" +
-			"};" +
-			"document.body.appendChild(input);" +
-			"return input;";
+	private static final String JS_SEND_FILE = """
+			var targetName = arguments[0],\
+			myFile = arguments[1];\
+			    VUiPage.$refs[targetName].addFiles(myFile.files);""";
+	private static final String JS_CREATE_FILE = """
+			var input = document.createElement('INPUT');\
+			input.type = 'file';\
+			input.onchange = function () {\
+			  setTimeout(function () { document.body.removeChild(input); }, 500);\
+			};\
+			document.body.appendChild(input);\
+			return input;""";
 
 	static void dropFile(final String targetName, final File file) {
 		final WebElement createdInput = (WebElement) ((JavascriptExecutor) driver).executeScript(JS_CREATE_FILE);
