@@ -17,7 +17,10 @@
  */
 package io.vertigo.vega.plugins.webservice.handler;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -25,6 +28,7 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 import io.vertigo.account.authorization.VSecurityException;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
@@ -67,6 +71,8 @@ public final class CorsAllowerWebServiceHandlerPlugin implements WebServiceHandl
 		this.methodCORSFilter = methodCORSFilter.orElse(DEFAULT_ALLOW_METHODS_CORS_FILTER);
 		originCORSFiltersSet = parseStringToSet(this.originCORSFilter);
 		methodCORSFiltersSet = parseStringToSet(this.methodCORSFilter);
+
+		checkOriginFormat(originCORSFiltersSet);
 	}
 
 	/** {@inheritDoc} */
@@ -121,6 +127,28 @@ public final class CorsAllowerWebServiceHandlerPlugin implements WebServiceHandl
 		return Arrays.stream(param.split(","))
 				.map(String::trim)
 				.collect(Collectors.toSet());
+	}
+
+	private void checkOriginFormat(final Set<String> originUrlsToCheck) {
+		final List<String> invalidUrls = originUrlsToCheck.stream()
+				.filter(this::isOriginURLInvalid)
+				.toList();
+
+		Assertion.check().isTrue(invalidUrls.isEmpty(), "The following urls are not valid for origin (protocol + server + port) : {0}", invalidUrls);
+	}
+
+	private boolean isOriginURLInvalid(final String urlToValidate) {
+		if (urlToValidate.equals("*")) {
+			return false;
+		}
+
+		try {
+			final URL url = new URL(urlToValidate);
+			final boolean isValid = url.getPath().isEmpty() && url.getQuery() == null;
+			return !isValid;
+		} catch (final MalformedURLException ex) {
+			return true;
+		}
 	}
 
 	@Override
