@@ -23,9 +23,11 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.HandlerExecutionChain;
+import org.springframework.web.servlet.ModelAndView;
 
 import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.Node;
 import jakarta.servlet.http.HttpServletRequest;
@@ -46,8 +48,7 @@ public class VSpringDispatcherServlet extends DispatcherServlet {
 		final HandlerExecutionChain handlerChain = getHandler(request);
 		if (handlerChain != null) {
 			final Object handler = handlerChain.getHandler();
-			if (handler instanceof HandlerMethod) {
-				final HandlerMethod handlerMethod = (HandlerMethod) handler;
+			if (handler instanceof final HandlerMethod handlerMethod) {
 				final RequestMapping beanRequestMapping = AnnotatedElementUtils.findMergedAnnotation(handlerMethod.getBeanType(), RequestMapping.class);
 				Assertion.check().isNotNull(beanRequestMapping, "@RequestMapping is mandatory on Controller classes ({0})", handlerMethod.getBeanType().getName());
 				final RequestMapping methodRequestMapping = AnnotatedElementUtils.findMergedAnnotation(handlerMethod.getMethod(), RequestMapping.class);
@@ -88,6 +89,34 @@ public class VSpringDispatcherServlet extends DispatcherServlet {
 			super.doDispatch(request, response);
 		}
 
+	}
+
+	@Override
+	protected void render(ModelAndView mv, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		try {
+			super.render(mv, request, response);
+		} catch (Exception ex) {
+			Exception thymeleafException = findRootCause(ex);
+			if (thymeleafException != null) {
+				throw new VSystemException(thymeleafException, "Error in Thymeleaf view '" + mv.getViewName() + "': " + thymeleafException.getMessage());
+			}
+			throw ex;
+		}
+	}
+
+	private static <T> T findRootCause(final Throwable ex) {
+		var current = ex;
+		while (current != null) {
+			if (current.getCause() == null) {
+				return (T) current;
+			}
+			if (current != current.getCause()) {
+				current = current.getCause();
+			} else {
+				break; // Avoid infinite loop in case of circular cause references
+			}
+		}
+		return null;
 	}
 
 	private AnalyticsManager getAnalyticsManager() {
