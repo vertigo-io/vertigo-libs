@@ -189,6 +189,11 @@
 		    <artifactId>elasticsearch-java</artifactId>
 		    <scope>test</scope> <!-- RestSearchServicesPlugin -->
 		</dependency>
+		<dependency>
+		    <groupId>org.testcontainers</groupId>
+		    <artifactId>elasticsearch</artifactId>
+			<scope>test</scope> <!-- required by EmbeddedSearchServicesPlugin -->
+		</dependency>
 		
 		<!-- CollectionsManager/LuceneIndexPlugin -->
 		<dependency>

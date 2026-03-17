@@ -16,7 +16,7 @@ modules:
       - script.janino:
   io.vertigo.connectors.elasticsearch.ElasticSearchFeatures:
     features:
-#      - embeddedServer:
+      - embeddedServer:
       - rest:
           servers.names: localhost:9200
           ssl: false
