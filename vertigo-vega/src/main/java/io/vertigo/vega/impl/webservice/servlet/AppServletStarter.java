@@ -27,8 +27,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.node.config.LogConfig;
@@ -42,7 +42,7 @@ import io.vertigo.core.util.StringUtil;
  */
 final class AppServletStarter extends AbstractAppServletStarter {
 
-	private static final Logger LOG = LoggerFactory.getLogger(AppServletStarter.class);
+	private static final Logger LOG = LogManager.getLogger(AppServletStarter.class);
 
 	/** {@inheritDoc} */
 	@Override
