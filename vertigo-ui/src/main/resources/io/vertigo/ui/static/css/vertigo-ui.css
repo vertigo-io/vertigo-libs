@@ -468,29 +468,12 @@ table .q-uploader .q-btn {
 	overflow: auto;
 }
 
-.v-modal .v-modal__dsfr-content {
-	height: 420px;
-}
-
 .v-modal iframe {
 	display: block;
 	width: 100%;
 	height: 100%;
 }
 
-/* Le footer fait partie de l’iframe */
-.v-modal .fr-modal__content {
-	margin-bottom: 0;
-}
-
-.v-modal .fr-modal__footer {
-    margin-left: 0;
-    margin-right: 0;
-}
-
-[v-cloak] {
-    visibility: hidden;
-}
 
 /******** dev mode of authorizations *******/
 
@@ -583,21 +566,3 @@ table .q-uploader .q-btn {
 	height: 2.25em !important;
 }
 
-
-
-/********  conflit handling between dsfr and quasar *******/
-.q-separator {
- 	padding: unset;
- }
- 
-.q-item[href], .q-btn[href] {
-    background-image: unset; 
-}
-
-a[href]:active.q-item {
-	background-color: inherit;
-}
-
-button:not(:disabled):hover.q-btn-item {
-	background-color: transparent;
-}
