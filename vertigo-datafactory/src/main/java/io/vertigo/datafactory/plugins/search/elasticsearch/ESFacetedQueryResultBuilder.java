@@ -321,7 +321,7 @@ public final class ESFacetedQueryResultBuilder<I extends DataObject> implements 
 
 		final Map<String, Long> buckets = extractKeyedDocCounts(aggregate);
 		for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
-			var bucketCount = buckets.get(facetRange.code());
+			final var bucketCount = buckets.get(facetRange.code());
 			Assertion.check().isNotNull(bucketCount, "No facet {0} found in result", facetRange.code());
 			rangeValues.put(facetRange, bucketCount);
 		}
@@ -336,15 +336,15 @@ public final class ESFacetedQueryResultBuilder<I extends DataObject> implements 
 		// Extraction de la valeur selon le Kind
 		metricValue = switch (aggregate._kind()) {
 			case Avg -> aggregate.avg().value();
-			case Cardinality -> (double) aggregate.cardinality().value(); //ES return long
+			case Cardinality -> aggregate.cardinality().value(); //ES return long
 			case Max -> aggregate.max().value();
 			case Min -> aggregate.min().value();
 			case Sum -> aggregate.sum().value();
-			case ValueCount -> (double) aggregate.valueCount().value(); //ES return long
+			case ValueCount -> aggregate.valueCount().value(); //ES return long
 			case WeightedAvg -> aggregate.weightedAvg().value();
 			case SimpleValue -> aggregate.simpleValue().value();
-			case SimpleLongValue -> (double) aggregate.simpleLongValue().value();//ES return long
-			default -> extractMetricValueDynamically(aggregate); // Fallback pour les _Custom ou métriques complexes qu'on essaierait d'extraire dynamiquement 
+			case SimpleLongValue -> aggregate.simpleLongValue().value();//ES return long
+			default -> extractMetricValueDynamically(aggregate); // Fallback pour les _Custom ou métriques complexes qu'on essaierait d'extraire dynamiquement
 		};
 
 		final FacetValue facetValue = new FacetValue(facetDefinition.getName(), ListFilter.of("_noOp:_"), LocaleMessageText.of(facetDefinition.getName()));
@@ -410,37 +410,6 @@ public final class ESFacetedQueryResultBuilder<I extends DataObject> implements 
 			throw new VSystemException(e, "Cannot extract buckets from {0}", aggregate._kind());
 		}
 		return result;
-	}
-
-	/**
-	 * Extracts the list of buckets from an Aggregate generically using reflection.
-	 * This avoids maintaining an exhaustive list of all possible ES9 aggregation types,
-	 * ensuring full support for CustomFacets (geohash, hex_grid, date_histogram...).
-	 */
-	private static List<? extends MultiBucketBase> extractCustomBuckets(final Aggregate aggregate) {
-		// _get() renvoie l'instance spécifique (ex: StringTermsAggregate, GeohashGridAggregate, etc.)
-		final Object specificAggregation = aggregate._get();
-
-		try {
-			// 1. On appelle dynamiquement la méthode buckets()
-			final var bucketsMethod = specificAggregation.getClass().getMethod("buckets");
-			final Buckets bucketsContainer = (Buckets) bucketsMethod.invoke(specificAggregation);
-
-			if (bucketsContainer == null) {
-				return List.of();
-			}
-
-			// 2. On tente de récupérer la liste via .array() (Cas de 90% des agrégations : terms, geohash, range...)
-			if (bucketsContainer.isArray()) {
-				return bucketsContainer.array();
-			} else if (bucketsContainer.isKeyed()) {
-				return new ArrayList<>(bucketsContainer.keyed().values());
-			} else {
-				throw new NoSuchMethodException("Neither array() nor keyed() method found on buckets container");
-			}
-		} catch (final NoSuchMethodException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-			throw new VSystemException(e, "L'agrégation {0} ne possède pas de buckets extractibles", aggregate._kind());
-		}
 	}
 
 	/**
