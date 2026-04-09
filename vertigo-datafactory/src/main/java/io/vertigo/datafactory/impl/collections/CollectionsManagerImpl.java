@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -84,29 +83,17 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 				.collect(VCollectors.toDtList(dtList.getDefinition()));
 
 		//2- on facette
-		final List<Facet> facets = facetFactory.createFacets(facetedQuery.getDefinition(), filteredDtList);
-
-		//2-a On recalcul les facets multi
-		final List<FacetDefinition> multiFacetDefinitions = facetedQuery.getDefinition().getFacetDefinitions()
-				.stream().filter(FacetDefinition::isMultiSelectable).collect(Collectors.toList());
-
-		final List<Facet> multiFacets = new ArrayList<>();
-		for (final FacetDefinition multiFacetDefinition : multiFacetDefinitions) {
-			final DtList<R> filteredDtListMulti = dtList.stream()
-					.filter(filter(facetedQuery, Optional.of(multiFacetDefinition)))
-					.collect(VCollectors.toDtList(dtList.getDefinition()));
-			multiFacets.add(facetFactory.createFacet(multiFacetDefinition, filteredDtListMulti));
-		}
-
-		//On prend le mix entre les facets simples et les facettes multiples
-		final List<Facet> finalFacets = new ArrayList<>();
-		for (final Facet facet : facets) {
-			final String facetName = facet.getDefinition().getName();
-			final Optional<Facet> multiFacet = multiFacets.stream().filter(o -> o.getDefinition().getName().equals(facetName)).findFirst();
-			if (multiFacet.isPresent()) {
-				finalFacets.add(multiFacet.get());
+		final List<Facet> finalFacets = new ArrayList<>(facetedQuery.getDefinition().getFacetDefinitions().size());
+		for (final FacetDefinition facetDefinition : facetedQuery.getDefinition().getFacetDefinitions()) {
+			if (facetDefinition.isMultiSelectable()) {
+				//2-a On calcul les facets multi
+				final DtList<R> filteredDtListMulti = dtList.stream()
+						.filter(filter(facetedQuery, Optional.of(facetDefinition)))
+						.collect(VCollectors.toDtList(dtList.getDefinition()));
+				finalFacets.add(facetFactory.createFacet(facetDefinition, filteredDtListMulti));
 			} else {
-				finalFacets.add(facet);
+				//2-b On calcul les facets standard
+				finalFacets.add(facetFactory.createFacet(facetDefinition, filteredDtList));
 			}
 		}
 

@@ -42,7 +42,7 @@ public final class SmartCar implements KeyConcept {
 		return UID.of(this);
 	}
 
-	public final Long getId() {
+	public Long getId() {
 		return id;
 	}
 

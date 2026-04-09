@@ -56,7 +56,7 @@ import io.vertigo.datamodel.impl.smarttype.ModelDefinitionProvider;
 import io.vertigo.datastore.DataStoreFeatures;
 
 /**
- * @author  npiedeloup
+ * @author npiedeloup
  */
 //non final, to be overrided for previous lib version
 public class FacetManagerTest {
@@ -115,7 +115,7 @@ public class FacetManagerTest {
 		Assertions.assertEquals(smartCarDataBase.size(), result.getCount());
 
 		//On vérifie qu'il y a le bon nombre de facettes.
-		Assertions.assertEquals(3, result.getFacets().size());
+		Assertions.assertEquals(4, result.getFacets().size());
 
 		//On recherche la facette date
 		final Facet yearFacet = getFacetByName(result, "FctYearCar");
@@ -135,7 +135,7 @@ public class FacetManagerTest {
 		Assertions.assertEquals(smartCarDataBase.size(), result.getCount());
 
 		//On vérifie qu'il y a le bon nombre de facettes.
-		Assertions.assertEquals(3, result.getFacets().size());
+		Assertions.assertEquals(4, result.getFacets().size());
 
 		//On recherche la facette constructeur
 		final Facet manufacturerFacet = getFacetByName(result, "FctManufacturerCar");
@@ -227,9 +227,9 @@ public class FacetManagerTest {
 
 	private static FacetedQuery addFacetQuery(final String facetName, final String facetValueLabel, final FacetedQueryResult<SmartCar, ?> result) {
 		FacetValue facetFilter = null; //pb d'initialisation, et Assertions.notNull ne suffit pas
-		final Facet yearFacet = getFacetByName(result, facetName);
-		for (final Entry<FacetValue, Long> entry : yearFacet.getFacetValues().entrySet()) {
-			if (entry.getKey().label().getDisplay().toLowerCase(Locale.FRENCH).contains(facetValueLabel)) {
+		final Facet foundFacet = getFacetByName(result, facetName);
+		for (final Entry<FacetValue, Long> entry : foundFacet.getFacetValues().entrySet()) {
+			if (entry.getKey().label().getDisplay().toLowerCase(Locale.FRENCH).contains(facetValueLabel.toLowerCase(Locale.FRENCH))) {
 				facetFilter = entry.getKey();
 				break;
 			}
@@ -240,7 +240,7 @@ public class FacetManagerTest {
 		final FacetedQuery previousQuery = result.getFacetedQuery().get();
 		final SelectedFacetValues queryFilters = SelectedFacetValues
 				.of(previousQuery.getSelectedFacetValues())
-				.add(yearFacet.getDefinition(), facetFilter)
+				.add(foundFacet.getDefinition(), facetFilter)
 				.build();
 		return new FacetedQuery(previousQuery.getDefinition(), queryFilters);
 	}
@@ -293,6 +293,84 @@ public class FacetManagerTest {
 		final FacetedQuery query = addFacetQuery("FctManufacturerCar", "peugeot", result);
 		final FacetedQueryResult<SmartCar, DtList<SmartCar>> resultFiltered = collectionsManager.facetList(result.getSource(), query, Optional.empty());
 		Assertions.assertEquals(smartCarDataBase.getCarsByManufacturer("peugeot").size(), (int) resultFiltered.getCount());
+	}
+
+	/**
+	 * Test le facettage par term d'une liste.
+	 * Et le filtrage par une facette.
+	 */
+	@Test
+	public void testFilterFacetMultiListByTerm() {
+		final DtList<SmartCar> cars = smartCarDataBase.getAllCars();
+		final FacetedQuery facetedQuery = new FacetedQuery(carFacetQueryDefinition, SelectedFacetValues.empty().build());
+		final FacetedQueryResult<SmartCar, DtList<SmartCar>> result = collectionsManager.facetList(cars, facetedQuery, Optional.empty());
+		//on applique une facette
+		final FacetedQuery query = addFacetQuery("FctManufacturerCar", "peugeot", result);
+		final FacetedQueryResult<SmartCar, DtList<SmartCar>> resultFiltered = collectionsManager.facetList(result.getSource(), query, Optional.empty());
+		Assertions.assertEquals(smartCarDataBase.getCarsByManufacturer("peugeot").size(), (int) resultFiltered.getCount());
+
+		//on applique une autre facette
+		final FacetedQuery query2 = addFacetQuery("FctManufacturerCar", "volkswagen", resultFiltered);
+		final FacetedQueryResult<SmartCar, DtList<SmartCar>> resultFiltered2 = collectionsManager.facetList(resultFiltered.getSource(), query2, Optional.empty());
+		Assertions.assertEquals(smartCarDataBase.getCarsByManufacturer("peugeot").size() + smartCarDataBase.getCarsByManufacturer("volkswagen").size(), (int) resultFiltered2.getCount());
+	}
+
+	/**
+	 * Test le facettage avec sélection multiple d'une liste.
+	 * Et le filtrage par une facette.
+	 */
+	@Test
+	public void testFilterFacetMultiListByTermTokenized() {
+		final DtList<SmartCar> cars = smartCarDataBase.getAllCars();
+		final FacetedQuery facetedQuery = new FacetedQuery(carFacetQueryDefinition, SelectedFacetValues.empty().build());
+		final FacetedQueryResult<SmartCar, DtList<SmartCar>> result = collectionsManager.facetList(cars, facetedQuery, Optional.empty());
+		//on applique une facette
+		final FacetedQuery query = addFacetQuery("FctDescriptionCarTokenized", "gris métal", result);
+		final FacetedQueryResult<SmartCar, DtList<SmartCar>> resultFiltered = collectionsManager.facetList(result.getSource(), query, Optional.empty());
+		Assertions.assertEquals(smartCarDataBase.getCarsByDescription("gris métal").size(), (int) resultFiltered.getCount());
+
+		//on applique une autre facette
+		final FacetedQuery query2 = addFacetQuery("FctDescriptionCarTokenized", "Attelage", resultFiltered);
+		final FacetedQueryResult<SmartCar, DtList<SmartCar>> resultFiltered2 = collectionsManager.facetList(resultFiltered.getSource(), query2, Optional.empty());
+		Assertions.assertEquals(smartCarDataBase.getCarsByDescription("gris métal", "Attelage").size(), (int) resultFiltered2.getCount());
+	}
+
+	/**
+	 * Test le facettage avec sélection multiple sur deux facettes d'une liste.
+	 * Et le filtrage par une facette.
+	 */
+	@Test
+	public void testFilterFacetTwoMultiListByTerm() {
+		final DtList<SmartCar> cars = smartCarDataBase.getAllCars();
+		final FacetedQuery facetedQuery = new FacetedQuery(carFacetQueryDefinition, SelectedFacetValues.empty().build());
+		final FacetedQueryResult<SmartCar, DtList<SmartCar>> result = collectionsManager.facetList(cars, facetedQuery, Optional.empty());
+		final Facet manufacturerFacet = getFacetByName(result, "FctManufacturerCar");
+		final Optional<Long> peugeotCount = manufacturerFacet.getFacetValues().entrySet().stream()
+				.filter(entry -> entry.getKey().label().getDisplay().toLowerCase(Locale.FRENCH).equals("peugeot"))
+				.map(Entry::getValue)
+				.findFirst();
+		//on applique une facette
+		final FacetedQuery query = addFacetQuery("FctManufacturerCar", "peugeot", result);
+		final FacetedQueryResult<SmartCar, DtList<SmartCar>> resultFiltered = collectionsManager.facetList(result.getSource(), query, Optional.empty());
+		Assertions.assertEquals(smartCarDataBase.getCarsByManufacturer("peugeot").size(), (int) resultFiltered.getCount());
+		Assertions.assertEquals(smartCarDataBase.getCarsByManufacturer("peugeot").size(), peugeotCount.get().intValue());
+
+		//on applique une autre facette
+		final FacetedQuery query2 = addFacetQuery("FctDescriptionCarTokenized", "gris métal", resultFiltered);
+		final FacetedQueryResult<SmartCar, DtList<SmartCar>> resultFiltered2 = collectionsManager.facetList(resultFiltered.getSource(), query2, Optional.empty());
+		Assertions.assertEquals(smartCarDataBase.getAllCars().stream()
+				.filter(car -> car.getManufacturer().equalsIgnoreCase("peugeot")
+						&& car.getDescription().toLowerCase(Locale.FRENCH).contains("gris métal"))
+				.count(),
+				(int) resultFiltered2.getCount());
+
+		final FacetedQuery query3 = addFacetQuery("FctManufacturerCar", "Hyundai", resultFiltered2);
+		final FacetedQueryResult<SmartCar, DtList<SmartCar>> resultFiltered3 = collectionsManager.facetList(resultFiltered2.getSource(), query3, Optional.empty());
+		Assertions.assertEquals(smartCarDataBase.getAllCars().stream()
+				.filter(car -> (car.getManufacturer().equalsIgnoreCase("peugeot") || car.getManufacturer().equalsIgnoreCase("Hyundai"))
+						&& car.getDescription().toLowerCase(Locale.FRENCH).contains("gris métal"))
+				.count(),
+				(int) resultFiltered3.getCount());
 	}
 
 	private FacetDefinition obtainFacetDefinition(final String facetName) {
