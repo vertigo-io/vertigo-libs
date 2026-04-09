@@ -45,7 +45,15 @@ public class VSpringDispatcherServlet extends DispatcherServlet {
 
 	@Override
 	protected void doDispatch(final HttpServletRequest request, final HttpServletResponse response) throws Exception {
-		final HandlerExecutionChain handlerChain = getHandler(request);
+		final HandlerExecutionChain handlerChain;
+		try {
+			handlerChain = getHandler(request);
+		} catch (final Exception e) {
+			// L'exception (comme HttpRequestMethodNotSupportedException) est levée.
+			// On délègue à Spring pour qu'il la gère avec ses ControllerAdvice.
+			super.doDispatch(request, response);
+			return;
+		}
 		if (handlerChain != null) {
 			final Object handler = handlerChain.getHandler();
 			if (handler instanceof final HandlerMethod handlerMethod) {
@@ -92,11 +100,11 @@ public class VSpringDispatcherServlet extends DispatcherServlet {
 	}
 
 	@Override
-	protected void render(ModelAndView mv, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	protected void render(final ModelAndView mv, final HttpServletRequest request, final HttpServletResponse response) throws Exception {
 		try {
 			super.render(mv, request, response);
-		} catch (Exception ex) {
-			Exception thymeleafException = findRootCause(ex);
+		} catch (final Exception ex) {
+			final Exception thymeleafException = findRootCause(ex);
 			if (thymeleafException != null) {
 				throw new VSystemException(thymeleafException, "Error in Thymeleaf view '" + mv.getViewName() + "': " + thymeleafException.getMessage());
 			}
