@@ -55,6 +55,8 @@ import jakarta.servlet.http.HttpServletRequest;
  */
 public abstract class AbstractVSpringMvcController {
 
+	public static final String COMPONENT_STATES = "componentStates";
+	//public static final String INPUT_COMPONENT_STATES = "inputComponentStates";
 	public static final String DEFAULT_VIEW_NAME_ATTRIBUTE = "defaultViewName";
 
 	/** Clé de la collection des contexts dans le KVStoreManager. */
@@ -119,6 +121,8 @@ public abstract class AbstractVSpringMvcController {
 			viewContext = new ViewContext(viewContextMap, jsonEngine);
 			viewContext.makeModifiable();
 			viewContext.setInputCtxId(ctxId);
+			//TODO if useful : viewContext.asMap().put(INPUT_COMPONENT_STATES, viewContext.get(COMPONENT_STATES));
+			viewContext.asMap().put(COMPONENT_STATES, new ComponentStates());
 			attributes.setAttribute("viewContext", viewContext, RequestAttributes.SCOPE_REQUEST);
 
 		} else {
@@ -212,7 +216,7 @@ public abstract class AbstractVSpringMvcController {
 	 */
 	protected void preInitContext(final ViewContext viewContext) {
 		viewContext.publishRef(UTIL_CONTEXT_KEY, new UiUtil());
-		viewContext.asMap().put("componentStates", new ComponentStates());
+		viewContext.asMap().put(COMPONENT_STATES, new ComponentStates());
 		viewContext.toModeReadOnly();
 	}
 
