@@ -17,8 +17,6 @@
  */
 package io.vertigo.commons.transaction;
 
-import jakarta.inject.Inject;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,6 +30,7 @@ import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
+import jakarta.inject.Inject;
 
 /**
  *
@@ -89,7 +88,7 @@ public final class VTransactionManagerTest {
 	 */
 	@Test
 	public void testFailCreateCurrentTransaction() {
-		try (final VTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
+		try (final VTransactionWritable _ = transactionManager.createCurrentTransaction()) {
 			transactionManager.createCurrentTransaction();
 		} catch (final IllegalStateException e) {
 			Assertions.assertEquals("current transaction already created", e.getMessage());
@@ -252,7 +251,7 @@ public final class VTransactionManagerTest {
 				rootConnection.setData(rootValue);
 				Assertions.assertEquals(rootValue, rootConnection.getData());
 
-				try (final VTransactionWritable autonomousTransaction = transactionManager.createAutonomousTransaction()) {
+				try (final VTransactionWritable _ = transactionManager.createAutonomousTransaction()) {
 					final SampleDataBaseConnection connection = obtainDataBaseConnection(dataBase, "test-memory-2");
 					// --- modification de la bdd sur la transaction autonome.
 					final String value = createData();

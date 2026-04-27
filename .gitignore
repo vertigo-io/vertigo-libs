@@ -18,3 +18,4 @@ createSymLink.bat
 .factorypath
 node_modules
 /vertigo-ui-vuejs/dist
+/.claude
