@@ -45,18 +45,18 @@ import io.vertigo.vega.webservice.model.UiObject;
  *
  * 3 ways to use it :
  * 1- With a simple string
- *    vu:authz="myGlobalAuthz" or vu:authz="mySecuredEntityAuthz$read"
- *    => use like authz.hasAuthorization('myGlobalAuthz')
- *    Support multiple list OR separator ',' and '!' for NOT
+ * vu:authz="myGlobalAuthz" or vu:authz="mySecuredEntityAuthz$read"
+ * => use like authz.hasAuthorization('myGlobalAuthz')
+ * Support multiple list OR separator ',' and '!' for NOT
  *
  * 2- With a contextPath to a UiObject<Entity>
- *    vu:authz="model.myEntity$read" or vu:authz="model.list[0]$read"
- *    => use like authz.hasOperation(model.myEntity, 'read')
- *    (first part is evaluated like ${model.myEntity})
+ * vu:authz="model.myEntity$read" or vu:authz="model.list[0]$read"
+ * => use like authz.hasOperation(model.myEntity, 'read')
+ * (first part is evaluated like ${model.myEntity})
  *
  * 3- With a evaluated expression (starts with ${ )
- *    vu:authz="${authz.hasAuthorization('myGlobalAuthz') && authz.hasAuthorization('mySecuredEntityAuthz$read')}"
- *    => use exactly like th:if, but no need to merge your th:if business logic with th:authz security logic
+ * vu:authz="${authz.hasAuthorization('myGlobalAuthz') && authz.hasAuthorization('mySecuredEntityAuthz$read')}"
+ * => use exactly like th:if, but no need to merge your th:if business logic with th:authz security logic
  *
  * @author npiedeloup
  */
@@ -67,7 +67,6 @@ public class AuthzAttributeTagProcessor extends AbstractAttributeTagProcessor
 
 	public static final int PRECEDENCE = 301; //th:if+1
 	public static final String ATTR_NAME = "authz";
-	public static final boolean AUTHZ_DEV_MODE_LOOK = false;
 	public static final String AUTHZ_DEV_MODE_NAME = "authz-dev";
 
 	/**
@@ -101,21 +100,19 @@ public class AuthzAttributeTagProcessor extends AbstractAttributeTagProcessor
 		final boolean visible = isVisible(context, tag, attributeName, attributeValue);
 
 		if (!visible) {
-			if (AUTHZ_DEV_MODE_LOOK) {
-				final Object authzDevModeVar = context.getVariable(AUTHZ_DEV_MODE_NAME);
-				if (authzDevModeVar != null && !Boolean.FALSE.equals(authzDevModeVar)) {
-					String newAttributeValue = CLASS_AUTHZ_LOCKED;
-					final AttributeName targetAttributeName = targetAttributeDefinition.getAttributeName();
-					if (tag.hasAttribute(targetAttributeName)) {
-						final String currentValue = tag.getAttributeValue(targetAttributeName);
-						if (currentValue.length() > 0) {
-							newAttributeValue = currentValue + ' ' + newAttributeValue;
-						}
+			final Object authzDevModeVar = context.getVariable(AUTHZ_DEV_MODE_NAME);
+			if (authzDevModeVar != null && !Boolean.FALSE.equals(authzDevModeVar)) {
+				String newAttributeValue = CLASS_AUTHZ_LOCKED;
+				final AttributeName targetAttributeName = targetAttributeDefinition.getAttributeName();
+				if (tag.hasAttribute(targetAttributeName)) {
+					final String currentValue = tag.getAttributeValue(targetAttributeName);
+					if (currentValue.length() > 0) {
+						newAttributeValue = currentValue + ' ' + newAttributeValue;
 					}
-					StandardProcessorUtils.setAttribute(structureHandler, targetAttributeDefinition, TARGET_ATTR_NAME, newAttributeValue);
-					return;
-					//other case we remove element
 				}
+				StandardProcessorUtils.setAttribute(structureHandler, targetAttributeDefinition, TARGET_ATTR_NAME, newAttributeValue);
+				return;
+				//other case we remove element
 			}
 			structureHandler.removeElement();
 		}
@@ -170,7 +167,7 @@ public class AuthzAttributeTagProcessor extends AbstractAttributeTagProcessor
 			} else {
 				isAuthorized = authz.hasAuthorization(authzAttribut);
 			}
-			if (isNeg ? !isAuthorized : isAuthorized) {
+			if (isNeg ^ isAuthorized) {
 				return true;
 			}
 		}

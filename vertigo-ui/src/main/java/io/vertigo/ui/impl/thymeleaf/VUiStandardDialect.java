@@ -22,6 +22,7 @@ import java.util.Set;
 
 import org.thymeleaf.dialect.AbstractProcessorDialect;
 import org.thymeleaf.processor.IProcessor;
+import org.thymeleaf.standard.StandardDialect;
 import org.thymeleaf.standard.processor.StandardXmlNsTagProcessor;
 import org.thymeleaf.templatemode.TemplateMode;
 
@@ -41,7 +42,7 @@ public final class VUiStandardDialect extends AbstractProcessorDialect {
 
 	public static final String NAME = "VertigoStandard";
 	public static final String PREFIX = "vu";
-	public static final int PROCESSOR_PRECEDENCE = 2000;
+	public static final int PROCESSOR_PRECEDENCE = StandardDialect.PROCESSOR_PRECEDENCE; //Same dialect precedence to merge processors with the standard ones (needed to use vu:authz on th:block for example)
 
 	// These variables will be initialized lazily following the model applied in the extended StandardDialect.
 	private final Set<NamedComponentDefinition> components;
