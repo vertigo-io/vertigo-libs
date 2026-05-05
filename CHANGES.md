@@ -66,6 +66,7 @@ Running 4.4.0 - 2026/05/xx
 * [Datafactory] Add null check for search adapter config in IndexType
 * [DataFactory][Reindex] Better detection of multiple concurent reindex (same node)
 * [DataFactory][ES] Fix : query wrapped with " and user using also "
+* [datafactory] Add waitForRefresh (keyConcept class)
 * **[Datafactory] Remove deprectated findIndexDefinitionByKeyConcept** use findFirstIndexDefinitionByKeyConcept instead
 * [Datafactory] Add support multiselected facet in collections (without search). (use smartType indexType : sep_comma, sep_pipe, text_fr, sep_punct)
 * [Datastore] Fix simpleMagicMimeType for uppercase extension
