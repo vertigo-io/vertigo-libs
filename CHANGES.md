@@ -7,22 +7,46 @@ Running 5.0.0
 
 more to come :)
 
-Running 4.4.0
+Running 4.4.0 - 2026/05/xx
 ----------------------
 [Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-433-to-440)
 
 * **[DataFactor] Upgrade Search plugin to ElasticSearch v9**. You may use plugin in libs-lts, if you need previous versions (ES7/ES8)
-  ES9 : removed EmbeddedServer, removed _all field
-
-
-Release 4.3.3 - 
-----------------------
-[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-432-to-433)
-
+  * removed EmbeddedServer, removed _all field
+  * change markToOptimize : only for deletes on remove by query,
+* [Vega] Fix `webservices.cors` feature (originCORSFilter parameter)
+* [Vega] Optimization on cors filter, do not send headers if not necessary
+* [Vega] Adding check to validate Origin URI format for Cors
+* [Vega] Update swaggerApi, better conformity (for using swaggerEditor) : json changes replace $ by _ in $ref
+* [Vega] Add isMultiSelectable property to FacetedQueryResultJsonSerializerV5
+* [Vega] FacetedQueryResult json V5 by default
+* [Vega] Add IPv6 localhost to excluded IPs for rate limiting
+* [Vega] Fix bug in swaggerApiBuilder when using a row collection
+* [Vega] Add 'url-include-pattern' parameter in AbstractFilter
+* [Vega] Add LogExceptionsHandlerPlugin by default
+* [Vega][OIDC] Add interfaces for extensibility
+* [dsfr-ui] use svg rather than vicon in dsfr-custom-data-table
+* [dsfr-ui] modify v-icon usage and use svg instead
+* [dsfr-ui] Fix visual with `select-multiple`
+* [dsfr-ui] Better accessibility for tables and modals
+* [dsfr-ui] Fix dsfr serverside sort
+* [dsfr-ui] Add component `tabnav`
+* [dsfr-ui] Add ability to filter facets
+* [dsfr-ui] Add slot for customizing autocomplete options
+* [dsfr-ui] Fix attributs inherits for `dsfr-button-submit`
+* [dsfr-ui] Fix text-area bad escaping in read only
+* [dsfr-ui] Better facets accessibility
+* [ui-vuejs, dsfr] add facetTranslatorProvider
+* [Ui] Simplify rendering exception : keep only last message
+* [Ui] Missing context throw 401 instead 500
+* [Ui] Fix missing handler (error 405) with try catch
+* [Ui] Fix default date time format in dashboard (`DD/MM/YYYY HH:mm` to `YYYY-MM-DDTHH:mm`)
+* [Ui] Unify max accepted list size, use max of 1000 and dtListState default max size
 * [Ui] `vu:fileupload` : Add `maxFileSize` (MB), `maxTotalSize` (MB), `maxFiles` and `accept` attributes
 * [Ui] `vu:fileupload` : Fix displayed total file size after page reloading
+* [Ui] Better Uploader accessibility
+* [ui] Add label parameter to fileupload-simple-object
 * [Ui] `vu:fileupload-dropzone` and `vu:v-fileupload-dropzone` : Fix : Change `key` attribute for `fileComponentId` attribute (referencing uploader `componentId` attribute)
-* [Vega] Fix `originCORSFilter` parameter.
 * [Ui][WYSIWYG] Multiple fixes in `vu:text-editor` :
     * Add default CSS for info and blockquote
     * Add max-height attribute
@@ -30,6 +54,32 @@ Release 4.3.3 -
     * Fix align button highlight
     * Fix css hightlight rounding
     * Fix "see source" when text is selected and bubble menu is also enabled
+* [Ui] Fix vueDataParams for array of primitive in vueData
+* [Ui] Add 'addCustomMessageResolver' method in template engine, move previous resolver as default
+* [Ui] Fix error with multiple cardinality attribute on dataObject
+* [Ui] Add button-confirm and fix button-link-confirm
+* [Ui] Fix label_attrs on text-field-read
+* **[Ui] Reset componentStates each request**
+* [ui-vuejs] Fix merge vueData when key not present in response
+* [Database] Fix typo in constraint key, and add translations
+* [Datafactory] Handle ES empty filter as matchAll
+* [Datafactory] Add null check for search adapter config in IndexType
+* [DataFactory][Reindex] Better detection of multiple concurent reindex (same node)
+* [DataFactory][ES] Fix : query wrapped with " and user using also "
+* **[Datafactory] Remove deprectated findIndexDefinitionByKeyConcept** use findFirstIndexDefinitionByKeyConcept instead
+* [Datafactory] Add support multiselected facet in collections (without search). (use smartType indexType : sep_comma, sep_pipe, text_fr, sep_punct)
+* [Datastore] Fix simpleMagicMimeType for uppercase extension
+* [Datastore] Fix parameter forwarding for 'filestore.mimeType.tika'
+* [Datastore] Fix count task name => "ByCriteria" when not always true
+* [Datastore] kvstore: fixes multiple collections for all plugins : add tests, fix h2 and speedb
+* [Database] Fix LiquibaseMigrationPlugin : close LiquibaseDb
+* [Account][Security] Fix security evaluation when using tree comparison
+* [Daemon] Handle analytics (previsouly, only annoted methods)
+* [Peg] Refacto for flattening solvers
+* [all] Fix some sonar RegDDOS
+* [all] Update libs 
+  - tika 3.2.0 -> 3.2.3
+  - jersey 3.0.17 -> 3.1.11 (May cause pb in eclipse)
 
 
 Release 4.3.2 - 2025/07/10
@@ -68,7 +118,6 @@ Release 4.3.1 - 2025/06/13
 * [Vega][Json] Don't set null values to object properties if not present in the json (fail if the attribute is a list)
 * [Datastore][S3] InputStream in S3FileStorePlugin no longer shared (may lead to corrupt file on subsequent reads)
 * [Datastore][S3] Add health check
-
 
 Release 4.3.0 - 2025/03/27
 ----------------------
