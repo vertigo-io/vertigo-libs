@@ -59,6 +59,9 @@ Running 4.4.0 - 2026/05/xx
 * [Ui] Fix error with multiple cardinality attribute on dataObject
 * [Ui] Add button-confirm and fix button-link-confirm
 * [Ui] Fix label_attrs on text-field-read
+* [Ui] Fix css to show action buttons on table, when use tab focus
+* [Ui] Refactor some components precedence : fix vu:authz on th:block
+* [Ui] Add vu:utext unescaped text but protected against vuejs XSS (like th:utext with v-pre)
 * **[Ui] Reset componentStates each request**
 * [ui-vuejs] Fix merge vueData when key not present in response
 * [Database] Fix typo in constraint key, and add translations
