@@ -65,7 +65,7 @@ public class AuthzAttributeTagProcessor extends AbstractAttributeTagProcessor
 
 	public static final String CLASS_AUTHZ_LOCKED = "authz--locked";
 
-	public static final int PRECEDENCE = 301; //th:if+1
+	public static final int PRECEDENCE = 310; //th:if+10
 	public static final String ATTR_NAME = "authz";
 	public static final String AUTHZ_DEV_MODE_NAME = "authz-dev";
 
