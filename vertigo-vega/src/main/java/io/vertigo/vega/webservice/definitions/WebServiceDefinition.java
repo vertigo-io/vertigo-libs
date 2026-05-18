@@ -34,11 +34,14 @@ import io.vertigo.vega.webservice.definitions.WebServiceParam.WebServiceParamTyp
 
 /**
  * Web service definition.
+ *
  * @author npiedeloup
  */
 @DefinitionPrefix(WebServiceDefinition.PREFIX)
 public final class WebServiceDefinition extends AbstractDefinition<WebServiceDefinition> {
 	public static final String PREFIX = "Ws";
+
+	private static final Pattern PATH_PATTERN = Pattern.compile("\\{(.+?)\\}");
 
 	/**
 	 * HTTP Verb supported.
@@ -147,6 +150,7 @@ public final class WebServiceDefinition extends AbstractDefinition<WebServiceDef
 
 	/**
 	 * Static method factory for WebServiceDefinitionBuilder
+	 *
 	 * @param method Method to bind to this webService
 	 * @return WebServiceDefinitionBuilder
 	 */
@@ -162,8 +166,7 @@ public final class WebServiceDefinition extends AbstractDefinition<WebServiceDef
 				inputPathParam.add(myWebServiceParam.getName());
 			}
 		}
-		final Pattern pattern = Pattern.compile("\\{(.+?)\\}");
-		final Matcher matcher = pattern.matcher(myPath);
+		final Matcher matcher = PATH_PATTERN.matcher(myPath);
 		while (matcher.find()) {
 			urlPathParam.add(matcher.group(1)); //group 0 is always the entire match
 		}
