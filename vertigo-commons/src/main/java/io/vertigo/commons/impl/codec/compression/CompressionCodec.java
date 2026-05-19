@@ -58,8 +58,9 @@ public final class CompressionCodec implements Codec<byte[], byte[]> {
 	/** Maximum number of concurrent decompression operations. */
 	private static final int MAX_CONCURRENT_DECOMPRESSIONS = 4;
 
-	private final Semaphore compressionSemaphore = new Semaphore(MAX_CONCURRENT_COMPRESSIONS);
-	private final Semaphore decompressionSemaphore = new Semaphore(MAX_CONCURRENT_DECOMPRESSIONS);
+	// Fair mode prevents starvation of large payloads when small ones arrive continuously.
+	private final Semaphore compressionSemaphore = new Semaphore(MAX_CONCURRENT_COMPRESSIONS, true);
+	private final Semaphore decompressionSemaphore = new Semaphore(MAX_CONCURRENT_DECOMPRESSIONS, true);
 
 	/**
 	 * Compression d'un objet.
@@ -70,17 +71,20 @@ public final class CompressionCodec implements Codec<byte[], byte[]> {
 	@Override
 	public byte[] encode(final byte[] unCompressedObject) {
 		Assertion.check().isNotNull(unCompressedObject);
-		checkMaxSize(unCompressedObject.length);
+		checkMaxSize(unCompressedObject.length, false);
 		//-----
 		if (unCompressedObject.length < MIN_SIZE_FOR_COMPRESSION) {
 			return unCompressedObject;
 		}
 
 		final int nonCompressedLength = unCompressedObject.length;
+		// Calcul du nombre de permis à acquérir en fonction de la taille de l'objet à compresser, avec un minimum de 1 et un maximum de MAX_CONCURRENT_COMPRESSIONS
+		final int permits = Math.min(MAX_CONCURRENT_COMPRESSIONS, Math.max(1,
+				(int) Math.ceil((double) nonCompressedLength * MAX_CONCURRENT_COMPRESSIONS / MAX_SIZE_FOR_COMPRESSION)));
 		final byte[] compressedObject = new byte[nonCompressedLength + 8];
 		final int compressedSize;
 		try {
-			compressionSemaphore.acquire();
+			compressionSemaphore.acquire(permits);
 			try {
 				final Deflater deflater = new Deflater(COMPRESSION_LEVEL);
 				deflater.setInput(unCompressedObject);
@@ -89,7 +93,7 @@ public final class CompressionCodec implements Codec<byte[], byte[]> {
 				compressedSize = deflater.getTotalOut();
 				deflater.end();
 			} finally {
-				compressionSemaphore.release();
+				compressionSemaphore.release(permits);
 			}
 		} catch (final InterruptedException e) {
 			Thread.currentThread().interrupt();
@@ -106,8 +110,11 @@ public final class CompressionCodec implements Codec<byte[], byte[]> {
 		return newCompressedObject;
 	}
 
-	private static void checkMaxSize(final int length) {
+	private static void checkMaxSize(final int length, final boolean isCompressed) {
 		if (length >= MAX_SIZE_FOR_COMPRESSION) {
+			if (isCompressed) {
+				throw new IllegalArgumentException("L'objet est trop gros pour être décompressé en mémoire (" + length / (1024 * 1024) + " Mo)");
+			}
 			throw new IllegalArgumentException("L'objet est trop gros pour être compressé en mémoire (" + length / (1024 * 1024) + " Mo)");
 		}
 	}
@@ -135,10 +142,13 @@ public final class CompressionCodec implements Codec<byte[], byte[]> {
 				final int ch3 = compressedObject[COMPRESS_KEY.length + 2] & 0xff;
 				final int ch4 = compressedObject[COMPRESS_KEY.length + 3] & 0xff;
 				final int unCompressedLength = ch4 + (ch3 << 8) + (ch2 << 16) + (ch1 << 24);
-				checkMaxSize(unCompressedLength);
+				checkMaxSize(unCompressedLength, true);
 
+				// Calcul du nombre de permis à acquérir en fonction de la taille de l'objet à décompresser, avec un minimum de 1 et un maximum de MAX_CONCURRENT_DECOMPRESSIONS
+				final int permits = Math.min(MAX_CONCURRENT_DECOMPRESSIONS, Math.max(1,
+						(int) Math.ceil((double) unCompressedLength * MAX_CONCURRENT_DECOMPRESSIONS / MAX_SIZE_FOR_COMPRESSION)));
 				try {
-					decompressionSemaphore.acquire();
+					decompressionSemaphore.acquire(permits);
 					try {
 						final Inflater inflater = new Inflater();
 						inflater.setInput(compressedObject, COMPRESS_KEY.length + 4, compressedObject.length - (COMPRESS_KEY.length + 4));
@@ -146,7 +156,7 @@ public final class CompressionCodec implements Codec<byte[], byte[]> {
 						inflater.inflate(uncompressedObject);
 						inflater.end();
 					} finally {
-						decompressionSemaphore.release();
+						decompressionSemaphore.release(permits);
 					}
 				} catch (final InterruptedException e) {
 					Thread.currentThread().interrupt();
