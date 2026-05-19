@@ -73,7 +73,9 @@ public final class CompressionCodec implements Codec<byte[], byte[]> {
 		Assertion.check().isNotNull(unCompressedObject);
 		checkMaxSize(unCompressedObject.length, false);
 		//-----
-		if (unCompressedObject.length < MIN_SIZE_FOR_COMPRESSION) {
+		// Skip compression for small payloads, UNLESS they start with COMP header
+		// (which would be misinterpreted as compressed data during decode).
+		if (unCompressedObject.length < MIN_SIZE_FOR_COMPRESSION && !startsWithCompressKey(unCompressedObject)) {
 			return unCompressedObject;
 		}
 
@@ -108,6 +110,18 @@ public final class CompressionCodec implements Codec<byte[], byte[]> {
 
 		System.arraycopy(compressedObject, 0, newCompressedObject, COMPRESS_KEY.length + 4, compressedSize);
 		return newCompressedObject;
+	}
+
+	private static boolean startsWithCompressKey(final byte[] data) {
+		if (data.length < COMPRESS_KEY.length) {
+			return false;
+		}
+		for (int i = 0; i < COMPRESS_KEY.length; i++) {
+			if (data[i] != COMPRESS_KEY[i]) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	private static void checkMaxSize(final int length, final boolean isCompressed) {
