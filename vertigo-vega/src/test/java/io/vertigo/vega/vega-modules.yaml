@@ -1,0 +1,48 @@
+scope:
+  path: io.vertigo.vega.**
+  description: "Architecture de vertigo-vega"
+  excludes:
+    - java.**
+    - javax.**
+    - jakarta.**
+    - io.vertigo.core.**
+    - io.vertigo.commons.**
+    - io.vertigo.datamodel.**
+    - io.vertigo.datafactory.**
+    - io.vertigo.account.**
+    - io.vertigo.connectors.**
+    - org.apache.logging.**
+    - org.slf4j.**
+    - org.w3c.**
+
+libs:
+  guava: com.google.common.**
+  gson: com.google.gson.**
+  msal4j: com.microsoft.aad.msal4j.**
+  nimbus: com.nimbusds.**
+  javalin: io.javalin.**
+  shibboleth: net.shibboleth.**
+  opensaml: org.opensaml.**
+  jedis: redis.clients.**
+
+modules:
+  root:
+    path: io.vertigo.vega
+    deps: [authentication, engines, impl, plugins, ratelimiting, token, webservice]
+  authentication:
+    path: io.vertigo.vega.authentication.**
+  engines:
+    path: io.vertigo.vega.engines.**
+    deps: [webservice, gson]
+  ratelimiting:
+    path: io.vertigo.vega.ratelimiting.**
+  token:
+    path: io.vertigo.vega.token.**
+  webservice:
+    path: io.vertigo.vega.webservice.**
+  impl:
+    path: io.vertigo.vega.impl.**
+    deps: [authentication, engines, plugins, ratelimiting, token, webservice] # TODO impl dépend de plugins (HandlerChain) — violation à corriger
+  plugins:
+    path: io.vertigo.vega.plugins.**
+    deps: [engines, impl, token, webservice, gson, msal4j, nimbus, javalin, shibboleth, opensaml, jedis, guava] # TODO plugins dépend de impl — violation circulaire à corriger

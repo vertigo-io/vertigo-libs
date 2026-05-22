@@ -170,7 +170,13 @@
 			contient la 1.0.b2 qui est incompatible avec le jdk 7 (sur Node) <scope>test</scope> </dependency> -->
 
 		<!--/exporter -->
-		
+		<!-- architecture tests -->
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-arch</artifactId>
+			<version>${vertigo.version}</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 </project>
