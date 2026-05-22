@@ -1,0 +1,45 @@
+scope:
+  path: io.vertigo.datastore.**
+  description: "Architecture de vertigo-datastore"
+  excludes:
+    - java.**
+    - javax.**
+    - jakarta.**
+    - io.vertigo.core.**
+    - io.vertigo.commons.**
+    - io.vertigo.datamodel.**
+    - io.vertigo.database.**
+    - io.vertigo.basics.**
+    - io.vertigo.connectors.**
+    - org.apache.logging.**
+
+libs:
+  jedis: redis.clients.**
+  okhttp3: okhttp3.**
+  ehcache: org.ehcache.**
+  minio: io.minio.**
+  tika: org.apache.tika.**
+  simplemagic: com.j256.**
+  sleepycat: com.sleepycat.**
+  rocksdb: org.rocksdb.**
+  h2mvstore: org.h2.**
+
+modules:
+  root:
+    path: io.vertigo.datastore
+    deps: [cache, entitystore, filestore, kvstore, impl, plugins]
+  cache:
+    path: io.vertigo.datastore.cache.**
+  entitystore:
+    path: io.vertigo.datastore.entitystore.**
+  filestore:
+    path: io.vertigo.datastore.filestore.**
+    deps: [impl] # TODO VFileUtil.obtainReadOnlyPath dépend de FSFile (impl) — violation à corriger
+  kvstore:
+    path: io.vertigo.datastore.kvstore.**
+  impl:
+    path: io.vertigo.datastore.impl.**
+    deps: [cache, entitystore, filestore, kvstore]
+  plugins:
+    path: io.vertigo.datastore.plugins.**
+    deps: [cache, entitystore, filestore, kvstore, impl, jedis, ehcache, minio, tika, simplemagic, sleepycat, rocksdb, h2mvstore, okhttp3]
