@@ -70,6 +70,13 @@
 			<artifactId>c3p0</artifactId>
 			<optional>true</optional><!-- C3p0DataSourceProviderPlugin -->
 		</dependency>
+		<!-- architecture tests -->
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-arch</artifactId>
+			<version>${vertigo.version}</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
     <build>
         <!-- To use the plugin goals in your POM or parent POM -->

@@ -1,0 +1,36 @@
+scope:
+  path: io.vertigo.account.**
+  description: "Architecture de vertigo-account"
+  excludes:
+    - java.**
+    - javax.**
+    - jakarta.**
+    - io.vertigo.core.**
+    - io.vertigo.commons.**
+    - io.vertigo.datamodel.**
+    - io.vertigo.datastore.**
+    - io.vertigo.basics.**
+    - org.apache.logging.**
+
+libs:
+  gson: com.google.gson.**
+  jedis: redis.clients.**
+
+modules:
+  security:
+    path: io.vertigo.account.security.**
+  account:
+    path: io.vertigo.account.account.**
+  authentication:
+    path: io.vertigo.account.authentication.**
+    deps: [account]
+  authorization:
+    path: io.vertigo.account.authorization.**
+  identityprovider:
+    path: io.vertigo.account.identityprovider.**
+  impl:
+    path: io.vertigo.account.impl.**
+    deps: [account, authentication, authorization, identityprovider, security, gson, jedis]
+  plugins:
+    path: io.vertigo.account.plugins.**
+    deps: [account, authentication, authorization, identityprovider, security, impl, gson, jedis]
