@@ -76,7 +76,7 @@ public final class WebServiceClientTest {
 
 	@Test
 	public void testLogout() {
-		try (HttpClientCookie httpClientCookie = new HttpClientCookie()) {
+		try (HttpClientCookie _ = new HttpClientCookie()) {
 			service.login();
 			service.logout();
 		}
@@ -89,7 +89,7 @@ public final class WebServiceClientTest {
 
 	@Test
 	public void testAuthentifiedTest() {
-		try (HttpClientCookie httpClientCookie = new HttpClientCookie()) {
+		try (HttpClientCookie _ = new HttpClientCookie()) {
 			service.login();
 			final List<Contact> result = service.authentifiedTest();
 			assertNotNull(result);
@@ -110,7 +110,7 @@ public final class WebServiceClientTest {
 
 	@Test
 	public void testTwoResultConfirm() {
-		try (HttpClientCookie httpClientCookie = new HttpClientCookie()) {
+		try (HttpClientCookie _ = new HttpClientCookie()) {
 			service.login();
 			final Map<String, Object> uiContext = service.testTwoResult("Confirm");
 			assertEquals("Are you sure", uiContext.get("message"));
@@ -119,7 +119,7 @@ public final class WebServiceClientTest {
 
 	@Test
 	public void testTwoResultContact() {
-		try (HttpClientCookie httpClientCookie = new HttpClientCookie()) {
+		try (HttpClientCookie _ = new HttpClientCookie()) {
 			service.login();
 			final Map<String, Object> uiContext = service.testTwoResult("Contact");
 			final Map<String, Object> contact = (Map<String, Object>) uiContext.get("contact");
@@ -129,7 +129,7 @@ public final class WebServiceClientTest {
 
 	@Test
 	public void docTest1() {
-		try (HttpClientCookie httpClientCookie = new HttpClientCookie()) {
+		try (HttpClientCookie _ = new HttpClientCookie()) {
 			service.login();
 			final List<Contact> result = service.docTest("RtFM");
 			assertTrue(result.size() >= 11);
@@ -139,7 +139,7 @@ public final class WebServiceClientTest {
 	@Test
 	public void docTest2() {
 		Assertions.assertThrows(VSecurityException.class, () -> { //Wrapped<SessionException>
-			try (HttpClientCookie httpClientCookie = new HttpClientCookie()) {
+			try (HttpClientCookie _ = new HttpClientCookie()) {
 				service.login();
 				service.docTest("myPass");
 			}
@@ -149,7 +149,7 @@ public final class WebServiceClientTest {
 	@Test
 	public void docTest3TrailingSlashes() {
 		Assertions.assertThrows(VSecurityException.class, () -> { //Wrapped<SessionException>
-			try (HttpClientCookie httpClientCookie = new HttpClientCookie()) {
+			try (HttpClientCookie _ = new HttpClientCookie()) {
 				service.login();
 				service.docTestEmpty();
 			}
@@ -158,7 +158,7 @@ public final class WebServiceClientTest {
 
 	@Test
 	public void testRead1() {
-		try (HttpClientCookie httpClientCookie = new HttpClientCookie()) {
+		try (HttpClientCookie _ = new HttpClientCookie()) {
 			service.login();
 			final Contact result = service.testRead(2);
 			assertNotNull(result);
@@ -168,7 +168,7 @@ public final class WebServiceClientTest {
 
 	@Test
 	public void testRead2() {
-		try (HttpClientCookie httpClientCookie = new HttpClientCookie()) {
+		try (HttpClientCookie _ = new HttpClientCookie()) {
 			service.login();
 			service.testRead(30);
 			assertFalse(true, "throw WebServiceUserException expected");
@@ -186,7 +186,7 @@ public final class WebServiceClientTest {
 	private Contact doCreateContact() {
 		final Contact newContact = createDefaultContact(null);
 
-		try (HttpClientCookie httpClientCookie = new HttpClientCookie()) {
+		try (HttpClientCookie _ = new HttpClientCookie()) {
 			service.login();
 			final Contact result = service.createContact(newContact);
 			assertNotNull(result);
@@ -199,7 +199,7 @@ public final class WebServiceClientTest {
 	public void testPostContactValidatorError() {
 		final Contact newContact = createDefaultContact(null);
 		newContact.setBirthday(LocalDate.parse("2014-10-24"));
-		try (HttpClientCookie httpClientCookie = new HttpClientCookie()) {
+		try (HttpClientCookie _ = new HttpClientCookie()) {
 			service.login();
 			service.createContact(newContact);
 			assertFalse(true, "throw WebServiceUserException expected");
@@ -212,7 +212,7 @@ public final class WebServiceClientTest {
 	@Test
 	public void testPutContact() {
 		final Contact newContact = createDefaultContact(100L);
-		try (HttpClientCookie httpClientCookie = new HttpClientCookie()) {
+		try (HttpClientCookie _ = new HttpClientCookie()) {
 			service.login();
 			final Contact result = service.testUpdate(newContact);
 			assertNotNull(result);
@@ -229,7 +229,7 @@ public final class WebServiceClientTest {
 	public void testPutContactVAccessor() {
 		final Contact newContact = createDefaultContact(100L);
 		newContact.setAdrId(200L);
-		try (HttpClientCookie httpClientCookie = new HttpClientCookie()) {
+		try (HttpClientCookie _ = new HttpClientCookie()) {
 			service.login();
 			final Contact result = service.testUpdate(newContact);
 			assertNotNull(result);
@@ -249,7 +249,7 @@ public final class WebServiceClientTest {
 		final Contact newContact = createDefaultContact(100L);
 		newContact.setName("");
 
-		try (HttpClientCookie httpClientCookie = new HttpClientCookie()) {
+		try (HttpClientCookie _ = new HttpClientCookie()) {
 			service.login();
 			service.createContact(newContact);
 			assertFalse(true, "throw WebServiceUserException expected");
@@ -262,7 +262,7 @@ public final class WebServiceClientTest {
 		final Contact newContact2 = createDefaultContact(100L);
 		newContact2.setName(null);
 
-		try (HttpClientCookie httpClientCookie = new HttpClientCookie()) {
+		try (HttpClientCookie _ = new HttpClientCookie()) {
 			service.login();
 			service.createContact(newContact2);
 			assertFalse(true, "throw WebServiceUserException expected");
@@ -274,7 +274,7 @@ public final class WebServiceClientTest {
 
 	@Test
 	public void testPostInnerBodyObject() {
-		try (HttpClientCookie httpClientCookie = new HttpClientCookie()) {
+		try (HttpClientCookie _ = new HttpClientCookie()) {
 			service.login();
 			final Contact contactFrom = service.testRead(5);
 			final Contact contactTo = service.testRead(6);
@@ -290,7 +290,7 @@ public final class WebServiceClientTest {
 
 	@Test
 	public void testPostInnerBodyObjectFieldErrors() {
-		try (HttpClientCookie httpClientCookie = new HttpClientCookie()) {
+		try (HttpClientCookie _ = new HttpClientCookie()) {
 			service.login();
 			final Contact contactFrom = service.testRead(5);
 			final Contact contactTo = service.testRead(6);
@@ -307,7 +307,7 @@ public final class WebServiceClientTest {
 
 	@Test
 	public void testPostInnerBodyOptionalPresentObject() {
-		try (HttpClientCookie httpClientCookie = new HttpClientCookie()) {
+		try (HttpClientCookie _ = new HttpClientCookie()) {
 			service.login();
 			final Contact contactFrom = service.testRead(5);
 			final Contact contactTo = service.testRead(6);
@@ -323,7 +323,7 @@ public final class WebServiceClientTest {
 
 	@Test
 	public void testPostInnerBodyOptionalEmptyObject() {
-		try (HttpClientCookie httpClientCookie = new HttpClientCookie()) {
+		try (HttpClientCookie _ = new HttpClientCookie()) {
 			service.login();
 			final Contact contactFrom = service.testRead(5);
 			final List<Contact> result = service.testInnerBodyOptionalObject(contactFrom, Optional.empty());
@@ -336,7 +336,7 @@ public final class WebServiceClientTest {
 
 	@Test
 	public void testPostInnerBodyValidationErrors() {
-		try (HttpClientCookie httpClientCookie = new HttpClientCookie()) {
+		try (HttpClientCookie _ = new HttpClientCookie()) {
 			service.login();
 			final Contact contactFrom = createDefaultContact(140L);
 			final Contact contactTo = createDefaultContact(141L);
@@ -351,7 +351,7 @@ public final class WebServiceClientTest {
 	@Test
 	public void testPostInnerBodyLong() {
 
-		try (HttpClientCookie httpClientCookie = new HttpClientCookie()) {
+		try (HttpClientCookie _ = new HttpClientCookie()) {
 			service.login();
 			final List<Contact> result = service.testInnerBodyLong(6, 7);
 			assertNotNull(result);
@@ -361,12 +361,11 @@ public final class WebServiceClientTest {
 			assertEquals(7, result.get(1).getConId());
 			assertNotNull(result.get(1).getFirstName());
 		}
-
 	}
 
 	@Test
 	public void testInnerBodyLongToDtList() {
-		try (HttpClientCookie httpClientCookie = new HttpClientCookie()) {
+		try (HttpClientCookie _ = new HttpClientCookie()) {
 			service.login();
 			final DtList<Contact> result = service.testInnerBodyLongToDtList(6, 7);
 			assertNotNull(result);
