@@ -9,7 +9,9 @@ scope:
     - io.vertigo.commons.**
     - io.vertigo.datamodel.**
     - io.vertigo.datastore.**
+    - io.vertigo.database.**
     - io.vertigo.basics.**
+    - io.vertigo.connectors.**
     - org.apache.logging.**
 
 libs:
@@ -17,6 +19,9 @@ libs:
   jedis: redis.clients.**
 
 modules:
+  root:
+    path: io.vertigo.account
+    deps: [account, authentication, authorization, identityprovider, security, impl, plugins]
   security:
     path: io.vertigo.account.security.**
   account:
@@ -30,7 +35,7 @@ modules:
     path: io.vertigo.account.identityprovider.**
   impl:
     path: io.vertigo.account.impl.**
-    deps: [account, authentication, authorization, identityprovider, security, gson, jedis]
+    deps: [account, authentication, authorization, identityprovider, security]
   plugins:
     path: io.vertigo.account.plugins.**
-    deps: [account, authentication, authorization, identityprovider, security, impl, gson, jedis]
+    deps: [account, authentication, authorization, impl, gson, jedis]
