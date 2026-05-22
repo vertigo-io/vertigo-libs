@@ -20,8 +20,6 @@ package io.vertigo.account.authorization;
 import java.io.Serializable;
 import java.util.Map;
 
-import javax.inject.Inject;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,6 +37,7 @@ import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.node.definition.DefinitionSpace;
+import jakarta.inject.Inject;
 
 /**
  * @author skerdudou

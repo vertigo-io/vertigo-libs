@@ -23,8 +23,6 @@ import java.sql.SQLException;
 import java.time.Instant;
 import java.util.Collections;
 
-import jakarta.inject.Inject;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -50,6 +48,7 @@ import io.vertigo.datafactory.search.model.SearchQuery;
 import io.vertigo.datamodel.data.model.DtListState;
 import io.vertigo.datamodel.data.model.UID;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
+import jakarta.inject.Inject;
 
 /**
  * Test de l'implémentation standard couplé au store.
@@ -369,7 +368,7 @@ abstract class AbstractSearchManagerStoreTest {
 			execCallableStatement(connectionCloseable.getConnection(), "delete from item where id = 10001");
 			connectionCloseable.commit();
 		}
-		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+		try (VTransactionWritable _ = transactionManager.createCurrentTransaction()) {
 			Assertions.assertEquals(initialDbItemSize - 1, entityStoreManager.count(itemIndexDefinition.getKeyConceptDtDefinition()));
 		}
 		doReindexAll();
@@ -410,7 +409,7 @@ abstract class AbstractSearchManagerStoreTest {
 			execCallableStatement(connectionCloseable.getConnection(), "delete from item where id = 10001");
 			connectionCloseable.commit();
 		}
-		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+		try (VTransactionWritable _ = transactionManager.createCurrentTransaction()) {
 			Assertions.assertEquals(initialDbItemSize - 1, entityStoreManager.count(itemIndexDefinition.getKeyConceptDtDefinition()));
 		}
 		doReindexModified();
@@ -430,7 +429,7 @@ abstract class AbstractSearchManagerStoreTest {
 			execCallableStatement(connectionCloseable.getConnection(), "delete from item ");
 			connectionCloseable.commit();
 		}
-		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+		try (VTransactionWritable _ = transactionManager.createCurrentTransaction()) {
 			Assertions.assertEquals(0, entityStoreManager.count(itemIndexDefinition.getKeyConceptDtDefinition()));
 		}
 		doReindexModified();
@@ -450,7 +449,7 @@ abstract class AbstractSearchManagerStoreTest {
 			execCallableStatement(connectionCloseable.getConnection(), "delete from item ");
 			connectionCloseable.commit();
 		}
-		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+		try (VTransactionWritable _ = transactionManager.createCurrentTransaction()) {
 			Assertions.assertEquals(0, entityStoreManager.count(itemIndexDefinition.getKeyConceptDtDefinition()));
 		}
 		doReindexModified();

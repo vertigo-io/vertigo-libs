@@ -23,8 +23,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import jakarta.inject.Inject;
-
 import io.vertigo.basics.task.TaskEngineSelect;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
@@ -45,6 +43,7 @@ import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 import io.vertigo.datamodel.task.TaskManager;
 import io.vertigo.datamodel.task.definitions.TaskDefinition;
 import io.vertigo.datamodel.task.model.Task;
+import jakarta.inject.Inject;
 
 /**
  * SearchLoader of Item keyconcept, load uses StoreManager.
@@ -72,7 +71,7 @@ public final class ItemSearchLoader extends AbstractSqlSearchLoader<Item, Item> 
 	@Override
 	public List<SearchIndex<Item, Item>> loadData(final SearchChunk<Item> searchChunk) {
 		final SearchIndexDefinition indexDefinition = searchManager.findFirstIndexDefinitionByKeyConcept(Item.class);
-		try (final VTransactionWritable tx = getTransactionManager().createCurrentTransaction()) {
+		try (final VTransactionWritable _ = getTransactionManager().createCurrentTransaction()) {
 			final List<SearchIndex<Item, Item>> result = new ArrayList<>();
 			for (final Item item : loadItems(searchChunk)) {
 				final UID<Item> uid = item.getUID();

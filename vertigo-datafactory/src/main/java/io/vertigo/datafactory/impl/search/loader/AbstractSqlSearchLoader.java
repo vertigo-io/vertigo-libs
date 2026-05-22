@@ -21,8 +21,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.inject.Inject;
-
 import io.vertigo.basics.task.TaskEngineSelect;
 import io.vertigo.commons.transaction.Transactional;
 import io.vertigo.commons.transaction.VTransactionManager;
@@ -44,6 +42,7 @@ import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 import io.vertigo.datamodel.task.TaskManager;
 import io.vertigo.datamodel.task.definitions.TaskDefinition;
 import io.vertigo.datamodel.task.model.Task;
+import jakarta.inject.Inject;
 
 /**
  * Default SearchLoader for Database datasource.
@@ -81,7 +80,7 @@ public abstract class AbstractSqlSearchLoader<S extends KeyConcept, I extends Da
 	@Override
 	@Transactional
 	protected final List<Tuple<UID<S>, Serializable>> loadNextURI(final Serializable lastValue, final boolean orderByVersion, final DataDefinition dataDefinition) {
-		try (final VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
+		try (final VTransactionWritable _ = transactionManager.createCurrentTransaction()) {
 			final String entityName = getEntityName(dataDefinition);
 			final String tableName = StringUtil.camelToConstCase(entityName);
 			final String taskName = "TkSelect" + entityName + "NextSearchChunk";

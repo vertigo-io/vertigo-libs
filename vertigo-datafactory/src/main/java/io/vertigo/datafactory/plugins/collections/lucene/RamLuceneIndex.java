@@ -110,7 +110,7 @@ final class RamLuceneIndex<D extends DataObject> {
 	}
 
 	private void buildIndex() throws IOException {
-		try (final IndexWriter indexWriter = createIndexWriter()) {
+		try (final IndexWriter _ = createIndexWriter()) {
 			// we are creating an empty index if it does not exist
 		}
 	}
