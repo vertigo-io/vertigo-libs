@@ -30,7 +30,7 @@ modules:
     deps: [collections, impl, datamodel] # TODO SearchQuery dépend de DslGeoExpression/DslParserUtil (impl) — violation à corriger
   impl:
     path: io.vertigo.datafactory.impl.**
-    deps: [collections, search, lucene, basics, commons, datamodel, datastore]
+    deps: [collections, search, basics, commons, datamodel, datastore]
   plugins:
     path: io.vertigo.datafactory.plugins.**
     deps: [collections, search, impl, lucene, elasticsearch, hppc, commons, connectors, datamodel, datastore]

@@ -27,7 +27,7 @@ libs:
 modules:
   root:
     path: io.vertigo.datastore
-    deps: [cache, entitystore, filestore, kvstore, impl, plugins]
+    deps: [cache, entitystore, filestore, kvstore, impl, plugins, datamodel]
   cache:
     path: io.vertigo.datastore.cache.**
   entitystore:

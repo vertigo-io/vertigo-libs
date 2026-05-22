@@ -44,7 +44,7 @@ modules:
     deps: [datamodel, datastore]
   impl:
     path: io.vertigo.vega.impl.**
-    deps: [authentication, engines, plugins, ratelimiting, token, webservice, account, connectors, datafactory, datamodel, datastore] # TODO impl dépend de plugins — violation à corriger
+    deps: [authentication, engines, plugins, ratelimiting, token, webservice, account, connectors, datafactory, datamodel, datastore, gson] # TODO impl dépend de plugins — violation à corriger
   plugins:
     path: io.vertigo.vega.plugins.**
     deps: [engines, impl, token, webservice, account, connectors, datafactory, datamodel, datastore, gson, msal4j, nimbus, javalin, shibboleth, opensaml, jedis, guava] # TODO plugins dépend de impl — violation circulaire à corriger
