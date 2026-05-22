@@ -6,14 +6,14 @@ scope:
     - javax.**
     - jakarta.**
     - io.vertigo.core.**
-    - io.vertigo.commons.**
-    - io.vertigo.connectors.**
     - org.apache.logging.**
 
 libs:
   c3p0: com.mchange.**
   influxdb: com.influxdb.**
   liquibase: liquibase.**
+  commons: io.vertigo.commons.**
+  connectors: io.vertigo.connectors.**
 
 modules:
   root:
@@ -21,6 +21,7 @@ modules:
     deps: [sql, migration, timeseries, impl, plugins]
   sql:
     path: io.vertigo.database.sql.**
+    deps: [commons]
   migration:
     path: io.vertigo.database.migration.**
   timeseries:
@@ -30,4 +31,4 @@ modules:
     deps: [sql, migration, timeseries]
   plugins:
     path: io.vertigo.database.plugins.**
-    deps: [sql, timeseries, impl, c3p0, influxdb, liquibase]
+    deps: [sql, timeseries, impl, c3p0, influxdb, liquibase, connectors]

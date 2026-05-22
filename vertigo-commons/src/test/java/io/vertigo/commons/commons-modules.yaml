@@ -13,7 +13,7 @@ libs:
   jedis: redis.clients.**
   janino: org.codehaus.**
   c3p0: com.mchange.**
-  connector-redis: io.vertigo.connectors.redis.**
+  connectors: io.vertigo.connectors.**
 
 modules:
   root:
@@ -39,4 +39,4 @@ modules:
     deps: [app, codec, command, eventbus, script, transaction, plugins]
   plugins:
     path: io.vertigo.commons.plugins.**
-    deps: [app, script, impl, gson, jedis, janino, c3p0, connector-redis]
+    deps: [app, script, impl, gson, jedis, janino, c3p0, connectors]

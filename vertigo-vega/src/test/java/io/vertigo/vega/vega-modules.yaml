@@ -6,11 +6,6 @@ scope:
     - javax.**
     - jakarta.**
     - io.vertigo.core.**
-    - io.vertigo.commons.**
-    - io.vertigo.datamodel.**
-    - io.vertigo.datafactory.**
-    - io.vertigo.account.**
-    - io.vertigo.connectors.**
     - org.apache.logging.**
     - org.slf4j.**
     - org.w3c.**
@@ -24,6 +19,12 @@ libs:
   shibboleth: net.shibboleth.**
   opensaml: org.opensaml.**
   jedis: redis.clients.**
+  commons: io.vertigo.commons.**
+  datamodel: io.vertigo.datamodel.**
+  datafactory: io.vertigo.datafactory.**
+  datastore: io.vertigo.datastore.**
+  account: io.vertigo.account.**
+  connectors: io.vertigo.connectors.**
 
 modules:
   root:
@@ -33,16 +34,17 @@ modules:
     path: io.vertigo.vega.authentication.**
   engines:
     path: io.vertigo.vega.engines.**
-    deps: [webservice, gson]
+    deps: [webservice, gson, datamodel, datafactory]
   ratelimiting:
     path: io.vertigo.vega.ratelimiting.**
   token:
     path: io.vertigo.vega.token.**
   webservice:
     path: io.vertigo.vega.webservice.**
+    deps: [datamodel, datastore]
   impl:
     path: io.vertigo.vega.impl.**
-    deps: [authentication, engines, plugins, ratelimiting, token, webservice] # TODO impl dépend de plugins (HandlerChain) — violation à corriger
+    deps: [authentication, engines, plugins, ratelimiting, token, webservice, account, connectors, datafactory, datamodel, datastore] # TODO impl dépend de plugins — violation à corriger
   plugins:
     path: io.vertigo.vega.plugins.**
-    deps: [engines, impl, token, webservice, gson, msal4j, nimbus, javalin, shibboleth, opensaml, jedis, guava] # TODO plugins dépend de impl — violation circulaire à corriger
+    deps: [engines, impl, token, webservice, account, connectors, datafactory, datamodel, datastore, gson, msal4j, nimbus, javalin, shibboleth, opensaml, jedis, guava] # TODO plugins dépend de impl — violation circulaire à corriger

@@ -6,11 +6,11 @@ scope:
     - javax.**
     - jakarta.**
     - io.vertigo.core.**
-    - io.vertigo.connectors.**
     - org.apache.logging.**
 
 libs:
   jedis: redis.clients.**
+  connectors: io.vertigo.connectors.**
 
 modules:
   root:
@@ -35,4 +35,4 @@ modules:
     deps: [bb, data, smarttype, task]
   plugins:
     path: io.vertigo.datamodel.plugins.**
-    deps: [bb, impl, jedis]
+    deps: [bb, impl, jedis, connectors]

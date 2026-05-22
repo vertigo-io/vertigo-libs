@@ -6,17 +6,17 @@ scope:
     - javax.**
     - jakarta.**
     - io.vertigo.core.**
-    - io.vertigo.commons.**
-    - io.vertigo.datamodel.**
-    - io.vertigo.datastore.**
-    - io.vertigo.database.**
-    - io.vertigo.basics.**
-    - io.vertigo.connectors.**
     - org.apache.logging.**
 
 libs:
   gson: com.google.gson.**
   jedis: redis.clients.**
+  commons: io.vertigo.commons.**
+  datamodel: io.vertigo.datamodel.**
+  datastore: io.vertigo.datastore.**
+  database: io.vertigo.database.**
+  basics: io.vertigo.basics.**
+  connectors: io.vertigo.connectors.**
 
 modules:
   root:
@@ -26,16 +26,19 @@ modules:
     path: io.vertigo.account.security.**
   account:
     path: io.vertigo.account.account.**
+    deps: [datamodel, datastore]
   authentication:
     path: io.vertigo.account.authentication.**
     deps: [account]
   authorization:
     path: io.vertigo.account.authorization.**
+    deps: [database, datamodel, datastore]
   identityprovider:
     path: io.vertigo.account.identityprovider.**
+    deps: [datamodel, datastore]
   impl:
     path: io.vertigo.account.impl.**
-    deps: [account, authentication, authorization, identityprovider, security]
+    deps: [account, authentication, authorization, identityprovider, security, basics, commons, datamodel, datastore]
   plugins:
     path: io.vertigo.account.plugins.**
-    deps: [account, authentication, authorization, impl, gson, jedis]
+    deps: [account, authentication, authorization, impl, commons, connectors, datamodel, datastore, gson, jedis]

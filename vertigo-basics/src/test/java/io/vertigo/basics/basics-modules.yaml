@@ -6,15 +6,20 @@ scope:
     - javax.**
     - jakarta.**
     - io.vertigo.core.**
-    - io.vertigo.commons.**
-    - io.vertigo.datamodel.**
-    - io.vertigo.database.**
     - org.apache.logging.**
+
+libs:
+  commons: io.vertigo.commons.**
+  datamodel: io.vertigo.datamodel.**
+  database: io.vertigo.database.**
 
 modules:
   constraint:
     path: io.vertigo.basics.constraint.**
+    deps: [datamodel]
   formatter:
     path: io.vertigo.basics.formatter.**
+    deps: [datamodel]
   task:
     path: io.vertigo.basics.task.**
+    deps: [commons, database, datamodel]

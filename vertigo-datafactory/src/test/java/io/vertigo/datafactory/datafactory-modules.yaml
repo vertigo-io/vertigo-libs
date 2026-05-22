@@ -6,17 +6,17 @@ scope:
     - javax.**
     - jakarta.**
     - io.vertigo.core.**
-    - io.vertigo.commons.**
-    - io.vertigo.datamodel.**
-    - io.vertigo.datastore.**
-    - io.vertigo.basics.**
-    - io.vertigo.connectors.**
     - org.apache.logging.**
 
 libs:
   lucene: org.apache.lucene.**
   elasticsearch: org.elasticsearch.**
   hppc: com.carrotsearch.**
+  commons: io.vertigo.commons.**
+  datamodel: io.vertigo.datamodel.**
+  datastore: io.vertigo.datastore.**
+  basics: io.vertigo.basics.**
+  connectors: io.vertigo.connectors.**
 
 modules:
   root:
@@ -24,12 +24,13 @@ modules:
     deps: [collections, search, impl, plugins]
   collections:
     path: io.vertigo.datafactory.collections.**
+    deps: [datamodel]
   search:
     path: io.vertigo.datafactory.search.**
-    deps: [collections, impl] # TODO SearchQuery dépend de DslGeoExpression/DslParserUtil (impl) — violation à corriger
+    deps: [collections, impl, datamodel] # TODO SearchQuery dépend de DslGeoExpression/DslParserUtil (impl) — violation à corriger
   impl:
     path: io.vertigo.datafactory.impl.**
-    deps: [collections, search, lucene]
+    deps: [collections, search, lucene, basics, commons, datamodel, datastore]
   plugins:
     path: io.vertigo.datafactory.plugins.**
-    deps: [collections, search, impl, lucene, elasticsearch, hppc]
+    deps: [collections, search, impl, lucene, elasticsearch, hppc, commons, connectors, datamodel, datastore]

@@ -6,16 +6,16 @@ scope:
     - javax.**
     - jakarta.**
     - io.vertigo.core.**
-    - io.vertigo.commons.**
-    - io.vertigo.datamodel.**
-    - io.vertigo.vega.**
-    - io.vertigo.connectors.**
     - org.apache.logging.**
 
 libs:
   gson: com.google.gson.**
   jedis: redis.clients.**
   jersey: org.glassfish.jersey.**
+  commons: io.vertigo.commons.**
+  datamodel: io.vertigo.datamodel.**
+  vega: io.vertigo.vega.**
+  connectors: io.vertigo.connectors.**
 
 modules:
   root:
@@ -33,4 +33,4 @@ modules:
     deps: [master, work, workers]
   plugins:
     path: io.vertigo.stella.plugins.**
-    deps: [impl, work, jedis, gson, jersey]
+    deps: [impl, work, jedis, gson, jersey, commons, connectors, vega]
