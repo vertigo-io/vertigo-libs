@@ -1,0 +1,42 @@
+scope:
+  path: io.vertigo.commons.**
+  description: "Architecture de vertigo-commons"
+  excludes:
+    - java.**
+    - javax.**
+    - jakarta.**
+    - io.vertigo.core.**
+    - org.apache.logging.**
+
+libs:
+  gson: com.google.gson.**
+  jedis: redis.clients.**
+  janino: org.codehaus.**
+  c3p0: com.mchange.**
+  connector-redis: io.vertigo.connectors.redis.**
+
+modules:
+  root:
+    path: io.vertigo.commons
+    description: features
+    deps: [app, codec, command, eventbus, script, transaction, impl, plugins]
+  app:
+    path: io.vertigo.commons.app.**
+  codec:
+    path: io.vertigo.commons.codec.**
+  command:
+    path: io.vertigo.commons.command.**
+  eventbus:
+    path: io.vertigo.commons.eventbus.**
+  peg:
+    path: io.vertigo.commons.peg.**
+  script:
+    path: io.vertigo.commons.script.**
+  transaction:
+    path: io.vertigo.commons.transaction.**
+  impl:
+    path: io.vertigo.commons.impl.**
+    deps: [app, codec, command, eventbus, script, transaction, plugins]
+  plugins:
+    path: io.vertigo.commons.plugins.**
+    deps: [app, script, impl, gson, jedis, janino, c3p0, connector-redis]
