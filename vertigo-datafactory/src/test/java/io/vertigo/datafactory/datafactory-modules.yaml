@@ -1,0 +1,35 @@
+scope:
+  path: io.vertigo.datafactory.**
+  description: "Architecture de vertigo-datafactory"
+  excludes:
+    - java.**
+    - javax.**
+    - jakarta.**
+    - io.vertigo.core.**
+    - io.vertigo.commons.**
+    - io.vertigo.datamodel.**
+    - io.vertigo.datastore.**
+    - io.vertigo.basics.**
+    - io.vertigo.connectors.**
+    - org.apache.logging.**
+
+libs:
+  lucene: org.apache.lucene.**
+  elasticsearch: org.elasticsearch.**
+  hppc: com.carrotsearch.**
+
+modules:
+  root:
+    path: io.vertigo.datafactory
+    deps: [collections, search, impl, plugins]
+  collections:
+    path: io.vertigo.datafactory.collections.**
+  search:
+    path: io.vertigo.datafactory.search.**
+    deps: [collections, impl] # TODO SearchQuery dépend de DslGeoExpression/DslParserUtil (impl) — violation à corriger
+  impl:
+    path: io.vertigo.datafactory.impl.**
+    deps: [collections, search, lucene]
+  plugins:
+    path: io.vertigo.datafactory.plugins.**
+    deps: [collections, search, impl, lucene, elasticsearch, hppc]

@@ -130,6 +130,13 @@
 			<artifactId>c3p0</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<!-- architecture tests -->
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-arch</artifactId>
+			<version>${vertigo.version}</version>
+			<scope>test</scope>
+		</dependency>
 
 	</dependencies>
 	<build>
