@@ -1,0 +1,20 @@
+scope:
+  path: io.vertigo.basics.**
+  description: "Architecture de vertigo-basics"
+  excludes:
+    - java.**
+    - javax.**
+    - jakarta.**
+    - io.vertigo.core.**
+    - io.vertigo.commons.**
+    - io.vertigo.datamodel.**
+    - io.vertigo.database.**
+    - org.apache.logging.**
+
+modules:
+  constraint:
+    path: io.vertigo.basics.constraint.**
+  formatter:
+    path: io.vertigo.basics.formatter.**
+  task:
+    path: io.vertigo.basics.task.**

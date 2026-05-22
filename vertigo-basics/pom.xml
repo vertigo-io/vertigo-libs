@@ -23,5 +23,12 @@
 			<version>${project.version}</version>
 			<optional>true</optional>
 		</dependency>
+		<!-- architecture tests -->
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-arch</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 </project>
