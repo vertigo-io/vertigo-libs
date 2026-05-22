@@ -96,6 +96,13 @@
 			<version>${vertigo.version}</version>
 			<optional>true</optional> <!-- Redis DistributedWork impl -->
 		</dependency>
+		<!-- architecture tests -->
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-arch</artifactId>
+			<version>${vertigo.version}</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 </project>

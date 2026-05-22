@@ -1,0 +1,36 @@
+scope:
+  path: io.vertigo.stella.**
+  description: "Architecture de vertigo-stella"
+  excludes:
+    - java.**
+    - javax.**
+    - jakarta.**
+    - io.vertigo.core.**
+    - io.vertigo.commons.**
+    - io.vertigo.datamodel.**
+    - io.vertigo.vega.**
+    - io.vertigo.connectors.**
+    - org.apache.logging.**
+
+libs:
+  gson: com.google.gson.**
+  jedis: redis.clients.**
+  jersey: org.glassfish.jersey.**
+
+modules:
+  root:
+    path: io.vertigo.stella
+    deps: [master, work, workers, impl, plugins]
+  master:
+    path: io.vertigo.stella.master.**
+    deps: [work]
+  work:
+    path: io.vertigo.stella.work.**
+  workers:
+    path: io.vertigo.stella.workers.**
+  impl:
+    path: io.vertigo.stella.impl.**
+    deps: [master, work, workers]
+  plugins:
+    path: io.vertigo.stella.plugins.**
+    deps: [impl, work, jedis, gson, jersey]
