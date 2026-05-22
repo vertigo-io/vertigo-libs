@@ -1,0 +1,38 @@
+scope:
+  path: io.vertigo.datamodel.**
+  description: "Architecture de vertigo-datamodel"
+  excludes:
+    - java.**
+    - javax.**
+    - jakarta.**
+    - io.vertigo.core.**
+    - io.vertigo.connectors.**
+    - org.apache.logging.**
+
+libs:
+  jedis: redis.clients.**
+
+modules:
+  root:
+    path: io.vertigo.datamodel
+    deps: [bb, smarttype, task, impl, plugins]
+  bb:
+    path: io.vertigo.datamodel.bb.**
+  data:
+    path: io.vertigo.datamodel.data.**
+    deps: [smarttype]
+  smarttype:
+    path: io.vertigo.datamodel.smarttype.**
+    deps: [data]
+  criteria:
+    path: io.vertigo.datamodel.criteria.**
+    deps: [data, smarttype]
+  task:
+    path: io.vertigo.datamodel.task.**
+    deps: [data, smarttype]
+  impl:
+    path: io.vertigo.datamodel.impl.**
+    deps: [bb, data, smarttype, task]
+  plugins:
+    path: io.vertigo.datamodel.plugins.**
+    deps: [bb, impl, jedis]
