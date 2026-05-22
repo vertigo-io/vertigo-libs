@@ -1,0 +1,33 @@
+scope:
+  path: io.vertigo.database.**
+  description: "Architecture de vertigo-database"
+  excludes:
+    - java.**
+    - javax.**
+    - jakarta.**
+    - io.vertigo.core.**
+    - io.vertigo.commons.**
+    - org.apache.logging.**
+
+libs:
+  c3p0: com.mchange.**
+  influxdb: com.influxdb.**
+  liquibase: liquibase.**
+
+modules:
+  root:
+    path: io.vertigo.database
+    deps: [plugins, impl]
+  sql:
+    path: io.vertigo.database.sql.**
+  migration:
+    path: io.vertigo.database.migration.**
+    deps: [sql]
+  timeseries:
+    path: io.vertigo.database.timeseries.**
+  impl:
+    path: io.vertigo.database.impl.**
+    deps: [sql, migration, timeseries, c3p0]
+  plugins:
+    path: io.vertigo.database.plugins.**
+    deps: [sql, migration, timeseries, impl, c3p0, influxdb, liquibase]
