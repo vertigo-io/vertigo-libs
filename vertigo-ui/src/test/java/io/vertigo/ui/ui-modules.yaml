@@ -1,0 +1,45 @@
+scope:
+  path: io.vertigo.ui.**
+  description: "Architecture de vertigo-ui"
+  excludes:
+    - java.**
+    - javax.**
+    - jakarta.**
+    - io.vertigo.core.**
+    - io.vertigo.commons.**
+    - io.vertigo.datamodel.**
+    - io.vertigo.datafactory.**
+    - io.vertigo.datastore.**
+    - io.vertigo.account.**
+    - io.vertigo.vega.**
+    - io.vertigo.connectors.**
+    - io.vertigo.basics.**
+    - org.apache.logging.**
+
+libs:
+  gson: com.google.gson.**
+  spring: org.springframework.**
+  thymeleaf: org.thymeleaf.**
+  jetty: org.eclipse.jetty.**
+  attoparser: org.attoparser.**
+  nashorn: org.openjdk.nashorn.**
+  unbescape: org.unbescape.**
+  thymeleaf-layout: nz.net.ultraq.**
+
+modules:
+  root:
+    path: io.vertigo.ui
+    deps: [boot, controllers, core, exception, impl]
+  core:
+    path: io.vertigo.ui.core.**
+  exception:
+    path: io.vertigo.ui.exception.**
+  boot:
+    path: io.vertigo.ui.boot.**
+    deps: [impl]
+  controllers:
+    path: io.vertigo.ui.controllers.**
+    deps: [core, impl] # TODO controllers dépend de impl — violation à corriger
+  impl:
+    path: io.vertigo.ui.impl.**
+    deps: [root, controllers, core, exception, spring, thymeleaf, jetty, attoparser, nashorn, unbescape, thymeleaf-layout, gson] # TODO impl dépend de controllers — violation circulaire à corriger

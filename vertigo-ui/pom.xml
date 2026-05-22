@@ -245,6 +245,12 @@
 		</dependency>
 		
 		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
-
+		<!-- architecture tests -->
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-arch</artifactId>
+			<version>${vertigo.version}</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 </project>
