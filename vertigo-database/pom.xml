@@ -23,11 +23,16 @@
 				<artifactId>ojdbc11</artifactId>
 				<version>23.8.0.25.04</version>
 			</dependency>
-			<dependency>
-				<groupId>org.postgresql</groupId>
-				<artifactId>postgresql</artifactId>
-				<version>42.7.7</version>
-			</dependency>
+            <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>42.7.7</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mariadb.jdbc</groupId>
+                <artifactId>mariadb-java-client</artifactId>
+                <version>3.3.3</version>
+            </dependency>
 			<dependency>
 				<groupId>org.liquibase</groupId>
 				<artifactId>liquibase-core</artifactId>
@@ -36,7 +41,7 @@
 			<dependency>
 				<groupId>io.vertigo</groupId>
 				<artifactId>vertigo-commons</artifactId>
-				<version>${project.version}</version>
+				<version>${vertigo.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -47,10 +52,10 @@
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-commons</artifactId>
-			<version>${project.version}</version>
+			<version>${vertigo.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>io.vertigo</groupId> 
+			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-influxdb-connector</artifactId>
 			<version>${vertigo.version}</version>
 			<optional>true</optional>
@@ -78,6 +83,12 @@
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.mariadb.jdbc</groupId>
+			<artifactId>mariadb-java-client</artifactId>
 			<scope>test</scope>
 		</dependency>
 
