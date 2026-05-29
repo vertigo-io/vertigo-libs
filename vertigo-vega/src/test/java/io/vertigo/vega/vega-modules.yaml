@@ -26,6 +26,10 @@ libs:
   account: io.vertigo.account.**
   connectors: io.vertigo.connectors.**
 
+directives:
+  no-cycle: true
+  no-direct-impl-dep: true
+
 modules:
   root:
     path: io.vertigo.vega

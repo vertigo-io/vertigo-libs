@@ -26,6 +26,10 @@ libs:
   unbescape: org.unbescape.**
   thymeleaf-layout: nz.net.ultraq.**
 
+directives:
+  no-cycle: true
+  no-direct-impl-dep: true
+
 modules:
   root:
     path: io.vertigo.ui

@@ -13,6 +13,10 @@ libs:
   datamodel: io.vertigo.datamodel.**
   database: io.vertigo.database.**
 
+directives:
+  no-cycle: true
+  no-direct-impl-dep: true
+
 modules:
   constraint:
     path: io.vertigo.basics.constraint.**
