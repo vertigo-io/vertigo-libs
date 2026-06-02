@@ -36,11 +36,12 @@ modules:
     deps: [boot, controllers, core, exception, impl]
   core:
     path: io.vertigo.ui.core.**
+    deps: [gson]
   exception:
     path: io.vertigo.ui.exception.**
   boot:
     path: io.vertigo.ui.boot.**
-    deps: [impl]
+    deps: [impl, jetty, spring]
   controllers:
     path: io.vertigo.ui.controllers.**
     deps: [core, impl] # TODO controllers dépend de impl — violation à corriger
