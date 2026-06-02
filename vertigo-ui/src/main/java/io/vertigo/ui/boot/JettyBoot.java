@@ -178,7 +178,7 @@ public class JettyBoot {
 						Stream.of(multiPartHandlerWrapper),
 						// Add as last a NotFoundAllHandler.
 						Stream.of(new NotFoundAllHandler()))
-						.flatMap(Function.identity())
+						.<Handler>flatMap(Function.identity())
 						.toList());
 		// Link the HandlerSequence to the Server.
 		server.setHandler(handlerSeq);
