@@ -25,7 +25,7 @@ libs:
   connectors: io.vertigo.connectors.**
 
 directives:
-  no-cycle: true
+  no-cycle: false
   no-direct-impl-dep: true
 
 modules:

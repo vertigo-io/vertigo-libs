@@ -20,7 +20,7 @@ libs:
 
 directives:
   no-cycle: true
-  no-direct-impl-dep: true
+  no-direct-impl-dep: false
 
 modules:
   root:
