@@ -200,7 +200,7 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 
 	private Attributes getLdapAttributes(final Serializable accountId, final Set<String> returningAttributes, final LdapContext ldapContext) {
 		final String ldapIdAttr = mapperHelper.getSourceIdField();
-		final List<Attributes> result = searchLdapAttributes(ldapAccountBaseDn, "(" + ldapIdAttr + "=" + accountId + ")", 2, returningAttributes, ldapContext);
+		final List<Attributes> result = searchLdapAttributes(ldapAccountBaseDn, "(" + ldapIdAttr + "=" + protectLdap(accountId.toString()) + ")", 2, returningAttributes, ldapContext);
 		Assertion.check()
 				.isFalse(result.isEmpty(), "Can't found any user with id : {0}", accountId)
 				.isTrue(result.size() == 1, "Too many user with same id ({0} shoud be unique)", accountId);
