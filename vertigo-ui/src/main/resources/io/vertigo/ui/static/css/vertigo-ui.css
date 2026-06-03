@@ -53,6 +53,19 @@ iframe {
 	color:var(--v-accent-invert) !important; 
 }
 
+.text-negative-inverted {
+	color:var(--q-negative-invert) !important;
+}
+.text-positive-inverted {
+	color:var(--q-positive-invert) !important;
+}
+.text-info-inverted {
+	color:var(--q-info-invert) !important;
+}
+.text-warning-inverted {
+	color:var(--q-warning-invert) !important;
+}
+
 .v-field__required .q-field__label::after,
 .v-field__required .q-checkbox__label::after,
 .v-block__required::after {
