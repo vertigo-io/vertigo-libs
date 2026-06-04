@@ -5,9 +5,21 @@
 }
 		
 :root {
+	/* On primary / secondary / accent backgrounds (dark/saturated) */
 	--v-primary-invert: rgba(255, 255, 255, 0.9);
 	--v-secondary-invert: rgba(255, 255, 255, 0.9);
-	--v-accent-invert:	rgba(255, 255, 255, 0.9);
+	--v-accent-invert: rgba(255, 255, 255, 0.9);
+
+	/* On tertiary background (light grey #F7F7F7) */
+	--v-tertiary-invert: rgba(0, 0, 0, 0.9);
+
+	/* On negative / positive / info backgrounds (dark/saturated) */
+	--v-negative-invert: rgba(255, 255, 255, 0.9);
+	--v-positive-invert: rgba(255, 255, 255, 0.9);
+	--v-info-invert: rgba(255, 255, 255, 0.9);
+
+	/* On warning background (yellow/light) */
+	--v-warning-invert: rgba(0, 0, 0, 0.9);
 }
 
 .flex-end {
@@ -54,16 +66,16 @@ iframe {
 }
 
 .text-negative-inverted {
-	color:var(--q-negative-invert) !important;
+	color:var(--v-negative-invert) !important;
 }
 .text-positive-inverted {
-	color:var(--q-positive-invert) !important;
+	color:var(--v-positive-invert) !important;
 }
 .text-info-inverted {
-	color:var(--q-info-invert) !important;
+	color:var(--v-info-invert) !important;
 }
 .text-warning-inverted {
-	color:var(--q-warning-invert) !important;
+	color:var(--v-warning-invert) !important;
 }
 
 .v-field__required .q-field__label::after,
@@ -218,7 +230,7 @@ img.avatar {
 }
 .table-tertiary  .q-btn {
 	background: var(--q-tertiary);
-	color:var(--q-tertiary-invert);
+	color:var(--v-tertiary-invert);
 }
 
 /** tableaux auto-ellipsis */
