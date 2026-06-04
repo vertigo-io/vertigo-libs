@@ -17,6 +17,8 @@
  */
 package io.vertigo.datafactory.search;
 
+import java.net.Socket;
+
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.connectors.elasticsearch.ElasticSearchFeatures;
 import io.vertigo.core.node.config.BootConfig;
@@ -42,8 +44,14 @@ public final class MyNodeConfig {
 		final DataFactoryFeatures dataFactoryFeatures = new DataFactoryFeatures();
 		dataFactoryFeatures.withSearch();
 
-		final ElasticSearchFeatures elasticSearchFeatures = new ElasticSearchFeatures();//.withEmbeddedServer();
-
+		final ElasticSearchFeatures elasticSearchFeatures = new ElasticSearchFeatures();
+		//on regarde si il écoute sur le port 9200, si oui on se connecte à ce serveur sinon on démarre un serveur embarqué
+		if (isPortOpen("127.0.0.1", 9200)) {
+			System.out.println("Démarrage d'un serveur Elasticsearch embarqué");
+			elasticSearchFeatures.withEmbeddedServer();
+		} else {
+			System.out.println("Elasticsearch déjà disponible sur localhost:9200");
+		}
 		if (esHL) {
 			elasticSearchFeatures.withRest( //connector
 					Param.of("servers.names", "localhost:9200"),
@@ -102,5 +110,14 @@ public final class MyNodeConfig {
 						.addDefinitionProvider(StoreCacheDefinitionProvider.class)
 						.build());
 		return nodeConfigBuilder.build();
+	}
+
+	private static boolean isPortOpen(final String host, final int port) {
+		try (Socket socket = new Socket()) {
+			socket.connect(new java.net.InetSocketAddress(host, port), 500);
+			return true;
+		} catch (final Exception e) {
+			return false;
+		}
 	}
 }
