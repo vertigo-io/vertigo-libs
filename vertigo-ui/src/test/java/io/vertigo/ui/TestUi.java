@@ -126,6 +126,26 @@ public class TestUi {
 	}
 
 	@Test
+	public void testMovieDetailEditExpired() throws InterruptedException {
+		driver.get(baseUrl + "/test/movie/1000");
+		Assertions.assertEquals(baseUrl + "/test/movie/1000", driver.getCurrentUrl());
+		assertEquals("Home", waitElement(By.xpath("/html/body//div[1]//div[3]"), 5000).getText());
+		// Corrupt the CTX hidden input to simulate ViewContext expiration
+		final var ctxInput = findElement(By.name("CTX"));
+		final var validCtx = ctxInput.getAttribute("value");
+		System.out.println("Valid CTX before: " + validCtx);
+		// Keep ctxInit (before $) intact so redirect URL can be resolved, but corrupt ctxUid
+		((JavascriptExecutor) driver).executeScript(
+				"arguments[0].value = arguments[0].value.split('$')[0] + '$expired_uid_corrupted';",
+				ctxInput);
+		System.out.println("Corrupted CTX: " + ctxInput.getAttribute("value"));
+		findElement(By.id("editAction")).click();
+		Assertions.assertEquals(baseUrl + "/test/movie/1000", driver.getCurrentUrl());
+		assertEquals("Home", waitElement(By.xpath("/html/body//div[1]//div[3]"), 5000).getText());
+		assertTrue(driver.getPageSource().contains("Due to technical reasons your last action has been lost"));
+	}
+
+	@Test
 	public void testDemo() throws InterruptedException {
 		driver.get(baseUrl + "/test/componentsDemo/");
 		Assertions.assertEquals(baseUrl + "/test/componentsDemo/", driver.getCurrentUrl());

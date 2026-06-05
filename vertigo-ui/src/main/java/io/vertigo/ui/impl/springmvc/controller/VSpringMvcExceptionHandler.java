@@ -28,7 +28,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.FlashMap;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
 import io.vertigo.account.authorization.VSecurityException;
 import io.vertigo.core.analytics.AnalyticsManager;
@@ -66,12 +68,17 @@ public final class VSpringMvcExceptionHandler {
 		LOGGER.warn("Expired ViewContext " + request.getMethod() + " " + request.getRequestURL(), LOGGER.isDebugEnabled() ? ex : null);//only log exception in debug
 		if (ex.getRedirectUrlOpt().isPresent()) {
 			final var uiMessageStack = UiRequestUtil.obtainCurrentUiMessageStack();
-			uiMessageStack.info(
+			uiMessageStack.warning(
 					LocaleMessageText.ofDefaultMsg("Due to technical reasons your last action has been lost, please try again",
 							UiResources.MISSING_VIEW_CONTEXT)
 							.getDisplay());
-			response
-					.sendRedirect(request.getContextPath() + ex.getRedirectUrlOpt().get());
+
+			//we must presist the FlashMap because sendRedirect() short-circuits DispatcherServlet
+			final FlashMap flashMap = RequestContextUtils.getOutputFlashMap(request);
+			flashMap.put(UiRequestUtil.UI_MESSAGE_STACK_ATTRIBUTE_NAME, uiMessageStack);
+			RequestContextUtils.getFlashMapManager(request).saveOutputFlashMap(flashMap, request, response);
+
+			response.sendRedirect(response.encodeRedirectURL(request.getContextPath() + ex.getRedirectUrlOpt().get()));
 			return null;
 		}
 		return doHandleThrowable(ex, request, response, HttpStatus.UNAUTHORIZED, "Missing context"); //no stacktrace but throws Ex too
