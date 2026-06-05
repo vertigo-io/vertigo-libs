@@ -59,7 +59,7 @@ public class TestUi {
 		options.addArguments("-headless");
 		driver = new FirefoxDriver(options);
 		//driver = new HtmlUnitDriver(BrowserVersion.FIREFOX, true);
-		Thread.sleep(5000);
+		Thread.sleep(1000);
 	}
 
 	private static void startServer(final boolean join) throws IOException, Exception {
@@ -104,124 +104,134 @@ public class TestUi {
 	@Test
 	public void testMovies() throws InterruptedException {
 		driver.get(baseUrl + "/test/movies/");
-		Thread.sleep(5000);
-		assertEquals("Home", findElement(By.xpath("/html/body//div[1]//div[3]")).getText());
+		Assertions.assertEquals(baseUrl + "/test/movies/", driver.getCurrentUrl());
+		assertEquals("Home", waitElement(By.xpath("/html/body//div[1]//div[3]"), 5000).getText());
 	}
 
 	@Test
 	public void testMovieDetail() throws InterruptedException {
 		driver.get(baseUrl + "/test/movie/1000");
-		Thread.sleep(5000);
-		assertEquals("Home", findElement(By.xpath("/html/body//div[1]//div[3]")).getText());
+		Assertions.assertEquals(baseUrl + "/test/movie/1000", driver.getCurrentUrl());
+		assertEquals("Home", waitElement(By.xpath("/html/body//div[1]//div[3]"), 5000).getText());
+	}
+
+	@Test
+	public void testMovieDetailEdit() throws InterruptedException {
+		driver.get(baseUrl + "/test/movie/1000");
+		Assertions.assertEquals(baseUrl + "/test/movie/1000", driver.getCurrentUrl());
+		assertEquals("Home", waitElement(By.xpath("/html/body//div[1]//div[3]"), 5000).getText());
+		findElement(By.id("editAction")).click();
+		Assertions.assertEquals(baseUrl + "/test/movie/_edit", driver.getCurrentUrl());
+		assertEquals("Home", waitElement(By.xpath("/html/body//div[1]//div[3]"), 5000).getText());
 	}
 
 	@Test
 	public void testDemo() throws InterruptedException {
 		driver.get(baseUrl + "/test/componentsDemo/");
-		Thread.sleep(5000);
-		assertEquals("Home", findElement(By.xpath("/html/body//div[1]//div[3]")).getText());
+		Assertions.assertEquals(baseUrl + "/test/componentsDemo/", driver.getCurrentUrl());
+		assertEquals("Home", waitElement(By.xpath("/html/body//div[1]//div[3]")).getText());
 	}
 
 	@Test
 	public void testModifiableTableDemo() throws InterruptedException {
 		driver.get(baseUrl + "/test/modifiableTableDemo/");
-		Thread.sleep(5000);
-		assertEquals("Home", findElement(By.xpath("/html/body//div[1]//div[3]")).getText());
+		Assertions.assertEquals(baseUrl + "/test/modifiableTableDemo/", driver.getCurrentUrl());
+		assertEquals("Home", waitElement(By.xpath("/html/body//div[1]//div[3]")).getText());
 	}
 
 	@Test
 	public void testModifiableTableSaveDemo() throws InterruptedException {
 		driver.get(baseUrl + "/test/modifiableTableDemo/");
-		Thread.sleep(5000);
-		assertEquals("Home", findElement(By.xpath("/html/body//div[1]//div[3]")).getText());
+		Assertions.assertEquals(baseUrl + "/test/modifiableTableDemo/", driver.getCurrentUrl());
+		assertEquals("Home", waitElement(By.xpath("/html/body//div[1]//div[3]")).getText());
 		findElement(By.id("saveActionList")).click();
-		Thread.sleep(5000);
-		assertEquals("Home", findElement(By.xpath("/html/body//div[1]//div[3]")).getText());
+		Assertions.assertEquals(baseUrl + "/test/modifiableTableDemo/_saveList", driver.getCurrentUrl());
+		assertEquals("Home", waitElement(By.xpath("/html/body//div[1]//div[3]")).getText());
 	}
 
 	@Test
 	public void testModifiableTableReadDemo() throws InterruptedException {
 		driver.get(baseUrl + "/test/modifiableTableDemo/");
-		Thread.sleep(5000);
-		assertEquals("Home", findElement(By.xpath("/html/body//div[1]//div[3]")).getText());
+		Assertions.assertEquals(baseUrl + "/test/modifiableTableDemo/", driver.getCurrentUrl());
+		assertEquals("Home", waitElement(By.xpath("/html/body//div[1]//div[3]")).getText());
 		findElement(By.id("readActionList")).click();
-		Thread.sleep(5000);
-		assertEquals("Home", findElement(By.xpath("/html/body//div[1]//div[3]")).getText());
+		Assertions.assertEquals(baseUrl + "/test/modifiableTableDemo/_read", driver.getCurrentUrl());
+		assertEquals("Home", waitElement(By.xpath("/html/body//div[1]//div[3]")).getText());
 		findElement(By.id("editActionList")).click();
-		Thread.sleep(5000);
-		assertEquals("Home", findElement(By.xpath("/html/body//div[1]//div[3]")).getText());
+		Assertions.assertEquals(baseUrl + "/test/modifiableTableDemo/_edit", driver.getCurrentUrl());
+		assertEquals("Home", waitElement(By.xpath("/html/body//div[1]//div[3]")).getText());
 	}
 
 	@Test
 	public void testFileUploadDemo() throws InterruptedException {
 		driver.get(baseUrl + "/test/fileUploadDemo/");
-		Thread.sleep(5000);
-		assertEquals("Home", findElement(By.xpath("/html/body//div[1]//div[3]")).getText());
+		Assertions.assertEquals(baseUrl + "/test/fileUploadDemo/", driver.getCurrentUrl());
+		assertEquals("Home", waitElement(By.xpath("/html/body//div[1]//div[3]")).getText());
 	}
 
 	@Test
 	public void testFileUploadSaveDemo() throws InterruptedException {
 		driver.get(baseUrl + "/test/fileUploadDemo/");
-		Thread.sleep(5000);
-		assertEquals("Home", findElement(By.xpath("/html/body//div[1]//div[3]")).getText());
-		findElement(By.id("saveFilesAction")).click();
-		Thread.sleep(5000);
-		assertEquals("Home", findElement(By.xpath("/html/body//div[1]//div[3]")).getText());
+		Assertions.assertEquals(baseUrl + "/test/fileUploadDemo/", driver.getCurrentUrl());
+		assertEquals("Home", waitElement(By.xpath("/html/body//div[1]//div[3]")).getText());
+		waitElement(By.id("saveFilesAction")).click();
+		Assertions.assertEquals(baseUrl + "/test/fileUploadDemo/_saveFilesOnly", driver.getCurrentUrl());
+		assertEquals("Home", waitElement(By.xpath("/html/body//div[1]//div[3]")).getText());
 	}
 
 	@Test
 	public void testFileUploadReadDemo() throws InterruptedException {
 		driver.get(baseUrl + "/test/fileUploadDemo/");
-		Thread.sleep(5000);
-		assertEquals("Home", findElement(By.xpath("/html/body//div[1]//div[3]")).getText());
-		findElement(By.id("readActionList")).click();
-		Thread.sleep(5000);
-		assertEquals("Home", findElement(By.xpath("/html/body//div[1]//div[3]")).getText());
-		findElement(By.id("editActionList")).click();
-		Thread.sleep(5000);
-		assertEquals("Home", findElement(By.xpath("/html/body//div[1]//div[3]")).getText());
+		Assertions.assertEquals(baseUrl + "/test/fileUploadDemo/", driver.getCurrentUrl());
+		assertEquals("Home", waitElement(By.xpath("/html/body//div[1]//div[3]")).getText());
+		waitElement(By.id("readActionList")).click();
+		Assertions.assertEquals(baseUrl + "/test/fileUploadDemo/_read", driver.getCurrentUrl());
+		assertEquals("Home", waitElement(By.xpath("/html/body//div[1]//div[3]")).getText());
+		waitElement(By.id("editActionList")).click();
+		Assertions.assertEquals(baseUrl + "/test/fileUploadDemo/_edit", driver.getCurrentUrl());
+		assertEquals("Home", waitElement(By.xpath("/html/body//div[1]//div[3]")).getText());
 	}
 
 	@Test
 	public void testSomeTags() throws InterruptedException {
 		driver.get(baseUrl + "/test/someTags/");
-		Thread.sleep(5000);
-		assertEquals("Home", findElement(By.xpath("/html/body//div[1]//div[3]")).getText());
+		Assertions.assertEquals(baseUrl + "/test/someTags/", driver.getCurrentUrl());
+		assertEquals("Home", waitElement(By.xpath("/html/body//div[1]//div[3]")).getText());
 	}
 
 	@Test
 	public void testPassingAttributes() throws InterruptedException {
 		driver.get(baseUrl + "/test/passingAttributes/");
-		Thread.sleep(5000);
-		assertEquals("Home", findElement(By.xpath("/html/body//div[1]//div[3]")).getText());
+		Assertions.assertEquals(baseUrl + "/test/passingAttributes/", driver.getCurrentUrl());
+		assertEquals("Home", waitElement(By.xpath("/html/body//div[1]//div[3]")).getText());
 	}
 
 	@Test
 	public void testPostSimpleForm() throws InterruptedException {
 		driver.get(baseUrl + "/test/componentsDemo/");
+		Assertions.assertEquals(baseUrl + "/test/componentsDemo/", driver.getCurrentUrl());
 
 		assertEquals("Details du film", waitElement(By.className("text-h6")).getText());
-		findElement(By.name("vContext[movie][title]")).clear();
+		waitElement(By.name("vContext[movie][title]")).clear();
 		sendKeysJs(By.name("vContext[movie][title]"), "Test 1");
 
-		findElement(By.name("vContext[movie][year]")).clear();
+		waitElement(By.name("vContext[movie][year]")).clear();
 		sendKeysJs(By.name("vContext[movie][year]"), "2020");
-		findElement(By.id("saveAction")).click();
-		Thread.sleep(5000);
-		assertEquals("Test 1", findElement(By.name("vContext[movie][title]")).getAttribute("value"));
-		assertEquals("2020", findElement(By.name("vContext[movie][year]")).getAttribute("value"));
+		waitElement(By.id("saveAction")).click();
+		Assertions.assertEquals(baseUrl + "/test/componentsDemo/_save", driver.getCurrentUrl());
+		assertEquals("Test 1", waitElement(By.name("vContext[movie][title]")).getAttribute("value"));
+		assertEquals("2020", waitElement(By.name("vContext[movie][year]")).getAttribute("value"));
 
-		findElement(By.name("vContext[movie][title]")).clear();
+		waitElement(By.name("vContext[movie][title]")).clear();
 		sendKeysJs(By.name("vContext[movie][title]"),
 				"""
 						aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa \
 						aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa \
 						aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\s""");
-		findElement(By.id("saveAction")).click();
-		Thread.sleep(5000);
-		assertTrue(findElement(By.cssSelector(".fieldTitle")).getAttribute("class").contains("q-field--error"));
-		assertTrue(findElement(By.cssSelector(".fieldTitle .q-field__messages")).getText().contains("250"));
-
+		waitElement(By.id("saveAction")).click();
+		Assertions.assertEquals(baseUrl + "/test/componentsDemo/_save", driver.getCurrentUrl());
+		assertTrue(waitElement(By.cssSelector(".fieldTitle")).getAttribute("class").contains("q-field--error"));
+		assertTrue(waitElement(By.cssSelector(".fieldTitle .q-field__messages")).getText().contains("250"));
 	}
 
 	@Test
@@ -230,19 +240,19 @@ public class TestUi {
 
 		assertEquals("Details du film", waitElement(By.className("text-h6")).getText());
 
-		findElement(By.name("vContext[movie][movId]")).clear();
+		waitElement(By.name("vContext[movie][movId]")).clear();
 		sendKeysJs(By.name("vContext[movie][movId]"), "1003");
 
-		findElement(By.name("vContext[movie][title]")).clear();
-		findElement(By.id("saveActionDtCheck")).click();
-		Thread.sleep(5000);
-		assertTrue(findElement(By.cssSelector(".fieldTitle")).getAttribute("class").contains("q-field--error"));
-		assertTrue(findElement(By.cssSelector(".fieldTitle .q-field__messages")).getText().contains("Test uiMessageStack error on Dt field"));
+		waitElement(By.name("vContext[movie][title]")).clear();
+		waitElement(By.id("saveActionDtCheck")).click();
 
-		findElement(By.id("saveActionUiCheck")).click();
-		Thread.sleep(5000);
-		assertTrue(findElement(By.cssSelector(".fieldTitle")).getAttribute("class").contains("q-field--error"));
-		assertTrue(findElement(By.cssSelector(".fieldTitle .q-field__messages")).getText().contains("Test uiMessageStack error on Ui field"));
+		assertTrue(waitElement(By.cssSelector(".fieldTitle")).getAttribute("class").contains("q-field--error"));
+		assertTrue(waitElement(By.cssSelector(".fieldTitle .q-field__messages")).getText().contains("Test uiMessageStack error on Dt field"));
+
+		waitElement(By.id("saveActionUiCheck")).click();
+
+		assertTrue(waitElement(By.cssSelector(".fieldTitle")).getAttribute("class").contains("q-field--error"));
+		assertTrue(waitElement(By.cssSelector(".fieldTitle .q-field__messages")).getText().contains("Test uiMessageStack error on Ui field"));
 	}
 
 	@Test
@@ -250,7 +260,7 @@ public class TestUi {
 		driver.get(baseUrl + "/test/componentsDemo/");
 
 		final FileDownloader4Tests fileDownloader4Tests = new FileDownloader4Tests(driver);
-		final WebElement downloadLink = findElement(By.linkText("insee.csv"));
+		final WebElement downloadLink = waitElement(By.linkText("insee.csv"));
 		final String downloadedFileAbsoluteLocation = fileDownloader4Tests.downloadFile(downloadLink);
 
 		assertTrue(new File(downloadedFileAbsoluteLocation).exists());
@@ -259,14 +269,14 @@ public class TestUi {
 
 	@Disabled
 	@Test
-	public void testUpload() {
+	public void testUpload() throws InterruptedException {
 		driver.get(baseUrl + "/test/componentsDemo/");
 
 		final File file = new File(getClass().getResource("/data/insee.csv").getFile());
 		dropFile("uploadermyFilesUris", file);
 
-		assertEquals("Fichier recu : insee.csv (application/octet-stream)", findElement(By.cssSelector("span")).getText());
-		assertEquals("Previous file : insee.csv (application/octet-stream)", findElement(By.id("uploadFile")).getText());
+		assertEquals("Fichier recu : insee.csv (application/octet-stream)", waitElement(By.cssSelector("span")).getText());
+		assertEquals("Previous file : insee.csv (application/octet-stream)", waitElement(By.id("uploadFile")).getText());
 	}
 
 	@Test
@@ -285,7 +295,7 @@ public class TestUi {
 		assertEquals("Secured Action Movie Detail", driver.getTitle());
 
 		findElement(By.id("saveAction")).click();
-		Thread.sleep(5000);
+
 		assertTrue(waitElement(By.xpath("/html/body/table/tbody/tr[3]/td")).getText().contains("Forbidden action"));
 		assertTrue(waitElement(By.xpath("/html/body/table/tbody/tr[2]/td")).getText().contains("403"));
 
@@ -310,16 +320,16 @@ public class TestUi {
 		((JavascriptExecutor) driver).executeScript(JS_SEND_FILE, targetName, createdInput);
 	}
 
-	private void sendKeysJs(final By elementBy, final String keysToSend) {
+	private static void sendKeysJs(final By elementBy, final String keysToSend) {
 		final WebElement element = findElement(elementBy);
 		((JavascriptExecutor) driver).executeScript("document.getElementById(\"" + element.getAttribute("id") + "\").value = \"" + keysToSend + "\";\n");
 	}
 
-	private WebElement waitElement(final By byElement) throws InterruptedException {
+	private static WebElement waitElement(final By byElement) throws InterruptedException {
 		return waitElement(byElement, 1000);
 	}
 
-	private WebElement waitElement(final By byElement, final long timeout) throws InterruptedException {
+	private static WebElement waitElement(final By byElement, final long timeout) throws InterruptedException {
 		final long start = System.currentTimeMillis();
 		do {
 			try {
