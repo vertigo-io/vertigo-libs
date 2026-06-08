@@ -14,7 +14,7 @@
     <vu:include-data th:unless="${disabledField == null}" object="${list}" field="${disabledField}"/>
 
     <dsfr-radio-button-set th:legend="${myLabel}"
-                           th:required="${required}"
+                           th:required="${myRequired}"
                            th::inline="${inline}"
                            th::options="|dsfrTransformListForRadio('${list}', '${myValueField}', '${myLabelField}', '${disabledField}', '${hintField}', ${filterFunction?:null})|"
                            th::error-message="|getErrorMessage('${object}', '${field}', ${rowIndex})|"
@@ -24,6 +24,10 @@
     >
         <vu:content/>
     </dsfr-radio-button-set>
+    <input th:if="${myRequired == true}" type="hidden"
+                  th:v-if="|${model.util.vueDataKey(object, field, rowIndex)} === null|"
+                  th::name="${model.util.contextKey(object, field, rowIndex)}"
+                  >
 </th:block>
 
 <th:block
