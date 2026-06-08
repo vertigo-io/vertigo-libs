@@ -10306,7 +10306,7 @@ function uh(e, l, a, t, r, o) {
       ])
     ])) : f0("", !0),
     C1("ul", null, [
-      (f1(!0), A1(r0, null, Q0(a.facets, (h) => (f1(), A1("li", {
+      (f1(!0), A1(r0, null, Q0(a.facets.filter(a.facetFilter), (h) => (f1(), A1("li", {
         key: h.code,
         class: "facets"
       }, [
@@ -10436,7 +10436,7 @@ function uh(e, l, a, t, r, o) {
     ])
   ]);
 }
-const fh = /* @__PURE__ */ F1(Qc, [["render", uh], ["__scopeId", "data-v-57fe14a9"]]), o4 = window.Vue.ref, i5 = () => {
+const fh = /* @__PURE__ */ F1(Qc, [["render", uh], ["__scopeId", "data-v-57f805b9"]]), o4 = window.Vue.ref, i5 = () => {
   const e = o4(), l = o4(!1), a = o4(!1), t = () => {
     if (!e.value)
       return;
