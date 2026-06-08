@@ -38,6 +38,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.json.SerializableParameterizedType;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.model.DataObject;
@@ -53,6 +54,7 @@ import io.vertigo.vega.webservice.validation.ValidationUserException;
 
 /**
  * Liste des couples (clé, object) enregistrés.
+ *
  * @author npiedeloup
  */
 public final class ViewContextMap extends HashMap<String, Serializable> {
@@ -368,6 +370,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 
 	/**
 	 * Ajoute un objet de type form au context.
+	 *
 	 * @param dto Objet à publier
 	 */
 	public <O extends DataObject> void publish(final String contextKey, final O dto) {
@@ -525,6 +528,10 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	}
 
 	public void addTypeForKey(final String key, final Type paramType) {
+		if (paramType instanceof ParameterizedType && !(paramType instanceof Serializable)) {
+			typesByKey.put(key, SerializableParameterizedType.from((ParameterizedType) paramType));
+			return;
+		}
 		typesByKey.put(key, paramType);
 	}
 
