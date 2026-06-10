@@ -23,18 +23,18 @@
         th:with="isVuiDevMode=${vuiDevMode != null ? vuiDevMode : false}, 
                  isVuejsDevMode=${vuejsDevMode != null ? vuejsDevMode : false},
                  isVuiSsr=${vuiSsr != null ? vuiSsr : false},
-                 myVueJsVersion=${vueJsVersion?:'3.5.13'}, myVertigoUiVersion=${vertigoUiVersion?:'4.3.3'},
-                 myAxiosVersion=${axiosVersion?:'1.8.4'},
-                 myUseQuasar=${useQuasar ?: true}, myQuasarVersion=${quasarVersion?:'2.18.1'}, myOnlyDsfrStyle=${onlyDsfrStyle?:false},
-                 myRobotoVersion=${robotoVersion?:'47'},
+                  myVueJsVersion=${vueJsVersion?:'3.5.35'}, myVertigoUiVersion=${vertigoUiVersion?:'4.4.0'},
+                  myAxiosVersion=${axiosVersion?:'1.17.0'},
+                  myUseQuasar=${useQuasar ?: true}, myQuasarVersion=${quasarVersion?:'2.19.3'}, myOnlyDsfrStyle=${onlyDsfrStyle?:false},
+                 myRobotoVersion=${robotoVersion?:'51'},
                  myFontAwesomeVersion=${fontAwesomeVersion?:'6.7.2'},
                  myUseDsfr=${useDsfr ?: false}, myDsfrDevMode=${dsfrDevMode ?: false}"
 		>
 
 	<th:block th:if="${!myOnlyDsfrStyle}">
 		<link th:if="${myRobotoVersion} != 'null'" th:href="@{/vertigo-ui/static/3rdParty/roboto/v__${myRobotoVersion}__/css/roboto.css}" rel="stylesheet" type="text/css"/>
-		<link th:href="@{/vertigo-ui/static/3rdParty/materialIcons/v143/css/materialIconsOutlined.css}" rel="stylesheet" type="text/css"/>
-		<link th:href="@{/vertigo-ui/static/3rdParty/materialIcons/v143/css/materialIcons.css}" rel="stylesheet" type="text/css"/>
+		<link th:href="@{/vertigo-ui/static/3rdParty/materialIcons/v145/css/materialIconsOutlined.css}" rel="stylesheet" type="text/css"/>
+		<link th:href="@{/vertigo-ui/static/3rdParty/materialIcons/v145/css/materialIcons.css}" rel="stylesheet" type="text/css"/>
 		<link th:if="${myFontAwesomeVersion} != 'null'" th:href="@{/vertigo-ui/static/3rdParty/use.fontawesome.com/releases/v__${myFontAwesomeVersion}__/css/all.min.css}" rel="stylesheet" type="text/css"/>
 		<link th:href="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/ionicons@4.6.4-1/dist/css/ionicons.min.css}" rel="stylesheet" type="text/css"/>
 		<link th:href="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css}" rel="stylesheet" type="text/css"/>

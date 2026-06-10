@@ -941,8 +941,8 @@ function Ao(e, t, n, i, s, o) {
             _: 2
           }, 1040)
         ]),
-        _: 2
-      }, 1032, ["label", "model-value", "onAdd", "onRemove", "options"])) : (S(), te(p, {
+        _: 1
+      }, 8, ["label", "model-value", "onAdd", "onRemove", "options"])) : (S(), te(p, {
         key: 1,
         label: o.facetLabelByCode(d.code),
         "model-value": n.selectedFacets[d.code].length > 0 ? n.selectedFacets[d.code][0] : null,
@@ -985,8 +985,8 @@ function Ao(e, t, n, i, s, o) {
             _: 2
           }, 1040)
         ]),
-        _: 2
-      }, 1032, ["label", "model-value", "onUpdate:modelValue", "options"]))
+        _: 1
+      }, 8, ["label", "model-value", "onUpdate:modelValue", "options"]))
     ]))), 128))
   ], 2)) : (S(), z("div", Lo, [
     o.isAnyFacetValueSelected() ? (S(), z("div", No, [
@@ -1099,8 +1099,8 @@ function Ao(e, t, n, i, s, o) {
                 default: x(() => [
                   ee(H(e.$q.lang.vui.facets.showAll), 1)
                 ]),
-                _: 2
-              }, 1032, ["onClick"])) : ye("", !0),
+                _: 1
+              }, 8, ["onClick"])) : ye("", !0),
               d.values.length > n.maxValues && o.isFacetExpanded(d.code) ? (S(), te(h, {
                 key: 1,
                 flat: "",
@@ -1110,8 +1110,8 @@ function Ao(e, t, n, i, s, o) {
                 default: x(() => [
                   ee(H(e.$q.lang.vui.facets.showLess), 1)
                 ]),
-                _: 2
-              }, 1032, ["onClick"])) : ye("", !0)
+                _: 1
+              }, 8, ["onClick"])) : ye("", !0)
             ]),
             _: 2
           }, 1024)
@@ -1149,7 +1149,7 @@ const Po = /* @__PURE__ */ L(Oo, [["render", Ao]]), Bo = {
 function zo(e, t, n, i, s, o) {
   return Uo(e.$slots, "default", { updateJson: o.updateJson }, () => [
     Ft("div", Io, [
-      t[4] || (t[4] = hn(" Longitude ")),
+      t[4] || (t[4] = hn(" Longitude ", -1)),
       fn(Ft("input", {
         "onUpdate:modelValue": [
           t[0] || (t[0] = (a) => e.inputObject.lon = a),
@@ -1163,7 +1163,7 @@ function zo(e, t, n, i, s, o) {
           { number: !0 }
         ]
       ]),
-      t[5] || (t[5] = hn(" Latitude ")),
+      t[5] || (t[5] = hn(" Latitude ", -1)),
       fn(Ft("input", {
         "onUpdate:modelValue": [
           t[2] || (t[2] = (a) => e.inputObject.lat = a),
@@ -1350,7 +1350,7 @@ const di = /* @__PURE__ */ L(ei, [["render", li]]), Re = window.Quasar, ci = {
               break;
             n.push(t[s]);
           }
-      this.list = t, this.count = t.length, this.firstCall ? this.hasNew = n.length > 0 && Re.date.getDateDiff(Date.now(), n[0].creationDate, "seconds") < 2 * 5 : (this.hasNew = n.length > 0, n.forEach((function(o) {
+      this.list = t, this.count = t.length, this.firstCall ? this.hasNew = n.length > 0 && Re.date.getDateDiff(Date.now(), n[0].creationDate, "seconds") < 10 : (this.hasNew = n.length > 0, n.forEach((function(o) {
         this.$q.notify({
           type: "info",
           icon: this.toIcon(o.type),
@@ -2559,8 +2559,8 @@ function Ha(e, t, n, i, s, o) {
                 _: 1
               })
             ]),
-            _: 2
-          }, 1032, ["icon", "onClick"])) : O("", !0)
+            _: 1
+          }, 8, ["icon", "onClick"])) : O("", !0)
         ])) : O("", !0)
       ]),
       Sa(e.$slots, "footer")
@@ -2591,8 +2591,8 @@ function Ha(e, t, n, i, s, o) {
                 _: 1
               })
             ]),
-            _: 2
-          }, 1032, ["icon", "onClick"])) : O("", !0),
+            _: 1
+          }, 8, ["icon", "onClick"])) : O("", !0),
           K("div", Fa, [
             e.$props.label !== void 0 ? (k(), Q("div", qa, X(e.$props.label), 1)) : O("", !0),
             d.isUploading ? (k(), Q("div", Ta, X(o.getGlobalSizeLabel()) + " / " + X(d.uploadProgressLabel), 1)) : (k(), Q("div", Ea, X(o.getGlobalSizeLabel()), 1))
@@ -2618,8 +2618,8 @@ function Ha(e, t, n, i, s, o) {
                 _: 1
               })
             ]),
-            _: 2
-          }, 1032, ["icon", "onClick"])) : O("", !0),
+            _: 1
+          }, 8, ["icon", "onClick"])) : O("", !0),
           o.globalCanAddFiles(d.files) && !d.readonly ? (k(), Q("div", Oa, [
             B(r, {
               icon: e.$q.iconSet.uploader.add,
@@ -2969,7 +2969,7 @@ function Je(e, t) {
   var n = t - e;
   return n ? Ln(e, n) : Ht(isNaN(e) ? t : e);
 }
-const rs = function e(t) {
+const rs = (function e(t) {
   var n = ss(t);
   function i(s, o) {
     var a = n((s = Ut(s)).r, (o = Ut(o)).r), r = n(s.g, o.g), l = n(s.b, o.b), c = Je(s.opacity, o.opacity);
@@ -2978,7 +2978,7 @@ const rs = function e(t) {
     };
   }
   return i.gamma = e, i;
-}(1);
+})(1);
 function ls(e) {
   return function(t, n) {
     var i = e((t = It(t)).h, (n = It(n)).h), s = Je(t.s, n.s), o = Je(t.l, n.l), a = Je(t.opacity, n.opacity);
