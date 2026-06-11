@@ -257,6 +257,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 		final StringBuilder dataFilterBuilder = new StringBuilder();
 		dataFilterBuilder.append(fields.stream()
 				.map(field -> buildDataFilterCondition(dataFilter, field))
+				.filter(condition -> !condition.isEmpty())
 				.collect(Collectors.joining(" or ")));
 		if (dataFilterBuilder.length() > 0) {
 			dataVariableBuilder.append("and (");
@@ -551,7 +552,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 		return function.startsWith("last");
 	}
 
-	private static String buildDataFilterCondition(final DataFilter dataFilter, final String field) {
+	static String buildDataFilterCondition(final DataFilter dataFilter, final String field) {
 		final String filterOnField = dataFilter.filters().get(field);
 		// <b>null</b> value mean no filter, <b>empty string</b> mean field shouldn't exists, <b>*</b> mean field must exists
 		if (filterOnField == null) {
