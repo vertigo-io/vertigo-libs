@@ -129,10 +129,13 @@ public class AuthzAttributeTagProcessor extends AbstractAttributeTagProcessor
 			final IStandardExpressionParser expressionParser = StandardExpressions.getExpressionParser(context.getConfiguration());
 			final IStandardExpression expression = expressionParser.parseExpression(context, attributeValue);
 			final Object value = expression.execute(context);
+			Assertion.check().isTrue(value instanceof Boolean,
+					"Authz with $\\{\\} espect a boolean. Use a complete expression like : vu:authz=\"$\\{authz.hasAuthorization('myGlobalAuthz') && authz.hasAuthorization('mySecuredEntityAuthz$read')\\}\". ({0})",
+					attributeValue);
 			return EvaluationUtils.evaluateAsBoolean(value);
 		}
-		Assertion.check().isFalse(attributeValue.contains("&&"), attributeValue,
-				"Authz don't support &&, use a complete expression like : vu:authz=\"${authz.hasAuthorization('myGlobalAuthz') && authz.hasAuthorization('mySecuredEntityAuthz$read')}\". ({0})",
+		Assertion.check().isFalse(attributeValue.contains("&&"),
+				"Authz don't support &&, use a complete expression like : vu:authz=\"$\\{authz.hasAuthorization('myGlobalAuthz') && authz.hasAuthorization('mySecuredEntityAuthz$read')\\}\". ({0})",
 				attributeValue);
 		//Sinon on récupère depuis le context d'exec de la page
 		final UiAuthorizationUtil authz = obtainUiAuthorizationUtil(context);
