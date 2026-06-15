@@ -28,7 +28,6 @@ import org.thymeleaf.processor.element.IElementTagStructureHandler;
 import org.thymeleaf.standard.expression.IStandardExpression;
 import org.thymeleaf.standard.expression.IStandardExpressionParser;
 import org.thymeleaf.standard.expression.StandardExpressions;
-import org.thymeleaf.standard.util.StandardProcessorUtils;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.util.EvaluationUtils;
 import org.thymeleaf.util.Validate;
@@ -41,7 +40,7 @@ import io.vertigo.vega.webservice.model.UiObject;
  * Attribut tag processor to apply simply hasAuthorization and hasOperation .
  * It use UiAuthorizationUtil instance already registered in thymeleaf engine context.
  * A global dev mode keep element visible but with a "security-locked" class
- * Should sow a beautifull security overlay.
+ * Should show a beautifull security overlay.
  *
  * 3 ways to use it :
  * 1- With a simple string
@@ -78,7 +77,7 @@ public class AuthzAttributeTagProcessor extends AbstractAttributeTagProcessor
 		super(TemplateMode.HTML, dialectPrefix, null, false, ATTR_NAME, true, PRECEDENCE, true);
 	}
 
-	public static final String TARGET_ATTR_NAME = "class";
+	public static final String TARGET_ATTR_NAME = "th:classappend";
 	private static final TemplateMode TEMPLATE_MODE = TemplateMode.HTML;
 	private AttributeDefinition targetAttributeDefinition;
 
@@ -102,15 +101,15 @@ public class AuthzAttributeTagProcessor extends AbstractAttributeTagProcessor
 		if (!visible) {
 			final Object authzDevModeVar = context.getVariable(AUTHZ_DEV_MODE_NAME);
 			if (authzDevModeVar != null && !Boolean.FALSE.equals(authzDevModeVar)) {
-				String newAttributeValue = CLASS_AUTHZ_LOCKED;
-				final AttributeName targetAttributeName = targetAttributeDefinition.getAttributeName();
-				if (tag.hasAttribute(targetAttributeName)) {
-					final String currentValue = tag.getAttributeValue(targetAttributeName);
-					if (currentValue.length() > 0) {
-						newAttributeValue = currentValue + ' ' + newAttributeValue;
+				String appendValue = CLASS_AUTHZ_LOCKED;
+				final AttributeName classAppendAttr = targetAttributeDefinition.getAttributeName();
+				if (tag.hasAttribute(classAppendAttr)) {
+					final String existing = tag.getAttributeValue(classAppendAttr);
+					if (existing != null && !existing.isEmpty()) {
+						appendValue = existing + " + ' " + CLASS_AUTHZ_LOCKED + "'";
 					}
 				}
-				StandardProcessorUtils.setAttribute(structureHandler, targetAttributeDefinition, TARGET_ATTR_NAME, newAttributeValue);
+				structureHandler.setAttribute(TARGET_ATTR_NAME, appendValue);
 				return;
 				//other case we remove element
 			}

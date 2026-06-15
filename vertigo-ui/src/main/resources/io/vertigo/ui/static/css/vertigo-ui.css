@@ -528,6 +528,10 @@ table .q-uploader .q-btn {
     background-position: center;
 }
 
+.authz--locked:hover {
+  background-size: 90px;
+}
+
 
 /********* spinner on pending actions *********************/
 @keyframes spinner-waitShow {
