@@ -67,18 +67,18 @@ Running 4.4.0 - 2026/05/xx
 * [Database] Fix typo in constraint key, and add translations
 * [Datafactory] Handle ES empty filter as matchAll
 * [Datafactory] Add null check for search adapter config in IndexType
-* [DataFactory][Reindex] Better detection of multiple concurent reindex (same node)
+* [DataFactory][Reindex] Better detection of multiple concurrent reindex (same node)
 * [DataFactory][ES] Fix : query wrapped with " and user using also "
-* [datafactory] Add waitForRefresh (keyConcept class)
-* **[Datafactory] Remove deprectated findIndexDefinitionByKeyConcept** use findFirstIndexDefinitionByKeyConcept instead
-* [Datafactory] Add support multiselected facet in collections (without search). (use smartType indexType : sep_comma, sep_pipe, text_fr, sep_punct)
-* [Datastore] Fix simpleMagicMimeType for uppercase extension
-* [Datastore] Fix parameter forwarding for 'filestore.mimeType.tika'
-* [Datastore] Fix count task name => "ByCriteria" when not always true
-* [Datastore] kvstore: fixes multiple collections for all plugins : add tests, fix h2 and speedb
+* [DataFactory] Add waitForRefresh (keyConcept class)
+* **[DataFactory] Remove deprecated findIndexDefinitionByKeyConcept** use findFirstIndexDefinitionByKeyConcept instead
+* [DataFactory] Add support multiselected facet in collections (without search). (use smartType indexType : sep_comma, sep_pipe, text_fr, sep_punct)
+* [DataStore] Fix simpleMagicMimeType for uppercase extension
+* [DataStore] Fix parameter forwarding for 'filestore.mimeType.tika'
+* [DataStore] Fix count task name => "ByCriteria" when not always true
+* [DataStore] kvstore: fixes multiple collections for all plugins : add tests, fix h2 and speedb
 * [Database] Fix LiquibaseMigrationPlugin : close LiquibaseDb
 * [Account][Security] Fix security evaluation when using tree comparison
-* [Daemon] Handle analytics (previsouly, only annoted methods)
+* [Daemon] Handle analytics (previously, only annotated methods)
 * [Peg] Refacto for flattening solvers
 * [all] Fix some sonar RegDDOS
 * [all] Update libs 
@@ -92,18 +92,17 @@ Release 4.3.2 - 2025/07/10
 
 * [Ui] Fix missing version in head.html
 * [Ui] Fix table-modifiable header when empty
-* [UI][DSFR] Add `noneDisplayed` option to `vu:dsfr-select` component
 * [Vega] Add excluded/included fields to Json methods (**so for POJO**, in swagger too)
 * [Vega] Fix SwaggerApi builder for using raw Collections type in WS signature (ex; List, Set, etc..)
-* [Vega] VegaJavalinFilter is an abstract filter (ability to excluse urls)
+* [Vega] VegaJavalinFilter is an abstract filter (ability to exclude urls)
 * [Vega] Update jdoc rateLimiting
-* [dataBase] Add better message for sql constraint violation
-* [database] Fix generated keys mode (index is 1 based)
-* [datastore][Tika] Improved log on incoherent mimetype
-* [datastore][Tika] Add optional config file (eg to add zero file size detection)
-* [datastore] fix TwoTableFileStorePlugin
+* [Database] Add better message for sql constraint violation
+* [Database] Fix generated keys mode (index is 1 based)
+* [DataStore][Tika] Improved log on incoherent mimetype
+* [DataStore][Tika] Add optional config file (eg to add zero file size detection)
+* [DataStore] Fix TwoTableFileStorePlugin
 * [dsfr-ui] Improve accessibility and slots usage in DsfrCustomHeader; enhance DsfrSelect with new noneDisplayed support; update vue-dsfr
-* [datamodel] Fix ListVAccessor getSourceUID that might be null
+* [Datamodel] Fix ListVAccessor getSourceUID that might be null
 * [libs] Move resources files to java/main/resources
 
 
@@ -111,17 +110,50 @@ Release 4.3.1 - 2025/06/13
 ----------------------
 [Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-430-to-431)
 
-* [UI][Quasar] Improved Accessibility
-* [UI][DSFR] Improved Accessibility
-* [UI][DSFR] Fix `dsfr-button` inside a `v-for` loop.
-* [UI][DSFR] better facets style
-* [UI][DSFR] Fix pagination on facet selection
+* [Ui] Add reactive components for select, text-field and text-editor (`th:with="reactive=true"`)
+* [Ui] Add additional_defer_libs_slot to vu:head
+* [Ui] Fix same script declared twice in head, merged conditions
+* [Ui] Fix regression on text-field inside table-modifiable
+* [Ui] Fix vui-before-plugins event, now can be used to extend Quasar.lang
+* [Ui] Fix authz processor (fix multiple comma separator entity operation on object in context)
+* [Ui] Improved accessibility (error messages, v-fileupload, dsfr-v-fileupload, screen readers)
+* [Ui][Wysiwyg] Update Tiptap to 2.12.0
+* [ui-vuejs] Fix xss on facets in select mode
+* [ui-vuejs] Add optional filtering on httpPostAjax response (`options.updatedKeys`)
+* [ui-vuejs] Fix debounce in maps
+* [Account] Plugins can be overridden (no more final)
+* [Account] Add convenience method for use in assertOr
 * [Account][Security] Handle comparison between a field and 'null' value
 * [Vega] Add missing 'webservices.healthcheck' feature
 * [Vega] Add healthCheck readiness (no subcomponents RED)
+* [Vega][RateLimiting] Add whitelist parameter pattern (range or CIDR)
 * [Vega][Json] Don't set null values to object properties if not present in the json (fail if the attribute is a list)
-* [Datastore][S3] InputStream in S3FileStorePlugin no longer shared (may lead to corrupt file on subsequent reads)
-* [Datastore][S3] Add health check
+* [Vega] Fix ResourceResolver api change
+* [DataStore] Better log is error on delete ByList
+* [DataStore][S3] InputStream in S3FileStorePlugin no longer shared (may lead to corrupt file on subsequent reads)
+* [DataStore][S3] Add health check
+* [DataStore][S3] s3FileStorePlugin purge daemon more resilient
+* [DataStore] dbFileStorePlugin supports expiryPolicy
+* [Datamodel] Support up to 60 characters fieldname
+* [Database] Fix InfluxDb filter data
+* [dsfr-ui] Improved accessibility on lots of components
+* [dsfr-ui] Fix `dsfr-button` inside a `v-for` loop
+* [dsfr-ui] Improve facets style, pagination, and headingLevel support
+* [dsfr-ui] Enhance DsfrSelectMultiple (failsafe, modelValue, blur/update events, toggleOption)
+* [dsfr-ui] Better support for menu and select-multiple in iframe
+* [dsfr-ui] Fix DsfrComponentTooltip disabled states
+* update libs
+  - c3p0 0.10.2 -> 0.11.1
+  - ojdbc11 23.7.0.25.01 -> 23.8.0.25.04
+  - postgresql 42.7.5 -> 42.7.7
+  - liquibase 4.31.1 -> 4.32.0
+  - tika 3.1.0 -> 3.2.0
+  - guava 33.4.6-jre -> 33.4.8-jre
+  - spring-webmvc 6.2.5 -> 6.2.8
+  - selenium 4.30.0 -> 4.33.0
+  - jackson 2.18.3 -> 2.19.0
+  - rest-assured 5.5.1 -> 5.5.5
+
 
 Release 4.3.0 - 2025/03/27
 ----------------------
