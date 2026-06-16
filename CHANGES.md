@@ -3,17 +3,17 @@ Version history
 
 Running 5.0.0
 ----------------------
-[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-433-to-500)
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-432-to-500)
 
 more to come :)
 
-Running 4.4.0 - 2026/05/xx
+Release 4.4.0 - TBD
 ----------------------
-[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-433-to-440)
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-432-to-440)
 
-* **[DataFactor] Upgrade Search plugin to ElasticSearch v9**. You may use plugin in libs-lts, if you need previous versions (ES7/ES8)
+* **[DataFactory] Upgrade Search plugin to ElasticSearch v9**. You may use plugin in libs-lts, if you need previous versions (ES7/ES8)
   * removed EmbeddedServer, removed _all field
-  * change markToOptimize : only for deletes on remove by query,
+  * change markToOptimize : only for deletes on remove by query
 * [Vega] Fix `webservices.cors` feature (originCORSFilter parameter)
 * [Vega] Optimization on cors filter, do not send headers if not necessary
 * [Vega] Adding check to validate Origin URI format for Cors
@@ -28,6 +28,9 @@ Running 4.4.0 - 2026/05/xx
 * [dsfr-ui] use svg rather than vicon in dsfr-custom-data-table
 * [dsfr-ui] modify v-icon usage and use svg instead
 * [dsfr-ui] Fix visual with `select-multiple`
+* [dsfr-ui] Fix duplicate subtitle on dsfr-block
+* [dsfr-ui] Fix missing input on dsfr-radio
+* [Ui] Improve error messages
 * [dsfr-ui] Better accessibility for tables and modals
 * [dsfr-ui] Fix dsfr serverside sort
 * [dsfr-ui] Add component `tabnav`
@@ -40,7 +43,7 @@ Running 4.4.0 - 2026/05/xx
 * [Ui] Simplify rendering exception : keep only last message
 * [Ui] Missing context throw 401 instead 500
 * [Ui] Fix missing handler (error 405) with try catch
-* [Ui] Fix default date time format in dashboard (`DD/MM/YYYY HH:mm` to `YYYY-MM-DDTHH:mm`)
+* [Ui] Fix date time format in dashboard and chart tooltip (`DD/MM/YYYY HH:mm` to `YYYY-MM-DDTHH:mm`)
 * [Ui] Unify max accepted list size, use max of 1000 and dtListState default max size
 * [Ui] `vu:fileupload` : Add `maxFileSize` (MB), `maxTotalSize` (MB), `maxFiles` and `accept` attributes
 * [Ui] `vu:fileupload` : Fix displayed total file size after page reloading
@@ -54,15 +57,21 @@ Running 4.4.0 - 2026/05/xx
     * Fix align button highlight
     * Fix css hightlight rounding
     * Fix "see source" when text is selected and bubble menu is also enabled
+* [Ui] Fix type serializability for GSON 2.14.0 compatibility
 * [Ui] Fix vueDataParams for array of primitive in vueData
 * [Ui] Add 'addCustomMessageResolver' method in template engine, move previous resolver as default
 * [Ui] Fix error with multiple cardinality attribute on dataObject
 * [Ui] Add button-confirm and fix button-link-confirm
 * [Ui] Fix label_attrs on text-field-read
 * [Ui] Fix css to show action buttons on table, when use tab focus
+* [Ui] Fix authz dev mode (use th:classappend instead of raw class attribute)
+* [Ui] Add assert to enforce boolean for authz expressions (bad authz was evaluated as true)
 * [Ui] Refactor some components precedence : fix vu:authz on th:block
 * [Ui] Add vu:utext unescaped text but protected against vuejs XSS (like th:utext with v-pre)
 * **[Ui] Reset componentStates each request**
+* [Ui] Use inverted text colors for `vu:messages`
+* [Ui] Add inverted color CSS variables and fix usages
+* [Ui] Fix persist uiMessageStack on expired viewContext redirect
 * [ui-vuejs] Fix merge vueData when key not present in response
 * [Database] Fix typo in constraint key, and add translations
 * [Datafactory] Handle ES empty filter as matchAll
@@ -72,18 +81,40 @@ Running 4.4.0 - 2026/05/xx
 * [DataFactory] Add waitForRefresh (keyConcept class)
 * **[DataFactory] Remove deprecated findIndexDefinitionByKeyConcept** use findFirstIndexDefinitionByKeyConcept instead
 * [DataFactory] Add support multiselected facet in collections (without search). (use smartType indexType : sep_comma, sep_pipe, text_fr, sep_punct)
+* [DataFactory] Fix string range facet support in ES aggregations
 * [DataStore] Fix simpleMagicMimeType for uppercase extension
 * [DataStore] Fix parameter forwarding for 'filestore.mimeType.tika'
 * [DataStore] Fix count task name => "ByCriteria" when not always true
 * [DataStore] kvstore: fixes multiple collections for all plugins : add tests, fix h2 and speedb
 * [Database] Fix LiquibaseMigrationPlugin : close LiquibaseDb
+* [Database] Fix bad Flux query with empty filters
 * [Account][Security] Fix security evaluation when using tree comparison
-* [Daemon] Handle analytics (previously, only annotated methods)
-* [Peg] Refacto for flattening solvers
-* [all] Fix some sonar RegDDOS
-* [all] Update libs 
-  - tika 3.2.0 -> 3.2.3
-  - jersey 3.0.17 -> 3.1.11 (May cause pb in eclipse)
+* [Daemon] Allow disabling analytics per daemon via DaemonDefinition
+* [Stella] Upgrade Jersey 3.0.17 -> 3.1.11
+* [Peg] Refactored flattening solvers
+* [Common] CompressionCodec : fix operation symmetry, increase 1→4 concurrent compression/decompression
+* [Common] Support mono line comment
+* [Common] Fix sonar RegDDOS
+* Update libs
+  - c3p0 0.11.1 -> 0.13.0
+  - ojdbc11 23.8.0.25.04 -> 23.26.2.0.0
+  - postgresql 42.7.7 -> 42.7.11
+  - liquibase-core 4.32.0 -> 4.33.0
+  - ehcache 3.10.8 -> 3.10.9
+  - tika-core 3.2.0 -> 3.3.1
+  - guava 33.4.8-jre -> 33.6.0-jre
+  - spring-webmvc 6.2.8 -> 6.2.18
+  - jersey 3.0.17 -> 3.1.11 (may cause issues in eclipse)
+  - vertigo-ui-vuejs 4.3.3 -> 4.4.0
+  - vertigo-ui-dsfr 4.3.3 -> 4.4.0
+  - vertigo-ui-wysiwyg 2.12.0 -> 2.27.2
+  - vue 3.5.13 -> 3.5.35
+  - quasar 2.18.1 -> 2.19.3
+  - axios 1.8.4 -> 1.17.0
+  - @gouvfr/dsfr 1.12.1 -> 1.14.4
+  - @gouvminint/vue-dsfr 8.6.0 -> 8.17.0
+  - sass-embedded 1.78.0 -> 1.100.0
+  - typescript 5.2.2 -> 5.9.3
 
 
 Release 4.3.2 - 2025/07/10
