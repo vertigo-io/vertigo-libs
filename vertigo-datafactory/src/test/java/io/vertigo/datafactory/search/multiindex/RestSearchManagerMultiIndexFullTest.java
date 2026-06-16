@@ -32,7 +32,7 @@ import io.vertigo.datafactory.search.model.SearchQuery;
 import io.vertigo.datamodel.data.model.DtListState;
 
 /**
- * @author  npiedeloup
+ * @author npiedeloup
  */
 public class RestSearchManagerMultiIndexFullTest extends AbstractSearchManagerTest {
 	//Index
@@ -40,17 +40,17 @@ public class RestSearchManagerMultiIndexFullTest extends AbstractSearchManagerTe
 	private static final String IDX_ITEM_2 = "IdxItem2";
 	protected SearchIndexDefinition itemIndex2Definition;
 
+	@Override
+	protected NodeConfig getNodeConfig() {
+		return MyNodeConfig.config(true, false);
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	protected void doSetUp() {
 		final DefinitionSpace definitionSpace = node.getDefinitionSpace();
 		itemIndex2Definition = definitionSpace.resolve(IDX_ITEM_2, SearchIndexDefinition.class);
 		init(IDX_ITEM);
-	}
-
-	@Override
-	protected NodeConfig buildNodeConfig() {
-		return MyNodeConfig.config(true, false);
 	}
 
 	/**

@@ -25,10 +25,14 @@ import java.util.Collections;
 
 import javax.inject.Inject;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
@@ -42,6 +46,7 @@ import io.vertigo.database.sql.statement.SqlStatement;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.collections.model.FacetedQueryResult;
 import io.vertigo.datafactory.impl.search.dsl.DslListFilterBuilder;
+import io.vertigo.datafactory.search.MyNodeConfig;
 import io.vertigo.datafactory.search.SearchManager;
 import io.vertigo.datafactory.search.data.domain.Item;
 import io.vertigo.datafactory.search.data.domain.ItemDataBase;
@@ -56,6 +61,7 @@ import io.vertigo.datastore.entitystore.EntityStoreManager;
  *
  * @author npiedeloup
  */
+@TestInstance(Lifecycle.PER_CLASS)
 abstract class AbstractSearchManagerStoreTest {
 	@Inject
 	private SqlManager dataBaseManager;
@@ -74,11 +80,17 @@ abstract class AbstractSearchManagerStoreTest {
 
 	private AutoCloseableNode node;
 
-	@BeforeEach
-	public final void setUp() throws SQLException {
-		node = new AutoCloseableNode(buildNodeConfig());
+	@BeforeAll
+	void startNode() {
+		node = new AutoCloseableNode(getNodeConfig());
 		DIInjector.injectMembers(this, node.getComponentSpace());
-		//---
+	}
+
+	/** Chaque sous-classe fournit sa propre configuration */
+	protected abstract NodeConfig getNodeConfig();
+
+	@BeforeEach
+	void setUp() throws SQLException {
 		final DefinitionSpace definitionSpace = node.getDefinitionSpace();
 		itemIndexDefinition = definitionSpace.resolve(IDX_ITEM, SearchIndexDefinition.class);
 
@@ -104,20 +116,54 @@ abstract class AbstractSearchManagerStoreTest {
 	}
 
 	@AfterEach
-	public final void tearDown() throws SQLException {
+	void tearDown() throws SQLException {
 		if (node != null) {
-			//A chaque fin de test on arréte la base.
+			//A chaque test on recrée la table famille
 			try (final SqlConnectionCloseable connectionCloseable = new SqlConnectionCloseable(dataBaseManager)) {
-				execCallableStatement(connectionCloseable.getConnection(), "shutdown;");
-			} finally {
-				node.close();
+				execCallableStatement(connectionCloseable.getConnection(), "drop table item;");
+				execCallableStatement(connectionCloseable.getConnection(), "drop sequence SEQ_ITEM;");
 			}
 		}
 	}
 
-	protected abstract NodeConfig buildNodeConfig();
+	@AfterAll
+	void afterClass() throws SQLException {
+		if (node != null) {
+			try {
+				// On déconnecte proprement la base H2 embarquée
+				final SqlManager sqlManager = node.getComponentSpace().resolve(SqlManager.class);
+				try (final SqlConnectionCloseable connectionCloseable = new SqlConnectionCloseable(sqlManager)) {
+					execCallableStatement(sqlManager, connectionCloseable.getConnection(), "shutdown;");
+				} finally {
+					node.close();
+				}
+			} finally {
+				// Attendre que le testcontainer libère les ports 9200/9300
+				waitForPortsFree(9200, 9300);
+				node = null;
+			}
+		}
+	}
+
+	private static void waitForPortsFree(final int... ports) {
+		for (final int port : ports) {
+			final long deadline = System.currentTimeMillis() + 15000;
+			while (System.currentTimeMillis() < deadline && MyNodeConfig.isPortOpen("127.0.0.1", port)) {
+				try {
+					Thread.sleep(250);
+				} catch (final InterruptedException e) {
+					Thread.currentThread().interrupt();
+					return;
+				}
+			}
+		}
+	}
 
 	private void execCallableStatement(final SqlConnection connection, final String sql) throws SQLException {
+		execCallableStatement(dataBaseManager, connection, sql);
+	}
+
+	private static void execCallableStatement(final SqlManager dataBaseManager, final SqlConnection connection, final String sql) throws SQLException {
 		dataBaseManager.executeUpdate(
 				SqlStatement.builder(sql).build(),
 				Collections.emptyMap(),
@@ -318,6 +364,7 @@ abstract class AbstractSearchManagerStoreTest {
 	/**
 	 * Test de mise à jour de l'index après une creation.
 	 * La création s'effectue dans une seule transaction.
+	 *
 	 * @throws SQLException
 	 */
 	@Test
@@ -359,6 +406,7 @@ abstract class AbstractSearchManagerStoreTest {
 	/**
 	 * Test de mise à jour de l'index après une creation.
 	 * La création s'effectue dans une seule transaction.
+	 *
 	 * @throws SQLException if some error in test
 	 */
 	@Test
@@ -379,6 +427,7 @@ abstract class AbstractSearchManagerStoreTest {
 	/**
 	 * Test de mise à jour de l'index après une modification.
 	 * La création s'effectue dans une seule transaction.
+	 *
 	 * @throws SQLException if some error in test
 	 */
 	@Test
@@ -400,6 +449,7 @@ abstract class AbstractSearchManagerStoreTest {
 	/**
 	 * Test de mise à jour de l'index après une creation.
 	 * La création s'effectue dans une seule transaction.
+	 *
 	 * @throws SQLException if some error in test
 	 */
 	@Test
@@ -420,6 +470,7 @@ abstract class AbstractSearchManagerStoreTest {
 	/**
 	 * Test de mise à jour de l'index après une creation.
 	 * La création s'effectue dans une seule transaction.
+	 *
 	 * @throws SQLException if some error in test
 	 */
 	@Test
@@ -440,6 +491,7 @@ abstract class AbstractSearchManagerStoreTest {
 	/**
 	 * Test de mise à jour de l'index après une creation.
 	 * La création s'effectue dans une seule transaction.
+	 *
 	 * @throws SQLException if some error in test
 	 */
 	@Test
@@ -537,7 +589,7 @@ abstract class AbstractSearchManagerStoreTest {
 		Assertions.assertEquals(expectedCount, size);
 	}
 
-	private class SqlConnectionCloseable implements AutoCloseable {
+	private static class SqlConnectionCloseable implements AutoCloseable {
 		private final SqlConnection connection;
 
 		SqlConnectionCloseable(final SqlManager dataBaseManager) {

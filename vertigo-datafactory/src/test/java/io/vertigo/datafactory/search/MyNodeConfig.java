@@ -46,7 +46,7 @@ public final class MyNodeConfig {
 
 		final ElasticSearchFeatures elasticSearchFeatures = new ElasticSearchFeatures();
 		//on regarde si il écoute sur le port 9200, si oui on se connecte à ce serveur sinon on démarre un serveur embarqué
-		if (isPortOpen("127.0.0.1", 9200)) {
+		if (!isPortOpen("127.0.0.1", 9200)) {
 			System.out.println("Démarrage d'un serveur Elasticsearch embarqué");
 			elasticSearchFeatures.withEmbeddedServer();
 		} else {
@@ -112,7 +112,7 @@ public final class MyNodeConfig {
 		return nodeConfigBuilder.build();
 	}
 
-	private static boolean isPortOpen(final String host, final int port) {
+	public static boolean isPortOpen(final String host, final int port) {
 		try (Socket socket = new Socket()) {
 			socket.connect(new java.net.InetSocketAddress(host, port), 500);
 			return true;

@@ -28,15 +28,14 @@ public class RestSearchManagerTest extends AbstractSearchManagerTest {
 	//Index
 	private static final String IDX_ITEM = "IdxItem";
 
+	@Override
+	protected NodeConfig getNodeConfig() {
+		return MyNodeConfig.config(true, false);
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	protected void doSetUp() {
 		init(IDX_ITEM);
 	}
-
-	@Override
-	protected NodeConfig buildNodeConfig() {
-		return MyNodeConfig.config(true, false);
-	}
-
 }

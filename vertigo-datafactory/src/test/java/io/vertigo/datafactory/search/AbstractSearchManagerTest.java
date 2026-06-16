@@ -39,11 +39,13 @@ import javax.inject.Inject;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 
 import io.vertigo.core.lang.VUserException;
 import io.vertigo.core.lang.WrappedException;
@@ -74,6 +76,7 @@ import io.vertigo.datamodel.data.model.UID;
 /**
  * @author npiedeloup
  */
+@TestInstance(Lifecycle.PER_CLASS)
 public abstract class AbstractSearchManagerTest {
 
 	private static final SelectedFacetValues EMPTY_SELECTED_FACET_VALUES = SelectedFacetValues.empty().build();
@@ -87,25 +90,49 @@ public abstract class AbstractSearchManagerTest {
 
 	protected AutoCloseableNode node;
 
-	@BeforeEach
-	public final void setUp() {
-		node = new AutoCloseableNode(buildNodeConfig());
+	@BeforeAll
+	void startNode() {
+		node = new AutoCloseableNode(getNodeConfig());
 		DIInjector.injectMembers(this, node.getComponentSpace());
-		//--
+	}
+
+	/** Chaque sous-classe fournit sa propre configuration */
+	protected abstract NodeConfig getNodeConfig();
+
+	@BeforeEach
+	final void setUp() {
 		doSetUp();
 		removeAll();
 	}
 
-	@AfterEach
-	public final void tearDown() {
+	@AfterAll
+	void tearDown() {
 		if (node != null) {
-			node.close();
+			try {
+				node.close();
+			} finally {
+				// Attendre que le testcontainer libère les ports 9200/9300
+				waitForPortsFree(9200, 9300);
+				node = null;
+			}
+		}
+	}
+
+	private static void waitForPortsFree(final int... ports) {
+		for (final int port : ports) {
+			final long deadline = System.currentTimeMillis() + 15000;
+			while (System.currentTimeMillis() < deadline && MyNodeConfig.isPortOpen("127.0.0.1", port)) {
+				try {
+					Thread.sleep(250);
+				} catch (final InterruptedException e) {
+					Thread.currentThread().interrupt();
+					return;
+				}
+			}
 		}
 	}
 
 	protected abstract void doSetUp();
-
-	protected abstract NodeConfig buildNodeConfig();
 
 	/** IndexDefinition. */
 	protected SearchIndexDefinition itemIndexDefinition;
@@ -118,7 +145,7 @@ public abstract class AbstractSearchManagerTest {
 
 	/**
 	 * Initialise l'index.
-	 * 
+	 *
 	 * @param indexName Nom de l'index
 	 */
 	protected final void init(final String indexName) {
@@ -134,11 +161,17 @@ public abstract class AbstractSearchManagerTest {
 		geoCircleFacetDefinition = definitionSpace.resolve("FctLocalisationCircleItem", FacetDefinition.class);
 		geoHashClusterFacetDefinition = definitionSpace.resolve("FctLocalisationHashItem", FacetDefinition.class);
 		itemIndexDefinition = definitionSpace.resolve(indexName, SearchIndexDefinition.class);
+
+		try {
+			Thread.sleep(1000);
+		} catch (final InterruptedException e) {
+			e.printStackTrace();
+		} //wait index was done
 		removeAll();
 	}
 
 	@BeforeAll
-	public static void doBeforeClass() throws Exception {
+	void doBeforeClass() throws Exception {
 		//We must remove data dir in index, in order to support versions updates when testing on PIC
 		final URL esDataURL = Thread.currentThread().getContextClassLoader().getResource("io/vertigo/datafactory/search/indexconfig");
 		final File esData = new File(URLDecoder.decode(esDataURL.getFile() + "/data", StandardCharsets.UTF_8.name()));
@@ -200,7 +233,7 @@ public abstract class AbstractSearchManagerTest {
 	/**
 	 * Test de reindexation de l'index.
 	 * La création s'effectue dans une seule transaction.
-	 * 
+	 *
 	 * @throws ExecutionException
 	 * @throws InterruptedException
 	 * @throws TimeoutException
@@ -860,7 +893,7 @@ public abstract class AbstractSearchManagerTest {
 				.withCriteria("")
 				.withFacet(EMPTY_SELECTED_FACET_VALUES)
 				.build();
-		var result = doQuery(searchQuery, null);
+		final var result = doQuery(searchQuery, null);
 		testFacetResultByStringRange(result, "");
 	}
 
@@ -2073,7 +2106,7 @@ public abstract class AbstractSearchManagerTest {
 	/**
 	 * Test de reindexation de l'index.
 	 * La création s'effectue dans une seule transaction.
-	 * 
+	 *
 	 * @throws ExecutionException
 	 * @throws InterruptedException
 	 * @throws TimeoutException
@@ -2091,8 +2124,8 @@ public abstract class AbstractSearchManagerTest {
 		Assertions.assertEquals(0L, size);
 
 		//on reindex
-		var sizeFuture = searchManager.reindexAllModified(itemIndexDefinition);
-		var currentReindex = searchManager.getReindexAllProgress(itemIndexDefinition);
+		final var sizeFuture = searchManager.reindexAllModified(itemIndexDefinition);
+		final var currentReindex = searchManager.getReindexAllProgress(itemIndexDefinition);
 		log.info("====== currentReindex: " + currentReindex.orElse(-1L));
 		size = sizeFuture.get(10, TimeUnit.SECONDS);
 
@@ -2107,7 +2140,7 @@ public abstract class AbstractSearchManagerTest {
 	/**
 	 * Test de reindexation de l'index.
 	 * La création s'effectue dans une seule transaction.
-	 * 
+	 *
 	 * @throws ExecutionException
 	 * @throws InterruptedException
 	 * @throws TimeoutException
@@ -2125,8 +2158,8 @@ public abstract class AbstractSearchManagerTest {
 		Assertions.assertEquals(0L, size);
 
 		//on reindex
-		var sizeFuture = searchManager.reindexDelta(itemIndexDefinition);
-		var currentReindex = searchManager.getReindexAllProgress(itemIndexDefinition);
+		final var sizeFuture = searchManager.reindexDelta(itemIndexDefinition);
+		final var currentReindex = searchManager.getReindexAllProgress(itemIndexDefinition);
 		log.info("====== currentReindex: " + currentReindex.orElse(-1L));
 		size = sizeFuture.get(20, TimeUnit.SECONDS);
 		//on attend 5s + le temps de reindexation

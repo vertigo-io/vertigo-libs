@@ -28,7 +28,8 @@ import io.vertigo.datafactory.search.MyNodeConfig;
 public class RestSearchManagerStoreTest extends AbstractSearchManagerStoreTest {
 
 	@Override
-	protected NodeConfig buildNodeConfig() {
+	protected NodeConfig getNodeConfig() {
 		return MyNodeConfig.config(true, true);
 	}
+
 }

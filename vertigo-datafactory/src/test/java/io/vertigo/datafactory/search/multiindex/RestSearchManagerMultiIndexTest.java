@@ -19,14 +19,16 @@ package io.vertigo.datafactory.search.multiindex;
 
 import javax.inject.Inject;
 
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 
 import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.component.di.DIInjector;
-import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.collections.model.FacetedQueryResult;
@@ -43,6 +45,7 @@ import io.vertigo.datamodel.data.model.DataObject;
 /**
  * @author npiedeloup
  */
+@TestInstance(Lifecycle.PER_CLASS)
 public class RestSearchManagerMultiIndexTest {
 	//Index
 	private static final String IDX_ITEM = "IdxItem";
@@ -55,23 +58,41 @@ public class RestSearchManagerMultiIndexTest {
 
 	private AutoCloseableNode node;
 
-	@BeforeEach
-	public final void setUp() {
-		node = new AutoCloseableNode(buildNodeConfig());
+	@BeforeAll
+	void startNode() {
+		node = new AutoCloseableNode(MyNodeConfig.config(true, false));
 		DIInjector.injectMembers(this, node.getComponentSpace());
-		//---
+	}
+
+	@BeforeEach
+	void setUp() {
 		itemDataBase = new ItemDataBase();
 	}
 
-	@AfterEach
-	public final void tearDown() {
+	@AfterAll
+	void tearDown() {
 		if (node != null) {
-			node.close();
+			try {
+				node.close();
+			} finally {
+				waitForPortsFree(9200, 9300);
+				node = null;
+			}
 		}
 	}
 
-	private NodeConfig buildNodeConfig() {
-		return MyNodeConfig.config(true, false);
+	private static void waitForPortsFree(final int... ports) {
+		for (final int port : ports) {
+			final long deadline = System.currentTimeMillis() + 15000;
+			while (System.currentTimeMillis() < deadline && MyNodeConfig.isPortOpen("127.0.0.1", port)) {
+				try {
+					Thread.sleep(250);
+				} catch (final InterruptedException e) {
+					Thread.currentThread().interrupt();
+					return;
+				}
+			}
+		}
 	}
 
 	/**
@@ -80,7 +101,7 @@ public class RestSearchManagerMultiIndexTest {
 	 * Vérifie la capacité du système à gérer plusieurs indexes.
 	 */
 	@Test
-	public void testIndex() {
+	void testIndex() {
 		final DefinitionSpace definitionSpace = node.getDefinitionSpace();
 		final SearchIndexDefinition itemIndexDefinition = definitionSpace.resolve(IDX_ITEM, SearchIndexDefinition.class);
 
@@ -99,7 +120,7 @@ public class RestSearchManagerMultiIndexTest {
 	 * La création s'effectue dans une seule transaction.
 	 */
 	@Test
-	public void testClean() {
+	void testClean() {
 		final DefinitionSpace definitionSpace = node.getDefinitionSpace();
 		final SearchIndexDefinition itemIndexDefinition = definitionSpace.resolve(IDX_ITEM, SearchIndexDefinition.class);
 		final ListFilter removeQuery = ListFilter.of("*:*");
