@@ -7,7 +7,7 @@ Running 5.0.0
 
 more to come :)
 
-Release 4.4.0 - TBD
+Running 4.4.0 - 2026-06-XX
 ----------------------
 [Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-432-to-440)
 
@@ -29,6 +29,7 @@ Release 4.4.0 - TBD
 * [dsfr-ui] modify v-icon usage and use svg instead
 * [dsfr-ui] Fix visual with `select-multiple`
 * [dsfr-ui] Fix duplicate subtitle on dsfr-block
+* [Database] Fix InfluxDB timed query with multiple measures (add type conversion before union)
 * [dsfr-ui] Fix missing input on dsfr-radio
 * [Ui] Improve error messages
 * [dsfr-ui] Better accessibility for tables and modals
@@ -90,13 +91,16 @@ Release 4.4.0 - TBD
 * [Database] Fix bad Flux query with empty filters
 * [Account][Security] Fix security evaluation when using tree comparison
 * [Daemon] Allow disabling analytics per daemon via DaemonDefinition
-* [Stella] Upgrade Jersey 3.0.17 -> 3.1.11
+* [Stella] Upgrade Jersey 3.0.17 -> 3.1.12
 * [Peg] Refactored flattening solvers
 * [Common] CompressionCodec : fix operation symmetry, increase 1→4 concurrent compression/decompression
 * [Common] Support mono line comment
 * [Common] Fix sonar RegDDOS
 * Update libs
-  - c3p0 0.11.1 -> 0.13.0
+  - c3p0 0.11.1 -> 0.14.1
+  - jersey 3.0.17 -> 3.1.12 (may cause issues in eclipse)
+  - thymeleaf-spring6 3.1.3.RELEASE -> 3.1.5.RELEASE
+  - nashorn-core 15.6 -> 15.7
   - ojdbc11 23.8.0.25.04 -> 23.26.2.0.0
   - postgresql 42.7.7 -> 42.7.11
   - liquibase-core 4.32.0 -> 4.33.0
@@ -104,7 +108,6 @@ Release 4.4.0 - TBD
   - tika-core 3.2.0 -> 3.3.1
   - guava 33.4.8-jre -> 33.6.0-jre
   - spring-webmvc 6.2.8 -> 6.2.18
-  - jersey 3.0.17 -> 3.1.11 (may cause issues in eclipse)
   - vertigo-ui-vuejs 4.3.3 -> 4.4.0
   - vertigo-ui-dsfr 4.3.3 -> 4.4.0
   - vertigo-ui-wysiwyg 2.12.0 -> 2.27.2
