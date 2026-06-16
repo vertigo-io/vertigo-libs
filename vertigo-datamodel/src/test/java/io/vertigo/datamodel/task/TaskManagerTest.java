@@ -49,6 +49,7 @@ import io.vertigo.datamodel.task.model.Task;
 
 /**
  * This class tests the usage of a task from its registration to its execution.
+ *
  * @author dchallas
  */
 public final class TaskManagerTest {
@@ -120,7 +121,7 @@ public final class TaskManagerTest {
 	}
 
 	/***
-	 * Checks the use case of an addition  with several inputs and an output
+	 * Checks the use case of an addition with several inputs and an output
 	 */
 	@Test
 	public void testExecuteAdd() {
@@ -196,7 +197,7 @@ public final class TaskManagerTest {
 	}
 
 	/***
-	 * Checks the use case of an addition  with one input and an output
+	 * Checks the use case of an addition with one input and an output
 	 * the input is composed with a List.
 	 */
 	@Test

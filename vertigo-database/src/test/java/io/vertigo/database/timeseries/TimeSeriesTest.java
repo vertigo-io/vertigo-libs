@@ -51,13 +51,13 @@ public final class TimeSeriesTest {
 	private AutoCloseableNode node;
 
 	@BeforeEach
-	public final void setUp() {
+	public void setUp() {
 		node = new AutoCloseableNode(buildNodeConfig());
 		DIInjector.injectMembers(this, node.getComponentSpace());
 	}
 
 	@AfterEach
-	public final void tearDown() {
+	public void tearDown() {
 		if (node != null) {
 			node.close();
 		}
@@ -145,7 +145,7 @@ public final class TimeSeriesTest {
 
 	/**
 	 * Regression test : with multiple measures and no field filters,
-	 * the Flux query builder must not generate "and ( or  or )".
+	 * the Flux query builder must not generate "and ( or or )".
 	 * (The single-field case already worked because empty string has length 0.)
 	 */
 	@Test

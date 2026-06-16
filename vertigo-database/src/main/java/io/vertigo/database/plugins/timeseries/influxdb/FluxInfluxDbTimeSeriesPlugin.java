@@ -499,6 +499,7 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 				}
 				queryBuilder
 						.append("|> " + buildMeasureFunction(entry.getKey()) + " \n")
+						.append("|> toFloat() \n") // add a conversion for the union
 						.append("|> duplicate(column: \"_stop\", as: \"_time\") \n")
 						.append("|> group() \n")
 						.append("|> set(key: \"alias\", value:\"" + entry.getKey().replace('.', '_') + "\" ) \n")
@@ -511,8 +512,9 @@ public final class FluxInfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 					.append("union(tables:[" + fieldsByFunction.keySet().stream().map(function -> function.replace('.', '_') + "Data").collect(Collectors.joining(", ")) + "]) \n")
 					.append("|> pivot(rowKey:[\"_time\"], columnKey: [\"_field\", \"alias\"], valueColumn: \"_value\") \n")
 					.append("|> drop(columns: [\"_start\", \"_stop\"]) \n")
-					.append("|> map(fn: (r) => ({ r with " + measures.stream().map(properedMeasures::get)
-							.map(properedMeasure -> properedMeasure + ": if exists r." + properedMeasure + " then float(v:r." + properedMeasure + ") else 0.0").collect(Collectors.joining(", "))
+					.append("|> map(fn: (r) => ({ r with " + measures.stream().map(measure -> Tuple.of(measure, properedMeasures.get(measure)))
+							.map(tuple -> tuple.val2() + ": if exists r." + tuple.val2() + " then r." + tuple.val2() + " else " + getDefaultValueByMeasure(tuple.val1()))
+							.collect(Collectors.joining(", "))
 							+ "}))\n")
 					.append("|> rename(columns: {" + measures.stream().map(measure -> properedMeasures.get(measure) + ": \"" + measure + "\"").collect(Collectors.joining(", ")) + "}) \n")
 					.append("|> yield()");
