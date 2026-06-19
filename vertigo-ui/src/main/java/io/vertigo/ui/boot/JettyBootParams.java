@@ -37,6 +37,7 @@ public class JettyBootParams {
 	private final Class<? extends WebApplicationInitializer> webApplicationInitializerClass;
 	private final Optional<String> jettySessionStoreCollectionName;
 	private final boolean noJettySessionCache;
+	private final Optional<Integer> sessionTimeoutMinutes;
 	private final boolean join;
 
 	JettyBootParams(
@@ -52,6 +53,7 @@ public class JettyBootParams {
 			final Optional<String> jettyNodeName,
 			final Optional<String> jettySessionStoreCollectionName,
 			final boolean noJettySessionCache,
+			final Optional<Integer> sessionTimeoutMinutes,
 			final boolean join) {
 		Assertion.check()
 				.isNotBlank(contextRoot)
@@ -80,6 +82,7 @@ public class JettyBootParams {
 		this.webApplicationInitializerClass = webApplicationInitializerClass;
 		this.jettySessionStoreCollectionName = jettySessionStoreCollectionName;
 		this.noJettySessionCache = noJettySessionCache;
+		this.sessionTimeoutMinutes = sessionTimeoutMinutes;
 		this.join = join;
 	}
 
@@ -133,6 +136,10 @@ public class JettyBootParams {
 
 	public boolean isNoJettySessionCache() {
 		return noJettySessionCache;
+	}
+
+	public Optional<Integer> getSessionTimeoutMinutes() {
+		return sessionTimeoutMinutes;
 	}
 
 	public boolean isJoin() {
