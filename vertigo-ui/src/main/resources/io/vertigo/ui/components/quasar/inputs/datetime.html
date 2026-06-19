@@ -9,7 +9,7 @@
         th:v-bind:model-value="|decodeDatetime(${model.util.vueDataKey(object, field, rowIndex)}, '${myFormat}')|" 
         th:@update:model-value="| (newValue) => { ${model.util.vueDataKey(object, field, rowIndex)} = encodeDatetime(newValue, '${myFormat}') }|" 
         th:label="${modifiableTable!=null?null:myLabel}"
-        th::aria-labelledby="|'${myComponentId}_label' + (hasFieldsError('${object}', '${field}', ${rowIndex}) ? ' ${myComponentId}_desc-error' : null)|"
+        th::aria-labelledby="|'${myComponentId}_label' + (hasFieldsError('${object}', '${field}', ${rowIndex}) ? ' ${myComponentId}_desc-error' : '')|"
         stack-label
         th:classappend="|${myRequired?'v-field_'+'_required':''}${after_label_slot!=null?' v-field_'+'_has_after_label':''}|"
         th:aria-required="${myRequired}"
