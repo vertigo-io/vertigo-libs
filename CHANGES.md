@@ -70,6 +70,8 @@ Running 4.4.0 - 2026-06-XX
 * [Ui] Refactor some components precedence : fix vu:authz on th:block
 * [Ui] Add vu:utext unescaped text but protected against vuejs XSS (like th:utext with v-pre)
 * **[Ui] Reset componentStates each request**
+* [Ui] Add `withSessionTimeoutMinutes` to Jetty boot parameters
+* [Ui][A11y] Fix regression on aria-labelledby when no error (use empty string instead of null)
 * [Ui] Use inverted text colors for `vu:messages`
 * [Ui] Add inverted color CSS variables and fix usages
 * [Ui] Fix persist uiMessageStack on expired viewContext redirect
