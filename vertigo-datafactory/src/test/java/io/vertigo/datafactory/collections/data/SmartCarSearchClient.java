@@ -83,6 +83,12 @@ public class SmartCarSearchClient implements Component, DefinitionProvider {
 						.withLabel("Par mot clés")
 						.withMultiSelectable()
 						.withOrder(FacetOrder.count),
+				new FacetTermDefinitionSupplier("FctTagsCar")
+						.withDtDefinition("DtSmartCar")
+						.withFieldName("tags")
+						.withLabel("Par tags")
+						.withMultiSelectable()
+						.withOrder(FacetOrder.count),
 
 				//---
 				// FacetedQueryDefinition
@@ -94,6 +100,7 @@ public class SmartCarSearchClient implements Component, DefinitionProvider {
 						.withFacet("FctDescriptionCar")
 						.withFacet("FctManufacturerCar")
 						.withFacet("FctDescriptionCarTokenized")
+						.withFacet("FctTagsCar")
 						.withFacet("FctYearCar"));
 	}
 }

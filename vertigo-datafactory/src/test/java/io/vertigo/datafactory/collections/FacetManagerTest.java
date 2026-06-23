@@ -115,7 +115,7 @@ public class FacetManagerTest {
 		Assertions.assertEquals(smartCarDataBase.size(), result.getCount());
 
 		//On vérifie qu'il y a le bon nombre de facettes.
-		Assertions.assertEquals(4, result.getFacets().size());
+		Assertions.assertEquals(5, result.getFacets().size());
 
 		//On recherche la facette date
 		final Facet yearFacet = getFacetByName(result, "FctYearCar");
@@ -135,7 +135,7 @@ public class FacetManagerTest {
 		Assertions.assertEquals(smartCarDataBase.size(), result.getCount());
 
 		//On vérifie qu'il y a le bon nombre de facettes.
-		Assertions.assertEquals(4, result.getFacets().size());
+		Assertions.assertEquals(5, result.getFacets().size());
 
 		//On recherche la facette constructeur
 		final Facet manufacturerFacet = getFacetByName(result, "FctManufacturerCar");
@@ -333,6 +333,38 @@ public class FacetManagerTest {
 		final FacetedQuery query2 = addFacetQuery("FctDescriptionCarTokenized", "Attelage", resultFiltered);
 		final FacetedQueryResult<SmartCar, DtList<SmartCar>> resultFiltered2 = collectionsManager.facetList(resultFiltered.getSource(), query2, Optional.empty());
 		Assertions.assertEquals(smartCarDataBase.getCarsByDescription("gris métal", "Attelage").size(), (int) resultFiltered2.getCount());
+	}
+
+	/**
+	 * Test le facettage avec sélection multiple sur un champ sep_pipe:facetable (relations 1-N).
+	 */
+	@Test
+	public void testFilterFacetMultiListByTermSepPipeFacetable() {
+		final DtList<SmartCar> cars = smartCarDataBase.getAllCars();
+		final FacetedQuery facetedQuery = new FacetedQuery(carFacetQueryDefinition, SelectedFacetValues.empty().build());
+		final FacetedQueryResult<SmartCar, DtList<SmartCar>> result = collectionsManager.facetList(cars, facetedQuery, Optional.empty());
+
+		final Facet tagsFacet = getFacetByName(result, "FctTagsCar");
+		Assertions.assertEquals("tags", tagsFacet.getDefinition().getDataField().name());
+		Assertions.assertEquals(
+				smartCarDataBase.getCarsByTag("Attelage").size(),
+				getFacetValueCount(tagsFacet, "Attelage"));
+
+		final FacetedQuery query = addFacetQuery("FctTagsCar", "Attelage", result);
+		final FacetedQueryResult<SmartCar, DtList<SmartCar>> resultFiltered = collectionsManager.facetList(result.getSource(), query, Optional.empty());
+		Assertions.assertEquals(smartCarDataBase.getCarsByTag("Attelage").size(), (int) resultFiltered.getCount());
+
+		final FacetedQuery query2 = addFacetQuery("FctTagsCar", "7 places", resultFiltered);
+		final FacetedQueryResult<SmartCar, DtList<SmartCar>> resultFiltered2 = collectionsManager.facetList(resultFiltered.getSource(), query2, Optional.empty());
+		Assertions.assertEquals(smartCarDataBase.getCarsByTag("Attelage", "7 places").size(), (int) resultFiltered2.getCount());
+	}
+
+	private static long getFacetValueCount(final Facet facet, final String label) {
+		return facet.getFacetValues().entrySet().stream()
+				.filter(entry -> entry.getKey().label().getDisplay().equalsIgnoreCase(label))
+				.map(Entry::getValue)
+				.findFirst()
+				.orElseThrow(() -> new IllegalArgumentException("Pas de FacetValue " + label + " dans la facette " + facet.getDefinition().getName()));
 	}
 
 	/**
