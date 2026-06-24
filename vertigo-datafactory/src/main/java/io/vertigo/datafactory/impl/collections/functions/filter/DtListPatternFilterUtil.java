@@ -30,12 +30,13 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.util.DateUtil;
+import io.vertigo.datafactory.collections.model.IndexType;
 import io.vertigo.datamodel.criteria.CriterionLimit;
 import io.vertigo.datamodel.criteria.Criterions;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.model.DataObject;
-import io.vertigo.datamodel.smarttype.definitions.DtProperty;
+import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 
 /**
  * Parser des filtres utilisant une syntaxe définie.
@@ -127,25 +128,31 @@ public final class DtListPatternFilterUtil {
 	}
 
 	/**
-	 * Retourne true si le type d'index est un type d'index tokenisé (ex: sep_comma, text_fr...).
+	 * Retourne true si le type d'index est un type d'index tokenisé (ex: sep_comma, sep_pipe:facetable...).
 	 * 
-	 * @param indexType Type d'index à tester
+	 * @param smartTypeDefinition SmartType à tester
 	 * @return true si le type d'index est un type d'index tokenisé, false sinon
 	 */
-	public static boolean isTokenizedIndexType(final String indexType) {
-		return TOKENIZED_INDEX_TYPES.containsKey(indexType);
+	public static boolean isTokenizedIndexType(final SmartTypeDefinition smartTypeDefinition) {
+		Assertion.check().isNotNull(smartTypeDefinition);
+		return IndexType.readIndexType(smartTypeDefinition)
+				.getIndexAnalyzer()
+				.map(TOKENIZED_INDEX_TYPES::containsKey)
+				.orElse(false);
 	}
 
 	/**
 	 * Retourne les tokens d'une valeur d'index tokenisé.
 	 * 
-	 * @param indexType Type d'index (ex: sep_comma, text_fr...)
+	 * @param smartTypeDefinition SmartType (ex: sep_comma, sep_pipe:facetable...)
 	 * @param value Valeur à tokeniser
 	 * @return Tableau de tokens
 	 */
-	public static String[] tokenizedIndexValue(final String indexType, final Object value) {
-		final Pattern pattern = TOKENIZED_INDEX_TYPES.get(indexType);
-		Assertion.check().isNotNull(pattern, "IndexType {0} is not tokenized", indexType);
+	public static String[] tokenizedIndexValue(final SmartTypeDefinition smartTypeDefinition, final Object value) {
+		Assertion.check().isNotNull(smartTypeDefinition);
+		final String indexAnalyzer = IndexType.readIndexType(smartTypeDefinition).getIndexAnalyzer().orElse(null);
+		final Pattern pattern = TOKENIZED_INDEX_TYPES.get(indexAnalyzer);
+		Assertion.check().isNotNull(pattern, "IndexType {0} is not tokenized", smartTypeDefinition.getName());
 		if (value == null) {
 			return new String[0];
 		}
@@ -153,9 +160,9 @@ public final class DtListPatternFilterUtil {
 	}
 
 	private static <D extends DataObject> Predicate<D> createDtListTermFilter(final String[] parsedFilter, final String fieldName, final BasicType dataType, final DataField dtField) {
-		final String indexType = dtField.smartTypeDefinition().getProperties().getValue(DtProperty.INDEX_TYPE);
-		if (isTokenizedIndexType(indexType)) {
-			return createDtListTermTokenizedFilter(parsedFilter, dtField, dataType, indexType);
+		final SmartTypeDefinition smartTypeDefinition = dtField.smartTypeDefinition();
+		if (isTokenizedIndexType(smartTypeDefinition)) {
+			return createDtListTermTokenizedFilter(parsedFilter, dtField, dataType, smartTypeDefinition);
 		}
 		return createDtListTermKeywordFilter(parsedFilter, fieldName, dataType);
 	}
@@ -171,7 +178,7 @@ public final class DtListPatternFilterUtil {
 		return predicate;
 	}
 
-	private static <D extends DataObject> Predicate<D> createDtListTermTokenizedFilter(final String[] parsedFilter, final DataField dtField, final BasicType dataType, final String indexType) {
+	private static <D extends DataObject> Predicate<D> createDtListTermTokenizedFilter(final String[] parsedFilter, final DataField dtField, final BasicType dataType, final SmartTypeDefinition smartTypeDefinition) {
 		Assertion.check().isTrue(dataType == BasicType.String, "Only String types can be used with tokenized indexType");
 
 		final String filterValue = parsedFilter[2];
@@ -182,7 +189,7 @@ public final class DtListPatternFilterUtil {
 				return false;
 			}
 
-			for (final String subValue : tokenizedIndexValue(indexType, value)) {
+			for (final String subValue : tokenizedIndexValue(smartTypeDefinition, value)) {
 				if (filterValue.equals(subValue)) {
 					return true;
 				}

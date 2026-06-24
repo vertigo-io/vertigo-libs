@@ -34,6 +34,11 @@ public enum TestCollectionsSmartTypes {
 	Text,
 
 	@SmartTypeDefinition(String.class)
+	@SmartTypeProperty(property = "indexType", value = "sep_pipe:facetable")
+	@Formatter(clazz = FormatterDefault.class)
+	PipeText,
+
+	@SmartTypeDefinition(String.class)
 	@Formatter(clazz = FormatterDefault.class)
 	Keyword,
 

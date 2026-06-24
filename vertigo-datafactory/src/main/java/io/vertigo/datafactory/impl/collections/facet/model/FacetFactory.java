@@ -40,7 +40,6 @@ import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.datamodel.data.util.VCollectors;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
-import io.vertigo.datamodel.smarttype.definitions.DtProperty;
 
 /**
  * Factory de FacetedQueryDefinition.
@@ -158,15 +157,15 @@ public final class FacetFactory {
 
 		//Cas des facettes par Term
 		final DataField dtField = facetDefinition.getDataField();
-		final String indexType = dtField.smartTypeDefinition().getProperties().getValue(DtProperty.INDEX_TYPE);
+		final var smartTypeDefinition = dtField.smartTypeDefinition();
 
 		//on garde un index pour incrémenter le facetFilter pour chaque Term
 		final Map<Object, FacetValue> facetFilterIndex = new HashMap<>();
 		for (final D data : dtList) {
 			final Object value = dtField.getDataAccessor().getValue(data);
-			final var valueAsString = smartTypeManager.valueToString(dtField.smartTypeDefinition(), value);
-			if (DtListPatternFilterUtil.isTokenizedIndexType(indexType)) {
-				for (final String token : DtListPatternFilterUtil.tokenizedIndexValue(indexType, valueAsString)) {
+			final var valueAsString = smartTypeManager.valueToString(smartTypeDefinition, value);
+			if (DtListPatternFilterUtil.isTokenizedIndexType(smartTypeDefinition)) {
+				for (final String token : DtListPatternFilterUtil.tokenizedIndexValue(smartTypeDefinition, valueAsString)) {
 					addTermToCluster(token, data, dtList, dtField, facetFilterIndex, clusterValues);
 				}
 			} else {
