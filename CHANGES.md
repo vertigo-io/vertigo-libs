@@ -106,10 +106,11 @@ Running 4.4.0 - 2026-06-XX
   - ojdbc11 23.8.0.25.04 -> 23.26.2.0.0
   - postgresql 42.7.7 -> 42.7.11
   - liquibase-core 4.32.0 -> 4.33.0
-  - ehcache 3.10.8 -> 3.10.9
+  - ehcache 3.10.8 -> 3.12.0
   - tika-core 3.2.0 -> 3.3.1
   - guava 33.4.8-jre -> 33.6.0-jre
-  - spring-webmvc 6.2.8 -> 6.2.18
+  - spring-webmvc 6.2.8 -> 6.2.19
+  - express 4.17.2 -> 4.22.1
   - vertigo-ui-vuejs 4.3.3 -> 4.4.0
   - vertigo-ui-dsfr 4.3.3 -> 4.4.0
   - vertigo-ui-wysiwyg 2.12.0 -> 2.27.2
