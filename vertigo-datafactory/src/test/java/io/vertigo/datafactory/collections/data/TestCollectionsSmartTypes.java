@@ -39,6 +39,7 @@ public enum TestCollectionsSmartTypes {
 	PipeText,
 
 	@SmartTypeDefinition(String.class)
+	@SmartTypeProperty(property = "indexType", value = "keywords")
 	@Formatter(clazz = FormatterDefault.class)
 	Keyword,
 
