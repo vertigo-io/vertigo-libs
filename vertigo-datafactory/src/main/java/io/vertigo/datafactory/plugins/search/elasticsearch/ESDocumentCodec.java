@@ -29,6 +29,7 @@ import co.elastic.clients.json.JsonData;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicTypeAdapter;
+import io.vertigo.datafactory.collections.model.IndexType;
 import io.vertigo.datafactory.search.model.SearchIndex;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DataField;

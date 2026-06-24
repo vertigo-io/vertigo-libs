@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.datafactory.plugins.search.elasticsearch;
+package io.vertigo.datafactory.collections.model;
 
 import java.util.HashMap;
 import java.util.Locale;
