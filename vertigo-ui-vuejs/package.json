@@ -17,12 +17,12 @@
     "lodash.debounce": "^4.0.8"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^5.2.3",
+    "@vitejs/plugin-vue": "^6.0.7",
     "eslint": "^9.23.0",
     "eslint-plugin-vue": "^10.0.0",
     "ol": "^10.4.0",
     "quasar": "^2.18.1",
-    "vite": "^6.2.3",
+    "vite": "^8.1.0",
     "vite-plugin-externals": "^0.6.2",
     "vite-plugin-mkcert": "^1.17.8",
     "vue": "^3.5.13"
