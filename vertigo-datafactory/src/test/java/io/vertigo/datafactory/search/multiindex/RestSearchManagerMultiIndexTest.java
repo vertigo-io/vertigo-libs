@@ -60,6 +60,9 @@ public class RestSearchManagerMultiIndexTest {
 
 	@BeforeAll
 	void startNode() {
+		System.out.println(">>> [FORK JVM - vertigo-datafactory] DOCKER_HOST env = " + System.getenv("DOCKER_HOST"));
+		System.out.println(">>> [FORK JVM - vertigo-datafactory] TESTCONTAINERS_RYUK_DISABLED env = " + System.getenv("TESTCONTAINERS_RYUK_DISABLED"));
+		System.out.println(">>> [FORK JVM - vertigo-datafactory] docker.host prop = " + System.getProperty("docker.host"));
 		node = new AutoCloseableNode(MyNodeConfig.config(true, false));
 		DIInjector.injectMembers(this, node.getComponentSpace());
 	}

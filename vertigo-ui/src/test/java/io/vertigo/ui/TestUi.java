@@ -51,6 +51,12 @@ public class TestUi {
 
 	@BeforeAll
 	public static void setUp() throws Exception {
+		// === DEBUG FORK JVM ENV ===
+		System.out.println(">>> [FORK JVM] DOCKER_HOST env = " + System.getenv("DOCKER_HOST"));
+		System.out.println(">>> [FORK JVM] TESTCONTAINERS_RYUK_DISABLED env = " + System.getenv("TESTCONTAINERS_RYUK_DISABLED"));
+		System.out.println(">>> [FORK JVM] docker.host prop = " + System.getProperty("docker.host"));
+		System.out.println(">>> [FORK JVM] testcontainers.ryuk.disabled prop = " + System.getProperty("testcontainers.ryuk.disabled"));
+		// ============================
 		startServer(false);
 		/*driver = new JBrowserDriver(Settings.builder()
 				.timezone(Timezone.EUROPE_PARIS)
