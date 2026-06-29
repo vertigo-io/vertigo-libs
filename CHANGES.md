@@ -89,6 +89,8 @@ Running 4.4.0 - 2026-06-XX
 * [DataStore] Fix parameter forwarding for 'filestore.mimeType.tika'
 * [DataStore] Fix count task name => "ByCriteria" when not always true
 * [DataStore] kvstore: fixes multiple collections for all plugins : add tests, fix h2 and speedb
+* [DataFactory] Support parametrized index types (e.g. sep_pipe:facetable) in collections DB search
+* [DataFactory] Move IndexType to collections.model package
 * [Database] Fix LiquibaseMigrationPlugin : close LiquibaseDb
 * [Database] Fix bad Flux query with empty filters
 * [Account][Security] Fix security evaluation when using tree comparison
