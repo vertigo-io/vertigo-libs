@@ -240,19 +240,4 @@
 		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
 
 	</dependencies>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<environmentVariables>
-						<DOCKER_HOST>${env.DOCKER_HOST}</DOCKER_HOST>
-						<TESTCONTAINERS_RYUK_DISABLED>${env.TESTCONTAINERS_RYUK_DISABLED}</TESTCONTAINERS_RYUK_DISABLED>
-					</environmentVariables>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
 </project>
