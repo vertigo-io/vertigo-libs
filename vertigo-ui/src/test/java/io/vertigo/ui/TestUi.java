@@ -42,6 +42,7 @@ import org.openqa.selenium.firefox.FirefoxOptions;
 import io.vertigo.ui.boot.JettyBoot;
 import io.vertigo.ui.boot.JettyBootParams;
 
+@Disabled("Disabled because it requires a local Firefox installation and a local Firefox driver installation")
 public class TestUi {
 
 	private static final int port = 18080;
