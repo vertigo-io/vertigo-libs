@@ -22,6 +22,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.URL;
 import java.util.List;
 
 import org.apache.logging.log4j.Level;
@@ -38,6 +41,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 import io.vertigo.ui.boot.JettyBoot;
 import io.vertigo.ui.boot.JettyBootParams;
@@ -51,16 +55,40 @@ public class TestUi {
 
 	@BeforeAll
 	public static void setUp() throws Exception {
+		// Configure boot.active-flags: skip embeddedES if external ES is available
+		final String esHost = System.getenv("ES_HOST");
+		if (esHost != null && isPortOpen(esHost, 9200)) {
+			System.setProperty("boot.active-flags", "");
+			System.out.println("TestUi: External ES available on " + esHost + ":9200, skipping embeddedES");
+		}
 		startServer(false);
 		/*driver = new JBrowserDriver(Settings.builder()
 				.timezone(Timezone.EUROPE_PARIS)
 				.headless(true) //use false for debug purpose
 				.build());*/
-		final FirefoxOptions options = new FirefoxOptions();
-		options.addArguments("-headless");
-		driver = new FirefoxDriver(options);
+		// Connect to Selenium Grid (CI) or local Firefox (dev)
+		final String seleniumHost = System.getenv("SELENIUM_HOST");
+		if (seleniumHost != null) {
+			System.out.println("TestUi: Using Selenium remote at " + seleniumHost + ":4444");
+			driver = new RemoteWebDriver(
+					new URL("http://" + seleniumHost + ":4444/wd/hub"),
+					new FirefoxOptions());
+		} else {
+			final FirefoxOptions options = new FirefoxOptions();
+			options.addArguments("-headless");
+			driver = new FirefoxDriver(options);
+		}
 		//driver = new HtmlUnitDriver(BrowserVersion.FIREFOX, true);
 		Thread.sleep(1000);
+	}
+
+	private static boolean isPortOpen(final String host, final int port) {
+		try (Socket socket = new Socket()) {
+			socket.connect(new InetSocketAddress(host, port), 500);
+			return true;
+		} catch (final Exception e) {
+			return false;
+		}
 	}
 
 	private static void startServer(final boolean join) throws IOException, Exception {

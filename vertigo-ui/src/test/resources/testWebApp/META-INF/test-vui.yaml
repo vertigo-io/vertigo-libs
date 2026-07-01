@@ -5,6 +5,7 @@ boot:
   plugins:
     - io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin: {}
     - io.vertigo.vega.plugins.webservice.servlet.ServletResourceResolverPlugin: {}
+    - io.vertigo.core.plugins.param.env.EnvParamPlugin: {}
     - io.vertigo.core.plugins.param.xml.XmlParamPlugin:
         url : ${boot.configXmlInterne}
     - io.vertigo.vega.plugins.webservice.servlet.WebAppContextParamPlugin: {}
@@ -17,8 +18,9 @@ modules:
   io.vertigo.connectors.elasticsearch.ElasticSearchFeatures:
     features:
       - embeddedServer:
+          __flags__: ["embeddedES"]
       - rest:
-          servers.names: localhost:9200
+          servers.names: ${ES_SERVERS_NAMES!localhost:9200}
           ssl: false
 #      - transport:
 #          servers.names: localhost:9300
