@@ -45,16 +45,17 @@ public final class MyNodeConfig {
 		dataFactoryFeatures.withSearch();
 
 		final ElasticSearchFeatures elasticSearchFeatures = new ElasticSearchFeatures();
-		//on regarde si il écoute sur le port 9200, si oui on se connecte à ce serveur sinon on démarre un serveur embarqué
-		if (!isPortOpen("127.0.0.1", 9200)) {
+		//CI: ES_HOST=elastic, ES_HOST=localhost. En dev: localhost (fallback embedded si pas de ES local)
+		final String esHost = System.getenv("ES_HOST") != null ? System.getenv("ES_HOST") : "127.0.0.1";
+		if (!isPortOpen(esHost, 9200)) {
 			System.out.println("Démarrage d'un serveur Elasticsearch embarqué");
 			elasticSearchFeatures.withEmbeddedServer();
 		} else {
-			System.out.println("Elasticsearch déjà disponible sur localhost:9200");
+			System.out.println("Elasticsearch déjà disponible sur " + esHost + ":9200");
 		}
 		if (esHL) {
 			elasticSearchFeatures.withRest( //connector
-					Param.of("servers.names", "localhost:9200"),
+					Param.of("servers.names", esHost + ":9200"),
 					Param.of("ssl", "false"));
 
 			dataFactoryFeatures.withESRest(
