@@ -51,7 +51,7 @@ import io.vertigo.ui.boot.JettyBootParams;
 public class TestUi {
 
 	private static final int port = 18080;
-	private String baseUrl = "http://localhost:" + port;
+	private static String baseUrl = "http://localhost:" + port;
 	private static WebDriver driver;
 
 	@BeforeAll
@@ -79,8 +79,8 @@ public class TestUi {
 			try {
 				InetAddress hostAddress = InetAddress.getLocalHost();
 				String hostIp = hostAddress.getHostAddress();
-				this.baseUrl = "http://" + hostIp + ":" + port;
-				System.out.println("TestUi: Using baseUrl=" + this.baseUrl + " for remote Selenium");
+				baseUrl = "http://" + hostIp + ":" + port;
+				System.out.println("TestUi: Using baseUrl=" + baseUrl + " for remote Selenium");
 			} catch (Exception e) {
 				System.out.println("TestUi: Failed to get host IP, keeping localhost");
 			}
