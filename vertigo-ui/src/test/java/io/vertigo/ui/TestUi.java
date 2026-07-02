@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.URL;
@@ -50,7 +51,7 @@ import io.vertigo.ui.boot.JettyBootParams;
 public class TestUi {
 
 	private static final int port = 18080;
-	private final String baseUrl = "http://localhost:" + port;
+	private String baseUrl = "http://localhost:" + port;
 	private static WebDriver driver;
 
 	@BeforeAll
@@ -74,6 +75,15 @@ public class TestUi {
 			driver = new RemoteWebDriver(
 					new URL("http://" + seleniumHost + ":4444/wd/hub"),
 					new FirefoxOptions());
+			// Remote Selenium container can't see our localhost — use Docker network IP
+			try {
+				InetAddress hostAddress = InetAddress.getLocalHost();
+				String hostIp = hostAddress.getHostAddress();
+				this.baseUrl = "http://" + hostIp + ":" + port;
+				System.out.println("TestUi: Using baseUrl=" + this.baseUrl + " for remote Selenium");
+			} catch (Exception e) {
+				System.out.println("TestUi: Failed to get host IP, keeping localhost");
+			}
 		} else {
 			final FirefoxOptions options = new FirefoxOptions();
 			options.addArguments("-headless");
