@@ -58,10 +58,11 @@ public class TestUi {
 		// Configure boot.active-flags: skip embeddedES if external ES is available
 		final String esHost = System.getenv("ES_HOST");
 		if (esHost != null && isPortOpen(esHost, 9200)) {
-			System.setProperty("boot.active-flags", "");
+			System.setProperty("boot.active-flags", "providedES");
 			System.out.println("TestUi: External ES available on " + esHost + ":9200, skipping embeddedES");
 		}
 		startServer(false);
+
 		/*driver = new JBrowserDriver(Settings.builder()
 				.timezone(Timezone.EUROPE_PARIS)
 				.headless(true) //use false for debug purpose

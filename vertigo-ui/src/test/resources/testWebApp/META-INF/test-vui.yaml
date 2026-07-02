@@ -18,7 +18,7 @@ modules:
   io.vertigo.connectors.elasticsearch.ElasticSearchFeatures:
     features:
       - embeddedServer:
-          __flags__: ["embeddedES"]
+          __flags__: ["!providedEs"]
       - rest:
           servers.names: ${ES_SERVERS_NAMES!localhost:9200}
           ssl: false
