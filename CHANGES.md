@@ -77,8 +77,8 @@ Running 4.4.0 - 2026-06-XX
 * [Ui] Fix persist uiMessageStack on expired viewContext redirect
 * [ui-vuejs] Fix merge vueData when key not present in response
 * [Database] Fix typo in constraint key, and add translations
-* [Datafactory] Handle ES empty filter as matchAll
-* [Datafactory] Add null check for search adapter config in IndexType
+* [DataFactory] Handle ES empty filter as matchAll
+* [DataFactory] Add null check for search adapter config in IndexType
 * [DataFactory][Reindex] Better detection of multiple concurrent reindex (same node)
 * [DataFactory][ES] Fix : query wrapped with " and user using also "
 * [DataFactory] Add waitForRefresh (keyConcept class)
@@ -106,12 +106,17 @@ Running 4.4.0 - 2026-06-XX
   - thymeleaf-spring6 3.1.3.RELEASE -> 3.1.5.RELEASE
   - nashorn-core 15.6 -> 15.7
   - ojdbc11 23.8.0.25.04 -> 23.26.2.0.0
-  - postgresql 42.7.7 -> 42.7.11
+  - postgresql 42.7.7 -> 42.7.12
   - liquibase-core 4.32.0 -> 4.33.0
   - ehcache 3.10.8 -> 3.12.0
   - tika-core 3.2.0 -> 3.3.1
   - guava 33.4.8-jre -> 33.6.0-jre
   - spring-webmvc 6.2.8 -> 6.2.19
+  - jackson-core 2.19.0 -> 2.22.0 (test)
+  - jackson-dataformat-smile 2.19.0 -> 2.22.0 (test)
+  - jackson-dataformat-yaml 2.19.0 -> 2.22.0 (test)
+  - jackson-dataformat-cbor 2.19.0 -> 2.22.0 (test)
+  - junit-jupiter-params (vortex) 5.10.0 -> 5.14.4
   - express 4.17.2 -> 4.22.1
   - vertigo-ui-vuejs 4.3.3 -> 4.4.0
   - vertigo-ui-dsfr 4.3.3 -> 4.4.0
