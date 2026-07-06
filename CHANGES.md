@@ -77,8 +77,8 @@ Running 4.4.0 - 2026-06-XX
 * [Ui] Fix persist uiMessageStack on expired viewContext redirect
 * [ui-vuejs] Fix merge vueData when key not present in response
 * [Database] Fix typo in constraint key, and add translations
-* [Datafactory] Handle ES empty filter as matchAll
-* [Datafactory] Add null check for search adapter config in IndexType
+* [DataFactory] Handle ES empty filter as matchAll
+* [DataFactory] Add null check for search adapter config in IndexType
 * [DataFactory][Reindex] Better detection of multiple concurrent reindex (same node)
 * [DataFactory][ES] Fix : query wrapped with " and user using also "
 * [DataFactory] Add waitForRefresh (keyConcept class)
