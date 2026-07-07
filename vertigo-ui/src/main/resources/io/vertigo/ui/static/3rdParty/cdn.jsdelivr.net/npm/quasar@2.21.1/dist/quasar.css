@@ -10332,8 +10332,15 @@ body.body--dark .inset-shadow-down {
   opacity: 0.7;
 }
 
+.q-document--prevent-scroll {
+  overscroll-behavior: none !important;
+}
+.q-document--prevent-scroll body {
+  position: fixed !important;
+}
+
 /* body */
-.q-body--fullscreen-mixin, .q-body--prevent-scroll {
+.q-body--fullscreen-mixin {
   position: fixed !important;
 }
 
