@@ -75,6 +75,7 @@ Running 4.4.0 - 2026-06-XX
 * [Ui] Use inverted text colors for `vu:messages`
 * [Ui] Add inverted color CSS variables and fix usages
 * [Ui] Fix persist uiMessageStack on expired viewContext redirect
+* [Ui] Add cache-busting on wysiwyg/dsfr static assets via versioned query parameter
 * [ui-vuejs] Fix merge vueData when key not present in response
 * [Database] Fix typo in constraint key, and add translations
 * [DataFactory] Handle ES empty filter as matchAll
@@ -117,11 +118,11 @@ Running 4.4.0 - 2026-06-XX
   - vertigo-ui-dsfr 4.3.3 -> 4.4.0
   - vertigo-ui-wysiwyg 2.12.0 -> 4.4.0
   - vertigo-ui-server-ssr 3.5.0 -> 4.4.0
-  - vue 3.5.13 -> 3.5.39
+  - vue 3.5.17 -> 3.5.39
   - quasar 2.18.1 -> 2.21.1
   - axios 1.8.4 -> 1.18.1
   - @vitejs/plugin-vue 5.2.4 -> 6.0.7
-  - vite 6.4.3 -> 8.1.3 (Rolldown/Oxc bundler)
+  - vite 6.3.5 -> 8.1.3 (Rolldown/Oxc bundler)
   - @gouvfr/dsfr 1.12.1 -> 1.14.4
   - @gouvminint/vue-dsfr 8.6.0 -> 8.17.0
   - date-fns 4.1.0 -> 4.1.2
@@ -129,6 +130,7 @@ Running 4.4.0 - 2026-06-XX
   - typescript 5.2.2 -> 6.0.3
   - vite-plugin-mkcert 1.17.8 -> 2.1.0
   - eslint 9.30.1 -> 10.6.0
+  - @tiptap/* 2.12.0 -> 2.27.2
 
 
 Release 4.3.2 - 2025/07/10
