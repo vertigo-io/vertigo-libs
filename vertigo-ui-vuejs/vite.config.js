@@ -12,7 +12,7 @@ export default defineConfig({
       name: 'VertigoUi',
       fileName: (format) => `vertigo-ui.${format}.js`,
     },
-    rollupOptions: {
+    rolldownOptions: {
       external: ['vue', 'quasar', 'ol', 'axios'],
       output: {
         globals: {
@@ -24,7 +24,11 @@ export default defineConfig({
       },
     },
   },
-  server: {},
+  css: {
+    lightningcss: {
+      errorRecovery: true
+    }
+  },
   plugins: [
     vue(),
     viteExternalsPlugin({

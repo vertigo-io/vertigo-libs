@@ -14,7 +14,7 @@ import {registerNavigationLinkKey} from './injection-key'
 
 import { FocusTrap } from 'focus-trap-vue'
 
-import type {DsfrHeaderProps} from '@gouvminint/vue-dsfr/types/components/DsfrHeader/DsfrHeader.types'
+import type {DsfrHeaderProps} from '@gouvminint/vue-dsfr'
 import {
   DsfrLanguageSelector,
   DsfrLanguageSelectorElement,

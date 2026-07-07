@@ -14,7 +14,7 @@ export default defineConfig({
       name: 'dsfr',
       fileName: (format) => `dsfr.${format}.js`,
     },
-    rollupOptions: {
+    rolldownOptions: {
       external: ['vue'],
       output: {
         globals: {
@@ -22,6 +22,11 @@ export default defineConfig({
         },
       },
     },
+  },
+  css: {
+    lightningcss: {
+      errorRecovery: true
+    }
   },
   plugins: [
     vue(),
