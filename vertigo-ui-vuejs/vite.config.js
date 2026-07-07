@@ -12,29 +12,35 @@ export default defineConfig({
       name: 'VertigoUi',
       fileName: (format) => `vertigo-ui.${format}.js`,
     },
-    rollupOptions: {
-      external: ['vue', 'quasar', 'ol'],
+    rolldownOptions: {
+      external: ['vue', 'quasar', 'ol', 'axios'],
       output: {
         globals: {
           vue: 'Vue',
           quasar: 'Quasar',
-          ol: 'ol'
+          ol: 'ol',
+          axios: 'axios'
         },
       },
     },
   },
-  server: {},
+  css: {
+    lightningcss: {
+      errorRecovery: true
+    }
+  },
   plugins: [
     vue(),
     viteExternalsPlugin({
       vue: 'Vue',
       quasar: 'Quasar',
-      ol: 'ol'
+      ol: 'ol',
+      axios: 'axios'
     }),
   ],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
-    },
+    }
   },
 });

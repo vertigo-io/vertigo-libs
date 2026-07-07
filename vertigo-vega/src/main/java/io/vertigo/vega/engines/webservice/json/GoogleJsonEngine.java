@@ -82,6 +82,7 @@ import io.vertigo.vega.webservice.model.UiObject;
  * @author pchretien, npiedeloup
  */
 public final class GoogleJsonEngine implements JsonEngine, Activeable {
+
 	private static final String FIRST_LEVEL_KEY = "this";
 	private Gson gson;
 	private final SmartTypeManager smartTypeManager;
@@ -89,10 +90,12 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 	private final Boolean serializeNulls;
 
 	private enum SearchApiVersion {
+
 		V1(FacetedQueryResultJsonSerializerV1.class), //first api
 		V2(FacetedQueryResultJsonSerializerV2.class), //with array instead of object
 		V3(FacetedQueryResultJsonSerializerV3.class), //with code label, count on facets
-		V4(FacetedQueryResultJsonSerializerV4.class); //with highlights and code, label for facet
+		V4(FacetedQueryResultJsonSerializerV4.class), //with highlights and code, label for facet
+		V5(FacetedQueryResultJsonSerializerV5.class); //with isMultiSelectable on facets
 
 		private final Class<? extends JsonSerializer<FacetedQueryResult<?, ?>>> jsonSerializerClass;
 
@@ -114,7 +117,7 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 		//---
 		this.smartTypeManager = smartTypeManager;
 		serializeNulls = serializeNullsOpt.orElse(true);
-		searchApiVersion = SearchApiVersion.valueOf(searchApiVersionStr.orElse(SearchApiVersion.V4.name()));
+		searchApiVersion = SearchApiVersion.valueOf(searchApiVersionStr.orElse(SearchApiVersion.V5.name()));
 	}
 
 	@Override
@@ -142,9 +145,13 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 	/** {@inheritDoc} */
 	@Override
 	public String toJsonWithMeta(final Object data, final Map<String, Serializable> metaDatas, final Set<String> includedFields, final Set<String> excludedFields) {
-		final JsonElement jsonValue = gson.toJsonTree(data);
+		final JsonElement jsonValue;
+		try {
+			jsonValue = gson.toJsonTree(data);
+		} catch (final Exception e) {
+			throw WrappedException.wrap(e, "Error while serializing data {0}", data);
+		}
 		filterFields(jsonValue, includedFields, excludedFields);
-
 		if (metaDatas.isEmpty() && (data instanceof List || jsonValue.isJsonPrimitive())) {
 			return gson.toJson(jsonValue); //only case where result wasn't an object
 		}
@@ -172,8 +179,10 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 
 	/** {@inheritDoc} */
 	@Override
-	public <D> D fromJson(final String json, final Type paramType) {
-		return gson.fromJson(json, paramType);
+	public <D> D fromJson(final String json, final Type paramType, final Set<String> includedFields, final Set<String> excludedFields) {
+		final var jsonValue = JsonParser.parseString(json);
+		filterFields(jsonValue, includedFields, excludedFields);
+		return gson.fromJson(jsonValue, paramType);
 	}
 
 	/** {@inheritDoc} */
@@ -315,7 +324,8 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 					.filter(dtField -> dtField.getType() != FieldType.COMPUTED)// we don't deserialize computed fields
 					.filter(dtField -> jsonObject.has(dtField.name()))
 					.forEach(field -> {
-						final Type targetType = field.cardinality().hasMany() ? new KnownParameterizedType(field.getTargetJavaClass(), field.smartTypeDefinition().getJavaClass())
+						final Type targetType = field.cardinality().hasMany()
+								? new KnownParameterizedType(field.getTargetJavaClass(), field.smartTypeDefinition().getJavaClass())
 								: field.smartTypeDefinition().getJavaClass();
 						field.getDataAccessor().setValue(dtObject, context.deserialize(jsonObject.get(field.name()), targetType));
 					});
@@ -363,6 +373,7 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 	}
 
 	private static class SmartTypeAdapter<S> implements JsonSerializer<S>, JsonDeserializer<S> {
+
 		private final Class<S> smartType;
 		private final BasicTypeAdapter<S, String> basicTypeAdapter;
 
@@ -411,7 +422,6 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 					.registerTypeAdapter(UID.class, new URIJsonAdapter());
 
 			CoreJsonAdapters.addCoreGsonConfig(gsonBuilder, serializeNulls);
-
 			return gsonBuilder.create();
 		} catch (InstantiationException | IllegalAccessException e) {
 			throw WrappedException.wrap(e, "Can't create Gson");
@@ -419,7 +429,7 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 	}
 
 	private void filterFields(final JsonElement jsonElement, final Set<String> includedAllFields, final Set<String> excludedAllFields) {
-		if (jsonElement == null) {
+		if (jsonElement == null || includedAllFields.isEmpty() && excludedAllFields.isEmpty()) {
 			//if filtering an missing field
 		} else if (jsonElement.isJsonArray()) {
 			final JsonArray jsonArray = jsonElement.getAsJsonArray();
@@ -497,5 +507,4 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 			getter.apply(tuple).add(value);
 		}
 	}
-
 }

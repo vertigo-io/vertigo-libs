@@ -37,8 +37,8 @@
 					<vu:chips-autocomplete object="movie" field="tags" list="movies" staticData="false"/>
 					<vu:modal componentId="myModal" closeLabel="Close"/>
 					<vu:grid-cell>
-						<vu:button-submit th:if="${!model.modeEdit}" label="Edit" action="@{_edit}" color="primary"/>
-						<vu:button-submit th:if="${model.modeEdit}"  label="Save" action="@{_save}" color="primary" />
+						<vu:button-submit th:if="${!model.modeEdit}" id="editAction" label="Edit" action="@{_edit}" color="primary"/>
+						<vu:button-submit th:if="${model.modeEdit}" id="saveAction" label="Save" action="@{_save}" color="primary" />
 						<q-btn  th:label="Movies" type="a" th:href="@{/movies/}"></q-btn>
 						<q-btn  th:label="OpenModal" th:@click="|openModal('myModal', '@{/movies/}')|"></q-btn>
 					</vu:grid-cell>

@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
@@ -47,14 +48,14 @@ import io.vertigo.datamodel.data.model.UID;
 
 /**
  * Reindex delta data task.
+ *
  * @author npiedeloup (2023)
  * @param <S> KeyConcept type
  */
 final class ReindexDeltaTask<S extends KeyConcept> implements Runnable {
 	private static final int LAST_MODIFIED_GAP_BEFORE_NOW = 10;
 	private static final Logger LOGGER = LogManager.getLogger(ReindexDeltaTask.class);
-	private static volatile boolean REINDEXATION_IN_PROGRESS;
-	private static volatile long REINDEX_COUNT;
+	private static final AtomicBoolean REINDEXATION_IN_PROGRESS = new AtomicBoolean();
 	private final WritableFuture<Long> reindexFuture;
 	private final SearchIndexDefinition searchIndexDefinition;
 	private final SearchManager searchManager;
@@ -62,6 +63,7 @@ final class ReindexDeltaTask<S extends KeyConcept> implements Runnable {
 
 	/**
 	 * Constructor.
+	 *
 	 * @param searchIndexDefinition Search index definition
 	 * @param reindexFuture Future for result
 	 * @param searchManager Search manager
@@ -95,8 +97,9 @@ final class ReindexDeltaTask<S extends KeyConcept> implements Runnable {
 				final Class<S> keyConceptClass = (Class<S>) ClassUtil.classForName(searchIndexDefinition.getKeyConceptDtDefinition().getClassCanonicalName(), KeyConcept.class);
 				final SearchLoader<S, DataObject> searchLoader = Node.getNode().getComponentSpace().resolve(searchIndexDefinition.getSearchLoaderId(), SearchLoader.class);
 				Assertion.check()
-						.isNotNull(searchLoader.getVersionFieldName().isPresent(),
-								"To use this reindexDelta, indexed keyConcept need a version field use to iterate throught all entity table. Check getVersionFieldName() in {0}", searchLoader.getClass().getName());
+						.isTrue(searchLoader.getVersionFieldName().isPresent(),
+								"To use this reindexDelta, indexed keyConcept need a version field use to iterate throught all entity table. Check getVersionFieldName() in {0}",
+								searchLoader.getClass().getName());
 				//---
 				final DataFieldName<S> iteratorFieldName = searchLoader.getVersionFieldName().get();
 				final String metaDataName = "last" + iteratorFieldName.name() + "Value";
@@ -107,7 +110,8 @@ final class ReindexDeltaTask<S extends KeyConcept> implements Runnable {
 					final Serializable lastValue = searchChunk.getLastValue();
 					Assertion.check().isFalse(lastValue.equals(previousValue), "SearchLoader ({0}) error : return the same uid list", searchIndexDefinition.getSearchLoaderId());
 
-					final Map<UID<S>, Serializable> alreadyIndexedVersions = searchServicesPlugin.loadVersions(searchIndexDefinition, iteratorFieldName, urisSetToListFilter("docId", searchChunk.getAllUIDs()), searchChunk.getAllUIDs().size());
+					final Map<UID<S>, Serializable> alreadyIndexedVersions = searchServicesPlugin.loadVersions(searchIndexDefinition, iteratorFieldName,
+							urisSetToListFilter("docId", searchChunk.getAllUIDs()), searchChunk.getAllUIDs().size());
 					final Tuple<SearchChunk<S>, Set<UID<S>>> chunkOfModifiedAndRemovedUid = searchChunk.compare(alreadyIndexedVersions); //Tuple #1:modified, #2:removed
 
 					final Collection<SearchIndex<S, DataObject>> searchIndexes = searchLoader.loadData(chunkOfModifiedAndRemovedUid.val1());//load updated element
@@ -157,24 +161,24 @@ final class ReindexDeltaTask<S extends KeyConcept> implements Runnable {
 	}
 
 	private static boolean isReindexInProgress() {
-		return REINDEXATION_IN_PROGRESS;
+		return REINDEXATION_IN_PROGRESS.get();
 	}
 
-	private static void startReindex() {
-		REINDEXATION_IN_PROGRESS = true;
-		REINDEX_COUNT = 0;
+	private void startReindex() {
+		REINDEXATION_IN_PROGRESS.set(true);
+		reindexFuture.setProgress(0);
 	}
 
 	private static void stopReindex() {
-		REINDEXATION_IN_PROGRESS = false;
+		REINDEXATION_IN_PROGRESS.set(false);
 	}
 
-	private static void updateReindexCount(final long reindexCount) {
-		REINDEX_COUNT = reindexCount;
+	private void updateReindexCount(final long reindexCount) {
+		reindexFuture.setProgress(reindexCount);
 	}
 
-	private static long getReindexCount() {
-		return REINDEX_COUNT;
+	private long getReindexCount() {
+		return reindexFuture.getProgress();
 	}
 
 	private ListFilter urisSetToListFilter(final String indexFieldName, final Collection<UID<S>> uris) {

@@ -174,6 +174,12 @@ public class JettyBoot {
 			System.exit(1);
 		}
 		LOG.info("Server started in {} seconds", (System.currentTimeMillis() - start) / 1000);
+		// Apply session timeout after WebAppContext.init() so it overrides web.xml values
+		final var sessionTimeoutMinutesOpt = jettyBootParams.getSessionTimeoutMinutes();
+		if (sessionTimeoutMinutesOpt.isPresent()) {
+			context.getSessionHandler().setMaxInactiveInterval(sessionTimeoutMinutesOpt.get() * 60);
+			LOG.info("Session idle timeout set to {} minutes", sessionTimeoutMinutesOpt.get());
+		}
 		if (jettyBootParams.isJoin()) {
 			try {
 				server.join();

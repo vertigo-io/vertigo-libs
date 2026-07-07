@@ -17,9 +17,10 @@
  */
 package io.vertigo.datafactory.search;
 
+import java.net.Socket;
+
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.connectors.elasticsearch.ElasticSearchFeatures;
-import io.vertigo.connectors.elasticsearch.EmbeddedElasticSearchServer;
 import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
@@ -43,23 +44,29 @@ public final class MyNodeConfig {
 		final DataFactoryFeatures dataFactoryFeatures = new DataFactoryFeatures();
 		dataFactoryFeatures.withSearch();
 
-		final ElasticSearchFeatures elasticSearchFeatures = new ElasticSearchFeatures()
-				.withEmbeddedServer(
-						Param.of("home", "io/vertigo/datafactory/search/indexconfig"));
+		final ElasticSearchFeatures elasticSearchFeatures = new ElasticSearchFeatures();
+		//CI: ES_HOST=elastic, ES_HOST=localhost. En dev: localhost (fallback embedded si pas de ES local)
+		final String esHost = System.getenv("ES_HOST") != null ? System.getenv("ES_HOST") : "127.0.0.1";
+		if (!isPortOpen(esHost, 9200)) {
+			System.out.println("Démarrage d'un serveur Elasticsearch embarqué");
+			elasticSearchFeatures.withEmbeddedServer();
+		} else {
+			System.out.println("Elasticsearch déjà disponible sur " + esHost + ":9200");
+		}
 		if (esHL) {
-			elasticSearchFeatures.withRestHL(
-					Param.of("servers.names", "localhost:9200"),
+			elasticSearchFeatures.withRest( //connector
+					Param.of("servers.names", esHost + ":9200"),
 					Param.of("ssl", "false"));
 
-			dataFactoryFeatures.withESHL(
-					Param.of("config.file", "io/vertigo/datafactory/search/indexconfig/elasticsearch.yml"),
+			dataFactoryFeatures.withESRest(
+					Param.of("config.file", "io/vertigo/datafactory/search/indexconfig/elasticsearch.json"),
 					Param.of("envIndexPrefix", "TuTest"),
 					Param.of("rowsPerQuery", "50"));
 		} else {
-			elasticSearchFeatures.withTransport(
+			/*elasticSearchFeatures.withTransport(
 					Param.of("servers.names", "localhost:9300"),
 					Param.of("cluster.name", EmbeddedElasticSearchServer.DEFAULT_VERTIGO_ES_CLUSTER_NAME));
-
+			*/
 			dataFactoryFeatures.withESClient(
 					Param.of("config.file", "io/vertigo/datafactory/search/indexconfig/elasticsearch.yml"),
 					Param.of("envIndexPrefix", "TuTest"),
@@ -104,5 +111,14 @@ public final class MyNodeConfig {
 						.addDefinitionProvider(StoreCacheDefinitionProvider.class)
 						.build());
 		return nodeConfigBuilder.build();
+	}
+
+	public static boolean isPortOpen(final String host, final int port) {
+		try (Socket socket = new Socket()) {
+			socket.connect(new java.net.InetSocketAddress(host, port), 500);
+			return true;
+		} catch (final Exception e) {
+			return false;
+		}
 	}
 }

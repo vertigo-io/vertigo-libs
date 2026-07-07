@@ -73,6 +73,7 @@ import io.vertigo.ui.impl.springmvc.config.interceptors.VSpringMvcErrorIntercept
 import io.vertigo.ui.impl.springmvc.config.interceptors.VSpringMvcViewContextInterceptor;
 import io.vertigo.ui.impl.springmvc.controller.VSpringMvcControllerAdvice;
 import io.vertigo.ui.impl.springmvc.controller.VSpringMvcExceptionHandler;
+import io.vertigo.ui.impl.thymeleaf.VUiPreDialect;
 import io.vertigo.ui.impl.thymeleaf.VUiStandardDialect;
 import io.vertigo.ui.impl.thymeleaf.components.NamedComponentDefinition;
 import io.vertigo.ui.impl.thymeleaf.components.NamedComponentParser;
@@ -130,6 +131,8 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 
 			order--; // latest declaration has priority
 		}
+
+		templateEngine.addDialect("vu", new VUiPreDialect()); //components at same precedence as th standard
 
 		// register components to be resolved inside html (ex vu: components)
 		final var uiComponents = moduleUiComponents.stream()

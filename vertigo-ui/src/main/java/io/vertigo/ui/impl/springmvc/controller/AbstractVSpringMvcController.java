@@ -34,7 +34,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datastore.kvstore.KVCollection;
 import io.vertigo.datastore.kvstore.KVStoreManager;
@@ -56,6 +55,8 @@ import jakarta.servlet.http.HttpServletRequest;
  */
 public abstract class AbstractVSpringMvcController {
 
+	public static final String COMPONENT_STATES = "componentStates";
+	//public static final String INPUT_COMPONENT_STATES = "inputComponentStates";
 	public static final String DEFAULT_VIEW_NAME_ATTRIBUTE = "defaultViewName";
 
 	/** Clé de la collection des contexts dans le KVStoreManager. */
@@ -96,32 +97,33 @@ public abstract class AbstractVSpringMvcController {
 		if ("POST".equals(request.getMethod()) || "PUT".equals(request.getMethod()) || "DELETE".equals(request.getMethod())
 				|| ctxId != null && acceptCtxQueryParam()) {
 			if (ctxId == null) {
-				throw new VSystemException("Context manquant");
-			} else {
-				if (ctxId.indexOf('$') == -1) { //client try to use a old ctx as ctx
-					throw new ExpiredViewContextException("Init context manquant", Optional.empty());
-				}
-				ctxInit = ctxId.substring(0, ctxId.indexOf('$'));
-				final String ctxUid = ctxId.substring(ctxId.indexOf('$') + 1);
-				ViewContextMap viewContextMap;
-				try (var transactionWritable = transactionManager.createCurrentTransaction()) {
-					viewContextMap = kvStoreManager.find(CONTEXT_COLLECTION_NAME, obtainStoredCtxId(ctxUid, request), ViewContextMap.class).orElse(null);
-					UiRequestUtil.setRequestScopedAttribute("createdContext", false);
-				}
-				if (viewContextMap == null) {
-					// we retrieve the url that created this context
-					try (var transactionWritable = transactionManager.createCurrentTransaction()) {
-						final var urlInitContextOpt = kvStoreManager.find(INIT_CONTEXT_COLLECTION_NAME, ctxInit, String.class);
-						throw new ExpiredViewContextException("Context ctxId:'" + ctxId + "' manquant", urlInitContextOpt);
-					}
-				}
-				//viewContextMap can't be null here
-				viewContextMap.setJsonEngine(jsonEngine);
-				viewContext = new ViewContext(viewContextMap, jsonEngine);
-				viewContext.makeModifiable();
-				viewContext.setInputCtxId(ctxId);
-				attributes.setAttribute("viewContext", viewContext, RequestAttributes.SCOPE_REQUEST);
+				throw new ExpiredViewContextException("Context manquant", Optional.empty());
 			}
+			if (ctxId.indexOf('$') == -1) { //client try to use a old ctx as ctx
+				throw new ExpiredViewContextException("Init context manquant", Optional.empty());
+			}
+			ctxInit = ctxId.substring(0, ctxId.indexOf('$'));
+			final String ctxUid = ctxId.substring(ctxId.indexOf('$') + 1);
+			ViewContextMap viewContextMap;
+			try (var transactionWritable = transactionManager.createCurrentTransaction()) {
+				viewContextMap = kvStoreManager.find(CONTEXT_COLLECTION_NAME, obtainStoredCtxId(ctxUid, request), ViewContextMap.class).orElse(null);
+				UiRequestUtil.setRequestScopedAttribute("createdContext", false);
+			}
+			if (viewContextMap == null) {
+				// we retrieve the url that created this context
+				try (var transactionWritable = transactionManager.createCurrentTransaction()) {
+					final var urlInitContextOpt = kvStoreManager.find(INIT_CONTEXT_COLLECTION_NAME, ctxInit, String.class);
+					throw new ExpiredViewContextException("Context ctxId:'" + ctxId + "' introuvable", urlInitContextOpt);
+				}
+			}
+			//viewContextMap can't be null here
+			viewContextMap.setJsonEngine(jsonEngine);
+			viewContext = new ViewContext(viewContextMap, jsonEngine);
+			viewContext.makeModifiable();
+			viewContext.setInputCtxId(ctxId);
+			//TODO if useful : viewContext.asMap().put(INPUT_COMPONENT_STATES, viewContext.get(COMPONENT_STATES));
+			viewContext.asMap().put(COMPONENT_STATES, new ComponentStates());
+			attributes.setAttribute("viewContext", viewContext, RequestAttributes.SCOPE_REQUEST);
 
 		} else {
 			final var initContextUrl = getUrlWithParam(request);
@@ -214,7 +216,7 @@ public abstract class AbstractVSpringMvcController {
 	 */
 	protected void preInitContext(final ViewContext viewContext) {
 		viewContext.publishRef(UTIL_CONTEXT_KEY, new UiUtil());
-		viewContext.asMap().put("componentStates", new ComponentStates());
+		viewContext.asMap().put(COMPONENT_STATES, new ComponentStates());
 		viewContext.toModeReadOnly();
 	}
 

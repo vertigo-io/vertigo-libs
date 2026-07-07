@@ -78,7 +78,7 @@ public class VuiTextTagProcessor extends AbstractStandardExpressionAttributeTagP
 
 		if (templateMode != TemplateMode.JAVASCRIPT && templateMode != TemplateMode.CSS) {
 
-			final String input = (expressionResult == null ? "" : expressionResult.toString());
+			final String input = expressionResult == null ? "" : expressionResult.toString();
 
 			if (templateMode == TemplateMode.RAW) {
 				// RAW -> just output

@@ -38,6 +38,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.json.SerializableParameterizedType;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.model.DataObject;
@@ -53,9 +54,11 @@ import io.vertigo.vega.webservice.validation.ValidationUserException;
 
 /**
  * Liste des couples (clé, object) enregistrés.
+ *
  * @author npiedeloup
  */
 public final class ViewContextMap extends HashMap<String, Serializable> {
+
 	private static final long serialVersionUID = 2850788652438173312L;
 
 	/** Clée de l'id de context dans le context. */
@@ -97,13 +100,13 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 		final Type typeOfKey = typesByKey.get(key);
 		if (typeOfKey != null) {
 			if (o instanceof String) {
-				o = jsonEngine.fromJson((String) o, typeOfKey);
+				o = jsonEngine.fromJson((String) o, typeOfKey, Collections.emptySet(), Collections.emptySet());
 			} else if (o instanceof String[]) {
 				final String concat = Arrays.stream((String[]) o)
 						.filter(v -> !v.isEmpty()) //empty html input means : no value; there are use to send removed value
 						.map(v -> "\"" + v + "\"")
 						.collect(Collectors.joining(",", "[", "]"));
-				o = jsonEngine.fromJson(concat, typeOfKey);
+				o = jsonEngine.fromJson(concat, typeOfKey, Collections.emptySet(), Collections.emptySet());
 			}
 		}
 		return o;
@@ -367,6 +370,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 
 	/**
 	 * Ajoute un objet de type form au context.
+	 *
 	 * @param dto Objet à publier
 	 */
 	public <O extends DataObject> void publish(final String contextKey, final O dto) {
@@ -524,6 +528,10 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	}
 
 	public void addTypeForKey(final String key, final Type paramType) {
+		if (paramType instanceof ParameterizedType && !(paramType instanceof Serializable)) {
+			typesByKey.put(key, SerializableParameterizedType.from((ParameterizedType) paramType));
+			return;
+		}
 		typesByKey.put(key, paramType);
 	}
 

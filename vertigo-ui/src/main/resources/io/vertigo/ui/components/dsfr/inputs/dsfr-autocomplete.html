@@ -1,5 +1,5 @@
 <th:block
-        th:fragment="dsfr-autocomplete-edit(object, field, label, hint, componentId, required, list, valueField, labelField, minQueryLength, noResultLabel, inputUrl, filterUrl, label_attrs, input_attrs)"
+        th:fragment="dsfr-autocomplete-edit(object, field, label, hint, componentId, required, list, valueField, labelField, minQueryLength, noResultLabel, inputUrl, filterUrl, option_slot, label_attrs, input_attrs)"
         vu:alias="dsfr-autocomplete"
         vu:selector="${viewMode=='edit' && (readonly==null || !readonly)}"
         th:assert="${object} != null and ${field} != null"
@@ -124,7 +124,7 @@
                             v-bind="resultProps[index]"
                             :data-result-index="index"
                     >
-                        {{ result.label }}
+                        <vu:content-slot name="option_slot" th:with="label=null, title=null, vTitle=null">{{ result.label }}</vu:content-slot>
                     </li>
                 </ul>
             </div>

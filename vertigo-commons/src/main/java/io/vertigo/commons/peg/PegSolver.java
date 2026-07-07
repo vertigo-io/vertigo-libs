@@ -40,4 +40,18 @@ public interface PegSolver<S, I, R> {
 		}
 
 	}
+
+	/**
+	 * Forward the PegSolverFunction to the nested solver and return the PegSolver resolving both levels.
+	 *
+	 * @param nestedSolver the nested solver
+	 * @param <S> Raw data type
+	 * @param <I> Qualified data type
+	 * @param <I2> Nested qualified data type
+	 * @param <R> Result type
+	 * @return the solver that resolve both levels
+	 */
+	public static <S, I, I2, R> PegSolver<S, I, R> flattenSolvers(final PegSolver<PegSolver<S, I, I2>, I2, R> nestedSolver) {
+		return f -> nestedSolver.apply(f2 -> f2.apply(f));
+	}
 }

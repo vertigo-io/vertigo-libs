@@ -45,7 +45,7 @@ public final class DelayedMemoryKVStoreManagerTest extends AbstractKVStoreManage
 						.withMemoryCache()
 						.withKVStore()
 						.withDelayedMemoryKV(
-								Param.of("collections", "flowers"),
+								Param.of("collections", "flowers, flowersTemp"),
 								Param.of("timeToLiveSeconds", TTL))
 						.build())
 				.build();

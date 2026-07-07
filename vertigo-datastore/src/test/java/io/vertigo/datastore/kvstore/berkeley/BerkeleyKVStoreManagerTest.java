@@ -47,7 +47,7 @@ public final class BerkeleyKVStoreManagerTest extends AbstractKVStoreManagerTest
 						.withMemoryCache()
 						.withKVStore()
 						.withBerkleyKV(
-								Param.of("collections", "flowers;TTL=" + TTL + ", trees;inMemory"),
+								Param.of("collections", "flowers;TTL=" + TTL + ",flowersTemp;TTL=" + TTL / 2 + ", trees;inMemory"),
 								Param.of("dbFilePath", storagePath),
 								Param.of("purgeVersion", "V3"))
 						.build())

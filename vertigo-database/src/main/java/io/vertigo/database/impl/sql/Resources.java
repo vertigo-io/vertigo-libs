@@ -37,5 +37,5 @@ public enum Resources implements LocaleMessageKey {
 	/**
 	 * Unicity constraint problem.
 	 */
-	DYNAMO_SQL_CONSTRAINT_ALREADY_REGISTRED,
+	DYNAMO_SQL_CONSTRAINT_ALREADY_REGISTERED,
 }

@@ -191,7 +191,7 @@ public final class S3FileStorePlugin implements FileStorePlugin, Activeable, Sim
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
 		final List<? extends Definition> definition;
 		if (purgeDelayMinutesOpt.isPresent()) {
-			definition = Collections.singletonList(new DaemonDefinition(dmnUniqueName, () -> this::deleteOldFiles, 5 * 60));
+			definition = Collections.singletonList(new DaemonDefinition(dmnUniqueName, () -> this::deleteOldFiles, 5 * 60, false));
 		} else {
 			definition = Collections.emptyList();
 		}

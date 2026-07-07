@@ -121,12 +121,12 @@ public final class DataStoreFeatures extends Features<DataStoreFeatures> {
 	}
 
 	@Feature("filestore.mimeType.tika")
-	public DataStoreFeatures withTikaMimeTypeResolver() {
+	public DataStoreFeatures withTikaMimeTypeResolver(final Param... params) {
 		getModuleConfigBuilder()
-				.addPlugin(TikaMimeTypeResolverPlugin.class);
+				.addPlugin(TikaMimeTypeResolverPlugin.class, params);
 		return this;
 	}
-	
+
 	@Feature("filestore.mimeType.simplemagic")
 	public DataStoreFeatures withSimpleMagicMimeTypeResolver() {
 		getModuleConfigBuilder()

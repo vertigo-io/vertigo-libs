@@ -317,12 +317,18 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 		if (oldCriteria == null) {
 			return newCriteria;
 		}
+		if (newCriteria == null) {
+			return oldCriteria;
+		}
 		return oldCriteria.and(newCriteria);
 	}
 
 	private Criteria<E> orCriteria(final Criteria<E> oldCriteria, final Criteria<E> newCriteria) {
 		if (oldCriteria == null) {
 			return newCriteria;
+		}
+		if (newCriteria == null) {
+			return oldCriteria;
 		}
 		return oldCriteria.or(newCriteria);
 	}

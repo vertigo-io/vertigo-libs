@@ -69,8 +69,8 @@
                     </vu:grid-cell>
                     
                     <vu:grid-cell>
-                        <vu:fileupload-dropzone key="myFilesUris">
-                            <vu:fileupload label="Upload file" th:url="'@{/commons/upload}'" key="myFilesUris1" multiple />           
+                        <vu:fileupload-dropzone fileComponentId="uploader_myFilesUris1">
+                            <vu:fileupload label="Upload file" th:url="'@{/commons/upload}'" key="myFilesUris1" componentId="uploader_myFilesUris1" multiple />           
                         </vu:fileupload-dropzone>
                     </vu:grid-cell>                
                     <vu:fileupload-simple label="Simple upload file" th:url="'@{/commons/upload}'" key="myFilesUris3" multiple/>                            
@@ -79,29 +79,44 @@
                     
                     <vu:modal componentId="myModal" closeLabel="Close" />
                     <vu:grid-cell class="q-gutter-md">
+                        button-submit
                         <vu:button-submit th:if="${!model.modeReadOnly}" label="Read" action="@{_read}" color="primary"/>
                         <vu:button-submit th:if="${model.modeReadOnly}" label="Edit" action="@{_edit}" color="primary"/>
                         <vu:button-submit th:if="${!model.modeReadOnly}" id="saveAction" label="Save (Default)" action="@{_save}" color="primary" />
-                        <vu:button-submit th:if="${!model.modeReadOnly}" id="saveAction" label="Save Files Only" action="@{_saveFilesOnly}" color="primary" />
-                        <vu:button-submit-confirm th:if="${!model.modeReadOnly}" label="Save (confirm with attr)" action="@{_save2}" formId="myFormId" confirmMessage="Etes vous sûr ?" color="primary" />
-                        <vu:button-submit-confirm th:if="${!model.modeReadOnly}" label="Save (confirm with content)" action="@{_save}" formId="myFormId" color="primary">
+                        <vu:button-submit th:if="${!model.modeReadOnly}" id="saveActionFilesOnly" label="Save Files Only" action="@{_saveFilesOnly}" color="primary" />
+                    </vu:grid-cell>
+                    <vu:grid-cell class="q-gutter-md" th:if="${!model.modeReadOnly}">
+                        button-submit-confirm
+                        <vu:button-submit-confirm label="Save (confirm with attr)" action="@{_save2}" formId="myFormId" confirmMessage="Etes vous sûr ?" color="primary" />
+                        <vu:button-submit-confirm label="Save (confirm with content)" action="@{_save}" formId="myFormId" color="primary">
                             <span>C'est OK ?</span>
                         </vu:button-submit-confirm>
-                        <vu:button-submit-confirm th:if="${!model.modeReadOnly}" label="Save (confirm with custom actions)" action="@{notUsed}" formId="myFormId" confirmMessage="Etes vous sûr ?" color="primary">
+                        <vu:button-submit-confirm label="Save (confirm with custom actions)" action="@{notUsed}" formId="myFormId" confirmMessage="Etes vous sûr ?" color="primary">
                             <vu:slot name="actions_slot">
                                 <q-btn flat label="Cancel custom" color="primary" v-close-popup ></q-btn>
                                 <q-btn type="submit" th:formaction="@{_save}" form="myFormId" label="Ok custom" color="primary" v-close-popup ></q-btn>
                             </vu:slot>
                             <span>C'est OK ?</span>
                         </vu:button-submit-confirm>
-                        
-                        <vu:button-link th:if="${model.modeEdit}"  label="Movies" url="@{/movies/}" color="primary" />
-                        <q-btn  th:label="OpenModal" th:@click="|openModal('myModal', '@{/movies/}')|"></q-btn>
+                    </vu:grid-cell>
+                    <vu:grid-cell class="q-gutter-md">
+                        button-link
+                        <vu:button-link label="go to movies" url="@{/movies/}" color="primary" />
+                        button-link-confirm
+                        <vu:button-link-confirm label="go to movies" url="@{/movies/}" color="primary" confirmMessage="You are about to leave this site" labelOk="let's go" labelCancel="stay here" />
+                    </vu:grid-cell>
+                    <vu:grid-cell class="q-gutter-md">
+                        button
+                        <vu:button label="do it" color="primary" @click="$q.notify(`it's done !`)"/>
+                        button-confirm
+                        <vu:button-confirm label="do it" color="primary" confirmMessage="Sure ?" labelOk="yup" labelCancel="nope" ok_@click="$q.notify(`it's done !`)" />
+                    </vu:grid-cell>
+                    <vu:grid-cell class="q-gutter-md">
+                        <q-btn label="Open iframe Modal" th:@click="|openModal('myModal', '@{/movies/}')|"></q-btn>
                     </vu:grid-cell>
                     <vu:grid-cell class="q-gutter-md">
                         <vu:button-submit th:if="${!model.modeReadOnly}" id="saveActionDtCheck" label="Save (with DtObj Check)" action="@{_saveDtCheck}" color="primary" />
                         <vu:button-submit th:if="${!model.modeReadOnly}" id="saveActionUiCheck" label="Save (with UiObj Check)" action="@{_saveUiCheck}" color="primary" />
-                        
                     </vu:grid-cell>
                    
                 </vu:grid>
@@ -129,21 +144,42 @@
 	        <h6>Test table</h6>
 	        <vu:table list="movies" componentId="movieTable" selectable="true" sortUrl="@{/movies/_sort}"
 	            th:tr_@click.native="|goTo('@{/movie/}'+props.row.movId)|" tr_class="nav">
-	            <vu:slot name="actions_slot"><q-btn label="View detail" th:@click="|openModal('movieDetailModal', '@{/movie/}'+props.row.movId, {  })|"></q-btn></vu:slot>
+	            <vu:slot name="actions_slot"><q-btn label="View detail" color="primary" th:@click="|openModal('movieDetailModal', '@{/movie/}'+props.row.movId, {  })|"></q-btn></vu:slot>
 	            <vu:include-data object="movies" field="movId" />
 	            <vu:column field="movId" >
 	                <a th::href="|'@{/movie/}'+props.row.movId|" >{{props.row.movId}}</a>
 	            </vu:column>
 	            <vu:column field="title" sortable="true" />
-	            <vu:column name="tata" label="Tata">
+	            <vu:column name="customTitleColumn" label="Custom title column">
 	               another column  : {{props.row.movId}} : {{props.row.title}}
 	           </vu:column>                       
 	        </vu:table>
+	        
+	        <h6>Test table modifiable</h6>
+	        
+	        <vu:table-modifiable list="moviesModifiable" componentId="movieTable2">
+	            <vu:column field="title">
+	                <vu:text-field object="moviesModifiable" field="title" />
+	            </vu:column>
+	            <vu:column field="year" />
+	        </vu:table-modifiable>
+	        
+	        <vu:grid-cell class="q-py-md q-gutter-md">
+	        	<vu:button-submit th:if="${!model.modeReadOnly}" id="saveAction" label="Save" action="@{_save}" color="primary" />
+	        </vu:grid-cell>
 	        
 	        <br/>
 	        
 	        <vu:block id="location" title="Location">
 				<vu:geolocation object="casting" field="birthLocation" nameField="characterName" map_style="height: 50vh; width:100%;" map_overview></vu:geolocation>
+			</vu:block>
+			<br/>
+	        <vu:block id="location" title="Location">
+				<vu:text-editor object="movie" field="description"
+				    :toolbar="[['bold', 'italic', 'underline', 'strike', 'removeFormat'], ['unordered', 'ordered', 'outdent', 'indent'], ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'], ['quote', 'hr', 'hardBreak'], ['left', 'center', 'right', 'justify'], ['link', 'unlink'], ['superscript', 'subscript'], ['infoBlock'], [], ['undo', 'redo'], ['viewsource'] ]"
+				    :bubble-toolbar="[['bold', 'italic', 'underline', 'removeFormat'], ['h1', 'h2']]"
+				    :link-configuration="{HTMLAttributes: {rel: 'noopener noreferrer'}}"
+				    max-height="400px" /> <!--/* see https://tiptap.dev/docs/editor/extensions/marks/link */-->
 			</vu:block>
 			
         </vu:form>

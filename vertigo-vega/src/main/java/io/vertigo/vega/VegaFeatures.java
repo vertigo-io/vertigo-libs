@@ -44,6 +44,7 @@ import io.vertigo.vega.plugins.webservice.handler.ApiKeyWebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.CorsAllowerWebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.ExceptionWebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.JsonConverterWebServiceHandlerPlugin;
+import io.vertigo.vega.plugins.webservice.handler.LogExceptionsHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.RateLimitingWebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.RestfulServiceWebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.SecurityWebServiceHandlerPlugin;
@@ -76,6 +77,7 @@ public final class VegaFeatures extends Features<VegaFeatures> {
 				.addComponent(WebServiceManager.class, WebServiceManagerImpl.class)
 				.addPlugin(AnnotationsWebServiceScannerPlugin.class)
 				//-- Handlers plugins
+				.addPlugin(LogExceptionsHandlerPlugin.class) // log 5xx errors based on response status
 				.addPlugin(ExceptionWebServiceHandlerPlugin.class)
 				.addPlugin(AnalyticsWebServiceHandlerPlugin.class)
 				.addPlugin(JsonConverterWebServiceHandlerPlugin.class)
@@ -157,14 +159,7 @@ public final class VegaFeatures extends Features<VegaFeatures> {
 
 	@Feature("webservices.cors")
 	public VegaFeatures withWebServicesOriginCORSFilter(final Param... params) {
-		Assertion.check().isTrue(params.length == 1 && "originCORSFilter".equals(params[0].getName()), "originCORSFilter param should be provided ");
-		final String myOriginCORSFilter = params[0].getValue();
-		//---
-		if (myOriginCORSFilter != null) {
-			getModuleConfigBuilder().addPlugin(CorsAllowerWebServiceHandlerPlugin.class);
-		} else {
-			getModuleConfigBuilder().addPlugin(CorsAllowerWebServiceHandlerPlugin.class, Param.of("originCORSFilter", myOriginCORSFilter));
-		}
+		getModuleConfigBuilder().addPlugin(CorsAllowerWebServiceHandlerPlugin.class, params);
 		return this;
 	}
 

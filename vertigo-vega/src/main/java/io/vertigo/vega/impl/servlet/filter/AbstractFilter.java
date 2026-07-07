@@ -19,7 +19,10 @@ package io.vertigo.vega.impl.servlet.filter;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -46,22 +49,28 @@ public abstract class AbstractFilter implements Filter {
 
 	/** Filter parameter name for exclude some url. */
 	protected static final String EXCLUDE_PATTERN_PARAM_NAME = "url-exclude-pattern";
+	protected static final String INCLUDE_PATTERN_PARAM_NAME = "url-include-pattern";
+
+	protected static final Set<String> DEFAULT_RESERVED_PARAM_NAME = new HashSet<>(Arrays.asList(EXCLUDE_PATTERN_PARAM_NAME, INCLUDE_PATTERN_PARAM_NAME));
 
 	private FilterConfig config;
-	private Optional<Pattern> patternOpt;
+	private Optional<Pattern> patternExcludeOpt;
+	private Optional<Pattern> patternIncludeOpt;
 
 	/** {@inheritDoc} */
 	@Override
 	public final void init(final FilterConfig filterConfig) {
 		config = filterConfig;
-		patternOpt = parsePattern(config.getInitParameter(EXCLUDE_PATTERN_PARAM_NAME));
+		//includePattern is useful to restrict filter with pattern, webapp url-pattern is not limited, and use on baseRequest only (not wrapped request)
+		patternIncludeOpt = parsePattern(config.getInitParameter(INCLUDE_PATTERN_PARAM_NAME)); //empty pattern means all url are included
+		patternExcludeOpt = parsePattern(config.getInitParameter(EXCLUDE_PATTERN_PARAM_NAME)); //exclude pattern override include pattern
 		doInit();
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public final void doFilter(final ServletRequest req, final ServletResponse res, final FilterChain chain) throws IOException, ServletException {
-		if (isUrlMatch(req, patternOpt)) {
+		if (patternIncludeOpt.isPresent() && !isUrlMatch(req, patternIncludeOpt) || isUrlMatch(req, patternExcludeOpt)) {
 			chain.doFilter(req, res);
 			return;
 		}
@@ -92,8 +101,7 @@ public abstract class AbstractFilter implements Filter {
 	 * @return si l'url match le pattern, ou false si pas de pattern ou si pas httprequest.
 	 */
 	protected static final boolean isUrlMatch(final ServletRequest req, final Optional<Pattern> pattern) {
-		if (pattern.isPresent() && req instanceof HttpServletRequest) {
-			final HttpServletRequest httpRequest = (HttpServletRequest) req;
+		if (pattern.isPresent() && req instanceof final HttpServletRequest httpRequest) {
 			return isUrlMatch(httpRequest.getContextPath(), httpRequest.getRequestURI(), pattern.get());
 		}
 		return false;
@@ -108,7 +116,10 @@ public abstract class AbstractFilter implements Filter {
 	 * @return si l'url match le pattern, ou false si pas de pattern ou si pas httprequest.
 	 */
 	protected static final boolean isUrlMatch(final String context, final String requestUri, final Pattern pattern) {
-		String url = requestUri.substring(requestUri.indexOf(context) + context.length());
+		String url = requestUri;
+		if (requestUri.indexOf(context) >= 0) {
+			url = requestUri.substring(requestUri.indexOf(context) + context.length());
+		}
 		if (url.contains(";")) { //pour les ;jsessionid qui ne doivent pas etre pris en compte par les patterns
 			url = url.substring(0, url.indexOf(';'));
 		}
@@ -127,17 +138,20 @@ public abstract class AbstractFilter implements Filter {
 			if (param.isPresent()) {
 				if (Long.class.equals(paramClass)) {
 					return (P) Long.valueOf(param.get().getValueAsLong());
-				} else if (Integer.class.equals(paramClass)) {
-					return (P) Integer.valueOf(param.get().getValueAsInt());
-				} else if (Double.class.equals(paramClass)) {
-					return (P) Double.valueOf(paramStrValue);
-				} else if (Boolean.class.equals(paramClass)) {
-					return (P) Boolean.valueOf(param.get().getValueAsBoolean());
-				} else if (String.class.equals(paramClass)) {
-					return (P) param.get().getValueAsString();
-				} else {
-					throw new IllegalArgumentException("Support Long, Integer, Double, Boolean and String parameters (not : " + paramClass.getSimpleName() + ")");
 				}
+				if (Integer.class.equals(paramClass)) {
+					return (P) Integer.valueOf(param.get().getValueAsInt());
+				}
+				if (Double.class.equals(paramClass)) {
+					return (P) Double.valueOf(paramStrValue);
+				}
+				if (Boolean.class.equals(paramClass)) {
+					return (P) Boolean.valueOf(param.get().getValueAsBoolean());
+				}
+				if (String.class.equals(paramClass)) {
+					return (P) param.get().getValueAsString();
+				}
+				throw new IllegalArgumentException("Support Long, Integer, Double, Boolean and String parameters (not : " + paramClass.getSimpleName() + ")");
 			}
 		}
 		return defaultValue;

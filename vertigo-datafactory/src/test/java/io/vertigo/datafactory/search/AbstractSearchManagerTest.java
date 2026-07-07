@@ -21,6 +21,8 @@ import java.io.File;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,11 +39,13 @@ import javax.inject.Inject;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 
 import io.vertigo.core.lang.VUserException;
 import io.vertigo.core.lang.WrappedException;
@@ -64,6 +68,7 @@ import io.vertigo.datafactory.search.data.domain.ItemSearchLoader;
 import io.vertigo.datafactory.search.definitions.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchIndex;
 import io.vertigo.datafactory.search.model.SearchQuery;
+import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.datamodel.data.model.DtListState;
 import io.vertigo.datamodel.data.model.UID;
@@ -71,6 +76,7 @@ import io.vertigo.datamodel.data.model.UID;
 /**
  * @author npiedeloup
  */
+@TestInstance(Lifecycle.PER_CLASS)
 public abstract class AbstractSearchManagerTest {
 
 	private static final SelectedFacetValues EMPTY_SELECTED_FACET_VALUES = SelectedFacetValues.empty().build();
@@ -84,25 +90,49 @@ public abstract class AbstractSearchManagerTest {
 
 	protected AutoCloseableNode node;
 
-	@BeforeEach
-	public final void setUp() {
-		node = new AutoCloseableNode(buildNodeConfig());
+	@BeforeAll
+	void startNode() {
+		node = new AutoCloseableNode(getNodeConfig());
 		DIInjector.injectMembers(this, node.getComponentSpace());
-		//--
+	}
+
+	/** Chaque sous-classe fournit sa propre configuration */
+	protected abstract NodeConfig getNodeConfig();
+
+	@BeforeEach
+	final void setUp() {
 		doSetUp();
 		removeAll();
 	}
 
-	@AfterEach
-	public final void tearDown() {
+	@AfterAll
+	void tearDown() {
 		if (node != null) {
-			node.close();
+			try {
+				node.close();
+			} finally {
+				// Attendre que le testcontainer libère les ports 9200/9300
+				waitForPortsFree(9200, 9300);
+				node = null;
+			}
+		}
+	}
+
+	private static void waitForPortsFree(final int... ports) {
+		for (final int port : ports) {
+			final long deadline = System.currentTimeMillis() + 15000;
+			while (System.currentTimeMillis() < deadline && MyNodeConfig.isPortOpen("127.0.0.1", port)) {
+				try {
+					Thread.sleep(250);
+				} catch (final InterruptedException e) {
+					Thread.currentThread().interrupt();
+					return;
+				}
+			}
 		}
 	}
 
 	protected abstract void doSetUp();
-
-	protected abstract NodeConfig buildNodeConfig();
 
 	/** IndexDefinition. */
 	protected SearchIndexDefinition itemIndexDefinition;
@@ -115,6 +145,7 @@ public abstract class AbstractSearchManagerTest {
 
 	/**
 	 * Initialise l'index.
+	 *
 	 * @param indexName Nom de l'index
 	 */
 	protected final void init(final String indexName) {
@@ -130,11 +161,17 @@ public abstract class AbstractSearchManagerTest {
 		geoCircleFacetDefinition = definitionSpace.resolve("FctLocalisationCircleItem", FacetDefinition.class);
 		geoHashClusterFacetDefinition = definitionSpace.resolve("FctLocalisationHashItem", FacetDefinition.class);
 		itemIndexDefinition = definitionSpace.resolve(indexName, SearchIndexDefinition.class);
+
+		try {
+			Thread.sleep(1000);
+		} catch (final InterruptedException e) {
+			e.printStackTrace();
+		} //wait index was done
 		removeAll();
 	}
 
 	@BeforeAll
-	public static void doBeforeClass() throws Exception {
+	void doBeforeClass() throws Exception {
 		//We must remove data dir in index, in order to support versions updates when testing on PIC
 		final URL esDataURL = Thread.currentThread().getContextClassLoader().getResource("io/vertigo/datafactory/search/indexconfig");
 		final File esData = new File(URLDecoder.decode(esDataURL.getFile() + "/data", StandardCharsets.UTF_8.name()));
@@ -196,6 +233,7 @@ public abstract class AbstractSearchManagerTest {
 	/**
 	 * Test de reindexation de l'index.
 	 * La création s'effectue dans une seule transaction.
+	 *
 	 * @throws ExecutionException
 	 * @throws InterruptedException
 	 * @throws TimeoutException
@@ -849,6 +887,17 @@ public abstract class AbstractSearchManagerTest {
 	}
 
 	@Test
+	public void testFacetQueryByStringRange() {
+		index(false);
+		final SearchQuery searchQuery = SearchQuery.builder("QryItemDescriptionRangeFacet")
+				.withCriteria("")
+				.withFacet(EMPTY_SELECTED_FACET_VALUES)
+				.build();
+		final var result = doQuery(searchQuery, null);
+		testFacetResultByStringRange(result, "");
+	}
+
+	@Test
 	public void testFacetOptionalFieldByTerm() {
 		testFacetOptionalFieldByTerm("");
 	}
@@ -918,6 +967,38 @@ public abstract class AbstractSearchManagerTest {
 		checkOrderByCount(manufacturerFacet);
 		checkOrderByAlpha(getFacetByName(result, "FctManufacturerItemAlpha"));
 		checkOrderByCount(getFacetByName(result, "FctDescriptionItem"));
+	}
+
+	private void testFacetResultByStringRange(final FacetedQueryResult<Item, SearchQuery> result, final String dbCriteria) {
+		final var dbCount = dbCriteria.isBlank() ? itemDataBase.size() : itemDataBase.containsDescription(dbCriteria);
+		Assertions.assertEquals(dbCount, result.getCount());
+
+		//On vérifie qu'il y a le bon nombre de facettes.
+		Assertions.assertEquals(4, result.getFacets().size());
+
+		final Facet descriptionRangeFacet = getFacetByName(result, "FctDescriptionRangeItem");
+		//On vérifie que l'on est sur le champ Manufacturer
+		Assertions.assertEquals("description", descriptionRangeFacet.getDefinition().getDataField().name());
+		Assertions.assertTrue(descriptionRangeFacet.getDefinition().isRangeFacet());
+
+		//On vérifie qu'il existe une valeur pour peugeot et que le nombre d'occurrences est correct
+		for (final Entry<FacetValue, Long> entry : descriptionRangeFacet.getFacetValues().entrySet()) {
+			final String searchFacetLabel = entry.getKey().label().getDisplay().toLowerCase(Locale.FRENCH);
+			final long searchFacetCount = entry.getValue();
+			if ("#".equals(searchFacetLabel)) {
+				Assertions.assertEquals(7, searchFacetCount);
+			} else if ("a-f".equals(searchFacetLabel)) {
+				Assertions.assertEquals(11, searchFacetCount);
+			} else if ("g-m".equals(searchFacetLabel)) {
+				Assertions.assertEquals(8, searchFacetCount);
+			} else if ("n-s".equals(searchFacetLabel)) {
+				Assertions.assertEquals(11, searchFacetCount);
+			} else if ("t-z".equals(searchFacetLabel)) {
+				Assertions.assertEquals(9, searchFacetCount);
+			} else {
+				Assertions.fail("Unexpected facet " + searchFacetLabel);
+			}
+		}
 	}
 
 	private void testFacetResultByGeo(final FacetedQueryResult<Item, ?> result, final GeoPoint origin) {
@@ -1991,6 +2072,104 @@ public abstract class AbstractSearchManagerTest {
 		}
 	}
 
+	@Test
+	public void testIndexMetaData() {
+		searchManager.putMetaData(itemIndexDefinition, "metadata/testString", "testValue");
+		var value = searchManager.getMetaData(itemIndexDefinition, "metadata/testString");
+		Assertions.assertEquals("testValue", value);
+
+		searchManager.putMetaData(itemIndexDefinition, "metadata/testInteger", 1337);
+		value = searchManager.getMetaData(itemIndexDefinition, "metadata/testInteger");
+		Assertions.assertEquals(1337, value);
+
+		searchManager.putMetaData(itemIndexDefinition, "metadata/testLong", 132456789132L);
+		value = searchManager.getMetaData(itemIndexDefinition, "metadata/testLong");
+		Assertions.assertEquals(132456789132L, value);
+
+		searchManager.putMetaData(itemIndexDefinition, "metadata/testShortLong", 1338L);
+		value = searchManager.getMetaData(itemIndexDefinition, "metadata/testShortLong");
+		Assertions.assertEquals(1338L, value);
+
+		searchManager.putMetaData(itemIndexDefinition, "metadata/testDouble", 3.14);
+		value = searchManager.getMetaData(itemIndexDefinition, "metadata/testDouble");
+		Assertions.assertEquals(3.14, value);
+
+		searchManager.putMetaData(itemIndexDefinition, "metadata/testLocalDate", LocalDate.of(2024, 6, 1));
+		value = searchManager.getMetaData(itemIndexDefinition, "metadata/testLocalDate");
+		Assertions.assertEquals(LocalDate.of(2024, 6, 1), value);
+
+		searchManager.putMetaData(itemIndexDefinition, "metadata/testInstant", Instant.parse("2024-06-01T12:00:00Z"));
+		value = searchManager.getMetaData(itemIndexDefinition, "metadata/testInstant");
+		Assertions.assertEquals(Instant.parse("2024-06-01T12:00:00Z"), value);
+	}
+
+	/**
+	 * Test de reindexation de l'index.
+	 * La création s'effectue dans une seule transaction.
+	 *
+	 * @throws ExecutionException
+	 * @throws InterruptedException
+	 * @throws TimeoutException
+	 */
+	@Test
+	public void testReIndexModified() throws InterruptedException, ExecutionException, TimeoutException {
+		index(true);
+		long size = doCount();
+		Assertions.assertEquals(itemDataBase.size(), size);
+
+		//On supprime tout
+		removeAll();
+		waitAndExpectIndexation(0);
+		size = doCount();
+		Assertions.assertEquals(0L, size);
+
+		//on reindex
+		final var sizeFuture = searchManager.reindexAllModified(itemIndexDefinition);
+		final var currentReindex = searchManager.getReindexAllProgress(itemIndexDefinition);
+		log.info("====== currentReindex: " + currentReindex.orElse(-1L));
+		size = sizeFuture.get(10, TimeUnit.SECONDS);
+
+		//on attend 5s + le temps de reindexation
+		Assertions.assertEquals(itemDataBase.size(), size);
+		waitAndExpectIndexation(itemDataBase.size());
+
+		size = doCount();
+		Assertions.assertEquals(itemDataBase.size(), size);
+	}
+
+	/**
+	 * Test de reindexation de l'index.
+	 * La création s'effectue dans une seule transaction.
+	 *
+	 * @throws ExecutionException
+	 * @throws InterruptedException
+	 * @throws TimeoutException
+	 */
+	@Test
+	public void testReIndexDelta() throws InterruptedException, ExecutionException, TimeoutException {
+		index(true);
+		long size = doCount();
+		Assertions.assertEquals(itemDataBase.size(), size);
+
+		//On supprime tout
+		removeAll();
+		waitAndExpectIndexation(0);
+		size = doCount();
+		Assertions.assertEquals(0L, size);
+
+		//on reindex
+		final var sizeFuture = searchManager.reindexDelta(itemIndexDefinition);
+		final var currentReindex = searchManager.getReindexAllProgress(itemIndexDefinition);
+		log.info("====== currentReindex: " + currentReindex.orElse(-1L));
+		size = sizeFuture.get(20, TimeUnit.SECONDS);
+		//on attend 5s + le temps de reindexation
+		Assertions.assertEquals(itemDataBase.size(), size);
+		waitAndExpectIndexation(itemDataBase.size());
+
+		size = doCount();
+		Assertions.assertEquals(itemDataBase.size(), size);
+	}
+
 	/**
 	 * Test le facettage par geo range d'une liste.
 	 */
@@ -2029,6 +2208,28 @@ public abstract class AbstractSearchManagerTest {
 				Assertions.fail("Unexpected facet " + searchFacetLabel);
 			}
 		}
+	}
+
+	@Test
+	public void testHighlight() {
+		index(false);
+		// search for a term present in descriptions (case/accents handled by analyzer)
+		final SearchQuery searchQuery = SearchQuery.builder("QryItemFacet")
+				.withCriteria("panoramique")
+				.withHighlight()
+				.build();
+
+		final FacetedQueryResult<Item, SearchQuery> result = doQuery(searchQuery, null);
+		Assertions.assertTrue(result.getCount() > 0, "Expected at least one result for highlight test");
+
+		final Item first = result.getDtList().get(0);
+		final var highlights = result.getHighlights(first);
+		// We expect description field to be highlighted for matches
+		final DataField descriptionField = itemIndexDefinition.getIndexDtDefinition().getField("description");
+		final String descHighlight = highlights.get(descriptionField);
+		Assertions.assertNotNull(descHighlight, "Description highlight should be present");
+		Assertions.assertTrue(descHighlight.toLowerCase(Locale.ROOT).contains("panoramique"), "Highlight should contain the matched term");
+		Assertions.assertTrue(descHighlight.contains("<hlfrag>"), "Highlight fragments should be wrapped by <hlfrag> tags");
 	}
 
 	private void logResult(final FacetedQueryResult<Item, SearchQuery> result) {
@@ -2166,7 +2367,7 @@ public abstract class AbstractSearchManagerTest {
 					break; //si le nombre est atteint on sort.
 				}
 
-			} while (System.currentTimeMillis() - time < 5000);//timeout 5s
+			} while (System.currentTimeMillis() - time < 10000);//timeout 10s
 		} catch (final InterruptedException e) {
 			Thread.currentThread().interrupt(); //si interrupt on relance
 		}

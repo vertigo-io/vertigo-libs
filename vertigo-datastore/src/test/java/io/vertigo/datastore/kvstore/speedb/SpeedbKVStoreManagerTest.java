@@ -17,6 +17,8 @@
  */
 package io.vertigo.datastore.kvstore.speedb;
 
+import javax.inject.Inject;
+
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -27,12 +29,17 @@ import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.param.env.SystemPropertyParamPlugin;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.datastore.DataStoreFeatures;
+import io.vertigo.datastore.impl.kvstore.KVStorePlugin;
 import io.vertigo.datastore.kvstore.AbstractKVStoreManagerTest;
+import io.vertigo.datastore.plugins.kvstore.speedb.SpeedbKVStorePlugin;
 
 /**
  * @author npiedeloup
  */
 public final class SpeedbKVStoreManagerTest extends AbstractKVStoreManagerTest {
+
+	@Inject
+	protected KVStorePlugin speedbKVStorePlugin;
 
 	@Override
 	protected NodeConfig buildNodeConfig() {
@@ -57,10 +64,15 @@ public final class SpeedbKVStoreManagerTest extends AbstractKVStoreManagerTest {
 						.withMemoryCache()
 						.withKVStore()
 						.withSpeedbKV(
-								Param.of("collections", "flowers;TTL=" + TTL + ", trees;inMemory"),
+								Param.of("collections", "flowers;TTL=" + TTL + ",flowersTemp;TTL=" + TTL / 2 + ", trees;inMemory"),
 								Param.of("dbFilePath", storagePath))
 						.build())
 				.build();
+	}
+
+	protected void sleep(final int timeSecond) {
+		super.sleep(timeSecond);
+		((SpeedbKVStorePlugin) speedbKVStorePlugin).forceRemoveTooOldElements();
 	}
 
 	@Override
@@ -70,10 +82,10 @@ public final class SpeedbKVStoreManagerTest extends AbstractKVStoreManagerTest {
 		//cant detect not found key
 	}
 
-	@Override
+	/*@Override
 	@Disabled
 	@Test
 	public void testTimeToLive() {
 		//need daemon : get can return expired key @see https://github.com/facebook/rocksdb/wiki/Time-to-Live
-	}
+	}*/
 }

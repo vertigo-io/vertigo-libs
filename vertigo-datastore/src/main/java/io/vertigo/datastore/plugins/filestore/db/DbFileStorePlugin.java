@@ -73,6 +73,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 	/**
 	 * Liste des champs du Dto de stockage.
 	 * Ces champs sont obligatoire sur les Dt associés aux fileInfoDefinitions
+	 *
 	 * @author npiedeloup
 	 */
 	private enum DtoFields implements DataFieldName {
@@ -92,6 +93,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 
 	/**
 	 * Constructor.
+	 *
 	 * @param name Store name
 	 * @param storeDtDefinitionName Nom du dt de stockage
 	 */
@@ -114,7 +116,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 		this.storeDtDefinitionName = storeDtDefinitionName;
 		this.purgeDelayMinutesOpt = purgeDelayMinutesOpt;
 		if (this.purgeDelayMinutesOpt.isPresent()) {
-			dmnUniqueName = "DmnPurgeDbFileDaemon$t" + this.purgeDelayMinutesOpt.get() + "n" + this.getName();
+			dmnUniqueName = "DmnPurgeDbFileDaemon$t" + this.purgeDelayMinutesOpt.get() + "n" + getName();
 		} else {
 			dmnUniqueName = "DmnPurgeDbFileDaemon";
 		}
@@ -138,7 +140,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
 		final List<? extends Definition> definition;
 		if (purgeDelayMinutesOpt.isPresent()) {
-			definition = Collections.singletonList(new DaemonDefinition(dmnUniqueName, () -> this::deleteOldFiles, 5 * 60));
+			definition = Collections.singletonList(new DaemonDefinition(dmnUniqueName, () -> this::deleteOldFiles, 5 * 60, false));
 		} else {
 			definition = Collections.emptyList();
 		}

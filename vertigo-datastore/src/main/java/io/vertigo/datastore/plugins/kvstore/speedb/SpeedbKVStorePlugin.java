@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 import javax.inject.Inject;
 
@@ -47,7 +46,6 @@ import io.vertigo.commons.transaction.VTransaction;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionResourceId;
 import io.vertigo.core.analytics.AnalyticsManager;
-import io.vertigo.core.daemon.Daemon;
 import io.vertigo.core.daemon.definitions.DaemonDefinition;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.ListBuilder;
@@ -76,7 +74,7 @@ public final class SpeedbKVStorePlugin implements KVStorePlugin, Activeable, Sim
 	private final List<KVCollection> collections;
 
 	private final Codec<Serializable, byte[]> codec;
-	private final VTransactionResourceId<SpeedbResource> speedbResourceId = new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, "speedb");
+	private final Map<KVCollection, VTransactionResourceId<SpeedbResource>> speedbResourceIds = new HashMap<>();
 
 	private final VTransactionManager transactionManager;
 	private final AnalyticsManager analyticsManager;
@@ -148,8 +146,7 @@ public final class SpeedbKVStorePlugin implements KVStorePlugin, Activeable, Sim
 	@Override
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
 		final var name = "DmnPurgeSpeedbKvStore$a" + Math.abs(dbFilePathTranslated.hashCode()); //more stable in time
-		final Supplier<Daemon> daemonSupplier = () -> () -> analyticsManager.trace("daemon", name, tracer -> removeTooOldElements());
-		return Collections.singletonList(new DaemonDefinition(name, daemonSupplier, REMOVED_TOO_OLD_ELEMENTS_PERIODE_SECONDS));
+		return Collections.singletonList(new DaemonDefinition(name, () -> this::removeTooOldElements, REMOVED_TOO_OLD_ELEMENTS_PERIODE_SECONDS));
 	}
 
 	private static List<SpeedbCollectionConfig> parseCollectionConfigs(final String collections) {
@@ -189,18 +186,18 @@ public final class SpeedbKVStorePlugin implements KVStorePlugin, Activeable, Sim
 
 		for (final SpeedbCollectionConfig collectionConfig : collectionConfigs.values()) {
 			final RocksDB speeDb;
-			String path = dbFilePathTranslated;
+			String path;
 			Options options = fsOptions;
 			if (collectionConfig.isInMemory()) {
 				options = memOptions;
 				path = "/dir/db";
 			} else {
-				new File(dbFilePathTranslated).mkdirs();
+				path = dbFilePathTranslated + File.separator + collectionConfig.getCollectionName();
+				new File(path).mkdirs();
 			}
 			if (collectionConfig.getTimeToLiveSeconds() > 0) {
 				try {
 					speeDb = TtlDB.open(options, path, (int) collectionConfig.getTimeToLiveSeconds(), readOnly);
-
 				} catch (final RocksDBException e) {
 					throw WrappedException.wrap(e);
 				}
@@ -211,7 +208,9 @@ public final class SpeedbKVStorePlugin implements KVStorePlugin, Activeable, Sim
 					throw WrappedException.wrap(e);
 				}
 			}
-			databases.put(new KVCollection(collectionConfig.getCollectionName()), speeDb);
+			var collection = new KVCollection(collectionConfig.getCollectionName());
+			databases.put(collection, speeDb);
+			speedbResourceIds.put(collection, new VTransactionResourceId<>(VTransactionResourceId.Priority.NORMAL, "speedb-" + collectionConfig.getCollectionName()));
 		}
 	}
 
@@ -224,6 +223,14 @@ public final class SpeedbKVStorePlugin implements KVStorePlugin, Activeable, Sim
 		}
 		memOptions.close();
 		fsOptions.close();
+	}
+
+	/**
+	 * Force remove too old elements.
+	 * For test purpose.
+	 */
+	public void forceRemoveTooOldElements() {
+		removeTooOldElements();
 	}
 
 	/**
@@ -245,12 +252,13 @@ public final class SpeedbKVStorePlugin implements KVStorePlugin, Activeable, Sim
 	}
 
 	private WriteBatch getCurrentSpeedbWriteBatch(final KVCollection collection) {
+		final VTransactionResourceId<SpeedbResource> resourceId = speedbResourceIds.get(collection);
 		final VTransaction transaction = transactionManager.getCurrentTransaction();
-		SpeedbResource speedbResource = transaction.getResource(speedbResourceId);
+		SpeedbResource speedbResource = transaction.getResource(resourceId);
 		if (speedbResource == null) {
 			//On a rien trouvé il faut créer la resourceLucene et l'ajouter à la transaction
 			speedbResource = new SpeedbResource(new WriteBatch(), getDatabase(collection));
-			transaction.addResource(speedbResourceId, speedbResource);
+			transaction.addResource(resourceId, speedbResource);
 		}
 		return speedbResource.getWriteBatch();
 	}

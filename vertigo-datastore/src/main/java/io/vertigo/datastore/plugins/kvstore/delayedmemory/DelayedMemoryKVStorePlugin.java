@@ -62,6 +62,7 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin, SimpleDe
 
 	/**
 	 * Constructor.
+	 *
 	 * @param collections List of collections managed by this plugin (comma separated)
 	 * @param daemonManager Manager des daemons
 	 * @param timeToLiveSeconds life time of elements (seconde)
@@ -76,7 +77,7 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin, SimpleDe
 		this.collections = Arrays.stream(collections.split(", "))
 				.map(String::trim)
 				.map(KVCollection::new)
-				.peek(kvc -> collectionsData.put(kvc, new ConcurrentHashMap<String, DelayedMemoryCacheValue>()))
+				.peek(kvc -> collectionsData.put(kvc, new ConcurrentHashMap<>()))
 				.toList();
 		//-----
 		this.timeToLiveSeconds = timeToLiveSeconds;
@@ -86,7 +87,7 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin, SimpleDe
 	@Override
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
 		final int purgePeriod = Math.min(1 * 60, timeToLiveSeconds);
-		return Collections.singletonList(new DaemonDefinition(dmnUniqueName, () -> new RemoveTooOldElementsDaemon(this), purgePeriod));
+		return Collections.singletonList(new DaemonDefinition(dmnUniqueName, () -> new RemoveTooOldElementsDaemon(this), purgePeriod, false));
 	}
 
 	/** {@inheritDoc} */

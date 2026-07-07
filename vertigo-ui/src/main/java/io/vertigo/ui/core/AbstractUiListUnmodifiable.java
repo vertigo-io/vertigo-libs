@@ -37,6 +37,7 @@ import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.definitions.DataFieldName;
 import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.datamodel.data.model.DtList;
+import io.vertigo.datamodel.data.model.DtListState;
 import io.vertigo.datamodel.data.model.Entity;
 import io.vertigo.datamodel.data.model.UID;
 import io.vertigo.datamodel.smarttype.definitions.FormatterException;
@@ -54,7 +55,7 @@ import io.vertigo.vega.webservice.model.UiObject;
 public abstract class AbstractUiListUnmodifiable<O extends DataObject> extends AbstractList<UiObject<O>> implements UiList<O>, Serializable {
 	private static final long serialVersionUID = 5475819598230056558L;
 
-	protected static final int NB_MAX_ELEMENTS = 1000; //Max nb elements in list. Must be kept under 1000 to ensure good performances.
+	protected static final int NB_MAX_ELEMENTS = Math.max(1000, DtListState.DEFAULT_MAX_ROWS); //Max nb elements in list. Must be kept under 1000 to ensure good performances.
 
 	/**
 	 * Accès au storeManager.
@@ -148,7 +149,7 @@ public abstract class AbstractUiListUnmodifiable<O extends DataObject> extends A
 	@Override
 	public final UiObject<O> get(final int index) {
 		return uiObjectByIndex.computeIfAbsent(index, i -> {
-			Assertion.check().isTrue(uiObjectByIndex.size() < 1000, "Trop d'élément dans le buffer uiObjectByIndex de la liste de {0}", getDtDefinition().getName());
+			Assertion.check().isTrue(uiObjectByIndex.size() < NB_MAX_ELEMENTS, "Trop d'élément dans le buffer uiObjectByIndex de la liste de {0}", getDtDefinition().getName());
 			return new MapUiObject<>(obtainDtList().get(i), ViewContextUpdateSecurity.unmodifiable());
 		});
 	}

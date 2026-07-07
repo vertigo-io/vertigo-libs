@@ -17,46 +17,29 @@
  */
 package io.vertigo.ui.impl.springmvc.config;
 
-import java.io.Serializable;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.messageresolver.IMessageResolver;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
-import io.vertigo.core.locale.LocaleMessageText;
+/**
+ * Extension of SpringTemplateEngine to fix addMessageResolver which is lately erased by Spring in his initializeSpecific method, use addCustomMessageResolver instead.
+ * Also add Vertigo message resolver to permit Vertigo localization mechanism in Thymeleaf templates.
+ */
+public class VSpringTemplateEngine extends SpringTemplateEngine {
 
-final class VSpringTemplateEngine extends SpringTemplateEngine {
+	private final List<IMessageResolver> customMessageResolverList = new ArrayList<>();
 
-	private static final class VSpringMessageResolver implements IMessageResolver {
-		@Override
-		public String resolveMessage(final ITemplateContext context, final Class<?> origin, final String key, final Object[] messageParameters) {
-			final var messageParametersSerializable = Arrays.stream(messageParameters)
-					.map(String::valueOf)
-					.toArray(Serializable[]::new);
-
-			return LocaleMessageText.of(() -> key, messageParametersSerializable).getDisplayOpt().orElse(null);
-		}
-
-		@Override
-		public Integer getOrder() {
-			return null; // after default resolver (which have null order)
-		}
-
-		@Override
-		public String getName() {
-			return "VSpringMessageResolver";
-		}
-
-		@Override
-		public String createAbsentMessageRepresentation(final ITemplateContext context, final Class<?> origin, final String key, final Object[] messageParameters) {
-			return LocaleMessageText.of(() -> key, messageParameters).toString();
-		}
+	public void addCustomMessageResolver(final IMessageResolver messageResolver) {
+		customMessageResolverList.add(messageResolver);
 	}
 
 	@Override
 	protected void initializeSpringSpecific() {
 		// add Vertigo LocalManager as secondary message resolver
 		super.addMessageResolver(new VSpringMessageResolver());
+		customMessageResolverList.forEach(super::addMessageResolver);
 	}
+
 }

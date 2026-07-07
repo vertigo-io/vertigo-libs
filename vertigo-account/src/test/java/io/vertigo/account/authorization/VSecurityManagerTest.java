@@ -1084,6 +1084,59 @@ public final class VSecurityManagerTest {
 	}
 
 	@Test
+	public void testAuthorizedOnEntityTreeAxesAllNull() {
+		final Record record = createRecord();
+		record.setEtaCd("PUB");
+
+		final Record recordOtherEtat = createRecord();
+		recordOtherEtat.setEtaCd("CRE");
+
+		final Record recordOtherCommune = createRecord();
+		recordOtherCommune.setEtaCd("PUB");
+		recordOtherCommune.setComId(3L);
+
+		final Record recordOtherDepartement = createRecord();
+		recordOtherDepartement.setEtaCd("PUB");
+		recordOtherDepartement.setDepId(10L);
+		recordOtherDepartement.setComId(null);
+
+		final Record recordOtherRegion = createRecord();
+		recordOtherRegion.setEtaCd("PUB");
+		recordOtherRegion.setRegId(2L);
+		recordOtherRegion.setDepId(null);
+		recordOtherRegion.setComId(null);
+
+		final Record recordNational = createRecord();
+		recordNational.setEtaCd("PUB");
+		recordNational.setRegId(null);
+		recordNational.setDepId(null);
+		recordNational.setComId(null);
+
+		final Authorization recordNotify = getAuthorization(RecordAuthorizations.AtzRecord$notify);
+		final UserSession userSession = securityManager.<TestUserSession>createUserSession();
+		try {
+			securityManager.startCurrentUserSession(userSession);
+			authorizationManager.obtainUserAuthorizations()
+					.withSecurityKeys("typId", DEFAULT_TYPE_ID)
+					.withSecurityKeys("geo", new Long[] { null, null, null }) //droit sur tout
+					.addAuthorization(recordNotify);
+
+			Assertions.assertTrue(authorizationManager.hasAuthorization(RecordAuthorizations.AtzRecord$notify));
+
+			//notify -> TYP_ID=${typId} and ETA_CD=PUB and GEO<=${geo}
+			Assertions.assertTrue(authorizationManager.isAuthorized(record, RecordOperations.notify));
+			Assertions.assertFalse(authorizationManager.isAuthorized(recordOtherEtat, RecordOperations.notify));
+			Assertions.assertTrue(authorizationManager.isAuthorized(recordOtherCommune, RecordOperations.notify));
+			Assertions.assertTrue(authorizationManager.isAuthorized(recordOtherDepartement, RecordOperations.notify));
+			Assertions.assertTrue(authorizationManager.isAuthorized(recordOtherRegion, RecordOperations.notify));
+			Assertions.assertTrue(authorizationManager.isAuthorized(recordNational, RecordOperations.notify));
+
+		} finally {
+			securityManager.stopCurrentUserSession();
+		}
+	}
+
+	@Test
 	public void testNoWriterRole() {
 		//TODO
 	}

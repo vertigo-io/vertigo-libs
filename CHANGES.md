@@ -3,46 +3,195 @@ Version history
 
 Running 5.0.0
 ----------------------
-[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-431-to-500)
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-432-to-500)
+
 more to come :)
+
+Running 4.4.0 - 2026-06-XX
+----------------------
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-432-to-440)
+
+* **[DataFactory] Upgrade Search plugin to ElasticSearch v9**. You may use plugin in libs-lts, if you need previous versions (ES7/ES8)
+  * removed EmbeddedServer, removed _all field
+  * change markToOptimize : only for deletes on remove by query
+* [Vega] Fix `webservices.cors` feature (originCORSFilter parameter)
+* [Vega] Optimization on cors filter, do not send headers if not necessary
+* [Vega] Adding check to validate Origin URI format for Cors
+* [Vega] Update swaggerApi, better conformity (for using swaggerEditor) : json changes replace $ by _ in $ref
+* [Vega] Add isMultiSelectable property to FacetedQueryResultJsonSerializerV5
+* [Vega] FacetedQueryResult json V5 by default
+* [Vega] Add IPv6 localhost to excluded IPs for rate limiting
+* [Vega] Fix bug in swaggerApiBuilder when using a row collection
+* [Vega] Add 'url-include-pattern' parameter in AbstractFilter
+* [Vega] Add LogExceptionsHandlerPlugin by default
+* [Vega][OIDC] Add interfaces for extensibility
+* [dsfr-ui] use svg rather than vicon in dsfr-custom-data-table
+* [dsfr-ui] modify v-icon usage and use svg instead
+* [dsfr-ui] Fix visual with `select-multiple`
+* [dsfr-ui] Fix duplicate subtitle on dsfr-block
+* [Database] Fix InfluxDB timed query with multiple measures (add type conversion before union)
+* [dsfr-ui] Fix missing input on dsfr-radio
+* [Ui] Improve error messages
+* [dsfr-ui] Better accessibility for tables and modals
+* [dsfr-ui] Fix dsfr serverside sort
+* [dsfr-ui] Add component `tabnav`
+* [dsfr-ui] Add ability to filter facets
+* [dsfr-ui] Add slot for customizing autocomplete options
+* [dsfr-ui] Fix attributs inherits for `dsfr-button-submit`
+* [dsfr-ui] Fix text-area bad escaping in read only
+* [dsfr-ui] Better facets accessibility
+* [ui-vuejs, dsfr] add facetTranslatorProvider
+* [Ui] Simplify rendering exception : keep only last message
+* [Ui] Missing context throw 401 instead 500
+* [Ui] Fix missing handler (error 405) with try catch
+* [Ui] Fix date time format in dashboard and chart tooltip (`DD/MM/YYYY HH:mm` to `YYYY-MM-DDTHH:mm`)
+* [Ui] Unify max accepted list size, use max of 1000 and dtListState default max size
+* [Ui] `vu:fileupload` : Add `maxFileSize` (MB), `maxTotalSize` (MB), `maxFiles` and `accept` attributes
+* [Ui] `vu:fileupload` : Fix displayed total file size after page reloading
+* [Ui] Better Uploader accessibility
+* [ui] Add label parameter to fileupload-simple-object
+* [Ui] `vu:fileupload-dropzone` and `vu:v-fileupload-dropzone` : Fix : Change `key` attribute for `fileComponentId` attribute (referencing uploader `componentId` attribute)
+* [Ui][WYSIWYG] Multiple fixes in `vu:text-editor` :
+    * Add default CSS for info and blockquote
+    * Add max-height attribute
+    * Links in https by default
+    * Fix align button highlight
+    * Fix css hightlight rounding
+    * Fix "see source" when text is selected and bubble menu is also enabled
+* [Ui] Fix type serializability for GSON 2.14.0 compatibility
+* [Ui] Fix vueDataParams for array of primitive in vueData
+* [Ui] Add 'addCustomMessageResolver' method in template engine, move previous resolver as default
+* [Ui] Fix error with multiple cardinality attribute on dataObject
+* [Ui] Add button-confirm and fix button-link-confirm
+* [Ui] Fix label_attrs on text-field-read
+* [Ui] Fix css to show action buttons on table, when use tab focus
+* [Ui] Fix authz dev mode (use th:classappend instead of raw class attribute)
+* [Ui] Add assert to enforce boolean for authz expressions (bad authz was evaluated as true)
+* [Ui] Refactor some components precedence : fix vu:authz on th:block
+* [Ui] Add vu:utext unescaped text but protected against vuejs XSS (like th:utext with v-pre)
+* **[Ui] Reset componentStates each request**
+* [Ui] Add `withSessionTimeoutMinutes` to Jetty boot parameters
+* [Ui][A11y] Fix regression on aria-labelledby when no error (use empty string instead of null)
+* [Ui] Use inverted text colors for `vu:messages`
+* [Ui] Add inverted color CSS variables and fix usages
+* [Ui] Fix persist uiMessageStack on expired viewContext redirect
+* [Ui] Add cache-busting on wysiwyg/dsfr static assets via versioned query parameter
+* [ui-vuejs] Fix merge vueData when key not present in response
+* [Database] Fix typo in constraint key, and add translations
+* [DataFactory] Handle ES empty filter as matchAll
+* [DataFactory] Add null check for search adapter config in IndexType
+* [DataFactory][Reindex] Better detection of multiple concurrent reindex (same node)
+* [DataFactory][ES] Fix : query wrapped with " and user using also "
+* [DataFactory] Add waitForRefresh (keyConcept class)
+* **[DataFactory] Remove deprecated findIndexDefinitionByKeyConcept** use findFirstIndexDefinitionByKeyConcept instead
+* [DataFactory] Add support multiselected facet in collections (without search). (use smartType indexType : sep_comma, sep_pipe, text_fr, sep_punct)
+* [DataFactory] Fix string range facet support in ES aggregations
+* [DataStore] Fix simpleMagicMimeType for uppercase extension
+* [DataStore] Fix parameter forwarding for 'filestore.mimeType.tika'
+* [DataStore] Fix count task name => "ByCriteria" when not always true
+* [DataStore] kvstore: fixes multiple collections for all plugins : add tests, fix h2 and speedb
+* [DataFactory] Support parametrized index types (e.g. sep_pipe:facetable) in collections DB search
+* [DataFactory] Move IndexType to collections.model package
+* [Database] Fix LiquibaseMigrationPlugin : close LiquibaseDb
+* [Database] Fix bad Flux query with empty filters
+* [Account][Security] Fix security evaluation when using tree comparison
+* [Daemon] Allow disabling analytics per daemon via DaemonDefinition
+* [Stella] Upgrade Jersey 3.0.17 -> 3.1.12
+* [Peg] Refactored flattening solvers
+* [Common] CompressionCodec : fix operation symmetry, increase 1→4 concurrent compression/decompression
+* [Common] Support mono line comment
+* [Common] Fix sonar RegDDOS
+* Update libs
+  - c3p0 0.11.1 -> 0.14.1
+  - jersey 3.0.17 -> 3.1.12 (may cause issues in eclipse)
+  - thymeleaf-spring6 3.1.3.RELEASE -> 3.1.5.RELEASE
+  - nashorn-core 15.6 -> 15.7
+  - ojdbc11 23.8.0.25.04 -> 23.26.2.0.0
+  - postgresql 42.7.7 -> 42.7.12
+  - liquibase-core 4.32.0 -> 4.33.0
+  - ehcache 3.10.8 -> 3.12.0
+  - tika-core 3.2.0 -> 3.3.1
+  - guava 33.4.8-jre -> 33.6.0-jre
+  - spring-webmvc 6.2.8 -> 6.2.19
+  - express 4.17.2 -> 4.22.1
+  - vertigo-ui-vuejs 4.3.3 -> 4.4.0
+  - vertigo-ui-dsfr 4.3.3 -> 4.4.0
+  - vertigo-ui-wysiwyg 2.12.0 -> 4.4.0
+  - vertigo-ui-server-ssr 3.5.0 -> 4.4.0
+  - vue 3.5.17 -> 3.5.39
+  - quasar 2.18.1 -> 2.21.1
+  - axios 1.8.4 -> 1.18.1
+  - @vitejs/plugin-vue 5.2.4 -> 6.0.7
+  - vite 6.3.5 -> 8.1.3 (Rolldown/Oxc bundler)
+  - @gouvfr/dsfr 1.12.1 -> 1.14.4
+  - @gouvminint/vue-dsfr 8.6.0 -> 8.17.0
+  - date-fns 4.1.0 -> 4.1.2
+  - sass-embedded 1.78.0 -> 1.89.2
+  - typescript 5.2.2 -> 6.0.3
+  - vite-plugin-mkcert 1.17.8 -> 2.1.0
+  - eslint 9.30.1 -> 10.6.0
+  - @tiptap/* 2.12.0 -> 2.27.2
+
+
+Release 4.3.2 - 2025/07/10
+----------------------
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-431-to-432)
+
+* [Ui] Fix missing version in head.html
+* [Ui] Fix table-modifiable header when empty
+* [Vega] Add excluded/included fields to Json methods (**so for POJO**, in swagger too)
+* [Vega] Fix SwaggerApi builder for using raw Collections type in WS signature (ex; List, Set, etc..)
+* [Vega] VegaJavalinFilter is an abstract filter (ability to exclude urls)
+* [Vega] Update jdoc rateLimiting
+* [Database] Add better message for sql constraint violation
+* [Database] Fix generated keys mode (index is 1 based)
+* [DataStore][Tika] Improved log on incoherent mimetype
+* [DataStore][Tika] Add optional config file (eg to add zero file size detection)
+* [DataStore] Fix TwoTableFileStorePlugin
+* [dsfr-ui] Improve accessibility and slots usage in DsfrCustomHeader; enhance DsfrSelect with new noneDisplayed support; update vue-dsfr
+* [Datamodel] Fix ListVAccessor getSourceUID that might be null
+* [libs] Move resources files to java/main/resources
 
 
 Release 4.3.1 - 2025/06/13
 ----------------------
 [Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-430-to-431)
 
-* [UI][Quasar] Improved Accessibility on lots of components
-* [UI][DSFR] Improved Accessibility on lots of components
-* [UI][DSFR] Fix `dsfr-button` inside a `v-for` loop.
-* [UI][DSFR] better facets style
-* [UI][DSFR] Fix pagination on facet selection
-* [Ui][Wysiwyg] Update Tiptap to 2.12.0
-* [Ui][Quasar] Add Reactive components for select, text-field and text-editor (use `th:with="reactive=true"`)
+* [Ui] Add reactive components for select, text-field and text-editor (`th:with="reactive=true"`)
+* [Ui] Add additional_defer_libs_slot to vu:head
 * [Ui] Fix same script declared twice in head, merged conditions
 * [Ui] Fix regression on text-field inside table-modifiable
-* [Ui] Add additional_defer_libs_slot to vu:head
-* [Ui] Fix vui-before-plugins event, now can be use to extends Quasar.lang
-* [Ui] fix authz processor (fix multiple comma separator entity operation on object in context)
-* [ui-vuejs] fix xss on facets in select mode
-* [ui-vuejs] add optional filtering on httpPostAjax response (`options.updatedKeys`)
+* [Ui] Fix vui-before-plugins event, now can be used to extend Quasar.lang
+* [Ui] Fix authz processor (fix multiple comma separator entity operation on object in context)
+* [Ui] Improved accessibility (error messages, v-fileupload, dsfr-v-fileupload, screen readers)
+* [Ui][Wysiwyg] Update Tiptap to 2.12.0
+* [ui-vuejs] Fix xss on facets in select mode
+* [ui-vuejs] Add optional filtering on httpPostAjax response (`options.updatedKeys`)
+* [ui-vuejs] Fix debounce in maps
+* [Account] Plugins can be overridden (no more final)
+* [Account] Add convenience method for use in assertOr
 * [Account][Security] Handle comparison between a field and 'null' value
-* [Account] Plugins can be overrided (no more final)
-* [Account] add convenience method for use in assertOr
 * [Vega] Add missing 'webservices.healthcheck' feature
 * [Vega] Add healthCheck readiness (no subcomponents RED)
 * [Vega][RateLimiting] Add whitelist parameter pattern (range or CIDR)
 * [Vega][Json] Don't set null values to object properties if not present in the json (fail if the attribute is a list)
 * [Vega] Fix ResourceResolver api change
-* [Datastore][S3] InputStream in S3FileStorePlugin no longer shared (may lead to corrupt file on subsequent reads)
-* [Datastore][S3] Add health check
-* [datastore] s3FileStorePlugin purge daemon more resilient
-* [datastore] dbFileStorePlugin supports expiryPolicy
 * [DataStore] Better log is error on delete ByList
-* [Datamodel] support up to 60 characters fieldname
+* [DataStore][S3] InputStream in S3FileStorePlugin no longer shared (may lead to corrupt file on subsequent reads)
+* [DataStore][S3] Add health check
+* [DataStore][S3] s3FileStorePlugin purge daemon more resilient
+* [DataStore] dbFileStorePlugin supports expiryPolicy
+* [Datamodel] Support up to 60 characters fieldname
 * [Database] Fix InfluxDb filter data
+* [dsfr-ui] Improved accessibility on lots of components
+* [dsfr-ui] Fix `dsfr-button` inside a `v-for` loop
+* [dsfr-ui] Improve facets style, pagination, and headingLevel support
+* [dsfr-ui] Enhance DsfrSelectMultiple (failsafe, modelValue, blur/update events, toggleOption)
+* [dsfr-ui] Better support for menu and select-multiple in iframe
+* [dsfr-ui] Fix DsfrComponentTooltip disabled states
 * update libs
-  - c3p0  0.10.2 -> 0.11.1
-  - ojdbc11  23.7.0.25.01 -> 23.8.0.25.04
+  - c3p0 0.10.2 -> 0.11.1
+  - ojdbc11 23.7.0.25.01 -> 23.8.0.25.04
   - postgresql 42.7.5 -> 42.7.7
   - liquibase 4.31.1 -> 4.32.0
   - tika 3.1.0 -> 3.2.0
@@ -51,7 +200,6 @@ Release 4.3.1 - 2025/06/13
   - selenium 4.30.0 -> 4.33.0
   - jackson 2.18.3 -> 2.19.0
   - rest-assured 5.5.1 -> 5.5.5
-
 
 
 Release 4.3.0 - 2025/03/27
@@ -62,6 +210,7 @@ Release 4.3.0 - 2025/03/27
 * **[Ui] EncoderDate now uses ISO format yyyy-MM-dd and yyyy-MM-dd'T'HH:mm**
 * **[Ui] Add length constraint on text-area (same as other inputs : from smartType)**
 * **[Ui] Add wysiwyg editor based on tiptap** (quasar editor is renamed q-text-editor)
+    * To enable, add `useWysiwyg="true"` to your `vu:head` or `vu:head-meta`
 * **[Ui-vuejs] Change i18n to use object instead of string**
     (this.i18n('uploader.progress') to $vui.i18n().uploader.progress)
 * [Ui] Various fix
@@ -111,6 +260,7 @@ Release 4.3.0 - 2025/03/27
 * [Ui] Integrate lodash debounce to replace quasar dependency
 * [Ui] Restore curentUserSession on error pages (handled in another thread by Spring), can be use to get currentLocale
 * [Ui] Fix geolocation input
+* [Ui] Remove `UiRequestUtil.removeCurrentUiMessageStack`
 * [Vega] WebServiceClientAmplifier No content-type in request when there is no body
 * [Vega] Add maxDayRequests and whiteListUsers to RateLimitingManager
 * [Vega] Fix logout if no session

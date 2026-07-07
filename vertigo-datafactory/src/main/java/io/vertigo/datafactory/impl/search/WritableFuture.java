@@ -17,42 +17,84 @@
  */
 package io.vertigo.datafactory.impl.search;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Consumer;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.VSystemException;
 
 /**
  * WritableFuture for set result after execution.
+ *
  * @see "org.apache.http.concurrent.BasicFuture"
  * @author npiedeloup
  * @param <V> Result type
  */
 public final class WritableFuture<V> implements Future<V> {
 
+	private static final Logger LOGGER = LogManager.getLogger(WritableFuture.class);
+
 	private volatile boolean completed;
 	private volatile boolean cancelled;
+	private volatile long progress;
 	private volatile V futureResult; //volatile used for reference of unmutable object
 	private volatile Exception futureException; //volatile used for reference of unmutable object
+	private final List<Consumer<? super WritableFuture<V>>> completionConsumers = new ArrayList<>();
 
 	/** {@inheritDoc} */
 	@Override
 	public boolean isCancelled() {
-		return this.cancelled;
+		return cancelled;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public boolean isDone() {
-		return this.completed;
+		return completed;
+	}
+
+	public long getProgress() {
+		return progress;
+	}
+
+	public void setProgress(final long progress) {
+		this.progress = progress;
+	}
+
+	/**
+	 * Adds a callback that runs when the future completes, whether it succeeds, fails, or is cancelled.
+	 * Any exception thrown by the callback is logged and ignored; use try/catch yourself if you need custom handling or use a dedicated thread to wait for this future completion and add your custom
+	 * logic in this thread.
+	 */
+	public WritableFuture<V> onComplete(final Consumer<? super WritableFuture<V>> consumer) {
+		Assertion.check().isNotNull(consumer, "Completion consumer must not be null");
+		//-----
+		synchronized (this) {
+			if (!completed) {
+				completionConsumers.add(consumer);
+				return this;
+			}
+		}
+		try {
+			consumer.accept(this);
+		} catch (final RuntimeException e) {
+			LOGGER.warn("Completion consumer threw an exception", e);
+		}
+		return this;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public synchronized V get() throws InterruptedException, ExecutionException {
-		while (!this.completed) {
+		while (!completed) {
 			wait();
 		}
 		return getResult();
@@ -66,14 +108,14 @@ public final class WritableFuture<V> implements Future<V> {
 		final long msecs = unit.toMillis(timeout);
 		final long startTime = msecs <= 0 ? 0 : System.currentTimeMillis();
 		long waitTime = msecs;
-		if (this.completed) {
+		if (completed) {
 			return getResult();
 		} else if (waitTime <= 0) {
 			throw new TimeoutException();
 		} else {
 			for (;;) {
-				wait(waitTime);
-				if (this.completed) {
+				wait(waitTime); //wait until timeout, if success or fail : waiting is interrupted by notifyAll()
+				if (completed) {
 					return getResult();
 				}
 				waitTime = msecs - (System.currentTimeMillis() - startTime);
@@ -86,45 +128,74 @@ public final class WritableFuture<V> implements Future<V> {
 
 	/** {@inheritDoc} */
 	@Override
-	public synchronized boolean cancel(final boolean mayInterruptIfRunning) {
-		if (this.completed) {
-			return false; //@see Future api
+	public boolean cancel(final boolean mayInterruptIfRunning) {
+		synchronized (this) {
+			if (completed) {
+				return false; //@see Future api
+			}
+			completed = true;
+			cancelled = true;
+			notifyAll();
 		}
-		this.completed = true;
-		this.cancelled = true;
-		notifyAll();
+		runConsumers();
 		return true;
 	}
 
 	/**
 	 * Mark this execution as success.
+	 *
 	 * @param result Result of execution
 	 */
-	public synchronized void success(final V result) {
-		Assertion.check().isFalse(this.completed, "Task already completed");
-		//-----
-		this.completed = true;
-		this.futureResult = result;
-		notifyAll();
+	public void success(final V result) {
+		synchronized (this) {
+			Assertion.check().isFalse(completed, "Task already completed");
+			//-----
+			completed = true;
+			futureResult = result;
+			notifyAll();
+		}
+		runConsumers();
 	}
 
 	/**
 	 * Mark this execution as failed.
+	 *
 	 * @param exception Failure reason
 	 */
-	public synchronized void fail(final Exception exception) {
-		Assertion.check().isFalse(this.completed, "Task already completed");
-		//-----
-		this.completed = true;
-		this.futureException = exception;
-		notifyAll();
+	public void fail(final Exception exception) {
+		synchronized (this) {
+			Assertion.check().isFalse(completed, "Task already completed");
+			//-----
+			completed = true;
+			futureException = exception;
+			notifyAll();
+		}
+		runConsumers();
 	}
 
 	private V getResult() throws ExecutionException {
 		if (futureException != null) {
 			throw new ExecutionException(futureException);
 		}
+		if (cancelled) {
+			throw new VSystemException("No result as task was cancelled.");
+		}
 		return futureResult;
+	}
+
+	private void runConsumers() {
+		final List<Consumer<? super WritableFuture<V>>> consumersToRun;
+		synchronized (this) {
+			consumersToRun = new ArrayList<>(completionConsumers);
+			completionConsumers.clear();
+		}
+		for (final Consumer<? super WritableFuture<V>> completionConsumer : consumersToRun) {
+			try {
+				completionConsumer.accept(this);
+			} catch (final RuntimeException e) {
+				LOGGER.warn("Completion consumer threw an exception", e);
+			}
+		}
 	}
 
 }

@@ -19,6 +19,7 @@ package io.vertigo.datafactory.impl.search;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -38,19 +39,20 @@ import io.vertigo.datamodel.data.model.KeyConcept;
 
 /**
  * Reindex all data task.
+ *
  * @author npiedeloup (2015)
  * @param <S> KeyConcept type
  */
 final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 	private static final Logger LOGGER = LogManager.getLogger(ReindexAllTask.class);
-	private static volatile boolean REINDEXATION_IN_PROGRESS;
-	private static volatile long REINDEX_COUNT;
+	private static final AtomicBoolean REINDEXATION_IN_PROGRESS = new AtomicBoolean();
 	private final WritableFuture<Long> reindexFuture;
 	private final SearchIndexDefinition searchIndexDefinition;
 	private final SearchManager searchManager;
 
 	/**
 	 * Constructor.
+	 *
 	 * @param searchIndexDefinition Search index definition
 	 * @param reindexFuture Future for result
 	 * @param searchManager Search manager
@@ -83,7 +85,6 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 				final SearchLoader<S, DataObject> searchLoader = Node.getNode().getComponentSpace().resolve(searchIndexDefinition.getSearchLoaderId(), SearchLoader.class);
 				Serializable lastUID = null;
 				LOGGER.info("Full reindexation of {} started", searchIndexDefinition.getName());
-
 				for (final SearchChunk<S> searchChunk : searchLoader.chunk(keyConceptClass)) {
 					final Collection<SearchIndex<S, DataObject>> searchIndexes = searchLoader.loadData(searchChunk);
 
@@ -96,6 +97,7 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 					lastUID = maxUID;
 					reindexCount += searchChunk.getAllUIDs().size();
 					updateReindexCount(reindexCount);
+					LOGGER.trace("Full reindexation of {} in progess ({} elements done)", searchIndexDefinition.getName(), reindexCount);
 				}
 				//On vide la suite, pour le cas ou les dernières données ne sont plus là
 				searchManager.removeAll(searchIndexDefinition, urisRangeToListFilter("docId", lastUID, null));
@@ -112,23 +114,23 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 	}
 
 	private static boolean isReindexInProgress() {
-		return REINDEXATION_IN_PROGRESS;
+		return REINDEXATION_IN_PROGRESS.get();
 	}
 
 	private static void startReindex() {
-		REINDEXATION_IN_PROGRESS = true;
+		REINDEXATION_IN_PROGRESS.set(true);
 	}
 
 	private static void stopReindex() {
-		REINDEXATION_IN_PROGRESS = false;
+		REINDEXATION_IN_PROGRESS.set(false);
 	}
 
-	private static void updateReindexCount(final long reindexCount) {
-		REINDEX_COUNT = reindexCount;
+	private void updateReindexCount(final long reindexCount) {
+		reindexFuture.setProgress(reindexCount);
 	}
 
-	private static long getReindexCount() {
-		return REINDEX_COUNT;
+	private long getReindexCount() {
+		return reindexFuture.getProgress();
 	}
 
 	private static ListFilter urisRangeToListFilter(final String indexFieldName, final Serializable firstUri, final Serializable lastUri) {

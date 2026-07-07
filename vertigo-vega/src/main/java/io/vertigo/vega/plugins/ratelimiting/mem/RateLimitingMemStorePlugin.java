@@ -42,6 +42,7 @@ import io.vertigo.vega.impl.ratelimiting.RateLimitingStorePlugin;
 
 /**
  * Rate limiting counting in memory storage.
+ *
  * @author npiedeloup
  */
 public final class RateLimitingMemStorePlugin implements RateLimitingStorePlugin, SimpleDefinitionProvider {
@@ -83,14 +84,14 @@ public final class RateLimitingMemStorePlugin implements RateLimitingStorePlugin
 	public RateLimitingMemStorePlugin(
 			@ParamValue("windowSeconds") final Optional<Integer> windowSeconds,
 			@ParamValue("maxBanishSeconds") final Optional<Long> maxBanishSeconds) {
-		this.myMaxBanishSeconds = maxBanishSeconds.orElse(RateLimitingManagerImpl.DEFAULT_BANISH_MAX_SECONDS); //Max banish seconds
-		this.myWindowSeconds = windowSeconds.orElse(RateLimitingManagerImpl.DEFAULT_WINDOW_SECONDS);
+		myMaxBanishSeconds = maxBanishSeconds.orElse(RateLimitingManagerImpl.DEFAULT_BANISH_MAX_SECONDS); //Max banish seconds
+		myWindowSeconds = windowSeconds.orElse(RateLimitingManagerImpl.DEFAULT_WINDOW_SECONDS);
 	}
 
 	@Override
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
 		final var purgePeriod = Math.min(15, myWindowSeconds); //min 15s
-		return Collections.singletonList(new DaemonDefinition("DmnRateLimitingMemStoreReset", () -> this::resetRateLimitWindow, purgePeriod));
+		return Collections.singletonList(new DaemonDefinition("DmnRateLimitingMemStoreReset", () -> this::resetRateLimitWindow, purgePeriod, false));
 	}
 
 	@Override

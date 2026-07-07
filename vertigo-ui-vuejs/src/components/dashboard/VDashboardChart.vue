@@ -41,7 +41,7 @@ const verticalLinePlugin = {
      const context = chartInstance.ctx;
 	  const lineLeftOffset = vLine.x?
 	  this.getLinePositionAtX(chartInstance, vLine.x)
-	  :getLinePositionAtIndex(chart, vLine.idx);
+	  :getLinePositionAtIndex(chartInstance, vLine.idx);
     
      // render vertical line
      context.beginPath();
@@ -86,7 +86,8 @@ export default {
         maxTime:                        { type: String, },
 		fillGapDim:                     { type: String, },
 		fillGapValue:					{ type: Number, },
-		timeFormat:                     { type: String, default:'DD/MM/YYYY HH:mm' },
+		timeFormat:                     { type: String, default:'YYYY-MM-DDTHH:mm' },
+		tooltipTimeFormat:				{ type: String, default:'L LT' }, /** dayjs format, e.g. 'L LT' → 20/06/2026 10:00 */
 		verticalLines: 					{ type: Array,  }, /** {x, label, color} */
         additionalOptions: 				{ type: Object, },
 	},
@@ -140,8 +141,24 @@ export default {
             },
             deep: true
           }
+     },
+    unmounted: function() {
+        var chart = window.dashboardGraphChart[this.$data.graphChartId];
+        if(chart) {
+            chart.destroy();
+            delete window.dashboardGraphChart[this.$data.graphChartId];
+        }
     },
-	methods: {
+ 	methods: {
+        _filterObj: function(obj, excludeKey) {
+            var result = {};
+            for(var k in obj) {
+                if(obj.hasOwnProperty(k) && k !== excludeKey) {
+                    result[k] = obj[k];
+                }
+            }
+            return result;
+        },
         hashCode: function(s) {
             let h;
             for(let i = 0; i < s.length; i++) 
@@ -193,11 +210,11 @@ export default {
 			var chartJsType;
 			if ( this.type === "bubbles") {
 				chartJsType = 'bubble';
-				var realLabels = dataLabels.filter(metric => metric !== queryGroupBy);
+				var realLabels = this._filterObj(dataLabels, queryGroupBy);
 				xLabels = Object.values(realLabels);
-                var bubblesData = this.toChartJsBubblesData(datas, realLabels.keys(), realLabels, queryGroupBy);
+                var bubblesData = this.toChartJsBubblesData(datas, Object.keys(realLabels), realLabels, queryGroupBy);
 				chartJsDataSets = [ {data: bubblesData }];
-				chartOptions = this.getChartJsBubblesOptions(datas, realLabels.keys(), queryGroupBy, realLabels, chartTitle, additionalOptions);
+				chartOptions = this.getChartJsBubblesOptions(datas, Object.keys(realLabels), queryGroupBy, realLabels, chartTitle, additionalOptions);
 				this.setChartJsColorOptions(chartJsDataSets, dataColors, 1, 0.5);
 			} else if (this.type ==="linechart") {
 				chartJsType = 'line';
@@ -225,7 +242,7 @@ export default {
 				this.setChartJsPieColorOptions(chartJsDataSets, dataColors);
 			} else if (this.type ==="doughnut") {
 				chartJsType = 'doughnut';
-				var realLabels = dataLabels.filter(metric => metric !== queryGroupBy);
+				var realLabels = this._filterObj(dataLabels, queryGroupBy);
 				chartJsDataSets = this.toChartJsData(datas, realLabels, timedSeries, queryGroupBy);
 				var pieData  = this.toChartJsPieData(chartJsDataSets, dataLabels);
 				chartJsDataSets = pieData.datasets;
@@ -239,7 +256,7 @@ export default {
 				};
 			}
 			//
-			var ctx = this.$.refs.graphCanvas;
+			var ctx = this.$refs.graphCanvas;
 			var finalOptions = this.mergeDeep(chartOptions,additionalOptions);
 			if(!window.dashboardGraphChart[this.$data.graphChartId]) {
     			let chartData = {
@@ -266,7 +283,7 @@ export default {
 			}
 		},
 		setChartJsColorOptions: function(datasets, dataColors, opacity, bgOpacity) {
-			if(dataColors) {
+			if(dataColors && dataColors !== 'DEFAULT') {
 				var myColors = getColors(dataColors, datasets.length, opacity);
 				var myBgColors = getColors(dataColors, datasets.length, bgOpacity?bgOpacity:(opacity?opacity*0.25:0.25));
                 for(var i = 0 ; i<datasets.length; i++) {
@@ -282,7 +299,7 @@ export default {
 		},
 
 		 setChartJsPieColorOptions: function(datasets, dataColors, opacity) {
-			if(dataColors) {
+			if(dataColors && dataColors !== 'DEFAULT') {
 				for(var i = 0 ; i<datasets.length; i++) {
 					datasets[i].backgroundColor = getColors(dataColors, datasets[i].data.length, opacity);//we have one dataset
 				}
@@ -430,7 +447,7 @@ export default {
                         hour: 'HH:mm',
                         minute: 'HH:mm'
                       }, 
-                      tooltipFormat: this.timeFormat+' Z'
+                      tooltipFormat: this.tooltipTimeFormat
                     }
 				}				
                 if(this.$data.truncatedMinTime) {

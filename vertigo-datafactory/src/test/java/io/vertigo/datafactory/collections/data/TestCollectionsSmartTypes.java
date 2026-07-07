@@ -20,6 +20,7 @@ package io.vertigo.datafactory.collections.data;
 import io.vertigo.basics.formatter.FormatterDefault;
 import io.vertigo.datamodel.smarttype.annotations.Formatter;
 import io.vertigo.datamodel.smarttype.annotations.SmartTypeDefinition;
+import io.vertigo.datamodel.smarttype.annotations.SmartTypeProperty;
 
 public enum TestCollectionsSmartTypes {
 
@@ -28,10 +29,17 @@ public enum TestCollectionsSmartTypes {
 	Id,
 
 	@SmartTypeDefinition(String.class)
+	@SmartTypeProperty(property = "indexType", value = "sep_comma")
 	@Formatter(clazz = FormatterDefault.class)
 	Text,
 
 	@SmartTypeDefinition(String.class)
+	@SmartTypeProperty(property = "indexType", value = "sep_pipe:facetable")
+	@Formatter(clazz = FormatterDefault.class)
+	PipeText,
+
+	@SmartTypeDefinition(String.class)
+	@SmartTypeProperty(property = "indexType", value = "keywords")
 	@Formatter(clazz = FormatterDefault.class)
 	Keyword,
 

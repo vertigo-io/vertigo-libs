@@ -50,6 +50,7 @@ public class ItemSearchClient implements Component, DefinitionProvider {
 
 	/**
 	 * Contructeur.
+	 * 
 	 * @param searchManager Search Manager
 	 * @param transactionManager Transaction Manager
 	 */
@@ -88,6 +89,7 @@ public class ItemSearchClient implements Component, DefinitionProvider {
 
 	/**
 	 * Récupération du résultat issu d'une requête.
+	 * 
 	 * @param searchQuery critères initiaux
 	 * @param listState Etat de la liste (tri et pagination)
 	 * @return Résultat correspondant à la requête (de type BaseIndex)
@@ -181,6 +183,16 @@ public class ItemSearchClient implements Component, DefinitionProvider {
 						.withRange("R2", "itemYear:[2000 TO 2005]", "2000-2005")
 						.withRange("R3", "itemYear:[2005 TO *]", "apres 2005")
 						.withOrder(FacetOrder.definition),
+				new FacetRangeDefinitionSupplier("FctDescriptionRangeItem")
+						.withDtDefinition("DtItem")
+						.withLabel("Par description terme")
+						.withFieldName("description") //fieldname in index
+						.withRange("r1", "description:[* TO a]", "#")
+						.withRange("r2", "description:[a TO g]", "a-f")
+						.withRange("r3", "description:[g TO n]", "g-m")
+						.withRange("r4", "description:[n TO t]", "n-s")
+						.withRange("r5", "description:[t TO *]", "t-z")
+						.withOrder(FacetOrder.definition),
 				new FacetRangeDefinitionSupplier("FctLocalisationItem")
 						.withDtDefinition("DtItem")
 						.withLabel("Par distance")
@@ -247,6 +259,14 @@ public class ItemSearchClient implements Component, DefinitionProvider {
 						.withListFilterBuilderQuery("description:#query# manufacturer:#query#")
 						.withCriteriaSmartType("STyString")
 						.withFacet("FctDescriptionItem")
+						.withFacet("FctManufacturerItem")
+						.withFacet("FctManufacturerItemAlpha")
+						.withFacet("FctYearItem"),
+				new FacetedQueryDefinitionSupplier("QryItemDescriptionRangeFacet")
+						.withListFilterBuilderClass(io.vertigo.datafactory.impl.search.dsl.DslListFilterBuilder.class)
+						.withListFilterBuilderQuery("description:#query# manufacturer:#query#")
+						.withCriteriaSmartType("STyString")
+						.withFacet("FctDescriptionRangeItem")
 						.withFacet("FctManufacturerItem")
 						.withFacet("FctManufacturerItemAlpha")
 						.withFacet("FctYearItem"),

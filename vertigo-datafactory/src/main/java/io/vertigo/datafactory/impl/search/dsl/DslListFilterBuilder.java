@@ -57,18 +57,19 @@ import io.vertigo.datafactory.impl.search.dsl.rules.DslParserUtil;
  * QueryString modifier must be add into the ## and will be repeated for all word (separated by regexp \p{White_Space})
  *
  * example:
- *  "" // all result
- *  #QUERY# //directly use user's query as is
- *  code:"#code#"  //CODE equals strictly
- *  comment:#comment*#  //COMMENT contains words prefixed with criteria's comment words (all words)
- *  comment:#+comment*#  //COMMENT MUST contains all words prefixed with criteria's comment words (all words)
- *  year:[#yearMin# TO #yearMax#] //YEAR between crieteria's year_min and year_max
- *  +(addr1:#address# addr2:#address#) //criteria ADDRESS field should be in ADDR1 or ADDR2 index's fields
- *  For more info, look for ElasctiSearch QueryString Syntax
- *  @see "https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html#query-string-syntax"
+ * "" // all result
+ * #QUERY# //directly use user's query as is
+ * code:"#code#" //CODE equals strictly
+ * comment:#comment*# //COMMENT contains words prefixed with criteria's comment words (all words)
+ * comment:#+comment*# //COMMENT MUST contains all words prefixed with criteria's comment words (all words)
+ * year:[#yearMin# TO #yearMax#] //YEAR between crieteria's year_min and year_max
+ * +(addr1:#address# addr2:#address#) //criteria ADDRESS field should be in ADDR1 or ADDR2 index's fields
+ * For more info, look for ElasctiSearch QueryString Syntax
  *
- * If a criteria field contains OR / AND it will be use as logical operator.
- * If a criteria field contains XXX:yyyy it will be use as a specific field query and will not be transformed
+ * @see "https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html#query-string-syntax"
+ *
+ *      If a criteria field contains OR / AND it will be use as logical operator.
+ *      If a criteria field contains XXX:yyyy it will be use as a specific field query and will not be transformed
  *
  * @author npiedeloup
  * @param <C> Criteria type
@@ -98,11 +99,14 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 	private C myCriteria;
 
 	private static String buildIncompletePatternStr(final char openChar, final char closeChar, final int maxLookBehind) {
-		return "(\\" + openChar + ")(?![^\\" + openChar + "]*\\" + closeChar + "|[^\\" + openChar + "]*\\" + openChar + "[^\\" + openChar + "]*\\" + closeChar + "[^\\" + openChar + "]*\\" + closeChar + ")|(?<!\\" + openChar + "[^\\" + closeChar + "]{0," + maxLookBehind + "}|\\" + openChar + "[^\\" + closeChar + "]{0," + maxLookBehind + "}\\" + openChar + "[^\\" + closeChar + "]{0," + maxLookBehind + "}\\" + closeChar + "[^\\" + closeChar + "]{0," + maxLookBehind + "})(\\" + closeChar + ")";
+		return "(\\" + openChar + ")(?![^\\" + openChar + "]*\\" + closeChar + "|[^\\" + openChar + "]*\\" + openChar + "[^\\" + openChar + "]*\\" + closeChar + "[^\\" + openChar + "]*\\" + closeChar
+				+ ")|(?<!\\" + openChar + "[^\\" + closeChar + "]{0," + maxLookBehind + "}|\\" + openChar + "[^\\" + closeChar + "]{0," + maxLookBehind + "}\\" + openChar + "[^\\" + closeChar + "]{0,"
+				+ maxLookBehind + "}\\" + closeChar + "[^\\" + closeChar + "]{0," + maxLookBehind + "})(\\" + closeChar + ")";
 	}
 
 	/**
 	 * Fix query pattern.
+	 *
 	 * @param buildQuery Pattern (not null, could be empty)
 	 * @return this builder
 	 */
@@ -117,6 +121,7 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 
 	/**
 	 * Fix query pattern.
+	 *
 	 * @param buildQuery Pattern (not null, could be empty)
 	 * @return this builder
 	 */
@@ -131,6 +136,7 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 
 	/**
 	 * Fix criteria.
+	 *
 	 * @param criteria Criteria
 	 * @return this builder
 	 */
@@ -140,7 +146,7 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 				.isNotNull(criteria)
 				.isNull(myCriteria, "criteria was already set : {0}", myCriteria);
 		//-----
-		this.myCriteria = criteria;
+		myCriteria = criteria;
 		return this;
 
 	}
@@ -181,7 +187,8 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 		for (final DslMultiExpression multiExpression : multiExpressionDefinition.getMultiExpressions()) {
 			appendOperator = appendMultiExpression(multiExpressionQuery, multiExpression, appendOperator);
 		}
-		return flushSubQueryToQuery(query, (previousNotNull ? multiExpressionDefinition.getOperator() : "") + multiExpressionDefinition.getPreBody(), multiExpressionDefinition.getPostBody(), multiExpressionDefinition.isBlock(), multiExpressionQuery);
+		return flushSubQueryToQuery(query, (previousNotNull ? multiExpressionDefinition.getOperator() : "") + multiExpressionDefinition.getPreBody(), multiExpressionDefinition.getPostBody(),
+				multiExpressionDefinition.isBlock(), multiExpressionQuery);
 	}
 
 	private boolean appendExpression(final StringBuilder query, final DslExpression expressionDefinition, final boolean appendOperator) {
@@ -291,7 +298,8 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 				.append(':');
 	}
 
-	private void appendMultiQuery(final StringBuilder query, final DslBlockQuery dslMultiQueryDefinition, final DslExpression expressionDefinition, final StringBuilder parentQuery, final boolean appendOperator) {
+	private void appendMultiQuery(final StringBuilder query, final DslBlockQuery dslMultiQueryDefinition, final DslExpression expressionDefinition, final StringBuilder parentQuery,
+			final boolean appendOperator) {
 		final boolean flushEveryQuery = expressionDefinition.getMultiField().isPresent();
 		final StringBuilder expressionMultiQuery = new StringBuilder();
 		for (final DslQuery dslQuery : dslMultiQueryDefinition.getQueries()) {
@@ -354,7 +362,8 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 		}
 	}
 
-	private void appendTermQuery(final StringBuilder query, final DslTermQuery dslQuery, final DslExpression expressionDefinition, final StringBuilder outExpressionQuery, final boolean appendOperator) {
+	private void appendTermQuery(final StringBuilder query, final DslTermQuery dslQuery, final DslExpression expressionDefinition, final StringBuilder outExpressionQuery,
+			final boolean appendOperator) {
 		final String fieldName = dslQuery.getTermField();
 		final Object value;
 		if (USER_QUERY_KEYWORD.equalsIgnoreCase(fieldName)) {
@@ -415,7 +424,8 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 		} else if (startQueryDefinition instanceof DslFixedQuery) {
 			appendFixedQuery(startRangeQuery, (DslFixedQuery) startQueryDefinition);
 		} else {
-			throw new IllegalArgumentException("can't parse query \\\"\"+startQueryDefinition+\"\\\" of type " + startQueryDefinition.getClass().getSimpleName() + " (expected DslTermQuery or DslFixedQuery)");
+			throw new IllegalArgumentException(
+					"can't parse query \\\"\"+startQueryDefinition+\"\\\" of type " + startQueryDefinition.getClass().getSimpleName() + " (expected DslTermQuery or DslFixedQuery)");
 		}
 		final StringBuilder endRangeQuery = new StringBuilder();
 		if (endQueryDefinition instanceof DslTermQuery) {
@@ -423,7 +433,8 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 		} else if (endQueryDefinition instanceof DslFixedQuery) {
 			appendFixedQuery(endRangeQuery, (DslFixedQuery) endQueryDefinition);
 		} else {
-			throw new IllegalArgumentException("can't parse query \"" + endQueryDefinition + "\" of type " + endQueryDefinition.getClass().getSimpleName() + " (expected DslTermQuery or DslFixedQuery)");
+			throw new IllegalArgumentException(
+					"can't parse query \"" + endQueryDefinition + "\" of type " + endQueryDefinition.getClass().getSimpleName() + " (expected DslTermQuery or DslFixedQuery)");
 		}
 
 		//flush Range Query
@@ -491,22 +502,30 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 				query.append(userCriteria.getPostMissingPart());
 			} else {
 				criteriaOnDefinitionField++;
-				query.append(userCriteria.getPreMissingPart());
+				final var isInsideQuote = dslTermDefinition.getPreBody().contains("\"") && dslTermDefinition.getPostBody().contains("\"");
+				if (!(isInsideQuote && userCriteria.getPreMissingPart().equals("\""))) {
+					query.append(userCriteria.getPreMissingPart());
+				}
 				if (RESERVED_QUERY_KEYWORDS.contains(criteriaValue)) {
 					query.append(criteriaValue.toUpperCase(Locale.ROOT)); //toUpperCase car ES n'interprete pas correctement en lowercase
 				} else {
-					appendStandardCriteriaValue(query, dslTermDefinition, userCriteria, criteriaValue);
+					appendStandardCriteriaValue(query, dslTermDefinition, userCriteria, criteriaValue, isInsideQuote);
 				}
-				query.append(userCriteria.getPostMissingPart());
+				if (!(isInsideQuote && userCriteria.getPostMissingPart().equals("\""))) {
+					query.append(userCriteria.getPostMissingPart());
+				}
 			}
 		}
 		return criteriaOnDefinitionField > 1; //useBlock if more than 1 criteria
 	}
 
-	private static void appendStandardCriteriaValue(final StringBuilder query, final DslTermQuery dslTermDefinition, final DslUserCriteria userCriteria, final String criteriaValue) {
-		query.append(userCriteria.getOverridedPreModifier().isEmpty() ? dslTermDefinition.getPreTerm() : userCriteria.getOverridedPreModifier())
+	private static void appendStandardCriteriaValue(final StringBuilder query, final DslTermQuery dslTermDefinition, final DslUserCriteria userCriteria, final String criteriaValue,
+			final boolean isInsideQuote) {
+		final var preModifierResolved = userCriteria.getOverridedPreModifier().isEmpty() ? dslTermDefinition.getPreTerm() : userCriteria.getOverridedPreModifier();
+		final var postModifierResolved = userCriteria.getOverridedPostModifier().isEmpty() ? dslTermDefinition.getPostTerm() : userCriteria.getOverridedPostModifier();
+		query.append(isInsideQuote && preModifierResolved.equals("\"") ? "" : preModifierResolved)
 				.append(criteriaValue)
-				.append(userCriteria.getOverridedPostModifier().isEmpty() ? dslTermDefinition.getPostTerm() : userCriteria.getOverridedPostModifier());
+				.append(isInsideQuote && postModifierResolved.equals("\"") ? "" : postModifierResolved);
 	}
 
 	private static List<DslExpression> flattenMultiToMonoFieldExpressionDefinition(
@@ -540,6 +559,7 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 
 	/**
 	 * Concat string elements.
+	 *
 	 * @param elements Nullable elements
 	 * @return Concat string
 	 */

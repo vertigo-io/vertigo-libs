@@ -64,18 +64,27 @@
                                     <template v-if="file.errorMessage"> ({{ file.errorMessage }})</template>
                                 </span>
                             <template v-if="file.status === 'IN_PROGRESS'">
-                                <v-icon name="ri-loader-4-line" scale="0.8" animation="spin"></v-icon>
+                                <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" class="vicon vicon-sm vicon-spin iconify iconify--local"
+                                     width="1em" height="1em" viewBox="0 0 24 24">
+                                    <path fill="currentColor" d="M18.364 5.636L16.95 7.05A7 7 0 1 0 19 12h2a9 9 0 1 1-2.636-6.364"></path>
+                                </svg>
                                 {{ (file.progress * 100).toFixed() }} % -
                                 <button @click.prevent="slotProps.abortUpload(file)"
                                         title="Annuler le téléversement du fichier">
-                                    <v-icon name="ri-close-line" scale="0.7"></v-icon>
+                                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" class="vicon vicon-sm iconify iconify--local"
+                                         width="1em" height="1em" viewBox="0 0 24 24">
+                                        <path fill="currentColor" d="m12 10.587l4.95-4.95l1.414 1.414l-4.95 4.95l4.95 4.95l-1.415 1.414l-4.95-4.95l-4.949 4.95l-1.414-1.415l4.95-4.95l-4.95-4.95L7.05 5.638z" />
+                                    </svg>
                                     {{ $vui.i18n().uploader.abort }}
                                 </button>
                             </template>
                             <template v-if="!slotProps.readonly && file.status != 'IN_PROGRESS'">
                                 <button @click.prevent="slotProps.removeFile(file)"
                                         :title="'Supprimer le fichier ' + file.name">
-                                    <v-icon name="ri-delete-bin-7-line" scale="0.7"></v-icon>
+                                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" class="vicon vicon-sm iconify iconify--local"
+                                         width="1em" height="1em" viewBox="0 0 24 24">
+                                        <path fill="currentColor" d="M17 6h5v2h-2v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V8H2V6h5V3a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1zm1 2H6v12h12zM9 4v2h6V4z" />
+                                    </svg>
                                     {{ $vui.i18n().uploader.remove }}
                                 </button>
                             </template>

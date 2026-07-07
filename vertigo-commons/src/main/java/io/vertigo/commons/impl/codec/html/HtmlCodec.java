@@ -29,14 +29,13 @@ import java.util.regex.Pattern;
  */
 public final class HtmlCodec extends AbstractCodec {
 	private static final String ESCAPE_PATTERN_STRING = "&#([0-9]{2,4});";
-	private final Pattern pattern;
+	private static final Pattern ESCAPE_PATTERN = Pattern.compile(ESCAPE_PATTERN_STRING);
 
 	/**
 	 * Constructor.
 	 */
 	public HtmlCodec() {
 		super('&', ';', getCharacters());
-		pattern = Pattern.compile(ESCAPE_PATTERN_STRING);
 	}
 
 	/**
@@ -44,7 +43,8 @@ public final class HtmlCodec extends AbstractCodec {
 	 * Respecter l'espace entre le caractere et son code
 	 * Les caracteres ont été remplacés par des caractères
 	 * unicode UTF-16
-	 * @return  tableau des éléments à remplacer
+	 *
+	 * @return tableau des éléments à remplacer
 	 */
 	private static String[] getCharacters() {
 		//basé sur Character entity references in HTML 4 : http://www.w3.org/TR/html4/sgml/entities.html#iso-88591
@@ -366,9 +366,11 @@ public final class HtmlCodec extends AbstractCodec {
 				/*************************************************************/
 				(char) 39 + " &#39;", //caractere en collision avec l'apostrophe de word
 
-				/** Ces caractères correspondent à un second encodage de caractère HTML
+				/**
+				 * Ces caractères correspondent à un second encodage de caractère HTML
 				 * (NB : le code ascii 128 pour l'euro est prioritaire sur 8364 car il y a un sort
-				 * le décodage n'est donc pas forcément bijectif avec l'encodage). */
+				 * le décodage n'est donc pas forcément bijectif avec l'encodage).
+				 */
 				(char) 146 + " &#39;", // apostrophe de Word
 				(char) 128 + " &euro;", //euro sign
 				(char) 8217 + " &#8217;", // apostrophe de Word
@@ -384,7 +386,7 @@ public final class HtmlCodec extends AbstractCodec {
 		if (encoded == null) {
 			return null;
 		}
-		final var decodeHtmlChar = pattern.matcher(encoded)
+		final var decodeHtmlChar = ESCAPE_PATTERN.matcher(encoded)
 				.replaceAll(
 						match -> String.valueOf((char) Integer.parseInt(match.group(1))));
 		return doDecode(decodeHtmlChar);
@@ -404,7 +406,7 @@ public final class HtmlCodec extends AbstractCodec {
 	protected boolean shouldEncode(final char c, final int index, final String stringToEncode) {
 		if (c == '&') {
 			//cas particulier pour html, le navigateur envoi les caractères incompatible sous la forme : &#xxxx; il n faut pas encoder le & dans ce cas
-			final Matcher matcher = pattern.matcher(stringToEncode);
+			final Matcher matcher = ESCAPE_PATTERN.matcher(stringToEncode);
 			matcher.region(index, Math.min(index + 7, stringToEncode.length()));
 			if (matcher.find()) {
 				//si l'index match avec la regExp on n'encode pas

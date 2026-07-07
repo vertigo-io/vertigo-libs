@@ -18,6 +18,7 @@
 package io.vertigo.commons.impl.codec.compression;
 
 import java.util.Arrays;
+import java.util.concurrent.Semaphore;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
@@ -51,33 +52,54 @@ public final class CompressionCodec implements Codec<byte[], byte[]> {
 
 	private static final byte[] COMPRESS_KEY = { 'C', 'O', 'M', 'P' };
 
-	private final Deflater deflater = new Deflater(COMPRESSION_LEVEL);
+	/** Maximum number of concurrent compression operations. */
+	private static final int MAX_CONCURRENT_COMPRESSIONS = 4;
 
-	private final Inflater inflater = new Inflater();
+	/** Maximum number of concurrent decompression operations. */
+	private static final int MAX_CONCURRENT_DECOMPRESSIONS = 4;
+
+	// Fair mode prevents starvation of large payloads when small ones arrive continuously.
+	private final Semaphore compressionSemaphore = new Semaphore(MAX_CONCURRENT_COMPRESSIONS, true);
+	private final Semaphore decompressionSemaphore = new Semaphore(MAX_CONCURRENT_DECOMPRESSIONS, true);
 
 	/**
 	 * Compression d'un objet.
+	 *
 	 * @param unCompressedObject Objet non compressé
 	 * @return Objet Compressé
 	 */
 	@Override
 	public byte[] encode(final byte[] unCompressedObject) {
 		Assertion.check().isNotNull(unCompressedObject);
-		checkMaxSize(unCompressedObject.length);
+		checkMaxSize(unCompressedObject.length, false);
 		//-----
-		if (unCompressedObject.length < MIN_SIZE_FOR_COMPRESSION) {
+		// Skip compression for small payloads, UNLESS they start with COMP header
+		// (which would be misinterpreted as compressed data during decode).
+		if (unCompressedObject.length < MIN_SIZE_FOR_COMPRESSION && !startsWithCompressKey(unCompressedObject)) {
 			return unCompressedObject;
 		}
 
 		final int nonCompressedLength = unCompressedObject.length;
+		// Calcul du nombre de permis à acquérir en fonction de la taille de l'objet à compresser, avec un minimum de 1 et un maximum de MAX_CONCURRENT_COMPRESSIONS
+		final int permits = Math.min(MAX_CONCURRENT_COMPRESSIONS, Math.max(1,
+				(int) Math.ceil((double) nonCompressedLength * MAX_CONCURRENT_COMPRESSIONS / MAX_SIZE_FOR_COMPRESSION)));
 		final byte[] compressedObject = new byte[nonCompressedLength + 8];
 		final int compressedSize;
-		synchronized (deflater) { //deflater n'est pas multi-thread
-			deflater.reset();
-			deflater.setInput(unCompressedObject);
-			deflater.finish();
-			deflater.deflate(compressedObject);
-			compressedSize = deflater.getTotalOut();
+		try {
+			compressionSemaphore.acquire(permits);
+			try {
+				final Deflater deflater = new Deflater(COMPRESSION_LEVEL);
+				deflater.setInput(unCompressedObject);
+				deflater.finish();
+				deflater.deflate(compressedObject);
+				compressedSize = deflater.getTotalOut();
+				deflater.end();
+			} finally {
+				compressionSemaphore.release(permits);
+			}
+		} catch (final InterruptedException e) {
+			Thread.currentThread().interrupt();
+			throw WrappedException.wrap(e);
 		}
 		final byte[] newCompressedObject = new byte[compressedSize + COMPRESS_KEY.length + 4];
 		System.arraycopy(COMPRESS_KEY, 0, newCompressedObject, 0, COMPRESS_KEY.length);
@@ -90,14 +112,30 @@ public final class CompressionCodec implements Codec<byte[], byte[]> {
 		return newCompressedObject;
 	}
 
-	private static void checkMaxSize(final int length) {
+	private static boolean startsWithCompressKey(final byte[] data) {
+		if (data.length < COMPRESS_KEY.length) {
+			return false;
+		}
+		for (int i = 0; i < COMPRESS_KEY.length; i++) {
+			if (data[i] != COMPRESS_KEY[i]) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private static void checkMaxSize(final int length, final boolean isCompressed) {
 		if (length >= MAX_SIZE_FOR_COMPRESSION) {
+			if (isCompressed) {
+				throw new IllegalArgumentException("L'objet est trop gros pour être décompressé en mémoire (" + length / (1024 * 1024) + " Mo)");
+			}
 			throw new IllegalArgumentException("L'objet est trop gros pour être compressé en mémoire (" + length / (1024 * 1024) + " Mo)");
 		}
 	}
 
 	/**
 	 * Décompression d'un objet.
+	 *
 	 * @param compressedObject Objet compressé
 	 * @return Objet décompressé
 	 */
@@ -118,15 +156,25 @@ public final class CompressionCodec implements Codec<byte[], byte[]> {
 				final int ch3 = compressedObject[COMPRESS_KEY.length + 2] & 0xff;
 				final int ch4 = compressedObject[COMPRESS_KEY.length + 3] & 0xff;
 				final int unCompressedLength = ch4 + (ch3 << 8) + (ch2 << 16) + (ch1 << 24);
-				checkMaxSize(unCompressedLength);
+				checkMaxSize(unCompressedLength, true);
 
+				// Calcul du nombre de permis à acquérir en fonction de la taille de l'objet à décompresser, avec un minimum de 1 et un maximum de MAX_CONCURRENT_DECOMPRESSIONS
+				final int permits = Math.min(MAX_CONCURRENT_DECOMPRESSIONS, Math.max(1,
+						(int) Math.ceil((double) unCompressedLength * MAX_CONCURRENT_DECOMPRESSIONS / MAX_SIZE_FOR_COMPRESSION)));
 				try {
-					synchronized (inflater) { //inflater n'est pas multi-thread
-						inflater.reset();
+					decompressionSemaphore.acquire(permits);
+					try {
+						final Inflater inflater = new Inflater();
 						inflater.setInput(compressedObject, COMPRESS_KEY.length + 4, compressedObject.length - (COMPRESS_KEY.length + 4));
 						uncompressedObject = new byte[unCompressedLength];
 						inflater.inflate(uncompressedObject);
+						inflater.end();
+					} finally {
+						decompressionSemaphore.release(permits);
 					}
+				} catch (final InterruptedException e) {
+					Thread.currentThread().interrupt();
+					throw WrappedException.wrap(e);
 				} catch (final DataFormatException e) {
 					throw WrappedException.wrap(e);
 				}

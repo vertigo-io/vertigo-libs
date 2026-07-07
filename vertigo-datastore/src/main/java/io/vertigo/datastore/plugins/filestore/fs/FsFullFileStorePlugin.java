@@ -92,6 +92,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin, SimpleDefin
 
 	/**
 	 * Constructor.
+	 *
 	 * @param name Store name
 	 * @param path Root directory
 	 * @param transactionManager Transaction manager
@@ -129,7 +130,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin, SimpleDefin
 
 	@Override
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
-		return Collections.singletonList(new DaemonDefinition(dmnUniqueName, () -> new PurgeFileStoreDaemon(this), 5 * 60));
+		return Collections.singletonList(new DaemonDefinition(dmnUniqueName, () -> new PurgeFileStoreDaemon(this), 5 * 60, false));
 	}
 
 	public void deleteOldFiles() {
@@ -141,6 +142,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin, SimpleDefin
 
 	/**
 	 * Daemon to purge old files.
+	 *
 	 * @author npiedeloup
 	 */
 	public static final class PurgeFileStoreDaemon implements Daemon {

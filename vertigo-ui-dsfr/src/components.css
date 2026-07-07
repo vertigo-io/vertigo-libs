@@ -1,0 +1,130 @@
+/* Composant de modale */
+.v-modal .fr-modal__content {
+    /* Le footer fait partie de l’iframe */
+	margin-bottom: 0;
+}
+
+.v-modal .v-modal__dsfr-content {
+	height: 420px;
+}
+
+.v-modal .fr-modal__footer {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+
+/* Composant de la navtab */
+.dsfr-navtab {
+    margin-bottom: 2rem;
+    padding-top: 1rem;
+    --underline-max-width: 0;
+}
+
+.dsfr-navtab .fr-sidemenu {
+    padding-right: 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+.dsfr-navtab ul {
+    --ul-type: none;
+    --ul-start: 0;
+    padding-left: 1rem;
+    margin: 0;
+}
+
+.dsfr-navtab .fr-accordion__btn::before {
+    --icon-size: 1rem;
+    content: "";
+    display: inline-block;
+    flex: 0 0 auto;
+    width: var(--icon-size);
+    height: var(--icon-size);
+    margin: 0 0.5rem;
+    background-color: currentColor;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath d='M3 4h18v2H3V4Zm0 7h12v2H3v-2Zm0 7h18v2H3v-2Z'/%3E%3C/svg%3E") 100% 100%;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath d='M3 4h18v2H3V4Zm0 7h12v2H3v-2Zm0 7h18v2H3v-2Z'/%3E%3C/svg%3E") 100% 100%;
+    vertical-align: calc((0.75em - var(--icon-size)) * 0.5);
+}
+
+.dsfr-navtab__tab {
+    position: relative;
+    padding: 0;
+}
+
+.dsfr-navtab__tab::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    box-shadow: inset 0 1px 0 0 var(--border-default-grey), 0 1px 0 0 var(--border-default-grey);
+    pointer-events: none;
+}
+
+.dsfr-navtab__tab a {
+    display: block;
+    width: 100%;
+    padding: 0.75rem 0.5rem;
+    border: 0;
+    background-image: none;
+    color: var(--text-default-grey);
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.5;
+    text-align: left;
+    text-decoration: none;
+}
+
+.dsfr-navtab__tab a:hover {
+    background-color: var(--hover);
+}
+
+.dsfr-navtab__tab[data-current="page"] {
+    display: none;
+    color: var(--text-active-blue-france);
+}
+
+@media (width >= 48em) {
+    .dsfr-navtab {
+        padding-top: 2rem;
+    }
+
+    .dsfr-navtab ul {
+        display: flex;
+        flex-direction: row;
+        padding: 0;
+        background: linear-gradient(0deg, var(--border-default-grey), var(--border-default-grey)) 0 100% / 100% 2px no-repeat;
+    }
+
+    .dsfr-navtab .fr-sidemenu__inner {
+        padding: 0;
+        box-shadow: none;
+    }
+
+    .dsfr-navtab__tab::before {
+        content: none;
+    }
+
+    .dsfr-navtab__tab[data-current="page"] {
+        display: block;
+    }
+
+    .dsfr-navtab__tab a {
+        padding: 0.75rem;
+        font-size: 14px;
+        font-weight: 400;
+        background: linear-gradient(0deg, var(--border-default-grey), var(--border-default-grey)) 0 100% / 100% 2px no-repeat;
+    }
+
+    .dsfr-navtab__tab a:hover:not([aria-current="page"]) {
+        background: linear-gradient(0deg, var(--border-contrast-grey), var(--border-contrast-grey)) 0 100% / 100% 2px no-repeat var(--background-default-grey-hover) !important;
+    }
+
+    .dsfr-navtab__tab a[aria-current="page"] {
+        display: block;
+        color: var(--text-active-blue-france);
+        background: linear-gradient(0deg, var(--border-active-blue-france), var(--border-active-blue-france)) 0 100% / 100% 2px no-repeat;
+    }
+}

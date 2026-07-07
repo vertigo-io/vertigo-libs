@@ -5,9 +5,21 @@
 }
 		
 :root {
+	/* On primary / secondary / accent backgrounds (dark/saturated) */
 	--v-primary-invert: rgba(255, 255, 255, 0.9);
 	--v-secondary-invert: rgba(255, 255, 255, 0.9);
-	--v-accent-invert:	rgba(255, 255, 255, 0.9);
+	--v-accent-invert: rgba(255, 255, 255, 0.9);
+
+	/* On tertiary background (light grey #F7F7F7) */
+	--v-tertiary-invert: rgba(0, 0, 0, 0.9);
+
+	/* On negative / positive / info backgrounds (dark/saturated) */
+	--v-negative-invert: rgba(255, 255, 255, 0.9);
+	--v-positive-invert: rgba(255, 255, 255, 0.9);
+	--v-info-invert: rgba(255, 255, 255, 0.9);
+
+	/* On warning background (yellow/light) */
+	--v-warning-invert: rgba(0, 0, 0, 0.9);
 }
 
 .flex-end {
@@ -51,6 +63,19 @@ iframe {
 }
 .text-accent-inverted {
 	color:var(--v-accent-invert) !important; 
+}
+
+.text-negative-inverted {
+	color:var(--v-negative-invert) !important;
+}
+.text-positive-inverted {
+	color:var(--v-positive-invert) !important;
+}
+.text-info-inverted {
+	color:var(--v-info-invert) !important;
+}
+.text-warning-inverted {
+	color:var(--v-warning-invert) !important;
 }
 
 .v-field__required .q-field__label::after,
@@ -205,7 +230,7 @@ img.avatar {
 }
 .table-tertiary  .q-btn {
 	background: var(--q-tertiary);
-	color:var(--q-tertiary-invert);
+	color:var(--v-tertiary-invert);
 }
 
 /** tableaux auto-ellipsis */
@@ -254,15 +279,37 @@ img.avatar {
 }
 
 .no-touch .showButtonOnHover:hover > .q-btn[disabled],
+.no-touch .showButtonOnHover:focus-within > .q-btn[disabled],
 .no-touch tr:hover .showButtonOnHover > .q-btn[disabled],
-.no-touch div.q-hoverable:hover .showButtonOnHover > .q-btn[disabled] {
-  opacity: 0.5!important;
+.no-touch tr:focus-within .showButtonOnHover > .q-btn[disabled],
+.no-touch div.q-hoverable:hover .showButtonOnHover > .q-btn[disabled],
+.no-touch div.q-hoverable:focus-within .showButtonOnHover > .q-btn[disabled] {
+	opacity: 0.5!important;
   transition: .5s;
 }
 
 .no-touch .showButtonOnHover > .q-btn[disabled] {
   opacity: 0!important;
   transition: .5s;
+}
+
+.no-touch .showButtonOnHover:hover > .q-btn,
+.no-touch .showButtonOnHover:focus-within > .q-btn,
+.no-touch tr:hover .showButtonOnHover > .q-btn,
+.no-touch tr:focus-within .showButtonOnHover > .q-btn,
+.no-touch div.q-hoverable:hover .showButtonOnHover > .q-btn,
+.no-touch div.q-hoverable:focus-within .showButtonOnHover > .q-btn {
+  opacity: 1;
+  transition: .5s;
+}
+
+.no-touch .showButtonOnHover > .q-btn {
+  opacity: 0;
+  transition: .5s;
+}
+
+.no-touch div.q-hoverable:not(:hover) .showButtonOnHover > .q-btn {
+  opacity: 0 !important;
 }
 
 .table-primary  .q-btn, .table-secondary  .q-btn {
@@ -351,22 +398,6 @@ thead tr:hover:last-child th:last-child:not(:first-child), tr:hover td:nth-last-
 .col-break {
 	margin:0 !important;
 	width:100%;
-}
-
-.no-touch .showButtonOnHover:hover > .q-btn,
-.no-touch tr:hover .showButtonOnHover > .q-btn,
-.no-touch div.q-hoverable:hover .showButtonOnHover > .q-btn {
-  opacity: 1;
-  transition: .5s;
-}
-
-.no-touch .showButtonOnHover > .q-btn {
-  opacity: 0;
-  transition: .5s;
-}
-
-.no-touch div.q-hoverable:not(:hover) .showButtonOnHover > .q-btn {
-  opacity: 0 !important;
 }
 
 .v-fileupload .files .file {
@@ -468,29 +499,12 @@ table .q-uploader .q-btn {
 	overflow: auto;
 }
 
-.v-modal .v-modal__dsfr-content {
-	height: 420px;
-}
-
 .v-modal iframe {
 	display: block;
 	width: 100%;
 	height: 100%;
 }
 
-/* Le footer fait partie de l’iframe */
-.v-modal .fr-modal__content {
-	margin-bottom: 0;
-}
-
-.v-modal .fr-modal__footer {
-    margin-left: 0;
-    margin-right: 0;
-}
-
-[v-cloak] {
-    visibility: hidden;
-}
 
 /******** dev mode of authorizations *******/
 
@@ -512,6 +526,10 @@ table .q-uploader .q-btn {
     background-image: url("../images/authz-locked.png")!important;
     opacity: .7;
     background-position: center;
+}
+
+.authz--locked:hover {
+  background-size: 90px;
 }
 
 
@@ -583,21 +601,3 @@ table .q-uploader .q-btn {
 	height: 2.25em !important;
 }
 
-
-
-/********  conflit handling between dsfr and quasar *******/
-.q-separator {
- 	padding: unset;
- }
- 
-.q-item[href], .q-btn[href] {
-    background-image: unset; 
-}
-
-a[href]:active.q-item {
-	background-color: inherit;
-}
-
-button:not(:disabled):hover.q-btn-item {
-	background-color: transparent;
-}

@@ -6,6 +6,11 @@ import vue from '@vitejs/plugin-vue'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  css: {
+    lightningcss: {
+      errorRecovery: true
+    }
+  },
   build: {
     sourcemap: true,
     lib: {
@@ -13,7 +18,7 @@ export default defineConfig({
       name: 'vertigo-wysiwyg',
       fileName: (format) => `vertigo-wysiwyg.${format}.js`,
     },
-    rollupOptions: {
+    rolldownOptions: {
       external: ['vue'],
       output: {
         globals: {
@@ -31,6 +36,6 @@ export default defineConfig({
     }
   },
   define: {
-    'process.env': process.env
+    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
   }
 })

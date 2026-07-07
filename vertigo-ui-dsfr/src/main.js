@@ -21,6 +21,7 @@ import DsfrCustomHeaderMenuLinks from "@/components/DsfrHeader/DsfrCustomHeaderM
 import DsfrCustomDataTable from "@/components/DsfrDataTable/DsfrCustomDataTable.vue";
 import DsfrCustomCheckbox from "@/components/DsfrCheckbox/DsfrCustomCheckbox.vue";
 import DsfrCustomSelect from "@/components/DsfrSelect/DsfrCustomSelect.vue";
+import DsfrCustomPagination from "@/components/DsfrDataTable/DsfrCustomPagination.vue";
 
 import DsfrButtonTooltip from "@/components/DsfrTooltip/DsfrButtonTooltip.vue";
 import DsfrLinkTooltip from "@/components/DsfrTooltip/DsfrLinkTooltip.vue";
@@ -30,7 +31,13 @@ import Autocomplete from "@trevoreyre/autocomplete-vue/Autocomplete.vue";
 
 import './utils.css'
 import './surcharges.css'
+import './components.css'
 import './vertigo-ui-dsfr.css'
+
+import { addCollection } from '@iconify/vue';
+import ri from '@iconify-json/ri/icons.json';
+
+addCollection(ri);
 
 var DSFR = {
     install: function (vueApp, options) {
@@ -49,6 +56,7 @@ var DSFR = {
         vueApp.component('DsfrCustomHeader', DsfrCustomHeader)
         vueApp.component('DsfrCustomHeaderMenuLinks', DsfrCustomHeaderMenuLinks)
         vueApp.component('DsfrCustomDataTable', DsfrCustomDataTable)
+        vueApp.component('DsfrCustomPagination', DsfrCustomPagination)
         vueApp.component('DsfrCustomCheckbox', DsfrCustomCheckbox)
         vueApp.component('DsfrCustomSelect', DsfrCustomSelect)
 

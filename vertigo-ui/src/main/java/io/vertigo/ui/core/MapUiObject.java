@@ -38,6 +38,7 @@ import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.datamodel.data.util.DataModelUtil;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.smarttype.definitions.FormatterException;
+import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 import io.vertigo.ui.core.encoders.EncoderDate;
 import io.vertigo.vega.engines.webservice.json.VegaUiObject;
 
@@ -114,19 +115,41 @@ public final class MapUiObject<D extends DataObject> extends VegaUiObject<D> imp
 		//----
 		final var dtField = getDataField(fieldName);
 		if (dtField.cardinality().hasMany()) {
-			if (value instanceof String[]) {
-				if (isBlank((String[]) value)) {
+			final var smartTypeManager = Node.getNode().getComponentSpace().resolve(SmartTypeManager.class);
+			if (value instanceof final String[] values) {
+				if (isAboutDate(dtField)) {
+					final String[] encodedDates = Arrays.stream(values)
+							.map(strValue -> {
+								try {
+									final var typedValue = EncoderDate.stringToValue(strValue, dtField.smartTypeDefinition().getBasicType());
+									return smartTypeManager.valueToString(dtField.smartTypeDefinition(), typedValue);
+								} catch (final FormatterException e) {
+									return strValue; // fallback to input value
+								}
+							})
+							.toArray(String[]::new);
+					setInputValue(fieldName, encodedDates);
+				} else if (isBlank(values)) {
 					// empty values means a reset of the field. An array is never null so we put an empty array.
 					setInputValue(fieldName, EMPTY_INPUT);
 				} else {
-					setInputValue(fieldName, (String[]) value);
+					setInputValue(fieldName, values);
 				}
 			} else {
-				if (StringUtil.isBlank((String) value)) {
+				final String strValue = (String) value;
+				if (StringUtil.isBlank(strValue)) {
 					// single empty value means a reset of the field. An array is never null so we put an empty array.
 					setInputValue(fieldName, EMPTY_INPUT);
+				} else if (isAboutDate(dtField)) {
+					try {
+						final var typedValue = EncoderDate.stringToValue(strValue, dtField.smartTypeDefinition().getBasicType());
+						final String encoded = smartTypeManager.valueToString(dtField.smartTypeDefinition(), typedValue);
+						setInputValue(fieldName, encoded);
+					} catch (final FormatterException e) {
+						setInputValue(fieldName, strValue);
+					}
 				} else {
-					setInputValue(fieldName, (String) value);
+					setInputValue(fieldName, strValue);
 				}
 			}
 		} else {
@@ -317,16 +340,31 @@ public final class MapUiObject<D extends DataObject> extends VegaUiObject<D> imp
 		//---
 		final var dtField = getDataField(keyFieldName);
 		final var smartType = dtField.smartTypeDefinition();
+		final var value = getTypedValue(keyFieldName, Serializable.class);
+
+		if (dtField.cardinality().hasMany()) {
+			if (value == null) {
+				return null;
+			}
+			if (value instanceof final Collection<?> list) {
+				return list.stream()
+						.map(v -> doEncodeValue((Serializable) v, dtField, smartType))
+						.toArray();
+			}
+			throw new IllegalArgumentException("Field " + keyFieldName + " is multi-valued but value is not a Collection");
+		}
+		return doEncodeValue(value, dtField, smartType);
+	}
+
+	private Serializable doEncodeValue(final Serializable value, final DataField dtField, final SmartTypeDefinition smartType) {
 		if (smartType.getScope().isBasicType()) {
 			if (isAboutDate(dtField)) {
-				final var value = getTypedValue(keyFieldName, Serializable.class);
 				return EncoderDate.valueToString(value, dtField.smartTypeDefinition().getBasicType());// encodeValue
 			} else if (isMultiple(dtField)) {
-				final var value = getTypedValue(keyFieldName, String.class);
-				return parseMultipleValue(value);
+				return parseMultipleValue((String) value);
 			}
 		}
-		return getTypedValue(keyFieldName, Serializable.class);
+		return value;
 	}
 
 	private String getFormattedValue(final String keyFieldName) {

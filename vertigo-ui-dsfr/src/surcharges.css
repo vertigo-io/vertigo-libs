@@ -79,12 +79,12 @@ td p {
 
 .autocomplete-result-list {
     z-index: 2;
-    background: #EEEEEE;
+    background-color: var(--background-contrast-grey);
     border: 1px solid #A0A0A0;
     border-radius: 3px;
     list-style: none;
     padding: 0.2rem;
-    box-shadow: 2px 2px 10px #F0F0F0;
+    box-shadow: 2px 2px 10px var(--background-contrast-grey-hover);
     margin-top: 1px;
 }
 
@@ -96,7 +96,7 @@ td p {
 }
 
 .autocomplete-result:hover, .autocomplete-result[aria-selected=true] {
-    background: #E0E0E6;
+    background: var(--background-contrast-grey-hover);
 }
 
 [data-position=below] .autocomplete-input[aria-expanded=true] {
@@ -129,6 +129,11 @@ td p {
 .fr-table caption.fr-sr-only {
     margin: -1px;
     position: absolute;
+}
+
+/* Évite de le gras pour le contenu des tooltips des tableaux */
+th .fr-tooltip {
+    font-weight: normal;
 }
 
 /* */

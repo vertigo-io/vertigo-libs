@@ -51,13 +51,13 @@ public final class TimeSeriesTest {
 	private AutoCloseableNode node;
 
 	@BeforeEach
-	public final void setUp() {
+	public void setUp() {
 		node = new AutoCloseableNode(buildNodeConfig());
 		DIInjector.injectMembers(this, node.getComponentSpace());
 	}
 
 	@AfterEach
-	public final void tearDown() {
+	public void tearDown() {
 		if (node != null) {
 			node.close();
 		}
@@ -141,6 +141,33 @@ public final class TimeSeriesTest {
 				TimeFilter.builder("-1h", "now()").withTimeDim("1m").build(),
 				"temp",
 				10);
+	}
+
+	/**
+	 * Regression test : with multiple measures and no field filters,
+	 * the Flux query builder must not generate "and ( or or )".
+	 * (The single-field case already worked because empty string has length 0.)
+	 */
+	@Test
+	public void testReadMeasuresWithMultipleFieldsAndEmptyFilter() {
+		timeSeriesManager.getTimeSeries(
+				"vertigo-test",
+				List.of("temp:mean", "temp:sum"),
+				DataFilter.builder("test").build(),
+				TimeFilter.builder("-1h", "now()").withTimeDim("1m").build());
+	}
+
+	/**
+	 * Same regression but via the tabular query path.
+	 */
+	@Test
+	public void testReadTabularDataWithMultipleFieldsAndEmptyFilter() {
+		timeSeriesManager.getTabularData(
+				"vertigo-test",
+				List.of("temp:mean", "temp:sum"),
+				DataFilter.builder("test").build(),
+				TimeFilter.builder("-1h", "now()").withTimeDim("1m").build(),
+				"home");
 	}
 
 	private NodeConfig buildNodeConfig() {

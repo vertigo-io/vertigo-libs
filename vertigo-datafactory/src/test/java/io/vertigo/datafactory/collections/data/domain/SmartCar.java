@@ -35,6 +35,8 @@ public final class SmartCar implements KeyConcept {
 	private Integer year;
 	@Field(smartType = "STyText", cardinality = Cardinality.ONE, label = "Descriptif")
 	private String description;
+	@Field(smartType = "STyPipeText", cardinality = Cardinality.ONE, label = "Tags")
+	private String tags;
 
 	/** {@inheritDoc} */
 	@Override
@@ -42,7 +44,7 @@ public final class SmartCar implements KeyConcept {
 		return UID.of(this);
 	}
 
-	public final Long getId() {
+	public Long getId() {
 		return id;
 	}
 
@@ -64,6 +66,14 @@ public final class SmartCar implements KeyConcept {
 
 	public void setDescription(final String description) {
 		this.description = description;
+	}
+
+	public String getTags() {
+		return tags;
+	}
+
+	public void setTags(final String tags) {
+		this.tags = tags;
 	}
 
 	public Integer getYear() {

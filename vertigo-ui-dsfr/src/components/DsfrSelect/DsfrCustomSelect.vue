@@ -4,6 +4,7 @@
  * /// SURCHARGE ///
  * Ce composant est une surcharge temporaire du composant dsfr-select
  * - L’évènement émit update:modelValue est maintenant converti en nombre si cela est possible via la méthode convertString
+ * - Ajout du paramètre showUnselected qui permet d’afficher ou non la valeur par défaut
  *
  * */
 
@@ -29,6 +30,7 @@ const props = withDefaults(defineProps<DsfrSelectProps>(), {
   hint: undefined,
   successMessage: '',
   errorMessage: '',
+  showUnselected: false,
   defaultUnselectedText: 'Sélectionner une option',
 })
 
@@ -102,8 +104,8 @@ const convertString = function (e) {
       <option
           :selected="!options.some(option => typeof option !== 'object' || option === null ? option === modelValue : option.value === modelValue)"
           value=""
-          disabled
-          hidden
+          :disabled="showUnselected ? undefined : true"
+          :hidden="showUnselected ? undefined : true"
       >
         {{ defaultUnselectedText }}
       </option>

@@ -28,6 +28,7 @@ import io.vertigo.datamodel.task.definitions.TaskAttribute;
 
 /**
  * Ce processor permet de remplacer le Where XXX_ID in (#YYY.ROWNUM.ZZZ_ID#) ou (#YYY.ROWNUM#).
+ *
  * @author npiedeloup
  */
 final class WhereInPreProcessor {
@@ -40,7 +41,7 @@ final class WhereInPreProcessor {
 	private static final String REGEXP_CHECK_PATTERN = "\\s(?:IN|in).+#.+(?:ROWNUM|rownum).*#";
 	private static final Pattern JAVA_CHECK_PATTERN = Pattern.compile(REGEXP_CHECK_PATTERN);
 
-	private static final String REGEXP_PATTERN = "\\W([a-zA-Z0-9_\\.]+)\\s+((?:NOT|not)\\s+)?(?:IN|in)\\s+\\(\\s*#([a-z][a-zA-Z0-9]*)\\.(?:ROWNUM|rownum)(?:\\.+([a-z][a-zA-Z0-9]*))?#\\s*\\)";
+	private static final String REGEXP_PATTERN = "\\W([a-zA-Z0-9_\\.]++)\\s++((?:NOT|not)\\s++)?(?:IN|in)\\s++\\(\\s*+#([a-z][a-zA-Z0-9]*+)\\.(?:ROWNUM|rownum)(?:\\.+([a-z][a-zA-Z0-9]*))?#\\s*+\\)";
 	private static final Pattern JAVA_PATTERN = Pattern.compile(REGEXP_PATTERN);
 
 	private static final int NB_MAX_WHERE_IN_ITEM = 1000;
@@ -49,6 +50,7 @@ final class WhereInPreProcessor {
 
 	/**
 	 * Contructeur.
+	 *
 	 * @param inTaskAttributes Valeur des paramètres
 	 */
 	WhereInPreProcessor(final Map<TaskAttribute, Object> inTaskAttributes) {
@@ -123,7 +125,8 @@ final class WhereInPreProcessor {
 				}
 			}
 		}
-		Assertion.check().isTrue(lastMatchOffset > 0, "WhereInPreProcessor not applied. Keywords found but query doesn't match. Check syntaxe : XXX_ID <<not>> in (#YYY.ROWNUM.ZZZ_ID#) of {0}", sqlQuery);
+		Assertion.check().isTrue(lastMatchOffset > 0, "WhereInPreProcessor not applied. Keywords found but query doesn't match. Check syntaxe : XXX_ID <<not>> in (#YYY.ROWNUM.ZZZ_ID#) of {0}",
+				sqlQuery);
 
 		buildQuery.append(sqlQuery.substring(lastMatchOffset));
 		return buildQuery.toString();

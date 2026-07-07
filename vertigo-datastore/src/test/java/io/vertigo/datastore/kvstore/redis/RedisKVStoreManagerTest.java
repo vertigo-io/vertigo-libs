@@ -56,7 +56,7 @@ public final class RedisKVStoreManagerTest extends AbstractKVStoreManagerTest {
 						.withMemoryCache()
 						.withKVStore()
 						.withRedisKV(
-								Param.of("collections", "flowers;TTL=" + TTL + ", trees"))
+								Param.of("collections", "flowers;TTL=" + TTL + ",flowersTemp;TTL=" + TTL / 2 + ", trees"))
 						.build())
 				.build();
 	}

@@ -21,6 +21,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
@@ -43,6 +44,7 @@ import io.vertigo.datamodel.data.model.UID;
 
 /**
  * Reindex all modified data task.
+ *
  * @author npiedeloup (2023)
  * @param <S> KeyConcept type
  */
@@ -51,8 +53,7 @@ final class ReindexAllModifiedTask<S extends KeyConcept> implements Runnable {
 	private static final int MAX_DELETED_INDEX_PER_CHUNK = 200;
 
 	private static final Logger LOGGER = LogManager.getLogger(ReindexAllModifiedTask.class);
-	private static volatile boolean REINDEXATION_IN_PROGRESS;
-	private static volatile long REINDEX_COUNT;
+	private static final AtomicBoolean REINDEXATION_IN_PROGRESS = new AtomicBoolean();
 	private final WritableFuture<Long> reindexFuture;
 	private final SearchIndexDefinition searchIndexDefinition;
 	private final SearchManager searchManager;
@@ -60,11 +61,13 @@ final class ReindexAllModifiedTask<S extends KeyConcept> implements Runnable {
 
 	/**
 	 * Constructor.
+	 *
 	 * @param searchIndexDefinition Search index definition
 	 * @param reindexFuture Future for result
 	 * @param searchManager Search manager
 	 */
-	ReindexAllModifiedTask(final SearchIndexDefinition searchIndexDefinition, final WritableFuture<Long> reindexFuture, final SearchManager searchManager, final SearchServicesPlugin searchServicesPlugin) {
+	ReindexAllModifiedTask(final SearchIndexDefinition searchIndexDefinition, final WritableFuture<Long> reindexFuture, final SearchManager searchManager,
+			final SearchServicesPlugin searchServicesPlugin) {
 		Assertion.check()
 				.isNotNull(searchIndexDefinition)
 				.isNotNull(reindexFuture)
@@ -94,7 +97,8 @@ final class ReindexAllModifiedTask<S extends KeyConcept> implements Runnable {
 				final SearchLoader<S, DataObject> searchLoader = Node.getNode().getComponentSpace().resolve(searchIndexDefinition.getSearchLoaderId(), SearchLoader.class);
 				Assertion.check()
 						.isNotNull(searchLoader.getVersionFieldName().isPresent(),
-								"To use this reindexAllModified, indexed keyConcept need a version field use to check if element is up-to-date. Check getVersionFieldName() in {0}", searchLoader.getClass().getName());
+								"To use this reindexAllModified, indexed keyConcept need a version field use to check if element is up-to-date. Check getVersionFieldName() in {0}",
+								searchLoader.getClass().getName());
 				//---
 				Serializable lastUID = null;
 				LOGGER.info("Full reindexation (modified only) of {} started", searchIndexDefinition.getName());
@@ -103,7 +107,8 @@ final class ReindexAllModifiedTask<S extends KeyConcept> implements Runnable {
 					final Serializable maxUID = searchChunk.getLastValue();
 					Assertion.check().isFalse(maxUID.equals(lastUID), "SearchLoader ({0}) error : return the same uid list", searchIndexDefinition.getSearchLoaderId());
 
-					final Map<UID<S>, Serializable> alreadyIndexedVersions = searchServicesPlugin.loadVersions(searchIndexDefinition, searchLoader.getVersionFieldName().get(), urisRangeToListFilter("docId", lastUID, maxUID), searchChunk.getAllUIDs().size() + MAX_DELETED_INDEX_PER_CHUNK);
+					final Map<UID<S>, Serializable> alreadyIndexedVersions = searchServicesPlugin.loadVersions(searchIndexDefinition, searchLoader.getVersionFieldName().get(),
+							urisRangeToListFilter("docId", lastUID, maxUID), searchChunk.getAllUIDs().size() + MAX_DELETED_INDEX_PER_CHUNK);
 					final Tuple<SearchChunk<S>, Set<UID<S>>> chunkOfModifiedAndRemovedUid = searchChunk.compare(alreadyIndexedVersions);
 					final Collection<SearchIndex<S, DataObject>> searchIndexes = searchLoader.loadData(chunkOfModifiedAndRemovedUid.val1());//load updated element
 					if (!searchIndexes.isEmpty()) {
@@ -117,6 +122,7 @@ final class ReindexAllModifiedTask<S extends KeyConcept> implements Runnable {
 					reindexCount += chunkOfModifiedAndRemovedUid.val1().getAllUIDs().size();
 					reindexCount += chunkOfModifiedAndRemovedUid.val2().size();
 					updateReindexCount(reindexCount);
+					LOGGER.trace("Full reindexation (modified only) of {} in progess ({} elements done)", searchIndexDefinition.getName(), reindexCount);
 				}
 				//On vide la suite, pour le cas ou les dernières données ne sont plus là
 				searchManager.removeAll(searchIndexDefinition, urisRangeToListFilter("docId", lastUID, null)); //remove by id
@@ -134,23 +140,23 @@ final class ReindexAllModifiedTask<S extends KeyConcept> implements Runnable {
 	}
 
 	private static boolean isReindexInProgress() {
-		return REINDEXATION_IN_PROGRESS;
+		return REINDEXATION_IN_PROGRESS.get();
 	}
 
 	private static void startReindex() {
-		REINDEXATION_IN_PROGRESS = true;
+		REINDEXATION_IN_PROGRESS.set(true);
 	}
 
 	private static void stopReindex() {
-		REINDEXATION_IN_PROGRESS = false;
+		REINDEXATION_IN_PROGRESS.set(false);
 	}
 
-	private static void updateReindexCount(final long reindexCount) {
-		REINDEX_COUNT = reindexCount;
+	private void updateReindexCount(final long reindexCount) {
+		reindexFuture.setProgress(reindexCount);
 	}
 
-	private static long getReindexCount() {
-		return REINDEX_COUNT;
+	private long getReindexCount() {
+		return reindexFuture.getProgress();
 	}
 
 	private static ListFilter urisRangeToListFilter(final String indexFieldName, final Serializable firstUri, final Serializable lastUri) {

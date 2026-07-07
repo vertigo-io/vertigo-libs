@@ -49,6 +49,7 @@ public final class SearchQuery implements Serializable {
 	private final Integer mostRecentBoost;
 	private final Optional<FacetedQuery> facetedQuery;
 	private final DefinitionId<FacetDefinition> clusteringFacetDefinitionId;
+	private final boolean useHighlight; // new flag to enable highlight
 
 	/**
 	 * Constructor.
@@ -71,7 +72,8 @@ public final class SearchQuery implements Serializable {
 			final FacetDefinition clusteringFacetDefinition,
 			final DataField boostedDocumentDateField,
 			final Integer numDaysOfBoostRefDocument,
-			final Integer mostRecentBoost) {
+			final Integer mostRecentBoost,
+			final boolean useHighlight) {
 		Assertion.check()
 				.isNotNull(facetedQuery)
 				.isNotNull(queryCriteria)
@@ -110,6 +112,7 @@ public final class SearchQuery implements Serializable {
 		clusteringFacetDefinitionId = clusteringFacetDefinition != null
 				? clusteringFacetDefinition.id()
 				: null;
+		this.useHighlight = useHighlight;
 	}
 
 	/**
@@ -227,6 +230,14 @@ public final class SearchQuery implements Serializable {
 	 */
 	public Object getCriteria() {
 		return queryCriteria;
+	}
+
+	/**
+	 * Indicates whether highlights should be requested from backend
+	 * @return true if highlight enabled
+	 */
+	public boolean isUseHighlight() {
+		return useHighlight;
 	}
 
 }

@@ -75,17 +75,31 @@ public final class CompressionCodecTest extends AbstractCodecTest<byte[], byte[]
 
 	@Test
 	public void testUncompressedDecode() {
+		final var payload = "qdfsdf";
 		// object ne correspondant pas à une classe;
-		final byte[] s = "qdfsdf".getBytes();
+		final byte[] s = payload.getBytes();
 		assertTrue(s.length < CompressionCodec.MIN_SIZE_FOR_COMPRESSION);
+		assertEquals(payload, new String(codec.encode(s)));
 		final byte[] result = codec.decode(s);
-		assertEquals("qdfsdf", new String(result));
+		assertEquals(payload, new String(result));
+	}
+
+	@Test
+	public void testSmallWithPrefix() {
+		final var payload = "COMPsmallpayload";
+		final byte[] s = payload.getBytes();
+		assertTrue(s.length < CompressionCodec.MIN_SIZE_FOR_COMPRESSION);
+		// Sera compressé quand même pour garder la symétrie des opérations, même si la taille est inférieure au seuil de compression, car le préfixe COMP est présent et pourrait être confondu avec un objet compressé.
+		final byte[] encoded = codec.encode(s);
+		final byte[] result = codec.decode(encoded);
+		assertEquals(payload, new String(result));
 	}
 
 	@Test
 	public void testNopDecode() {
 		// object sans préfixe de compression, est laissé tel quel;
-		final byte[] s = "qdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdf".getBytes();
+		final byte[] s = "qdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdf"
+				.getBytes();
 		assertTrue(s.length > CompressionCodec.MIN_SIZE_FOR_COMPRESSION);
 		final byte[] result = codec.decode(s);
 		assertEquals(new String(s), new String(result));
@@ -97,7 +111,8 @@ public final class CompressionCodecTest extends AbstractCodecTest<byte[], byte[]
 	public void testFailDecode() {
 		Assertions.assertThrows(RuntimeException.class, () -> {
 			// object avec prefix ne correspondant pas à une classe;
-			final byte[] s = "COMPqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdf".getBytes();
+			final byte[] s = "COMPqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdf"
+					.getBytes();
 			assertTrue(s.length > CompressionCodec.MIN_SIZE_FOR_COMPRESSION);
 			/* final byte[] result = */
 

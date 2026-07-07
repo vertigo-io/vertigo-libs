@@ -34,6 +34,7 @@ import io.vertigo.datafactory.collections.definitions.FacetDefinition;
 import io.vertigo.datafactory.collections.definitions.FacetedQueryDefinition;
 import io.vertigo.datafactory.collections.model.Facet;
 import io.vertigo.datafactory.collections.model.FacetValue;
+import io.vertigo.datafactory.impl.collections.functions.filter.DtListPatternFilterUtil;
 import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.datamodel.data.model.DtList;
@@ -43,6 +44,7 @@ import io.vertigo.datamodel.smarttype.SmartTypeManager;
 /**
  * Factory de FacetedQueryDefinition.
  * Permet de créer les définitions avant de les enregistrer dans via la registry dans le namespace.
+ * 
  * @author pchretien, npiedeloup
  */
 public final class FacetFactory {
@@ -52,6 +54,7 @@ public final class FacetFactory {
 
 	/**
 	 * Constructor.
+	 * 
 	 * @param collectionManager Collections Manager
 	 */
 	public FacetFactory(
@@ -67,6 +70,7 @@ public final class FacetFactory {
 
 	/**
 	 * Création d'une liste de facettes à partir d'une liste.
+	 * 
 	 * @param facetedQueryDefinition Requête
 	 * @param dtList Liste
 	 * @return Liste des facettes.
@@ -84,6 +88,7 @@ public final class FacetFactory {
 
 	/**
 	 * Création d'un cluster d'une liste à partir d'une facette.
+	 * 
 	 * @param <D> Type de l'entité
 	 * @param facetDefinition Facette utilisée pour le cluster
 	 * @param dtList Liste
@@ -103,7 +108,7 @@ public final class FacetFactory {
 	}
 
 	private <D extends DataObject> DtList<D> apply(final ListFilter listFilter, final DtList<D> fullDtList) {
-		//on délégue à CollectionsManager les méthodes de requête de filtrage.
+		//on délègue à CollectionsManager les méthodes de requête de filtrage.
 		return fullDtList.stream()
 				.filter(collectionManager.filter(listFilter))
 				.collect(VCollectors.toDtList(fullDtList.getDefinition()));
@@ -122,7 +127,7 @@ public final class FacetFactory {
 		final Map<FacetValue, DtList<D>> clusterValues = createRangeCluster(facetDefinition, dtList);
 		//map résultat avec le count par FacetFilter
 		final Map<FacetValue, Long> facetValues = new LinkedHashMap<>();
-		clusterValues.forEach((k, v) -> facetValues.put(k, Long.valueOf(v.size())));
+		clusterValues.forEach((k, v) -> facetValues.put(k, (long) v.size()));
 		return new Facet(facetDefinition, facetValues);
 	}
 
@@ -142,7 +147,7 @@ public final class FacetFactory {
 		final Map<FacetValue, DtList<D>> clusterValues = createTermCluster(facetDefinition, dtList);
 		//map résultat avec le count par FacetFilter
 		final Map<FacetValue, Long> facetValues = new LinkedHashMap<>();
-		clusterValues.forEach((k, v) -> facetValues.put(k, Long.valueOf(v.size())));
+		clusterValues.forEach((k, v) -> facetValues.put(k, (long) v.size()));
 		return new Facet(facetDefinition, facetValues);
 	}
 
@@ -152,36 +157,47 @@ public final class FacetFactory {
 
 		//Cas des facettes par Term
 		final DataField dtField = facetDefinition.getDataField();
+		final var smartTypeDefinition = dtField.smartTypeDefinition();
+
 		//on garde un index pour incrémenter le facetFilter pour chaque Term
 		final Map<Object, FacetValue> facetFilterIndex = new HashMap<>();
-
-		FacetValue facetValue;
 		for (final D data : dtList) {
 			final Object value = dtField.getDataAccessor().getValue(data);
-			facetValue = facetFilterIndex.get(value);
-			if (facetValue == null) {
-				final String valueAsString = smartTypeManager.valueToString(dtField.smartTypeDefinition(), value);
-				final String label;
-				if (StringUtil.isBlank(valueAsString)) {
-					label = "_empty_";
-				} else {
-					label = valueAsString;
+			final var valueAsString = smartTypeManager.valueToString(smartTypeDefinition, value);
+			if (DtListPatternFilterUtil.isTokenizedIndexType(smartTypeDefinition)) {
+				for (final String token : DtListPatternFilterUtil.tokenizedIndexValue(smartTypeDefinition, valueAsString)) {
+					addTermToCluster(token, data, dtList, dtField, facetFilterIndex, clusterValues);
 				}
-				final LocaleMessageText labelMsg = LocaleMessageText.of(label);
-				//on garde la syntaxe Solr pour l'instant
-				final ListFilter listFilter = ListFilter.of(dtField.name() + ":\"" + valueAsString + "\"");
-				facetValue = new FacetValue(label, listFilter, labelMsg);
-				facetFilterIndex.put(value, facetValue);
-				clusterValues.put(facetValue, new DtList<D>(dtList.getDefinition()));
+			} else {
+				addTermToCluster(valueAsString, data, dtList, dtField, facetFilterIndex, clusterValues);
 			}
-			clusterValues.get(facetValue).add(data);
 		}
-
 		//tri des facettes
 		final Comparator<FacetValue> facetComparator = new FacetComparator<>(clusterValues);
 		final Map<FacetValue, DtList<D>> sortedFacetValues = new TreeMap<>(facetComparator);
 		sortedFacetValues.putAll(clusterValues);
 		return sortedFacetValues;
+	}
+
+	private static <D extends DataObject> void addTermToCluster(final String valueAsString, final D data, final DtList<D> dtList, final DataField dtField,
+			final Map<Object, FacetValue> facetFilterIndex, final Map<FacetValue, DtList<D>> clusterValues) {
+		var facetValue = facetFilterIndex.get(valueAsString);
+		if (facetValue == null) {
+			final String label;
+			if (StringUtil.isBlank(valueAsString)) {
+				label = "_empty_";
+			} else {
+				label = valueAsString;
+			}
+			final LocaleMessageText labelMsg = LocaleMessageText.of(label);
+			//on garde la syntaxe Solr pour l'instant, en echappant les " et en entourant la valeur de " pour les cas ou il y a des espaces ou des caractères spéciaux.
+			final var valueEscaped = valueAsString.replace("\"", "\\\"");
+			final ListFilter listFilter = ListFilter.of(dtField.name() + ":\"" + valueEscaped + "\"");
+			facetValue = new FacetValue(label, listFilter, labelMsg);
+			facetFilterIndex.put(valueAsString, facetValue);
+			clusterValues.put(facetValue, new DtList<>(dtList.getDefinition()));
+		}
+		clusterValues.get(facetValue).add(data);
 	}
 
 	private static final class FacetComparator<O extends DataObject> implements Comparator<FacetValue>, Serializable {

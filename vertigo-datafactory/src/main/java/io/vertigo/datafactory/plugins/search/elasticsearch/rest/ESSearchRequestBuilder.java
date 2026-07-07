@@ -17,125 +17,156 @@
  */
 package io.vertigo.datafactory.plugins.search.elasticsearch.rest;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
-import org.elasticsearch.action.search.SearchRequest;
-import org.elasticsearch.action.search.SearchType;
-import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.common.geo.GeoPoint;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.search.aggregations.AggregationBuilder;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
-import org.elasticsearch.search.sort.FieldSortBuilder;
-import org.elasticsearch.search.sort.SortBuilder;
-import org.elasticsearch.search.sort.SortBuilders;
-import org.elasticsearch.search.sort.SortOrder;
-
+import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import co.elastic.clients.elasticsearch._types.SortOptions;
+import co.elastic.clients.elasticsearch._types.aggregations.Aggregation;
+import co.elastic.clients.elasticsearch._types.query_dsl.Query;
+import co.elastic.clients.elasticsearch.core.SearchRequest;
+import co.elastic.clients.elasticsearch.core.search.Highlight;
+import co.elastic.clients.elasticsearch.core.search.HighlightField;
+import co.elastic.clients.elasticsearch.core.search.TrackHits;
+import co.elastic.clients.util.NamedValue;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicTypeAdapter;
-import io.vertigo.datafactory.impl.search.dsl.model.DslGeoDistanceQuery;
-import io.vertigo.datafactory.plugins.search.elasticsearch.AsbtractESSearchRequestBuilder;
-import io.vertigo.datafactory.plugins.search.elasticsearch.DslGeoToQueryBuilderUtil;
+import io.vertigo.core.lang.Builder;
 import io.vertigo.datafactory.plugins.search.elasticsearch.ESDocumentCodec;
-import io.vertigo.datafactory.plugins.search.elasticsearch.IndexType;
 import io.vertigo.datafactory.search.model.SearchQuery;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
-import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.model.DtListState;
 
-//vérifier
 /**
  * ElasticSearch request builder from searchManager api.
+ * Compatible with ElasticSearch 9 Java client.
+ * Delegates query/filter/sort/aggregation building to dedicated helper classes.
+ *
  * @author pchretien, npiedeloup
  */
-final class ESSearchRequestBuilder extends AsbtractESSearchRequestBuilder<SearchRequest, SearchSourceBuilder, ESSearchRequestBuilder> {
+final class ESSearchRequestBuilder implements Builder<SearchRequest> {
 
-	private final SearchRequest searchRequest;
-	private final SearchSourceBuilder searchSourceBuilder;
+	private static final int MAX_TOTAL_HIT = 1_000_000; // maximum total hit count
+	private static final int TOPHITS_SUBAGGREGATION_MAXSIZE = 100; // max 100 documents per cluster when clusterization
+																	// is used
+
+	private final String[] indexNames;
+	private final Map<Class, BasicTypeAdapter> typeAdapters;
+
+	private DataDefinition myIndexDtDefinition;
+	private SearchQuery mySearchQuery;
+	private DtListState myListState;
+	private int myDefaultMaxRows = 10;
+	private boolean myUseHighlight = false;
 
 	/**
-	 * @param indexName Index name (env name)
+	 * @param indexNames Index names (env name)
 	 * @param esClient ElasticSearch client
+	 * @param typeAdapters Mapping to basic type adapter
 	 */
-	ESSearchRequestBuilder(final String[] indexNames, final RestHighLevelClient esClient, final Map<Class, BasicTypeAdapter> typeAdapters) {
-		super(typeAdapters);
-		//-----
-		searchSourceBuilder = new SearchSourceBuilder()
-				.trackTotalHitsUpTo(MAX_TOTAL_HIT)
-				.fetchSource(new String[] { ESDocumentCodec.FULL_RESULT }, null);
-
-		searchRequest = new SearchRequest(indexNames)
-				.searchType(SearchType.QUERY_THEN_FETCH)
-				.source(searchSourceBuilder);
+	ESSearchRequestBuilder(final String[] indexNames, final ElasticsearchClient esClient,
+			final Map<Class, BasicTypeAdapter> typeAdapters) {
+		Assertion.check()
+				.isNotNull(indexNames)
+				.isNotNull(esClient)
+				.isNotNull(typeAdapters);
+		// -----
+		this.indexNames = indexNames;
+		this.typeAdapters = typeAdapters;
 	}
 
+	/**
+	 * @param indexDtDefinition Index dtDefinition
+	 * @return this builder
+	 */
+	ESSearchRequestBuilder withIndexDtDefinition(final DataDefinition indexDtDefinition) {
+		Assertion.check().isNotNull(indexDtDefinition);
+		// -----
+		myIndexDtDefinition = indexDtDefinition;
+		return this;
+	}
+
+	/**
+	 * @param searchQuery Search query
+	 * @return this builder
+	 */
+	ESSearchRequestBuilder withSearchQuery(final SearchQuery searchQuery) {
+		Assertion.check().isNotNull(searchQuery);
+		// -----
+		mySearchQuery = searchQuery;
+		return this;
+	}
+
+	/**
+	 * @param listState List state
+	 * @param defaultMaxRows default max rows
+	 * @return this builder
+	 */
+	ESSearchRequestBuilder withListState(final DtListState listState, final int defaultMaxRows) {
+		Assertion.check().isNotNull(listState);
+		// -----
+		myListState = listState;
+		myDefaultMaxRows = defaultMaxRows;
+		return this;
+	}
+
+	/**
+	 * @return this builder
+	 */
+	ESSearchRequestBuilder withHighlight() {
+		myUseHighlight = true;
+		return this;
+	}
+
+	/** {@inheritDoc} */
 	@Override
-	protected void appendListState(final SearchQuery searchQuery, final DtListState listState, final int defaultMaxRows,
-			final DataDefinition indexDtDefinition, final Map<Class, BasicTypeAdapter> typeAdapters) {
-		searchSourceBuilder.from(listState.getSkipRows())
-				//If we send a clustering query, we don't retrieve result with hits response but with buckets
-				.size(searchQuery.isClusteringFacet() ? 0 : listState.getMaxRows().orElse(defaultMaxRows));
-		if (listState.getSortFieldName().isPresent()) {
-			final var sortFieldNames = listState.getSortFieldName().get();
-			for (var sortFieldName : sortFieldNames.split(",")) {
-				sortFieldName = sortFieldName.trim(); //avoid split'\s*,\s*' cause ReDos
-				final SortBuilder<?> sortBuilder;
-				if (searchQuery.getGeoExpression().isPresent()
-						&& searchQuery.getGeoExpression().get().getGeoQuery() instanceof final DslGeoDistanceQuery geoDistanceQuery
-						&& sortFieldName.equals(searchQuery.getGeoExpression().get().getField().getFieldName())) {
-					final GeoPoint geoPoint = DslGeoToQueryBuilderUtil.computeGeoPoint(geoDistanceQuery.getGeoPoint(), searchQuery.getCriteria(), typeAdapters);
-					Assertion.check().isNotNull(geoPoint, "When sorting by distance the geoPoint used as criteria cannot be null");
-					sortBuilder = SortBuilders.geoDistanceSort(sortFieldName, geoPoint);
-				} else if (sortFieldName.indexOf('.') >= 0) {
-					sortBuilder = SortBuilders.fieldSort(sortFieldName)
-							.order(listState.isSortDesc().get() ? SortOrder.DESC : SortOrder.ASC);
-				} else {
-					sortBuilder = getFieldSortBuilder(indexDtDefinition, sortFieldName, listState.isSortDesc().get());
-				}
-				searchSourceBuilder.sort(sortBuilder);
-			}
+	public SearchRequest build() {
+		Assertion.check()
+				.isNotNull(myIndexDtDefinition, "You must set Index DataDefinition")
+				.isNotNull(mySearchQuery, "You must set SearchQuery")
+				.isNotNull(myListState, "You must set ListState")
+				.when(mySearchQuery.isClusteringFacet() && myListState.getMaxRows().isPresent(), () -> Assertion.check()
+						.isTrue(myListState.getMaxRows().get() < TOPHITS_SUBAGGREGATION_MAXSIZE,
+								"ListState.top = {0} invalid. Can't show more than {1} elements when grouping",
+								myListState.getMaxRows().orElse(null), TOPHITS_SUBAGGREGATION_MAXSIZE));
+		// -----
+
+		// 1. Build Query and PostFilter
+		final Query requestQuery = ESSearchQueryBuilder.buildQuery(mySearchQuery, typeAdapters);
+		final Query postFilter = ESSearchQueryBuilder.buildPostFilter(mySearchQuery, typeAdapters);
+
+		// 2. Build Sort Options
+		final List<SortOptions> sortOptions = ESSortBuilder.buildSortOptions(mySearchQuery, myListState,
+				myIndexDtDefinition, typeAdapters);
+
+		// 3. Build Aggregations
+		final Map<String, Aggregation> aggregations = ESAggregationBuilder.build(mySearchQuery,
+				myListState, sortOptions, myIndexDtDefinition, typeAdapters);
+
+		// 4. Assemble SearchRequest
+		final SearchRequest.Builder searchRequestBuilder = new SearchRequest.Builder()
+				.index(Arrays.asList(indexNames))
+				.trackTotalHits(TrackHits.of(t -> t.count(MAX_TOTAL_HIT)))
+				.source(s -> s
+						.filter(f -> f
+								.includes(List.of(ESDocumentCodec.FULL_RESULT))))
+				.from(myListState.getSkipRows())
+				.size(mySearchQuery.isClusteringFacet() ? 0 : myListState.getMaxRows().orElse(myDefaultMaxRows))
+				.query(requestQuery)
+				.postFilter(postFilter)
+				.sort(sortOptions)
+				.aggregations(aggregations);
+
+		// 5. Highlight
+		if (myUseHighlight) {
+			searchRequestBuilder.highlight(Highlight.of(h -> h.numberOfFragments(3)
+					.preTags("<em>")
+					.postTags("</em>")
+					.fields(NamedValue.of("*", HighlightField.of(hf -> hf)))));
 		}
-	}
 
-	protected FieldSortBuilder getFieldSortBuilder(final DataDefinition indexDefinition, final String sortFieldName, final boolean sortDesc) {
-		final DataField sortField = indexDefinition.getField(sortFieldName);
-		String sortIndexFieldName = sortField.name();
-		final IndexType indexType = IndexType.readIndexType(sortField.smartTypeDefinition());
-
-		if (indexType.isIndexSubKeyword()) { //s'il y a un subKeyword on tri dessus
-			sortIndexFieldName = sortIndexFieldName + ".keyword";
-		}
-		return SortBuilders.fieldSort(sortIndexFieldName)
-				.order(sortDesc ? SortOrder.DESC : SortOrder.ASC);
-	}
-
-	@Override
-	protected SearchSourceBuilder getSearchSourceBuilder() {
-		return searchSourceBuilder;
-	}
-
-	@Override
-	protected SearchRequest getSearchRequest() {
-		return searchRequest;
-	}
-
-	@Override
-	protected void setQueryAndPostFilter(final QueryBuilder requestQueryBuilder, final BoolQueryBuilder postFilterBoolQueryBuilder) {
-		searchSourceBuilder
-				.query(requestQueryBuilder)
-				.postFilter(postFilterBoolQueryBuilder);
-	}
-
-	@Override
-	protected void setHighlighter(final HighlightBuilder highlightBuilder) {
-		searchSourceBuilder.highlighter(highlightBuilder);
-	}
-
-	@Override
-	protected void addAggregation(final SearchSourceBuilder searchRequestBuilder, final AggregationBuilder aggregationBuilder) {
-		searchRequestBuilder.aggregation(aggregationBuilder);
+		return searchRequestBuilder.build();
 	}
 
 }

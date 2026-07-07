@@ -19,20 +19,18 @@ package io.vertigo.datafactory.plugins.search.elasticsearch;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.xcontent.XContentBuilder;
-import org.elasticsearch.xcontent.XContentFactory;
-
+import co.elastic.clients.elasticsearch.core.search.Hit;
+import co.elastic.clients.json.JsonData;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicTypeAdapter;
+import io.vertigo.datafactory.collections.model.IndexType;
 import io.vertigo.datafactory.search.model.SearchIndex;
-import io.vertigo.datamodel.data.definitions.DataAccessor;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.definitions.DataField.FieldType;
@@ -46,6 +44,7 @@ import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
  * Traduction bi directionnelle des objets SOLR en objets logique de recherche.
  * Pseudo Codec : asymétrique par le fait que ElasticSearch gère un objet différent en écriture et lecture.
  * L'objet lu ne contient pas les données indexées non stockées !
+ * 
  * @author pchretien, npiedeloup
  */
 public final class ESDocumentCodec {
@@ -59,6 +58,7 @@ public final class ESDocumentCodec {
 
 	/**
 	 * Constructor.
+	 * 
 	 * @param codecManager Manager des codecs
 	 * @param codecManager Manager de la modelisation (SmartTypes)
 	 */
@@ -74,65 +74,69 @@ public final class ESDocumentCodec {
 	private <I extends DataObject> String encode(final I dto) {
 		Assertion.check().isNotNull(dto);
 		//-----
-		final byte[] data = codecManager.getCompressedSerializationCodec().encode(dto);
+		final var data = codecManager.getCompressedSerializationCodec().encode(dto);
 		return codecManager.getBase64Codec().encode(data);
 	}
 
 	private <R extends DataObject> R decode(final String base64Data) {
 		Assertion.check().isNotNull(base64Data);
 		//-----
-		final byte[] data = codecManager.getBase64Codec().decode(base64Data);
+		final var data = codecManager.getBase64Codec().decode(base64Data);
 		return (R) codecManager.getCompressedSerializationCodec().decode(data);
 	}
 
 	/**
 	 * Transformation d'un resultat ElasticSearch en un index.
 	 * Les highlights sont ajoutés avant ou après (non determinable).
+	 * 
 	 * @param <S> Type du sujet représenté par ce document
 	 * @param <I> Type d'object indexé
 	 * @param indexDefinition DataDefinition de l'index
 	 * @param searchHit Resultat ElasticSearch
 	 * @return Objet logique de recherche
 	 */
-	public <I extends DataObject> I searchHit2DtIndex(final DataDefinition indexDtDefinition, final SearchHit searchHit) {
+	public <I extends DataObject> I searchHit2DtIndex(final DataDefinition indexDtDefinition, final Hit searchHit) {
 		/* On lit du document les données persistantes. */
 		/* 1. UID */
-		final String urn = searchHit.getId();
+		final var urn = searchHit.id();
 		final UID uid = io.vertigo.datamodel.data.model.UID.of(urn);
 		/* 2 : Result stocké */
-		final I resultDtObjectdtObject;
-		if (searchHit.field(FULL_RESULT) == null) {
-			resultDtObjectdtObject = decode((String) searchHit.getSourceAsMap().get(FULL_RESULT));
-		} else {
-			resultDtObjectdtObject = decode(searchHit.field(FULL_RESULT).getValue());
-		}
+		final I resultDtObject;
+		final var source = searchHit.source();
+		final var sourceMap = source instanceof final Map m ? m : source instanceof final JsonData j ? j.to(Map.class) : source;
+		Assertion.check()
+				.isNotNull(sourceMap)
+				.isTrue(sourceMap instanceof Map, "L'api de recherche ne retourne pas le type attendu : Map, return:{0}", source.getClass().toString())
+				.isTrue(((Map) sourceMap).containsKey(FULL_RESULT), "La structure de l'index est incorrect, manque {0}, (keys:{1})", source.getClass().toString());
+		resultDtObject = decode((String) ((Map) sourceMap).get(FULL_RESULT));
 		//-----
-		final DataDefinition resultDtDefinition = DataModelUtil.findDataDefinition(resultDtObjectdtObject);
+		final var resultDtDefinition = DataModelUtil.findDataDefinition(resultDtObject);
 		Assertion.check()
 				.isNotNull(uid)
 				.isNotNull(indexDtDefinition)
-				.isNotNull(resultDtObjectdtObject)
+				.isNotNull(resultDtObject)
 				//On vérifie la consistance des données.
 				.isTrue(indexDtDefinition.equals(resultDtDefinition),
 						"Le type l'objet indexé ({1}) ne correspond pas à celui de l'index ({1})", resultDtDefinition.getName(), indexDtDefinition.getName());
 		//-----
-		return resultDtObjectdtObject;
+		return resultDtObject;
 	}
 
 	/**
 	 * Transformation d'un index en un document ElasticSearch.
+	 * 
 	 * @param <S> Type du sujet représenté par ce document
 	 * @param <I> Type d'object indexé
 	 * @param index Objet logique de recherche
 	 * @return Document SOLR
 	 * @throws IOException Json exception
 	 */
-	public <S extends KeyConcept, I extends DataObject> XContentBuilder index2XContentBuilder(final SearchIndex<S, I> index) throws IOException {
+	public <S extends KeyConcept, I extends DataObject> Map<String, Object> index2Json(final SearchIndex<S, I> index) throws IOException {
 		Assertion.check().isNotNull(index);
 		//-----
 
-		final DataDefinition dataDefinition = index.getDefinition().getIndexDtDefinition();
-		final List<DataField> notStoredFields = getNotStoredFields(dataDefinition); //on ne copie pas les champs not stored dans le domain
+		final var dataDefinition = index.getDefinition().getIndexDtDefinition();
+		final var notStoredFields = getNotStoredFields(dataDefinition); //on ne copie pas les champs not stored dans le domain
 		notStoredFields.addAll(index.getDefinition().getIndexCopyToFields()); //on ne copie pas les champs (copyTo)
 		final I dtResult;
 		if (notStoredFields.isEmpty()) {
@@ -142,28 +146,27 @@ public final class ESDocumentCodec {
 		}
 
 		/* 2: Result stocké */
-		final String result = encode(dtResult);
+		final var result = encode(dtResult);
 
 		/* 1 : UID */
-		try (final XContentBuilder xContentBuilder = XContentFactory.jsonBuilder()) {
-			xContentBuilder.startObject()
-					.field(FULL_RESULT, result)
-					.field(DOC_ID, Serializable.class.cast(index.getUID().getId()));
+		final var documentMap = new HashMap<String, Object>();
+		documentMap.put(FULL_RESULT, result);
+		documentMap.put(DOC_ID, Serializable.class.cast(index.getUID().getId()));
 
-			/* 3 : Les champs du dto index */
-			final DataObject dtIndex = index.getIndexDtObject();
-			final DataDefinition indexDtDefinition = DataModelUtil.findDataDefinition(dtIndex);
-			final Set<DataField> copyToFields = index.getDefinition().getIndexCopyToFields();
-			for (final DataField dtField : indexDtDefinition.getFields()) {
-				if (!copyToFields.contains(dtField)) {//On index pas les copyFields
-					final Object value = dtField.getDataAccessor().getValue(dtIndex);
-					if (value != null) { //les valeurs null ne sont pas indexées => conséquence : on ne peut pas les rechercher
-						xContentBuilder.field(dtField.name(), encodeValue(value, dtField.smartTypeDefinition()));
-					}
+		/* 3 : Les champs du dto index */
+		final DataObject dtIndex = index.getIndexDtObject();
+		final var indexDtDefinition = DataModelUtil.findDataDefinition(dtIndex);
+		final var copyToFields = index.getDefinition().getIndexCopyToFields();
+		for (final DataField dtField : indexDtDefinition.getFields()) {
+			if (!copyToFields.contains(dtField)) {//On index pas les copyFields
+				final var value = dtField.getDataAccessor().getValue(dtIndex);
+				if (value != null) { //les valeurs null ne sont pas indexées => conséquence : on ne peut pas les rechercher
+					documentMap.put(dtField.name(), encodeValue(value, dtField.smartTypeDefinition()));
 				}
 			}
-			return xContentBuilder.endObject();
 		}
+		return documentMap;
+
 	}
 
 	public Object encodeValue(final Object value, final SmartTypeDefinition smartTypeDefinition) {
@@ -171,7 +174,7 @@ public final class ESDocumentCodec {
 				.isNotNull(value)
 				.isNotNull(smartTypeDefinition);
 		//-----
-		Object encodedValue = value;
+		var encodedValue = value;
 		switch (smartTypeDefinition.getScope()) {
 			case BASIC_TYPE:
 				if (value instanceof String) {
@@ -179,7 +182,7 @@ public final class ESDocumentCodec {
 				}
 				break;
 			case VALUE_TYPE:
-				final BasicTypeAdapter basicTypeAdapter = typeAdapters.get(smartTypeDefinition.getJavaClass());
+				final var basicTypeAdapter = typeAdapters.get(smartTypeDefinition.getJavaClass());
 				encodedValue = basicTypeAdapter.toBasic(value);
 				break;
 			default:
@@ -196,10 +199,10 @@ public final class ESDocumentCodec {
 	}
 
 	private static <I extends DataObject> I cloneData(final DataDefinition dataDefinition, final I dto, final List<DataField> excludedFields) {
-		final I clonedDto = (I) DataModelUtil.createDataObject(dataDefinition);
+		final var clonedDto = (I) DataModelUtil.createDataObject(dataDefinition);
 		for (final DataField dtField : dataDefinition.getFields()) {
 			if (!excludedFields.contains(dtField)) {
-				final DataAccessor dataAccessor = dtField.getDataAccessor();
+				final var dataAccessor = dtField.getDataAccessor();
 				dataAccessor.setValue(clonedDto, dataAccessor.getValue(dto));
 			}
 		}
@@ -207,7 +210,7 @@ public final class ESDocumentCodec {
 	}
 
 	private static boolean isIndexStoredDomain(final SmartTypeDefinition smartTypeDefinition) {
-		final IndexType indexType = IndexType.readIndexType(smartTypeDefinition);
+		final var indexType = IndexType.readIndexType(smartTypeDefinition);
 		return indexType.isIndexStored(); //is no specific indexType, the field should be stored
 	}
 

@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 import javax.inject.Inject;
 
@@ -37,7 +36,6 @@ import com.sleepycat.je.EnvironmentConfig;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.core.analytics.AnalyticsManager;
-import io.vertigo.core.daemon.Daemon;
 import io.vertigo.core.daemon.definitions.DaemonDefinition;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.ListBuilder;
@@ -123,8 +121,7 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable, S
 	@Override
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
 		final var name = "DmnPurgeBerkeleyKvStore$a" + Math.abs(dbFilePathTranslated.hashCode()); //more stable in time
-		final Supplier<Daemon> daemonSupplier = () -> () -> analyticsManager.trace("daemon", name, tracer -> removeTooOldElements());
-		return Collections.singletonList(new DaemonDefinition(name, daemonSupplier, REMOVED_TOO_OLD_ELEMENTS_PERIODE_SECONDS));
+		return Collections.singletonList(new DaemonDefinition(name, () -> this::removeTooOldElements, REMOVED_TOO_OLD_ELEMENTS_PERIODE_SECONDS));
 	}
 
 	private static List<BerkeleyCollectionConfig> parseCollectionConfigs(final String collections) {

@@ -7,6 +7,7 @@ export type DsfrSelectProps = {
     description?: string
     hint?: string
     modelValue?: DsfrSelectOption
+    showUnselected?: boolean
     label?: string
     options?: (DsfrSelectOption | { value: DsfrSelectOption, text: string, disabled?: boolean })[]
     successMessage?: string

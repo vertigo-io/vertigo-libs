@@ -3,7 +3,7 @@
           th:with="myComponentId=${componentId?:model.util.generateComponentUID('button', null, null, null)}">
 
     <li th:remove="${(inActionGroup != null && inActionGroup) ? 'none' : 'tag'}">
-        <dsfr-button style="position: relative"
+        <dsfr-button class="position-relative"
                      th:icon="${icon?:''}"
                      th::icon-only="${label==null}"
                      th:label="${label?:''}"
@@ -15,8 +15,11 @@
 
         <span th:if="${loading} OR ${vLoading} != null"
               th:v-if="${loading?:vLoading}"
-              style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; display: flex; align-items: center; justify-content: center; cursor: default;">
-            <v-icon name="ri-loader-4-line" animation="spin" color="black" ></v-icon>
+              class="button-icon-loader">
+            <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" class="vicon vicon-sm vicon-spin iconify iconify--local"
+                 width="1em" height="1em" viewBox="0 0 24 24">
+                <path fill="currentColor" d="M18.364 5.636L16.95 7.05A7 7 0 1 0 19 12h2a9 9 0 1 1-2.636-6.364"></path>
+            </svg>
         </span>
 
             <vu:content/>

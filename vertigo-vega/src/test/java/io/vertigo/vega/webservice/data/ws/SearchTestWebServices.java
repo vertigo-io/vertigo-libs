@@ -68,7 +68,7 @@ public final class SearchTestWebServices implements WebServices {
 	}
 
 	@POST("/facetedResult")
-	@ExcludedFields({ "highlight" })
+	@ExcludedFields({ "highlights" })
 	@IncludedFields({ "list.name", "list.conId", "list.firstName" })
 	public FacetedQueryResult<Contact, DtList<Contact>> testFacetedQueryResult(final SelectedFacetValues selectedFacetValues) {
 		final DtList<Contact> allContacts = asDtList(contactDao.getList(), Contact.class);
@@ -78,7 +78,7 @@ public final class SearchTestWebServices implements WebServices {
 	}
 
 	@POST("/facetedClusteredResult")
-	@ExcludedFields({ "highlight" })
+	@ExcludedFields({ "highlights" })
 	@IncludedFields({ "list.name", "list.conId", "list.firstName" })
 	public FacetedQueryResult<Contact, DtList<Contact>> testFacetedClusterQueryResult(final SelectedFacetValues selectedFacetValues) {
 		final DtList<Contact> allContacts = asDtList(contactDao.getList(), Contact.class);

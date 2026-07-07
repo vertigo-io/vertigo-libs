@@ -28,7 +28,6 @@ import org.thymeleaf.processor.element.IElementTagStructureHandler;
 import org.thymeleaf.standard.expression.IStandardExpression;
 import org.thymeleaf.standard.expression.IStandardExpressionParser;
 import org.thymeleaf.standard.expression.StandardExpressions;
-import org.thymeleaf.standard.util.StandardProcessorUtils;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.util.EvaluationUtils;
 import org.thymeleaf.util.Validate;
@@ -41,22 +40,22 @@ import io.vertigo.vega.webservice.model.UiObject;
  * Attribut tag processor to apply simply hasAuthorization and hasOperation .
  * It use UiAuthorizationUtil instance already registered in thymeleaf engine context.
  * A global dev mode keep element visible but with a "security-locked" class
- * Should sow a beautifull security overlay.
+ * Should show a beautifull security overlay.
  *
  * 3 ways to use it :
  * 1- With a simple string
- *    vu:authz="myGlobalAuthz" or vu:authz="mySecuredEntityAuthz$read"
- *    => use like authz.hasAuthorization('myGlobalAuthz')
- *    Support multiple list OR separator ',' and '!' for NOT
+ * vu:authz="myGlobalAuthz" or vu:authz="mySecuredEntityAuthz$read"
+ * => use like authz.hasAuthorization('myGlobalAuthz')
+ * Support multiple list OR separator ',' and '!' for NOT
  *
  * 2- With a contextPath to a UiObject<Entity>
- *    vu:authz="model.myEntity$read" or vu:authz="model.list[0]$read"
- *    => use like authz.hasOperation(model.myEntity, 'read')
- *    (first part is evaluated like ${model.myEntity})
+ * vu:authz="model.myEntity$read" or vu:authz="model.list[0]$read"
+ * => use like authz.hasOperation(model.myEntity, 'read')
+ * (first part is evaluated like ${model.myEntity})
  *
  * 3- With a evaluated expression (starts with ${ )
- *    vu:authz="${authz.hasAuthorization('myGlobalAuthz') && authz.hasAuthorization('mySecuredEntityAuthz$read')}"
- *    => use exactly like th:if, but no need to merge your th:if business logic with th:authz security logic
+ * vu:authz="${authz.hasAuthorization('myGlobalAuthz') && authz.hasAuthorization('mySecuredEntityAuthz$read')}"
+ * => use exactly like th:if, but no need to merge your th:if business logic with th:authz security logic
  *
  * @author npiedeloup
  */
@@ -65,9 +64,8 @@ public class AuthzAttributeTagProcessor extends AbstractAttributeTagProcessor
 
 	public static final String CLASS_AUTHZ_LOCKED = "authz--locked";
 
-	public static final int PRECEDENCE = 301; //th:if+1
+	public static final int PRECEDENCE = 310; //th:if+10
 	public static final String ATTR_NAME = "authz";
-	public static final boolean AUTHZ_DEV_MODE_LOOK = false;
 	public static final String AUTHZ_DEV_MODE_NAME = "authz-dev";
 
 	/**
@@ -79,7 +77,7 @@ public class AuthzAttributeTagProcessor extends AbstractAttributeTagProcessor
 		super(TemplateMode.HTML, dialectPrefix, null, false, ATTR_NAME, true, PRECEDENCE, true);
 	}
 
-	public static final String TARGET_ATTR_NAME = "class";
+	public static final String TARGET_ATTR_NAME = "th:classappend";
 	private static final TemplateMode TEMPLATE_MODE = TemplateMode.HTML;
 	private AttributeDefinition targetAttributeDefinition;
 
@@ -101,21 +99,19 @@ public class AuthzAttributeTagProcessor extends AbstractAttributeTagProcessor
 		final boolean visible = isVisible(context, tag, attributeName, attributeValue);
 
 		if (!visible) {
-			if (AUTHZ_DEV_MODE_LOOK) {
-				final Object authzDevModeVar = context.getVariable(AUTHZ_DEV_MODE_NAME);
-				if (authzDevModeVar != null && !Boolean.FALSE.equals(authzDevModeVar)) {
-					String newAttributeValue = CLASS_AUTHZ_LOCKED;
-					final AttributeName targetAttributeName = targetAttributeDefinition.getAttributeName();
-					if (tag.hasAttribute(targetAttributeName)) {
-						final String currentValue = tag.getAttributeValue(targetAttributeName);
-						if (currentValue.length() > 0) {
-							newAttributeValue = currentValue + ' ' + newAttributeValue;
-						}
+			final Object authzDevModeVar = context.getVariable(AUTHZ_DEV_MODE_NAME);
+			if (authzDevModeVar != null && !Boolean.FALSE.equals(authzDevModeVar)) {
+				String appendValue = CLASS_AUTHZ_LOCKED;
+				final AttributeName classAppendAttr = targetAttributeDefinition.getAttributeName();
+				if (tag.hasAttribute(classAppendAttr)) {
+					final String existing = tag.getAttributeValue(classAppendAttr);
+					if (existing != null && !existing.isEmpty()) {
+						appendValue = existing + " + ' " + CLASS_AUTHZ_LOCKED + "'";
 					}
-					StandardProcessorUtils.setAttribute(structureHandler, targetAttributeDefinition, TARGET_ATTR_NAME, newAttributeValue);
-					return;
-					//other case we remove element
 				}
+				structureHandler.setAttribute(TARGET_ATTR_NAME, appendValue);
+				return;
+				//other case we remove element
 			}
 			structureHandler.removeElement();
 		}
@@ -132,10 +128,13 @@ public class AuthzAttributeTagProcessor extends AbstractAttributeTagProcessor
 			final IStandardExpressionParser expressionParser = StandardExpressions.getExpressionParser(context.getConfiguration());
 			final IStandardExpression expression = expressionParser.parseExpression(context, attributeValue);
 			final Object value = expression.execute(context);
+			Assertion.check().isTrue(value instanceof Boolean,
+					"Authz with $\\{\\} espect a boolean. Use a complete expression like : vu:authz=\"$\\{authz.hasAuthorization('myGlobalAuthz') && authz.hasAuthorization('mySecuredEntityAuthz$read')\\}\". ({0})",
+					attributeValue);
 			return EvaluationUtils.evaluateAsBoolean(value);
 		}
-		Assertion.check().isFalse(attributeValue.contains("&&"), attributeValue,
-				"Authz don't support &&, use a complete expression like : vu:authz=\"${authz.hasAuthorization('myGlobalAuthz') && authz.hasAuthorization('mySecuredEntityAuthz$read')}\". ({0})",
+		Assertion.check().isFalse(attributeValue.contains("&&"),
+				"Authz don't support &&, use a complete expression like : vu:authz=\"$\\{authz.hasAuthorization('myGlobalAuthz') && authz.hasAuthorization('mySecuredEntityAuthz$read')\\}\". ({0})",
 				attributeValue);
 		//Sinon on récupère depuis le context d'exec de la page
 		final UiAuthorizationUtil authz = obtainUiAuthorizationUtil(context);
@@ -170,7 +169,7 @@ public class AuthzAttributeTagProcessor extends AbstractAttributeTagProcessor
 			} else {
 				isAuthorized = authz.hasAuthorization(authzAttribut);
 			}
-			if (isNeg ? !isAuthorized : isAuthorized) {
+			if (isNeg ^ isAuthorized) {
 				return true;
 			}
 		}

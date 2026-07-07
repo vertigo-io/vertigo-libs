@@ -273,7 +273,7 @@ final class SqlStatementDriver {
 		try (final var rs = statement.getGeneratedKeys()) {
 			while (rs.next()) {
 				final var pkRsCol = switch (generationMode) {
-					case GENERATED_KEYS -> 0; //ResultSet haven't correctly named columns so we fall back to get the first column, instead of looking for column index by name.
+					case GENERATED_KEYS -> 1; //ResultSet haven't correctly named columns so we fall back to get the first column, instead of looking for column index by name.
 					case GENERATED_COLUMNS -> rs.findColumn(columnName); //on cherche le bon index de la pk;
 				};
 				final var id = sqlMapping.getValueForResultSet(rs, pkRsCol, dataType);

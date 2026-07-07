@@ -42,6 +42,7 @@ public class JettyBootParamsBuilder implements Builder<JettyBootParams> {
 	private String myJettySessionStoreCollectionName;
 	private boolean myNoJettySessionCache;
 	//TODO parameter si cache null ou default (si on croit dans l'affinité de session ou non)
+	private Integer mySessionTimeoutMinutes;
 	private boolean myJoin = true;// true by default
 
 	public JettyBootParamsBuilder(final String contextRoot, final Class<? extends WebApplicationInitializer> webApplicationInitializerClass) {
@@ -94,6 +95,12 @@ public class JettyBootParamsBuilder implements Builder<JettyBootParams> {
 		return this;
 	}
 
+	public JettyBootParamsBuilder withSessionTimeoutMinutes(final int sessionTimeoutMinutes) {
+		Assertion.check().isTrue(sessionTimeoutMinutes > 0, "Session timeout must be positive");
+		mySessionTimeoutMinutes = sessionTimeoutMinutes;
+		return this;
+	}
+
 	public JettyBootParamsBuilder noJoin() {
 		myJoin = false;
 		return this;
@@ -114,6 +121,7 @@ public class JettyBootParamsBuilder implements Builder<JettyBootParams> {
 				Optional.ofNullable(myJettyNodeName),
 				Optional.ofNullable(myJettySessionStoreCollectionName),
 				myNoJettySessionCache,
+				Optional.ofNullable(mySessionTimeoutMinutes),
 				myJoin);
 	}
 

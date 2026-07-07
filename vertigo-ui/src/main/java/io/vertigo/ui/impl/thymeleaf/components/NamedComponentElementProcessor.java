@@ -84,7 +84,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 	private static final String ATTRS_SUFFIX = "attrs";
 	private static final String CONTENT_TAGS = "contentTags";
 
-	private static final int PRECEDENCE = 350;
+	private static final int PRECEDENCE = 1500; //same as Fragment
 
 	private final Set<String> excludeAttributes = singleton(COMPONENT_PARAMS);
 	private final String componentName;
@@ -422,8 +422,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 		final ITemplateEvent firstEvent = model.get(0);
 		final Map<String, String> attributes = new HashMap<>();
 
-		if (firstEvent instanceof IProcessableElementTag) {
-			final IProcessableElementTag processableElementTag = (IProcessableElementTag) firstEvent;
+		if (firstEvent instanceof final IProcessableElementTag processableElementTag) {
 			for (final IAttribute attribute : processableElementTag.getAllAttributes()) {
 				final String completeName = attribute.getAttributeCompleteName();
 				if (!isDynamicAttribute(completeName, StandardDialect.PREFIX)) {
