@@ -115,14 +115,20 @@ Running 4.4.0 - 2026-06-XX
   - express 4.17.2 -> 4.22.1
   - vertigo-ui-vuejs 4.3.3 -> 4.4.0
   - vertigo-ui-dsfr 4.3.3 -> 4.4.0
-  - vertigo-ui-wysiwyg 2.12.0 -> 2.27.2
-  - vue 3.5.13 -> 3.5.35
-  - quasar 2.18.1 -> 2.19.3
-  - axios 1.8.4 -> 1.17.0
+  - vertigo-ui-wysiwyg 2.12.0 -> 4.4.0
+  - vertigo-ui-server-ssr 3.5.0 -> 4.4.0
+  - vue 3.5.13 -> 3.5.39
+  - quasar 2.18.1 -> 2.21.1
+  - axios 1.8.4 -> 1.18.1
+  - @vitejs/plugin-vue 5.2.4 -> 6.0.7
+  - vite 6.4.3 -> 8.1.3 (Rolldown/Oxc bundler)
   - @gouvfr/dsfr 1.12.1 -> 1.14.4
   - @gouvminint/vue-dsfr 8.6.0 -> 8.17.0
-  - sass-embedded 1.78.0 -> 1.100.0
-  - typescript 5.2.2 -> 5.9.3
+  - date-fns 4.1.0 -> 4.1.2
+  - sass-embedded 1.78.0 -> 1.89.2
+  - typescript 5.2.2 -> 6.0.3
+  - vite-plugin-mkcert 1.17.8 -> 2.1.0
+  - eslint 9.30.1 -> 10.6.0
 
 
 Release 4.3.2 - 2025/07/10
