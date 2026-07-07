@@ -7,9 +7,9 @@ Running 5.0.0
 
 more to come :)
 
-Running 4.5.0-SNAPSHOT - 2026-07-XX
+Running 4.4.0 - 2026-06-XX
 ----------------------
-[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-440-to-450)
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-432-to-440)
 
 * **[DataFactory] Upgrade Search plugin to ElasticSearch v9**. You may use plugin in libs-lts, if you need previous versions (ES7/ES8)
   * removed EmbeddedServer, removed _all field
@@ -98,7 +98,7 @@ Running 4.5.0-SNAPSHOT - 2026-07-XX
 * [Daemon] Allow disabling analytics per daemon via DaemonDefinition
 * [Stella] Upgrade Jersey 3.0.17 -> 3.1.12
 * [Peg] Refactored flattening solvers
-* [Common] CompressionCodec : fix operation symmetry, increase 1ÔåÆ4 concurrent compression/decompression
+* [Common] CompressionCodec : fix operation symmetry, increase 1â†’4 concurrent compression/decompression
 * [Common] Support mono line comment
 * [Common] Fix sonar RegDDOS
 * Update libs
@@ -1429,7 +1429,7 @@ Release 1.1.1 - 2018/04/27
 * [quarto] fix creation of final doc (medias etc...) (docx)
 * [quarto] fix new paragraphs on line breaks (docx)
 * [orchestra] fix params in memoryImpl
-* [dashboard] some minor additions (b+¬ta)
+* [dashboard] some minor additions (bÃªta)
 * [struts2] Added multiple file upload support
 * [struts2] Alternative Struts2 multipart request parser for servlet 3
 * [struts2] Added hash on sessionId to secure them
@@ -1480,7 +1480,7 @@ Release 1.1.0 - 2017/12/07
 * [all] Migrated Log4j to Log4j2
 * [all] Updated versions (gson, hibernate, junit) : gson 2.8.1 to 2.8.2, hibernate 5.2.10 to 5.2.11, junit 5.0.0-M4 to 5.0.1
 * __[all] Execution error with jdk 1.8_51 should use more recent version__
-* [dashboard] added module dashboard (b+¬ta)
+* [dashboard] added module dashboard (bÃªta)
 * [struts2] Added multiple file upload support 
 * [quarto] Fixed #12 (LocalDate and DateTime) 
 * [all] Updated versions (javax.mail, lucene, selenium) : javaxmail 15.6 to 1.6.0, lucene 5.5.4 to 6.6.1
@@ -1583,7 +1583,7 @@ __In Bold__ : Potential compatibility problems
 *	[studio] Added TS generator
 * [persona] deprecated module (use accoount for new projects)
 *	[tempo] _remove module_ (use vertigo-mail and vertigo-orchestra extensions)
-*	[all] Updated dependencies versions  ÔÇª
+*	[all] Updated dependencies versions  â€¦
  org.codehaus.janino janino 2.7.8 -> 3.0.7
  net.sf.ehcache ehcache 2.10.3 -> 2.10.4
  org.slf4j slf4j-api 1.7.22 -> 1.7.25
@@ -1664,7 +1664,7 @@ __Warning : You must use 0.9.4a version of Studio module !!__
 * [Core] Component discovery in features
 * [Core] Changed boot config managment (features, added plugins, ...) redundancy__
 * [Core] Fixed #80 : We check file exists and canRead before accept this plugin
-* [Core] Updated cglib -+ cglib-nodep from 3.2.2 to 3.2.4
+* [Core] Updated cglib Â» cglib-nodep from 3.2.2 to 3.2.4
 * [Core] Added notepad++ coloration config
 * [Core] Changed tests Junit4 Assert to JUnit5 Assertions
 * [Core] Simple ParamManager API
@@ -2372,5 +2372,3 @@ The most notable changes in Vertigo 0.2.0 over previous releases are:
 Release 0.1.0 - 2014/01/14
 --------------------------
   * First release
-
-

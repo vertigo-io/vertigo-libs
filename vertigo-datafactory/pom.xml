@@ -1,1 +1,159 @@
-<?xml version="1.0" encoding="UTF-8"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">	<modelVersion>4.0.0</modelVersion>	<parent>		<groupId>io.vertigo</groupId>		<artifactId>vertigo-libs</artifactId>		<version>4.5.0-SNAPSHOT</version>	</parent>	<artifactId>vertigo-datafactory</artifactId>	<packaging>jar</packaging>	<name>vertigo-datafactory</name>    <repositories>      <!-- Needed repo for tests embedded ElasticSearch -->      <repository>         <id>codelibs.elasticsearch-releases</id>         <url>https://maven.codelibs.org/</url>         <releases>            <enabled>true</enabled>         </releases>         <snapshots>            <enabled>false</enabled>         </snapshots>      </repository>    </repositories>        <dependencyManagement>		<dependencies>			<dependency>				<groupId>org.apache.lucene</groupId>				<artifactId>lucene-core</artifactId> <!-- 9.12.3 last for jdk17, 10.3.2 compatible with ElasticSearch 9.3.2 needs jdk21 -->				<version>9.12.3</version>			</dependency>			<dependency>				<groupId>org.apache.lucene</groupId>				<artifactId>lucene-analysis-common</artifactId>				<version>9.12.3</version>			</dependency>			<dependency>				<groupId>org.apache.lucene</groupId>				<artifactId>lucene-queryparser</artifactId>				<version>9.12.3</version>			</dependency>			<dependency>				<groupId>io.vertigo</groupId>				<artifactId>vertigo-datastore</artifactId>				<version>${project.version}</version>				<type>pom</type>				<scope>import</scope>			</dependency>			<dependency>				<groupId>io.vertigo</groupId>				<artifactId>vertigo-elasticsearch-connector</artifactId>				<version>${vertigo.version}</version>				<type>pom</type>				<scope>import</scope>			</dependency>		</dependencies>	</dependencyManagement>    	<dependencies>		<dependency>			<groupId>io.vertigo</groupId>			<artifactId>vertigo-datastore</artifactId>			<version>${project.version}</version>		</dependency>				<dependency>			<groupId>io.vertigo</groupId>			<artifactId>vertigo-elasticsearch-connector</artifactId>			<version>${vertigo.version}</version>			<optional>true</optional>		</dependency>		<!-- libs -->		<!-- kvdatastore -->		<!-- CollectionsManager/LuceneIndexPlugin -->		<dependency>			<groupId>org.apache.lucene</groupId>			<artifactId>lucene-core</artifactId>			<optional>true</optional>		</dependency>		<dependency>			<groupId>org.apache.lucene</groupId>		    <artifactId>lucene-analysis-common</artifactId>			<optional>true</optional>		</dependency>		<dependency>			<groupId>org.apache.lucene</groupId>			<artifactId>lucene-queryparser</artifactId>			<optional>true</optional>		</dependency>				<!-- Dépendances à des librairies spécifiques au module -->		<dependency>			<groupId>co.elastic.clients</groupId>		    <artifactId>elasticsearch-java</artifactId>		    <optional>true</optional> <!-- RestSearchServicesPlugin -->		</dependency>                <!--<dependency>			<groupId>org.elasticsearch</groupId>			<artifactId>elasticsearch</artifactId>			<version>9.2.3</version>			<exclusions>				<exclusion>					<groupId>org.apache.logging.log4j</groupId>					<artifactId>log4j-api</artifactId>				</exclusion>			</exclusions>		</dependency>-->                        <!-- tests -->		<dependency>		    <groupId>com.h2database</groupId>		    <artifactId>h2</artifactId>		    <scope>test</scope>		</dependency>		<dependency>			<groupId>com.mchange</groupId>			<artifactId>c3p0</artifactId>			<scope>test</scope>		</dependency>		<dependency>		    <groupId>org.testcontainers</groupId>		    <artifactId>elasticsearch</artifactId>			<scope>test</scope> <!-- required by EmbeddedSearchServicesPlugin -->		</dependency>	</dependencies>	<build>		<!-- To use the plugin goals in your POM or parent POM -->		<plugins>			<plugin>				<!-- We need a test jar too (for LTS plugins) -->				<groupId>org.apache.maven.plugins</groupId>				<artifactId>maven-jar-plugin</artifactId>				<version>3.3.0</version>				<configuration>					<forceCreation>true</forceCreation>					<skipIfEmpty>true</skipIfEmpty>				</configuration>				<executions>					<execution>						<goals>							<goal>test-jar</goal>						</goals>					</execution>				</executions>			</plugin>		</plugins>	</build></project>
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>io.vertigo</groupId>
+		<artifactId>vertigo-libs</artifactId>
+		<version>4.4.0</version>
+	</parent>
+
+	<artifactId>vertigo-datafactory</artifactId>
+	<packaging>jar</packaging>
+	<name>vertigo-datafactory</name>
+
+    <repositories>
+      <!-- Needed repo for tests embedded ElasticSearch -->
+      <repository>
+         <id>codelibs.elasticsearch-releases</id>
+         <url>https://maven.codelibs.org/</url>
+         <releases>
+            <enabled>true</enabled>
+         </releases>
+         <snapshots>
+            <enabled>false</enabled>
+         </snapshots>
+      </repository>
+    </repositories>
+    
+    <dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.apache.lucene</groupId>
+				<artifactId>lucene-core</artifactId> <!-- 9.12.3 last for jdk17, 10.3.2 compatible with ElasticSearch 9.3.2 needs jdk21 -->
+				<version>9.12.3</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.lucene</groupId>
+				<artifactId>lucene-analysis-common</artifactId>
+				<version>9.12.3</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.lucene</groupId>
+				<artifactId>lucene-queryparser</artifactId>
+				<version>9.12.3</version>
+			</dependency>
+			<dependency>
+				<groupId>io.vertigo</groupId>
+				<artifactId>vertigo-datastore</artifactId>
+				<version>${project.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>io.vertigo</groupId>
+				<artifactId>vertigo-elasticsearch-connector</artifactId>
+				<version>${vertigo.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+    
+	<dependencies>
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-datastore</artifactId>
+			<version>${project.version}</version>
+		</dependency>		
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-elasticsearch-connector</artifactId>
+			<version>${vertigo.version}</version>
+			<optional>true</optional>
+		</dependency>
+
+
+		<!-- libs -->
+		<!-- kvdatastore -->
+
+		<!-- CollectionsManager/LuceneIndexPlugin -->
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-core</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+		    <artifactId>lucene-analysis-common</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-queryparser</artifactId>
+			<optional>true</optional>
+		</dependency>
+
+		
+
+		<!-- D├®pendances ├á des librairies sp├®cifiques au module -->
+
+		<dependency>
+			<groupId>co.elastic.clients</groupId>
+		    <artifactId>elasticsearch-java</artifactId>
+		    <optional>true</optional> <!-- RestSearchServicesPlugin -->
+		</dependency>
+        
+        <!--<dependency>
+			<groupId>org.elasticsearch</groupId>
+			<artifactId>elasticsearch</artifactId>
+			<version>9.2.3</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>-->
+        
+        
+        <!-- tests -->
+		<dependency>
+		    <groupId>com.h2database</groupId>
+		    <artifactId>h2</artifactId>
+		    <scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.mchange</groupId>
+			<artifactId>c3p0</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+		    <groupId>org.testcontainers</groupId>
+		    <artifactId>elasticsearch</artifactId>
+			<scope>test</scope> <!-- required by EmbeddedSearchServicesPlugin -->
+		</dependency>
+
+	</dependencies>
+	<build>
+		<!-- To use the plugin goals in your POM or parent POM -->
+		<plugins>
+			<plugin>
+				<!-- We need a test jar too (for LTS plugins) -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.3.0</version>
+				<configuration>
+					<forceCreation>true</forceCreation>
+					<skipIfEmpty>true</skipIfEmpty>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>test-jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>
