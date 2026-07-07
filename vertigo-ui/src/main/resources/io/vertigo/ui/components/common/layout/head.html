@@ -49,8 +49,8 @@
 
 	<!--/* Wysiwyg (with tiptap editor) */-->
 	<th:block th:if="${useWysiwyg}">
-		<link th:href="@{/vertigo-ui/static/js/wysiwyg/vertigo-wysiwyg.css}" rel="stylesheet" type="text/css"/>
-		<script th:src="@{/vertigo-ui/static/js/wysiwyg/vertigo-wysiwyg.umd.js}"></script>
+		<link th:href="@{/vertigo-ui/static/js/wysiwyg/vertigo-wysiwyg.css?v=__${myVertigoUiVersion}__}" rel="stylesheet" type="text/css"/>
+		<script th:src="@{/vertigo-ui/static/js/wysiwyg/vertigo-wysiwyg.umd.js?v=__${myVertigoUiVersion}__}"></script>
 	</th:block>
 
 	<!--/* Quasar CSS */-->
@@ -60,8 +60,8 @@
 
 	<!--/* Vertigo UI - DSFR */-->
 	<th:block th:if="${myUseDsfr}">
-		<link th:href="@{/vertigo-ui/static/3rdParty/dsfr/vertigo-dsfr.css}" rel="stylesheet" type="text/css"/>
-		<script th:src="@{/vertigo-ui/static/3rdParty/dsfr/dsfr.umd.js}"></script>
+		<link th:href="@{/vertigo-ui/static/3rdParty/dsfr/vertigo-dsfr.css?v=__${myVertigoUiVersion}__}" rel="stylesheet" type="text/css"/>
+		<script th:src="@{/vertigo-ui/static/3rdParty/dsfr/dsfr.umd.js?v=__${myVertigoUiVersion}__}"></script>
 	</th:block>
 
 
