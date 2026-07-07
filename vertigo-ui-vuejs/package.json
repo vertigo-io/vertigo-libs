@@ -1,50 +1,52 @@
 {
-  "name": "@vertigo-io/vertigo-ui-vuejs",
-  "version": "4.4.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite --port 3000",
-    "build": "vite build",
-    "preview": "vite preview --port 5050",
-    "build-lib": "vite build && cp dist/vertigo-ui.* ../vertigo-ui/src/main/resources/io/vertigo/ui/static/js/"
-  },
-  "dependencies": {
-    "@mdi/font": "^7.4.47",
-    "animate.css": "^4.1.1",
-    "core-js": "^3.44.0",
-    "d3-color": "^3.1.0",
-    "d3-interpolate": "^3.0.1",
-    "lodash.debounce": "^4.0.8"
-  },
-  "devDependencies": {
-    "@vitejs/plugin-vue": "^6.0.7",
-    "axios": "^1.18.1",
-    "eslint": "^10.6.0",
-    "eslint-plugin-vue": "^10.3.0",
-    "ol": "^10.6.1",
-    "quasar": "^2.21.1",
-    "vite": "^8.1.3",
-    "vite-plugin-externals": "^0.6.2",
-    "vite-plugin-mkcert": "^2.1.0",
-    "vue": "^3.5.39"
-  },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/essential",
-      "eslint:recommended"
-    ],
-    "parserOptions": {
-      "parser": "babel-eslint"
-    },
-    "rules": {}
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not dead"
-  ]
+    "name":  "@vertigo-io/vertigo-ui-vuejs",
+    "version":  "4.5.0-SNAPSHOT",
+    "type":  "module",
+    "scripts":  {
+                    "dev":  "vite --port 3000",
+                    "build":  "vite build",
+                    "preview":  "vite preview --port 5050",
+                    "build-lib":  "vite build \u0026\u0026 cp dist/vertigo-ui.* ../vertigo-ui/src/main/resources/io/vertigo/ui/static/js/"
+                },
+    "dependencies":  {
+                         "@mdi/font":  "^7.4.47",
+                         "animate.css":  "^4.1.1",
+                         "core-js":  "^3.44.0",
+                         "d3-color":  "^3.1.0",
+                         "d3-interpolate":  "^3.0.1",
+                         "lodash.debounce":  "^4.0.8"
+                     },
+    "devDependencies":  {
+                            "@vitejs/plugin-vue":  "^6.0.7",
+                            "axios":  "^1.18.1",
+                            "eslint":  "^10.6.0",
+                            "eslint-plugin-vue":  "^10.3.0",
+                            "ol":  "^10.6.1",
+                            "quasar":  "^2.21.1",
+                            "vite":  "^8.1.3",
+                            "vite-plugin-externals":  "^0.6.2",
+                            "vite-plugin-mkcert":  "^2.1.0",
+                            "vue":  "^3.5.39"
+                        },
+    "eslintConfig":  {
+                         "root":  true,
+                         "env":  {
+                                     "node":  true
+                                 },
+                         "extends":  [
+                                         "plugin:vue/essential",
+                                         "eslint:recommended"
+                                     ],
+                         "parserOptions":  {
+                                               "parser":  "babel-eslint"
+                                           },
+                         "rules":  {
+
+                                   }
+                     },
+    "browserslist":  [
+                         "\u003e 1%",
+                         "last 2 versions",
+                         "not dead"
+                     ]
 }
