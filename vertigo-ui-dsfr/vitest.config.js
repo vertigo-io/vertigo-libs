@@ -19,7 +19,7 @@ export default defineConfig({
       ],
       thresholds: {
         perFile: true,
-        autoUpdate: true
+        autoUpdate: false
       }
     },
   },
