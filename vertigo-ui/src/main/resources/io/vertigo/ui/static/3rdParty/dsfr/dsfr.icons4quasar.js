@@ -32,7 +32,7 @@ window.addEventListener('vui-before-plugins', function(event) {
 	        left: 'fr-icon-arrow-left-s-line',
 	        dropdown: 'fr-icon-arrow-down-s-line'
 	    },
-chevron: {
+	    chevron: {
 	        left: 'fr-icon-arrow-left-s-line',
 	        right: 'fr-icon-arrow-right-s-line'
 	    },
