@@ -7,7 +7,7 @@ Running 5.0.0
 
 more to come :)
 
-Running 4.4.0 - 2026-06-XX
+Release 4.4.0 - 2026/07/09
 ----------------------
 [Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-432-to-440)
 
@@ -40,6 +40,7 @@ Running 4.4.0 - 2026-06-XX
 * [dsfr-ui] Fix attributs inherits for `dsfr-button-submit`
 * [dsfr-ui] Fix text-area bad escaping in read only
 * [dsfr-ui] Better facets accessibility
+* [Ui][DSFR] `dsfr.icons4quasar.js` updated for DSFR 1.14.4: 21 icon names changed (RemixIcon → DSFR native SVG)
 * [ui-vuejs, dsfr] add facetTranslatorProvider
 * [Ui] Simplify rendering exception : keep only last message
 * [Ui] Missing context throw 401 instead 500
