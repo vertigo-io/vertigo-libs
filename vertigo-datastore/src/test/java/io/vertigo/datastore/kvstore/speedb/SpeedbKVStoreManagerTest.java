@@ -17,7 +17,7 @@
  */
 package io.vertigo.datastore.kvstore.speedb;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
