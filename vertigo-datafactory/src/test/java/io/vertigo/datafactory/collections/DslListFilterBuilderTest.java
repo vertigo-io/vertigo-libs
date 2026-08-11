@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2025, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2026, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -343,10 +343,14 @@ public final class DslListFilterBuilderTest {
 				{ "ALL:#+query*#", "l'avion n'est pas là", "ALL:(+l'avion* +n'est* +pas* +là*)" }, //17
 				{ "ALL:#\"query\"#", "Andrey Mariette", "ALL:(\"Andrey\" \"Mariette\")" }, //18
 				{ "ALL:\"#query#\"", "Andrey Mariette", "ALL:\"Andrey Mariette\"" }, //19
-				{ "ALL:+\"#query#\"", "Andrey Mariette", "ALL:(+\"Andrey Mariette\")" }, //20
-				{ "ALL:(\"#query#\")", "Andrey Mariette", "ALL:\"Andrey Mariette\"" }, //21
-				{ "ALL:(#query# #query#)", "Andrey Mariette", "ALL:((Andrey Mariette) (Andrey Mariette))" }, //22
-				{ "ALL:#query#", "Noisy\\ Le\\ Sec*", "ALL:(Noisy\\ Le\\ Sec*)" }, //23
+				{ "ALL:\"#query#\"", "\"Andrey Mariette\"", "ALL:\"Andrey Mariette\"" }, //20
+				{ "ALL:\"#query#\"", "\"Andrey Mariette", "ALL:\"Andrey Mariette\"" }, //21
+				{ "ALL:\"#query#\"", "\"Andrey Mariette\" Test", "ALL:\"Andrey Mariette Test\"" }, //22
+				{ "ALL:#\"query\"#", "\"Andrey Mariette\" Test", "ALL:(\"Andrey Mariette\" \"Test\")" }, //23
+				{ "ALL:+\"#query#\"", "Andrey Mariette", "ALL:(+\"Andrey Mariette\")" }, //24
+				{ "ALL:(\"#query#\")", "Andrey Mariette", "ALL:\"Andrey Mariette\"" }, //25
+				{ "ALL:(#query# #query#)", "Andrey Mariette", "ALL:((Andrey Mariette) (Andrey Mariette))" }, //26
+				{ "ALL:#query#", "Noisy\\ Le\\ Sec*", "ALL:(Noisy\\ Le\\ Sec*)" }, //27
 
 		};
 		testStringFixedQuery(testQueries);

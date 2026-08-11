@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2025, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2026, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -322,12 +322,18 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 		if (oldCriteria == null) {
 			return newCriteria;
 		}
+		if (newCriteria == null) {
+			return oldCriteria;
+		}
 		return oldCriteria.and(newCriteria);
 	}
 
 	private Criteria<E> orCriteria(final Criteria<E> oldCriteria, final Criteria<E> newCriteria) {
 		if (oldCriteria == null) {
 			return newCriteria;
+		}
+		if (newCriteria == null) {
+			return oldCriteria;
 		}
 		return oldCriteria.or(newCriteria);
 	}

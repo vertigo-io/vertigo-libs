@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2025, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2026, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,10 +44,11 @@ public class SecuredActionController extends AbstractVSpringMvcController {
 
 	@GetMapping("/")
 	public void initContext(final ViewContext viewContext) {
-		final Movie movie = movieServices.get(viewContext.getLong(movIdKey));
+		var movieId = 1000L;
+		final Movie movie = movieServices.get(movieId);
 
 		viewContext
-				.publishRef(movIdKey, 1000L)
+				.publishRef(movIdKey, movieId)
 				.publishDto(movieKey, movie)
 				.toModeEdit();
 	}

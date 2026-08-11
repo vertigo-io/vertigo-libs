@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2025, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2026, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -191,7 +191,7 @@ public final class S3FileStorePlugin implements FileStorePlugin, Activeable, Sim
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
 		final List<? extends Definition> definition;
 		if (purgeDelayMinutesOpt.isPresent()) {
-			definition = Collections.singletonList(new DaemonDefinition(dmnUniqueName, () -> this::deleteOldFiles, 5 * 60));
+			definition = Collections.singletonList(new DaemonDefinition(dmnUniqueName, () -> this::deleteOldFiles, 5 * 60, false));
 		} else {
 			definition = Collections.emptyList();
 		}

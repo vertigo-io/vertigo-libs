@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2025, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2026, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,6 +49,7 @@ public final class SearchQuery implements Serializable {
 	private final Integer mostRecentBoost;
 	private final Optional<FacetedQuery> facetedQuery;
 	private final DefinitionId<FacetDefinition> clusteringFacetDefinitionId;
+	private final boolean useHighlight; // new flag to enable highlight
 
 	/**
 	 * Constructor.
@@ -71,7 +72,8 @@ public final class SearchQuery implements Serializable {
 			final FacetDefinition clusteringFacetDefinition,
 			final DataField boostedDocumentDateField,
 			final Integer numDaysOfBoostRefDocument,
-			final Integer mostRecentBoost) {
+			final Integer mostRecentBoost,
+			final boolean useHighlight) {
 		Assertion.check()
 				.isNotNull(facetedQuery)
 				.isNotNull(queryCriteria)
@@ -110,6 +112,7 @@ public final class SearchQuery implements Serializable {
 		clusteringFacetDefinitionId = clusteringFacetDefinition != null
 				? clusteringFacetDefinition.id()
 				: null;
+		this.useHighlight = useHighlight;
 	}
 
 	/**
@@ -227,6 +230,14 @@ public final class SearchQuery implements Serializable {
 	 */
 	public Object getCriteria() {
 		return queryCriteria;
+	}
+
+	/**
+	 * Indicates whether highlights should be requested from backend
+	 * @return true if highlight enabled
+	 */
+	public boolean isUseHighlight() {
+		return useHighlight;
 	}
 
 }

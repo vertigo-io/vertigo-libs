@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2025, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2026, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,6 +47,7 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 	private Integer myMostRecentBoost;
 	private FacetedQuery myFacetedQuery;
 	private FacetDefinition myClusteringFacetDefinition;
+	private boolean myUseHighlight = false; // new flag
 
 	/**
 	 * Constructor.
@@ -158,6 +159,15 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 		return this;
 	}
 
+	/**
+	 * Enable highlight in search response
+	 * @return this builder
+	 */
+	public SearchQueryBuilder withHighlight() {
+		this.myUseHighlight = true;
+		return this;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public SearchQuery build() {
@@ -171,6 +181,7 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 				myClusteringFacetDefinition,
 				myDateField,
 				myNumDaysOfBoostRef,
-				myMostRecentBoost);
+				myMostRecentBoost,
+				myUseHighlight);
 	}
 }

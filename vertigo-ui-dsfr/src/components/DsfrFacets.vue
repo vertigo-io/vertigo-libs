@@ -17,7 +17,7 @@
       </ul>
     </div>
     <ul>
-      <li v-for="facet in facets" :key="facet.code" class="facets">
+      <li v-for="facet in facets.filter(facetFilter)" :key="facet.code" class="facets">
         <template v-if="facet.multiple || !isFacetSelected(facet.code)">
           <component :is="heading" class="fr-mb-1w fr-text--md" :id="facet.code">{{ facetLabelByCode(facet.code) }}</component>
 

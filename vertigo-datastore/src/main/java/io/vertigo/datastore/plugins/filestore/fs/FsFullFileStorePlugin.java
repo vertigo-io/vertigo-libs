@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2025, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2026, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -92,6 +92,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin, SimpleDefin
 
 	/**
 	 * Constructor.
+	 *
 	 * @param name Store name
 	 * @param path Root directory
 	 * @param transactionManager Transaction manager
@@ -129,7 +130,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin, SimpleDefin
 
 	@Override
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
-		return Collections.singletonList(new DaemonDefinition(dmnUniqueName, () -> new PurgeFileStoreDaemon(this), 5 * 60));
+		return Collections.singletonList(new DaemonDefinition(dmnUniqueName, () -> new PurgeFileStoreDaemon(this), 5 * 60, false));
 	}
 
 	public void deleteOldFiles() {
@@ -141,6 +142,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin, SimpleDefin
 
 	/**
 	 * Daemon to purge old files.
+	 *
 	 * @author npiedeloup
 	 */
 	public static final class PurgeFileStoreDaemon implements Daemon {

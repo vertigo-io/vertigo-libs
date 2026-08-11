@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2025, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2026, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -84,7 +84,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 	private static final String ATTRS_SUFFIX = "attrs";
 	private static final String CONTENT_TAGS = "contentTags";
 
-	private static final int PRECEDENCE = 350;
+	private static final int PRECEDENCE = 1500; //same as Fragment
 
 	private final Set<String> excludeAttributes = singleton(COMPONENT_PARAMS);
 	private final String componentName;
@@ -422,8 +422,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 		final ITemplateEvent firstEvent = model.get(0);
 		final Map<String, String> attributes = new HashMap<>();
 
-		if (firstEvent instanceof IProcessableElementTag) {
-			final IProcessableElementTag processableElementTag = (IProcessableElementTag) firstEvent;
+		if (firstEvent instanceof final IProcessableElementTag processableElementTag) {
 			for (final IAttribute attribute : processableElementTag.getAllAttributes()) {
 				final String completeName = attribute.getAttributeCompleteName();
 				if (!isDynamicAttribute(completeName, StandardDialect.PREFIX)) {

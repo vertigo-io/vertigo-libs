@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2025, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2026, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@ public final class BerkeleyKVStoreManagerTest extends AbstractKVStoreManagerTest
 						.withMemoryCache()
 						.withKVStore()
 						.withBerkleyKV(
-								Param.of("collections", "flowers;TTL=" + TTL + ", trees;inMemory"),
+								Param.of("collections", "flowers;TTL=" + TTL + ",flowersTemp;TTL=" + TTL / 2 + ", trees;inMemory"),
 								Param.of("dbFilePath", storagePath),
 								Param.of("purgeVersion", "V3"))
 						.build())

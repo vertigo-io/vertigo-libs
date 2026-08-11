@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2025, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2026, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ package io.vertigo.datafactory.collections.data;
 import io.vertigo.basics.formatter.FormatterDefault;
 import io.vertigo.datamodel.smarttype.annotations.Formatter;
 import io.vertigo.datamodel.smarttype.annotations.SmartTypeDefinition;
+import io.vertigo.datamodel.smarttype.annotations.SmartTypeProperty;
 
 public enum TestCollectionsSmartTypes {
 
@@ -28,10 +29,17 @@ public enum TestCollectionsSmartTypes {
 	Id,
 
 	@SmartTypeDefinition(String.class)
+	@SmartTypeProperty(property = "indexType", value = "sep_comma")
 	@Formatter(clazz = FormatterDefault.class)
 	Text,
 
 	@SmartTypeDefinition(String.class)
+	@SmartTypeProperty(property = "indexType", value = "sep_pipe:facetable")
+	@Formatter(clazz = FormatterDefault.class)
+	PipeText,
+
+	@SmartTypeDefinition(String.class)
+	@SmartTypeProperty(property = "indexType", value = "keywords")
 	@Formatter(clazz = FormatterDefault.class)
 	Keyword,
 

@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2025, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2026, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -198,6 +198,12 @@ public class JettyBoot {
 			System.exit(1);
 		}
 		LOG.info("Server started in {} seconds", (System.currentTimeMillis() - start) / 1000);
+		// Apply session timeout after WebAppContext.init() so it overrides web.xml values
+		final var sessionTimeoutMinutesOpt = jettyBootParams.getSessionTimeoutMinutes();
+		if (sessionTimeoutMinutesOpt.isPresent()) {
+			context.getSessionHandler().setMaxInactiveInterval(sessionTimeoutMinutesOpt.get() * 60);
+			LOG.info("Session idle timeout set to {} minutes", sessionTimeoutMinutesOpt.get());
+		}
 		if (jettyBootParams.isJoin()) {
 			try {
 				server.join();

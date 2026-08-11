@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2025, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2026, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,7 +56,7 @@ public final class RedisKVStoreManagerTest extends AbstractKVStoreManagerTest {
 						.withMemoryCache()
 						.withKVStore()
 						.withRedisKV(
-								Param.of("collections", "flowers;TTL=" + TTL + ", trees"))
+								Param.of("collections", "flowers;TTL=" + TTL + ",flowersTemp;TTL=" + TTL / 2 + ", trees"))
 						.build())
 				.build();
 	}

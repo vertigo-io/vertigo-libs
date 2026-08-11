@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2025, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2026, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -78,7 +78,7 @@ public class VuiTextTagProcessor extends AbstractStandardExpressionAttributeTagP
 
 		if (templateMode != TemplateMode.JAVASCRIPT && templateMode != TemplateMode.CSS) {
 
-			final String input = (expressionResult == null ? "" : expressionResult.toString());
+			final String input = expressionResult == null ? "" : expressionResult.toString();
 
 			if (templateMode == TemplateMode.RAW) {
 				// RAW -> just output

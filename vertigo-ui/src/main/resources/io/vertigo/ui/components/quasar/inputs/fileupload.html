@@ -52,8 +52,10 @@
             th:attr="__${uploader_attrs}__"></v-file-upload-quasar>
 </th:block>
 
+
+<!-- fileComponentId est obligatoire : passez le componentId de l'uploader cible -->
 <th:block th:fragment="fileupload-dropzone(fileComponentId, dropzone_attrs)" 
-    th:assert="${fileComponentId} != null"
+    th:assert="${fileComponentId} != null" 
     th:with="myComponentId=${model.util.generateComponentUID('uploader_drop', fileComponentId, null, null)}"
     th:attr="objectKey=${model.vContext['componentStates'].addComponentState(myComponentId).addPrimitive('dragover',false)}" >
         <div class="dropzone-area" 

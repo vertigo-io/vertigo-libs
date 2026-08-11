@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2025, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2026, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -105,6 +105,7 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 
 	/**
 	 * Constructor.
+	 *
 	 * @param optDataSpace the dataSpace (option)
 	 * @param optConnectionName the name of the connection
 	 * @param optSequencePrefix the prefix of sequences
@@ -322,7 +323,7 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 		//---
 		final var entityName = getEntityName(dataDefinition);
 		final var tableName = StringUtil.camelToConstCase(entityName);
-		final var taskName = TASK.TkCount + entityName + (Criterions.alwaysTrue().equals(criteria) ? "ByCriteria" : "");
+		final var taskName = TASK.TkCount + entityName + (!Criterions.alwaysTrue().equals(criteria) ? "ByCriteria" : "");
 		final var tuple = criteria.toStringAnCtx(criteriaEncoder);
 		final var where = tuple.val1();
 		final var request = new StringBuilder("select count(1) as totalCount")

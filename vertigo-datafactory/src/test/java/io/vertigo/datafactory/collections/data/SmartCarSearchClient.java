@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2025, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2026, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,8 @@ public class SmartCarSearchClient implements Component, DefinitionProvider {
 	@Inject
 	private CollectionsManager collectionsManager;
 
-	public FacetedQueryResult<SmartCar, DtList<SmartCar>> createSearchQueryBuilderBase(final DtList<SmartCar> smartCars, final SelectedFacetValues selectedFacetValues, final Optional<FacetDefinition> clusterFacetDefinitionOpt) {
+	public FacetedQueryResult<SmartCar, DtList<SmartCar>> createSearchQueryBuilderBase(final DtList<SmartCar> smartCars, final SelectedFacetValues selectedFacetValues,
+			final Optional<FacetDefinition> clusterFacetDefinitionOpt) {
 		final FacetedQueryDefinition facetedQueryDefinition = Node.getNode().getDefinitionSpace().resolve("QryCarFacet", FacetedQueryDefinition.class);
 		return collectionsManager.facetList(smartCars, new FacetedQuery(facetedQueryDefinition, selectedFacetValues), clusterFacetDefinitionOpt);
 	}
@@ -66,7 +67,8 @@ public class SmartCarSearchClient implements Component, DefinitionProvider {
 						.withDtDefinition("DtSmartCar")
 						.withFieldName("manufacturer")
 						.withLabel("Par constructeur")
-						.withOrder(FacetOrder.count),
+						.withMultiSelectable()
+						.withOrder(FacetOrder.alpha),
 				new FacetRangeDefinitionSupplier("FctYearCar")
 						.withDtDefinition("DtSmartCar")
 						.withFieldName("year")
@@ -75,6 +77,18 @@ public class SmartCarSearchClient implements Component, DefinitionProvider {
 						.withRange("r2", "year:[2000 TO 2005]", "2000-2005")
 						.withRange("r3", "year:[2005 TO *]", "après 2005")
 						.withOrder(FacetOrder.definition),
+				new FacetTermDefinitionSupplier("FctDescriptionCarTokenized")
+						.withDtDefinition("DtSmartCar")
+						.withFieldName("description")
+						.withLabel("Par mot clés")
+						.withMultiSelectable()
+						.withOrder(FacetOrder.count),
+				new FacetTermDefinitionSupplier("FctTagsCar")
+						.withDtDefinition("DtSmartCar")
+						.withFieldName("tags")
+						.withLabel("Par tags")
+						.withMultiSelectable()
+						.withOrder(FacetOrder.count),
 
 				//---
 				// FacetedQueryDefinition
@@ -85,6 +99,8 @@ public class SmartCarSearchClient implements Component, DefinitionProvider {
 						.withCriteriaSmartType("STyText")
 						.withFacet("FctDescriptionCar")
 						.withFacet("FctManufacturerCar")
+						.withFacet("FctDescriptionCarTokenized")
+						.withFacet("FctTagsCar")
 						.withFacet("FctYearCar"));
 	}
 }

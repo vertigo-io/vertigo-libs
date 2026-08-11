@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2025, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2026, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,11 +44,12 @@ import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Rate limit handler.
+ *
  * @author npiedeloup
  */
 public final class RateLimitingWebServiceHandlerPlugin implements WebServiceHandlerPlugin, SimpleDefinitionProvider {
 
-	/** Stack index of the handler for sorting at startup**/
+	/** Stack index of the handler for sorting at startup **/
 	public static final int STACK_INDEX = 100;
 
 	private static final long DEFAULT_LIMIT_VALUE = 150; //the rate limit ceiling value
@@ -72,6 +73,7 @@ public final class RateLimitingWebServiceHandlerPlugin implements WebServiceHand
 
 	/**
 	 * Constructor.
+	 *
 	 * @param windowSeconds the time windows use to limit calls rate
 	 * @param limitValue the rate limit ceiling value
 	 * @param securityManager Security Manager
@@ -96,7 +98,7 @@ public final class RateLimitingWebServiceHandlerPlugin implements WebServiceHand
 
 	@Override
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
-		return Collections.singletonList(new DaemonDefinition("DmnRateLimitWindowReset", () -> () -> resetRateLimitWindow(), windowSeconds));
+		return Collections.singletonList(new DaemonDefinition("DmnRateLimitWindowReset", () -> this::resetRateLimitWindow, windowSeconds, false));
 	}
 
 	/** {@inheritDoc} */
@@ -105,7 +107,7 @@ public final class RateLimitingWebServiceHandlerPlugin implements WebServiceHand
 		return true;
 	}
 
-	/** {@inheritDoc}  */
+	/** {@inheritDoc} */
 	@Override
 	public Object handle(final HttpServletRequest request, final HttpServletResponse response, final WebServiceCallContext routeContext, final HandlerChain chain) throws SessionException {
 		Assertion.check()

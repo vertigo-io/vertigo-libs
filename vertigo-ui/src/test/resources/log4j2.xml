@@ -13,9 +13,9 @@
 	</Appenders>
 
 
-	<!-- Pour les tests on ne loggue que FATAL. -->
+	<!-- Pour les tests on loggue les erreurs (incluant les exceptions avalées par Spring). -->
 	<Loggers>
-		<Root level="fatal">
+		<Root level="error">
 			<AppenderRef ref="Console" />
 		</Root>
 	</Loggers>

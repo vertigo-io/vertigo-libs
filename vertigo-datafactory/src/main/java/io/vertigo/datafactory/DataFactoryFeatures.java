@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2025, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2026, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,9 +27,9 @@ import io.vertigo.datafactory.plugins.collections.lucene.LuceneIndexPlugin;
 import io.vertigo.datafactory.search.SearchManager;
 
 /**
- * Defines dynamo features.
+ * Defines data factory features.
  *
- * @author pchretien
+ * @author pchretien, npiedeloup
  */
 public final class DataFactoryFeatures extends Features<DataFactoryFeatures> {
 
@@ -47,17 +47,22 @@ public final class DataFactoryFeatures extends Features<DataFactoryFeatures> {
 		return this;
 	}
 
+	@Deprecated(forRemoval = true)
 	@Feature("search.elasticsearch.client")
 	public DataFactoryFeatures withESClient(final Param... params) {
-		getModuleConfigBuilder()
-				.addPlugin(io.vertigo.datafactory.plugins.search.elasticsearch.client.ClientESSearchServicesPlugin.class, params);
-		return this;
+		throw new UnsupportedOperationException("client node no more supported in ES9, use RestClient instead");
 	}
 
+	@Deprecated(forRemoval = true)
 	@Feature("search.elasticsearch.restHL")
 	public DataFactoryFeatures withESHL(final Param... params) {
+		return withESRest(params);
+	}
+
+	@Feature("search.elasticsearch.rest")
+	public DataFactoryFeatures withESRest(final Param... params) {
 		getModuleConfigBuilder()
-				.addPlugin(io.vertigo.datafactory.plugins.search.elasticsearch.rest.RestHLClientESSearchServicesPlugin.class, params);
+				.addPlugin(io.vertigo.datafactory.plugins.search.elasticsearch.rest.RestClientESSearchServicesPlugin.class, params);
 		return this;
 	}
 

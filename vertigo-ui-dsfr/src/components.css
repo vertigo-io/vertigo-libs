@@ -1,3 +1,19 @@
+/* Composant de modale */
+.v-modal .fr-modal__content {
+    /* Le footer fait partie de l’iframe */
+	margin-bottom: 0;
+}
+
+.v-modal .v-modal__dsfr-content {
+	height: 420px;
+}
+
+.v-modal .fr-modal__footer {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+
 /* Composant de la navtab */
 .dsfr-navtab {
     margin-bottom: 2rem;

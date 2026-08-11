@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2025, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2026, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,6 +38,7 @@ public class JettyBootParams {
 	private final Class<? extends WebApplicationInitializer> webApplicationInitializerClass;
 	private final Optional<String> jettySessionStoreCollectionName;
 	private final boolean noJettySessionCache;
+	private final Optional<Integer> sessionTimeoutMinutes;
 	private final boolean join;
 	private final String multiPartTempPath;
 	private final int maxPartSizeMb;
@@ -58,6 +59,7 @@ public class JettyBootParams {
 			final Optional<String> jettyNodeName,
 			final Optional<String> jettySessionStoreCollectionName,
 			final boolean noJettySessionCache,
+			final Optional<Integer> sessionTimeoutMinutes,
 			final boolean join,
 			final String multiPartTempPath,
 			final int maxPartSizeMb,
@@ -93,6 +95,7 @@ public class JettyBootParams {
 		this.webApplicationInitializerClass = webApplicationInitializerClass;
 		this.jettySessionStoreCollectionName = jettySessionStoreCollectionName;
 		this.noJettySessionCache = noJettySessionCache;
+		this.sessionTimeoutMinutes = sessionTimeoutMinutes;
 		this.join = join;
 		this.multiPartTempPath = multiPartTempPath;
 		this.maxPartSizeMb = maxPartSizeMb;
@@ -151,6 +154,10 @@ public class JettyBootParams {
 
 	public boolean isNoJettySessionCache() {
 		return noJettySessionCache;
+	}
+
+	public Optional<Integer> getSessionTimeoutMinutes() {
+		return sessionTimeoutMinutes;
 	}
 
 	public String getMultiPartTempPath() {

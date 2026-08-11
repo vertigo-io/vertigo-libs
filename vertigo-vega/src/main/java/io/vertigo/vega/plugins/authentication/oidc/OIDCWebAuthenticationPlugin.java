@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2025, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2026, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,8 +37,8 @@ import com.nimbusds.openid.connect.sdk.token.OIDCTokens;
 
 import io.vertigo.account.security.UserSession;
 import io.vertigo.account.security.VSecurityManager;
-import io.vertigo.connectors.oidc.OIDCClient;
-import io.vertigo.connectors.oidc.OIDCDeploymentConnector;
+import io.vertigo.connectors.oidc.IOIDCClient;
+import io.vertigo.connectors.oidc.IOIDCDeploymentConnector;
 import io.vertigo.connectors.oidc.state.OIDCSessionStateStorage;
 import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.lang.VSystemException;
@@ -63,7 +63,7 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<OIDC
 
 	private static final String REQUESTED_URI = "requestedUri";
 
-	private final OIDCClient oidcClient;
+	private final IOIDCClient oidcClient;
 
 	private final String[] requestedScopes;
 
@@ -83,7 +83,7 @@ public class OIDCWebAuthenticationPlugin implements WebAuthenticationPlugin<OIDC
 			@ParamValue("urlHandlerPrefix") final Optional<String> urlHandlerPrefixOpt,
 			@ParamValue("externalUrl") final Optional<String> externalUrlOpt,
 			@ParamValue("connectorName") final Optional<String> connectorNameOpt,
-			final List<OIDCDeploymentConnector> oidcDeploymentConnectors) {
+			final List<IOIDCDeploymentConnector> oidcDeploymentConnectors) {
 
 		this.securityManager = securityManager;
 

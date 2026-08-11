@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2025, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2026, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,6 +46,7 @@ public class JettyBootParamsBuilder implements Builder<JettyBootParams> {
 	private String myJettySessionStoreCollectionName;
 	private boolean myNoJettySessionCache;
 	//TODO parameter si cache null ou default (si on croit dans l'affinité de session ou non)
+	private Integer mySessionTimeoutMinutes;
 	private boolean myJoin = true;// true by default
 	private String myMultiPartTempPath = System.getProperty("java.io.tmpdir");// temp dir by default
 	private int myMaxPartSizeMb = 30;
@@ -100,6 +101,12 @@ public class JettyBootParamsBuilder implements Builder<JettyBootParams> {
 
 	public JettyBootParamsBuilder noJettySessionCache() {
 		myNoJettySessionCache = true;
+		return this;
+	}
+
+	public JettyBootParamsBuilder withSessionTimeoutMinutes(final int sessionTimeoutMinutes) {
+		Assertion.check().isTrue(sessionTimeoutMinutes > 0, "Session timeout must be positive");
+		mySessionTimeoutMinutes = sessionTimeoutMinutes;
 		return this;
 	}
 
@@ -168,6 +175,7 @@ public class JettyBootParamsBuilder implements Builder<JettyBootParams> {
 				Optional.ofNullable(myJettyNodeName),
 				Optional.ofNullable(myJettySessionStoreCollectionName),
 				myNoJettySessionCache,
+				Optional.ofNullable(mySessionTimeoutMinutes),
 				myJoin,
 				myMultiPartTempPath,
 				myMaxPartSizeMb,

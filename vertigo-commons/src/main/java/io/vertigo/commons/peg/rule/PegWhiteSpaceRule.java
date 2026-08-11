@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2025, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2026, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,30 +50,55 @@ final class PegWhiteSpaceRule implements PegRule<Dummy> {
 	/** {@inheritDoc} */
 	@Override
 	public String getExpression() {
-		return expression; // _ by convention
+		return expression;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public PegResult<Dummy> parse(final String text, final int start) throws PegNoMatchFoundException {
-		int lastIndex;
-		int index = start;
-		index = rule
-				.parse(text, index)
-				.index();
+		var index = start;
 
-		//Suppression des commentaires  /*xxxxxxxxxxxxxxx*/
-		while (text.length() > index + 2 && "/*".equals(text.substring(index, index + 2))) {
-			index += 2;
-			lastIndex = index;
-			index = text.indexOf("*/", index);
-			if (index < 0) {
-				throw new PegNoMatchFoundException(text, lastIndex, null, "Fermeture des commentaires */ non trouvée");
+		// On commence par absorber les premiers blancs
+		index = rule.parse(text, index).index();
+
+		boolean foundComment;
+		do {
+			foundComment = false;
+			final var textLength = text.length();
+
+			if (textLength > index + 1) {
+				final var startTag = text.substring(index, index + 2);
+
+				// 1. Gestion des commentaires BLOC /* ... */
+				if ("/*".equals(startTag)) {
+					index += 2;
+					final var endComment = text.indexOf("*/", index);
+					if (endComment < 0) {
+						throw new PegNoMatchFoundException(text, index, null, "Fermeture des commentaires */ non trouvée");
+					}
+					index = endComment + 2;
+					foundComment = true;
+				}
+				// 2. Gestion des commentaires LIGNE // ...
+				else if ("//".equals(startTag)) {
+					index += 2;
+					final var endLine = text.indexOf('\n', index);
+					if (endLine < 0) {
+						// Si pas de \n, le commentaire va jusqu'à la fin du texte
+						index = textLength;
+					} else {
+						index = endLine + 1; // On consomme le \n
+					}
+					foundComment = true;
+				}
+
+				if (foundComment) {
+					// Après un commentaire, on ré-absorbe les blancs potentiels
+					index = rule.parse(text, index).index();
+				}
 			}
-			index += 2;
-			//On supprime les blancs
-			index = rule.parse(text, index).index();
-		}
+		} while (foundComment); // On boucle tant qu'on trouve des blocs de commentaires successifs
+
 		return new PegResult<>(index, Dummy.INSTANCE);
 	}
 }
