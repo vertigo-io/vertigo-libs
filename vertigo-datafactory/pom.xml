@@ -133,6 +133,7 @@
 			<artifactId>vertigo-arch</artifactId>
 			<version>${vertigo.version}</version>
 			<scope>test</scope>
+		</dependency>
 		<dependency>
 		    <groupId>org.testcontainers</groupId>
 		    <artifactId>elasticsearch</artifactId>
