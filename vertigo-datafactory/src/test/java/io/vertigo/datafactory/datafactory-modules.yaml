@@ -10,8 +10,7 @@ scope:
 
 libs:
   lucene: org.apache.lucene.**
-  elasticsearch: org.elasticsearch.**
-  hppc: com.carrotsearch.**
+  elasticsearch: co.elastic.clients.**
   commons: io.vertigo.commons.**
   datamodel: io.vertigo.datamodel.**
   datastore: io.vertigo.datastore.**
@@ -37,4 +36,4 @@ modules:
     deps: [collections, search, basics, commons, datamodel, datastore]
   plugins:
     path: io.vertigo.datafactory.plugins.**
-    deps: [collections, search, impl, lucene, elasticsearch, hppc, commons, connectors, datamodel, datastore]
+    deps: [collections, search, impl, lucene, elasticsearch, commons, connectors, datamodel, datastore]

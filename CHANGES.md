@@ -3,13 +3,21 @@ Version history
 
 Running 5.0.0
 ----------------------
-[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-432-to-500)
+[Migration help](https://github.com/vertigo-io/vertigo-core/wiki/Vertigo-Migration-Guide#from-44x-to-500)
 
+* **[All] Switch dependency injection annotations from `javax.inject` to `jakarta.inject`**
+* **[All] Migration Jetty 11 -> 12, Javalin 6 -> 7, Spring 6 -> 7**
+* **[DataModel] Blackboard (BB) moved from vertigo-vortex to vertigo-datamodel** : package `io.vertigo.vortex.bb` -> `io.vertigo.datamodel.bb`, `vertigo-vortex` module is removed
+* **[Commons] `PegResult` is now a record** : `getIndex()`/`getValue()` accessors renamed to `index()`/`value()`
+* **[Ui] Embedded Jetty : `extraClasspath` renamed to `addonPaths`** (`JettyBootParams` builder)
+* **[Ui] Multipart configuration is now part of `JettyBootParams`** (`multiPartTempPath`, `maxPartSizeMb`, `maxRequestSize`, `maxPartSizeInMemoryKb`) : no more multipart handler to register at server start
+* **[Ui][Wysiwyg] Update TipTap v2 -> v3** : custom wysiwyg extensions must be migrated to the TipTap v3 API
 * **[Vega] ContentSecurityPolicyFilter ${..} are now resolved by the paramManager. Old syntax must be updated :**
     * `${cspFrameAncestor}` => `${CSP_FRAME_ANCESTOR}`
     * `${cspParam1}` => `${CSP_PARAM1}`
     * `${cspParam2}` => `${CSP_PARAM2}`
     * `${cspParam3}` => `${CSP_PARAM3}`
+* [All] Replace SLF4J by LOG4J api for internal logging
 * [Ui][Quasar] Add `nullLabel` parameter for `vu:select` and `vu:field-read`.
 * [Account] Add wildcard security key to authorize all possible values (`UserAuthorizations.SECURITY_KEY_ALL_VALUES`).
 
