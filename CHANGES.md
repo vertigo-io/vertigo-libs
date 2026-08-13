@@ -10,6 +10,8 @@ more to come :)
 
 Running 4.5.0-SNAPSHOT - 2026-12-XX
 ----------------------
+* [DataFactory] Fix ES9 date range facets : range bounds were not sent to ElasticSearch (every range counted all documents) and date bounds threw a `NumberFormatException`
+
 more to come :)
 
 
