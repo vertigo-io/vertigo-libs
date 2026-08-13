@@ -18,6 +18,7 @@
 package io.vertigo.datafactory.search.data.domain;
 
 import java.time.Instant;
+import java.time.LocalDate;
 
 import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.VSystemException;
@@ -45,6 +46,7 @@ public final class Item implements KeyConcept {
 	private String optionalString;
 	private String notFacetableString;
 	private Instant lastModified;
+	private LocalDate firstRegistrationDate;
 	private GeoPoint localisation;
 	private Integer precision;
 
@@ -178,6 +180,15 @@ public final class Item implements KeyConcept {
 
 	public void setLastModified(final Instant lastModified) {
 		this.lastModified = lastModified;
+	}
+
+	@Field(smartType = "STyDate", label = "FirstRegistrationDate")
+	public LocalDate getFirstRegistrationDate() {
+		return firstRegistrationDate;
+	}
+
+	public void setFirstRegistrationDate(final LocalDate firstRegistrationDate) {
+		this.firstRegistrationDate = firstRegistrationDate;
 	}
 
 	@Field(smartType = "STyGeoPoint", label = "localisation")

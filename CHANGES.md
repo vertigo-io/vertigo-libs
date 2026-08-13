@@ -24,6 +24,14 @@ Running 5.0.0
 more to come :)
 
 
+Running 4.4.1-SNAPSHOT - 2026-12-XX
+----------------------
+* [DataFactory] Fix ES9 date range facets : range bounds were not sent to ElasticSearch (every range counted all documents) and date bounds threw a `NumberFormatException`
+* [Ui] Add the default (english) bundle of the `hasObjectFieldErrors` message banner : non-french locales displayed `??messages.hasObjectFieldErrors.message??`
+
+more to come :)
+
+
 Release 4.4.0 - 2026/07/09
 ----------------------
 [Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-432-to-440)

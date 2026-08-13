@@ -898,6 +898,50 @@ public abstract class AbstractSearchManagerTest {
 	}
 
 	@Test
+	public void testFacetQueryByDateRange() {
+		index(false);
+		final SearchQuery searchQuery = SearchQuery.builder("QryItemFirstRegistrationDateRangeFacet")
+				.withCriteria("")
+				.withFacet(EMPTY_SELECTED_FACET_VALUES)
+				.build();
+		final var result = doQuery(searchQuery, null);
+		testFacetResultByDateRange(result, "");
+	}
+
+	private void testFacetResultByDateRange(final FacetedQueryResult<Item, SearchQuery> result, final String dbCriteria) {
+		final var dbCount = dbCriteria.isBlank() ? itemDataBase.size() : itemDataBase.containsDescription(dbCriteria);
+		Assertions.assertEquals(dbCount, result.getCount());
+
+		final Facet firstRegistrationDateFacet = getFacetByName(result, "FctFirstRegistrationDateItem");
+		Assertions.assertTrue(firstRegistrationDateFacet.getDefinition().isRangeFacet());
+
+		//On vérifie le décompte de CHAQUE range : si les bornes ne sont pas transmises à ES, chaque range compte tous les documents
+		//(mêmes bornes que la facette FctYearItem : firstRegistrationDate = 15/03 de itemYear)
+		final var before2000 = itemDataBase.before(2000, dbCriteria);
+		final var before2005 = itemDataBase.before(2005, dbCriteria);
+		for (final Entry<FacetValue, Long> entry : firstRegistrationDateFacet.getFacetValues().entrySet()) {
+			final String searchFacetLabel = entry.getKey().label().getDisplay().toLowerCase(Locale.FRENCH);
+			final long searchFacetCount = entry.getValue();
+			if ("avant 2000".equals(searchFacetLabel)) {
+				Assertions.assertEquals(before2000, searchFacetCount);
+			} else if ("2000-2005".equals(searchFacetLabel)) {
+				Assertions.assertEquals(before2005 - before2000, searchFacetCount);
+			} else if ("apres 2005".equals(searchFacetLabel)) {
+				Assertions.assertEquals(dbCount - before2005, searchFacetCount);
+			} else {
+				Assertions.fail("Unknown facet label : " + searchFacetLabel);
+			}
+			Assertions.assertNotEquals(dbCount, searchFacetCount, "Range bounds were not applied : " + searchFacetLabel + " counts all documents");
+		}
+		Assertions.assertEquals(3, firstRegistrationDateFacet.getFacetValues().size());
+
+		//on vérifie l'ordre
+		final List<FacetValue> facetValueDefinition = firstRegistrationDateFacet.getDefinition().getFacetRanges();
+		final List<FacetValue> facetValueResult = new ArrayList<>(firstRegistrationDateFacet.getFacetValues().keySet());
+		Assertions.assertEquals(facetValueDefinition, facetValueResult); //equals vérifie aussi l'ordre
+	}
+
+	@Test
 	public void testFacetOptionalFieldByTerm() {
 		testFacetOptionalFieldByTerm("");
 	}
