@@ -143,11 +143,11 @@ public final class CommonsFeatures extends Features<CommonsFeatures> {
 	@Override
 	protected void buildFeatures() {
 		getModuleConfigBuilder()
-				.addAspect(TraceAspect.class) //TODO: TraceAspect comes from vertigo-core (@Trace annotation) - it should be registered by core, but need more works
 				.addComponent(CodecManager.class, CodecManagerImpl.class)
 				.addComponent(EventBusManager.class, EventBusManagerImpl.class)
 				.addComponent(AppManager.class, AppManagerImpl.class)
 				.addComponent(VTransactionManager.class, VTransactionManagerImpl.class)
+				.addAspect(TraceAspect.class) //TODO: TraceAspect comes from vertigo-core (@Trace annotation) - it should be registered by core, but need more works
 				.addAspect(VTransactionAspect.class);
 	}
 }
