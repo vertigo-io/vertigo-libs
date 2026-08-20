@@ -13,6 +13,7 @@ Running 4.4.1-SNAPSHOT - 2026-12-XX
 * [DataFactory] Fix ES9 date range facets : range bounds were not sent to ElasticSearch (every range counted all documents) and date bounds threw a `NumberFormatException`
 * [Ui] Add the default (english) bundle of the `hasObjectFieldErrors` message banner : non-french locales displayed `??messages.hasObjectFieldErrors.message??`
 * [Commons] `TraceAspect` (core `@Trace` annotation) is now auto-registered by `CommonsFeatures` : `@Trace` components work without declaring the aspect in a module. If you declare `addAspect(TraceAspect.class)` in your app, remove it (duplicate registration fails at boot). `@Trace` components must be in modules declared after `vertigo-commons` in NodeConfig
+* [Ui] Fix the encoding of the quasar 2.21.1 language packs (de, es, fr, it) : they were committed in cp1252 instead of UTF-8, so every accented character of the quasar labels was displayed as `�` (e.g. `Aucune donn�e � afficher` on empty tables). Regression introduced in 4.4.0 with the quasar 2.18.1 -> 2.21.1 upgrade, the 2.18.1 packs being pure ASCII (escaped accents)
 
 more to come :)
 
