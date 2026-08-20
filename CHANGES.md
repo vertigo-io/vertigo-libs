@@ -12,6 +12,7 @@ Running 4.4.1-SNAPSHOT - 2026-12-XX
 ----------------------
 * [DataFactory] Fix ES9 date range facets : range bounds were not sent to ElasticSearch (every range counted all documents) and date bounds threw a `NumberFormatException`
 * [Ui] Add the default (english) bundle of the `hasObjectFieldErrors` message banner : non-french locales displayed `??messages.hasObjectFieldErrors.message??`
+* [Commons] `TraceAspect` (core `@Trace` annotation) is now auto-registered by `CommonsFeatures` : `@Trace` components work without declaring the aspect in a module. If you declare `addAspect(TraceAspect.class)` in your app, remove it (duplicate registration fails at boot). `@Trace` components must be in modules declared after `vertigo-commons` in NodeConfig
 
 more to come :)
 

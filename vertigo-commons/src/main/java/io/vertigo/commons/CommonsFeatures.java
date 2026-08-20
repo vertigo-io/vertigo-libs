@@ -36,6 +36,7 @@ import io.vertigo.commons.plugins.app.registry.redis.RedisAppNodeRegistryPlugin;
 import io.vertigo.commons.plugins.script.janino.JaninoExpressionEvaluatorPlugin;
 import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.commons.transaction.VTransactionManager;
+import io.vertigo.core.impl.analytics.trace.TraceAspect;
 import io.vertigo.core.node.config.Feature;
 import io.vertigo.core.node.config.Features;
 import io.vertigo.core.param.Param;
@@ -144,5 +145,7 @@ public final class CommonsFeatures extends Features<CommonsFeatures> {
 				.addComponent(AppManager.class, AppManagerImpl.class)
 				.addComponent(VTransactionManager.class, VTransactionManagerImpl.class)
 				.addAspect(VTransactionAspect.class);
+		//TODO: TraceAspect comes from vertigo-core (@Trace annotation) - it must be registered by its own module when analytics is extracted from core
+		getModuleConfigBuilder().addAspect(TraceAspect.class);
 	}
 }
