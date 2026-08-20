@@ -83,7 +83,7 @@ Release 4.4.0 - 2026/07/09
 * **[Ui] Reset componentStates each request**
 * [Ui] Add `withSessionTimeoutMinutes` to Jetty boot parameters
 * [Ui][A11y] Fix regression on aria-labelledby when no error (use empty string instead of null)
-* [Ui] Use inverted text colors for `vu:messages`
+* **[Ui] Use inverted text colors for `vu:messages`** : the level colors are no longer hardcoded in the template but driven by the `--v-<level>-invert` variables. **Changes the default rendering of info and success messages, whose text was black and is now white** (see the migration guide to restore it). `vu:dsfr-message` is not impacted (DSFR colors are normalized, not configurable).
 * [Ui] Add inverted color CSS variables and fix usages
 * [Ui] Fix persist uiMessageStack on expired viewContext redirect
 * [Ui] Add cache-busting on wysiwyg/dsfr static assets via versioned query parameter
