@@ -43,6 +43,7 @@ import io.vertigo.core.param.Param;
 
 /**
  * Defines commons module.
+ *
  * @author pchretien
  */
 public final class CommonsFeatures extends Features<CommonsFeatures> {
@@ -112,6 +113,7 @@ public final class CommonsFeatures extends Features<CommonsFeatures> {
 
 	/**
 	 * Adds a NodeRegistryPlugin
+	 *
 	 * @param nodeRegistryPluginClass the plugin to use
 	 * @param params the params
 	 * @return these features
@@ -125,6 +127,7 @@ public final class CommonsFeatures extends Features<CommonsFeatures> {
 
 	/**
 	 * Adds a NodeInfosPlugin
+	 *
 	 * @param nodeInfosPluginClass the plugin to use
 	 * @param params the params
 	 * @return these features
@@ -140,12 +143,11 @@ public final class CommonsFeatures extends Features<CommonsFeatures> {
 	@Override
 	protected void buildFeatures() {
 		getModuleConfigBuilder()
+				.addAspect(TraceAspect.class) //TODO: TraceAspect comes from vertigo-core (@Trace annotation) - it should be registered by core, but need more works
 				.addComponent(CodecManager.class, CodecManagerImpl.class)
 				.addComponent(EventBusManager.class, EventBusManagerImpl.class)
 				.addComponent(AppManager.class, AppManagerImpl.class)
 				.addComponent(VTransactionManager.class, VTransactionManagerImpl.class)
 				.addAspect(VTransactionAspect.class);
-		//TODO: TraceAspect comes from vertigo-core (@Trace annotation) - it must be registered by its own module when analytics is extracted from core
-		getModuleConfigBuilder().addAspect(TraceAspect.class);
 	}
 }
