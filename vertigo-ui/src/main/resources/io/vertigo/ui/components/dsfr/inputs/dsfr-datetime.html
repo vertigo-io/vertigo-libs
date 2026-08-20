@@ -7,7 +7,7 @@
     <vu:include-data object="${object}" field="${field}" modifiable="true"/>
     <dsfr-input-group type="datetime-local"
                       th:v-bind:model-value="|dsfrDecodeDateTime(${model.util.vueDataKey(object, field, rowIndex)}, '${myFormat}')|"
-                      th:@update:model-value="|function (newValue) { ${model.util.vueDataKey(object, field, rowIndex)} = newValue }|"
+                      th:@update:model-value="|(newValue) => { ${model.util.vueDataKey(object, field, rowIndex)} = newValue }|"
                       th:label="${myLabel}"
                       th::label-visible="${myLabel!=null}"
                       th:required="${myRequired}"
