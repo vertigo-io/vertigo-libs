@@ -18,13 +18,16 @@
 package io.vertigo.database.plugins.migration.liquibase;
 
 import java.util.Optional;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.param.ParamValue;
+import io.vertigo.core.util.StringUtil;
 import io.vertigo.database.impl.migration.MigrationPlugin;
 import io.vertigo.database.sql.SqlManager;
 import jakarta.inject.Inject;
@@ -82,37 +85,65 @@ public final class LiquibaseMigrationPlugin implements MigrationPlugin {
 	/** {@inheritDoc} */
 	@Override
 	public void update() {
-		LOGGER.info("Liquibase  : checking  on connection {}", connectionName);
-		try (final var lb = createLiquibase()) {
-			final var unexpectedChangeSets = lb.listUnexpectedChangeSets(getContexts(), new LabelExpression());
-			Assertion.check().isTrue(unexpectedChangeSets.isEmpty(), "Database is too recent. Please make sure you run the correct version of the node.");
-			lb.update(getContexts());
-		} catch (final LiquibaseException e) {
-			throw WrappedException.wrap(e);
+		LOGGER.info("Liquibase  : updating  on connection {}", connectionName);
+		// Processing the masterFile
+		processLiquibaseScript(null, masterFile, true);
+		// Processing additional scripts, declared as LiquibaseScriptDefinition (eg by addons)
+		for (final var scriptDef : getLiquibaseAdditionalScriptDefinitions()) {
+			processLiquibaseScript(scriptDef.getPrefix(), scriptDef.getFilePath(), true);
 		}
-		LOGGER.info("Liquibase  : finished checking on connection {}", connectionName);
-
-	}
-
-	private Liquibase createLiquibase() throws DatabaseException {
-		final var jdbcConnection = new JdbcConnection(sqlManager.getConnectionProvider(connectionName).obtainConnection().getJdbcConnection());
-		final var db = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(jdbcConnection);
-		return new Liquibase(masterFile, new ClassLoaderResourceAccessor(), db);
+		LOGGER.info("Liquibase  : finished updating on connection {}", connectionName);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void check() {
-		LOGGER.info("Liquibase  : updating  on connection {}", connectionName);
-		try (final var lb = createLiquibase()) {
-			final var changeSetList = lb.listUnrunChangeSets(getContexts(), new LabelExpression());
-			Assertion.check().isTrue(changeSetList.isEmpty(), "Database is not up to date. Please update it before launching the node.");
+		LOGGER.info("Liquibase  : checking  on connection {}", connectionName);
+		// Processing the masterFile
+		processLiquibaseScript(null, masterFile, false);
+		// Processing additional scripts, declared as LiquibaseScriptDefinition (eg by addons)
+		for (final var scriptDef : getLiquibaseAdditionalScriptDefinitions()) {
+			processLiquibaseScript(scriptDef.getPrefix(), scriptDef.getFilePath(), false);
+		}
+		LOGGER.info("Liquibase  : finished checking on connection {}", connectionName);
+	}
+
+	/**
+	 * Updates or checks one liquibase script.
+	 *
+	 * @param prefix prefix of the changelog table, null for the masterFile (which uses the liquibase default table)
+	 * @param file the changelog file to process
+	 * @param doUpdate true to update the database, false to only check it is up to date
+	 */
+	private void processLiquibaseScript(final String prefix, final String file, final boolean doUpdate) {
+		LOGGER.debug("Processing script '{}'", file);
+		try (final var lb = createLiquibase(prefix, file)) {
 			final var unexpectedChangeSets = lb.listUnexpectedChangeSets(getContexts(), new LabelExpression());
-			Assertion.check().isTrue(unexpectedChangeSets.isEmpty(), "Database is too recent. Please make sure you run the correct version of the node.");
+			Assertion.check().isTrue(unexpectedChangeSets.isEmpty(), "Database is too recent for script '{0}'. Please make sure you run the correct version of the node.", file);
+			if (doUpdate) {
+				lb.update(getContexts());
+			} else {
+				final var changeSetList = lb.listUnrunChangeSets(getContexts(), new LabelExpression());
+				Assertion.check().isTrue(changeSetList.isEmpty(), "Database is not up to date for script '{0}'. Please update it before launching the node.", file);
+			}
 		} catch (final LiquibaseException e) {
 			throw WrappedException.wrap(e);
 		}
-		LOGGER.info("Liquibase  : finished updating on connection {}", connectionName);
+	}
+
+	private Liquibase createLiquibase(final String prefix, final String file) throws DatabaseException {
+		final var jdbcConnection = new JdbcConnection(sqlManager.getConnectionProvider(connectionName).obtainConnection().getJdbcConnection());
+		final var db = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(jdbcConnection);
+		if (!StringUtil.isBlank(prefix)) {
+			// additional scripts use their own changelog table, to keep their history independent from the master one
+			db.setDatabaseChangeLogTableName(prefix + "_DATABASECHANGELOG");
+		}
+		return new Liquibase(file, new ClassLoaderResourceAccessor(), db);
+	}
+
+	private Set<LiquibaseScriptDefinition> getLiquibaseAdditionalScriptDefinitions() {
+		// each additional script has its own changelog table, so the order between them is not significant
+		return Node.getNode().getDefinitionSpace().getAll(LiquibaseScriptDefinition.class);
 	}
 
 	/** {@inheritDoc} */
