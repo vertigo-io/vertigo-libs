@@ -98,13 +98,6 @@
 			</dependency>
 			<dependency>
 				<groupId>io.vertigo</groupId>
-				<artifactId>vertigo-ifttt-connector</artifactId>
-				<version>${vertigo.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-			<dependency>
-				<groupId>io.vertigo</groupId>
 				<artifactId>vertigo-influxdb-connector</artifactId>
 				<version>${vertigo.version}</version>
 				<type>pom</type>
