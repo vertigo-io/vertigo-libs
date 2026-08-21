@@ -1,6 +1,6 @@
 {
   "name": "@vertigo-io/vertigo-ui-server-ssr",
-  "version": "4.4.0",
+  "version": "5.0.0-SNAPSHOT",
   "dependencies": {
     "vue-template-compiler": "^2.7.14",
     "express": "^4.22.1"

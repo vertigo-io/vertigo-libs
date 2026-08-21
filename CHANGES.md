@@ -28,6 +28,8 @@ Running 4.4.1-SNAPSHOT - 2026-12-XX
 ----------------------
 * [DataFactory] Fix ES9 date range facets : range bounds were not sent to ElasticSearch (every range counted all documents) and date bounds threw a `NumberFormatException`
 * [Ui] Add the default (english) bundle of the `hasObjectFieldErrors` message banner : non-french locales displayed `??messages.hasObjectFieldErrors.message??`
+* [Commons] `TraceAspect` (core `@Trace` annotation) is now auto-registered by `CommonsFeatures` : `@Trace` components work without declaring the aspect in a module. If you declare `addAspect(TraceAspect.class)` in your app, remove it (duplicate registration fails at boot). `@Trace` components must be in modules declared after `vertigo-commons` in NodeConfig
+* [Ui] Fix the encoding of the quasar 2.21.1 language packs (de, es, fr, it) : they were committed in cp1252 instead of UTF-8, so every accented character of the quasar labels was displayed as `�` (e.g. `Aucune donn�e � afficher` on empty tables). Regression introduced in 4.4.0 with the quasar 2.18.1 -> 2.21.1 upgrade, the 2.18.1 packs being pure ASCII (escaped accents)
 
 more to come :)
 
@@ -98,7 +100,7 @@ Release 4.4.0 - 2026/07/09
 * **[Ui] Reset componentStates each request**
 * [Ui] Add `withSessionTimeoutMinutes` to Jetty boot parameters
 * [Ui][A11y] Fix regression on aria-labelledby when no error (use empty string instead of null)
-* [Ui] Use inverted text colors for `vu:messages`
+* **[Ui] Use inverted text colors for `vu:messages`** : the level colors are no longer hardcoded in the template but driven by the `--v-<level>-invert` variables. **Changes the default rendering of info and success messages, whose text was black and is now white** (see the migration guide to restore it). `vu:dsfr-message` is not impacted (DSFR colors are normalized, not configurable).
 * [Ui] Add inverted color CSS variables and fix usages
 * [Ui] Fix persist uiMessageStack on expired viewContext redirect
 * [Ui] Add cache-busting on wysiwyg/dsfr static assets via versioned query parameter
