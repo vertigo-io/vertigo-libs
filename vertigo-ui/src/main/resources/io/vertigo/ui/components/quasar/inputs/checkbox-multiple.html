@@ -31,7 +31,7 @@
 	<vu:include-data object="${list}" field="${myValueField}"/>
 	<vu:include-data object="${list}" field="${myLabelField}"/>
 	<vu:label-read object="${object}" field="${field}" label="${label}"
-				   th:@vue:before-mount="|function() { if (!vueData.${object}.${field}) { vueData.${object}.${field} = []}}|"
+				   th:@vue:before-mount="|() => { if (!vueData.${object}.${field}) { vueData.${object}.${field} = []}}|"
 				   after_label_slot="after_label_slot" label_attrs="${label_attrs}">
 		<q-option-group
 			th:name="|vContext[${object}][${field}]|"
