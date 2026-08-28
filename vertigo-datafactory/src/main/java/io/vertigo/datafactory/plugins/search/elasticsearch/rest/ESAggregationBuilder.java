@@ -312,17 +312,13 @@ final class ESAggregationBuilder {
 						final String[] parsedFilter = DtListPatternFilterUtil.parseFilter(filterValue, RANGE_PATTERN)
 								.orElseThrow(
 										() -> new VSystemException("Range Facet syntaxe invalid : " + filterValue));
-						final Optional<Double> minValue = convertToDouble(parsedFilter[3]);
-						final Optional<Double> maxValue = convertToDouble(parsedFilter[4]);
+						final Optional<String> minValue = extractBound(parsedFilter[3]);
+						final Optional<String> maxValue = extractBound(parsedFilter[4]);
 
 						r.ranges(rg -> {
 							rg.key(facetRange.code());
-							if (minValue.isPresent()) {
-								// rg.from(minValue.get());
-							}
-							if (maxValue.isPresent()) {
-								// rg.to(maxValue.get());
-							}
+							minValue.ifPresent(min -> rg.from(f -> f.expr(min))); //date expression, parsed by ES with the aggregation format
+							maxValue.ifPresent(max -> rg.to(f -> f.expr(max)));
 							return rg;
 						});
 					}
@@ -475,11 +471,19 @@ final class ESAggregationBuilder {
 						}));
 	}
 
-	private static Optional<Double> convertToDouble(final String valueToConvert) {
-		final String stringValue = valueToConvert.trim();
+	/**
+	 * @return the range bound, or empty if unbounded ('*')
+	 */
+	private static Optional<String> extractBound(final String bound) {
+		final String stringValue = bound.trim();
 		if ("*".equals(stringValue) || "".equals(stringValue)) {
 			return Optional.empty();
 		}
-		return Optional.of(Double.valueOf(stringValue));
+		return Optional.of(stringValue);
+	}
+
+	private static Optional<Double> convertToDouble(final String valueToConvert) {
+		return extractBound(valueToConvert)
+				.map(Double::valueOf);
 	}
 }

@@ -19,6 +19,7 @@ package io.vertigo.datafactory.search.data;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDate;
 
 import io.vertigo.basics.formatter.FormatterDefault;
 import io.vertigo.core.lang.BasicType;
@@ -52,6 +53,10 @@ public enum TestSearchSmartTypes {
 	@SmartTypeDefinition(Instant.class)
 	@Formatter(clazz = FormatterDefault.class)
 	DateTime,
+
+	@SmartTypeDefinition(LocalDate.class)
+	@Formatter(clazz = FormatterDefault.class)
+	Date,
 
 	@SmartTypeDefinition(String.class)
 	@Formatter(clazz = FormatterDefault.class)

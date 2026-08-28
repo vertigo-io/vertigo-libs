@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.Normalizer;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
@@ -141,6 +142,7 @@ public final class ItemDataBase {
 		item.setOptionalString(optionalString);
 		final Instant fromData = LocalDateTime.of(Math.min(year, 2020), 2, 4, 8, 16, 32).toInstant(ZoneOffset.UTC);
 		item.setLastModified(fromData);
+		item.setFirstRegistrationDate(LocalDate.of(year, 3, 15)); //same distribution as itemYear, for date range facet tests
 		if (localisation != null) {
 			item.setLocalisation(new GeoPointAdapter().toJava(localisation, GeoPoint.class));
 		}

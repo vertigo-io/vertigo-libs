@@ -183,6 +183,14 @@ public class ItemSearchClient implements Component, DefinitionProvider {
 						.withRange("R2", "itemYear:[2000 TO 2005]", "2000-2005")
 						.withRange("R3", "itemYear:[2005 TO *]", "apres 2005")
 						.withOrder(FacetOrder.definition),
+				new FacetRangeDefinitionSupplier("FctFirstRegistrationDateItem")
+						.withDtDefinition("DtItem")
+						.withFieldName("firstRegistrationDate")
+						.withLabel("Par date de mise en circulation")
+						.withRange("R1", "firstRegistrationDate:[* TO 01/01/2000]", "avant 2000")
+						.withRange("R2", "firstRegistrationDate:[01/01/2000 TO 01/01/2005]", "2000-2005")
+						.withRange("R3", "firstRegistrationDate:[01/01/2005 TO *]", "apres 2005")
+						.withOrder(FacetOrder.definition),
 				new FacetRangeDefinitionSupplier("FctDescriptionRangeItem")
 						.withDtDefinition("DtItem")
 						.withLabel("Par description terme")
@@ -270,6 +278,11 @@ public class ItemSearchClient implements Component, DefinitionProvider {
 						.withFacet("FctManufacturerItem")
 						.withFacet("FctManufacturerItemAlpha")
 						.withFacet("FctYearItem"),
+				new FacetedQueryDefinitionSupplier("QryItemFirstRegistrationDateRangeFacet")
+						.withListFilterBuilderClass(io.vertigo.datafactory.impl.search.dsl.DslListFilterBuilder.class)
+						.withListFilterBuilderQuery("description:#query# manufacturer:#query#")
+						.withCriteriaSmartType("STyString")
+						.withFacet("FctFirstRegistrationDateItem"),
 				new FacetedQueryDefinitionSupplier("QryItemCustomAggFacet")
 						.withListFilterBuilderClass(io.vertigo.datafactory.impl.search.dsl.DslListFilterBuilder.class)
 						.withListFilterBuilderQuery("description:#query# manufacturer:#query#")

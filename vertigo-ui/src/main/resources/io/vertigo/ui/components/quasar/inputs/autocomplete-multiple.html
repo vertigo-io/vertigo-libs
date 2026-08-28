@@ -54,7 +54,7 @@
 			$watch(function() {return ${model.util.vueDataKey(object, field, rowIndex)} },
 				   (newValue, oldValue) => { loadAutocompleteById('${list}', '${myValueField}', '${myLabelField}', '${myComponentId}', '${myInputUrl}','${object}','${field}', ${rowIndex})} )
 			}|"
-        th:@filter="|function (val, update, abort) { searchAutocomplete('${list}', '${myValueField}', '${myLabelField}', '${myComponentId}', '${myFilterUrl}', ${myMinQueryLength}, val, update, abort)}|"
+        th:@filter="|(val, update, abort) => { searchAutocomplete('${list}', '${myValueField}', '${myLabelField}', '${myComponentId}', '${myFilterUrl}', ${myMinQueryLength}, val, update, abort)}|"
         th:attr="__${label_attrs}__,__${input_attrs}__"
      >
      <vu:quasar-label-slot label="${myLabel}" componentId="${myComponentId}" after_label_slot="after_label_slot"/>
