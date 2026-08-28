@@ -1,6 +1,6 @@
 {
     "name":  "vertigo-wysiwyg",
-    "version":  "4.4.1-SNAPSHOT",
+    "version":  "4.4.1",
     "private":  true,
     "type":  "module",
     "scripts":  {

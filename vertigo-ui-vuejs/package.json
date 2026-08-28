@@ -1,6 +1,6 @@
 {
     "name":  "@vertigo-io/vertigo-ui-vuejs",
-    "version":  "4.4.1-SNAPSHOT",
+    "version":  "4.4.1",
     "type":  "module",
     "scripts":  {
                     "dev":  "vite --port 3000",

@@ -1,6 +1,6 @@
 {
     "name":  "vertigo-dsfr",
-    "version":  "4.4.1-SNAPSHOT",
+    "version":  "4.4.1",
     "private":  false,
     "type":  "module",
     "scripts":  {
