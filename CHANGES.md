@@ -15,7 +15,8 @@ Running 4.4.1-SNAPSHOT - 2026-12-XX
 * [Commons] `TraceAspect` (core `@Trace` annotation) is now auto-registered by `CommonsFeatures` : `@Trace` components work without declaring the aspect in a module. If you declare `addAspect(TraceAspect.class)` in your app, remove it (duplicate registration fails at boot). `@Trace` components must be in modules declared after `vertigo-commons` in NodeConfig
 * [Ui] Fix the encoding of the quasar 2.21.1 language packs (de, es, fr, it) : they were committed in cp1252 instead of UTF-8, so every accented character of the quasar labels was displayed as `�` (e.g. `Aucune donn�e � afficher` on empty tables). Regression introduced in 4.4.0 with the quasar 2.18.1 -> 2.21.1 upgrade, the 2.18.1 packs being pure ASCII (escaped accents)
 
-more to come :)
+* [Ui] Fix Vue v-on handler compilation : a bare function(...) used as a whole handler value was a SyntaxError (misleading "avoid using JavaScript keyword as property name" console error) and broke the @filter of the autocomplete components on the first request (a ;jsessionid in the url) ; converted to arrow functions
+* [Ui] Add missing per-template i18n bundles for the componentsDemoDsfr and fileUpload demos (raw ??key?? were displayed)
 
 
 Release 4.4.0 - 2026/07/09
