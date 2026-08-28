@@ -8,7 +8,7 @@ Running 5.0.0
 more to come :)
 
 
-Running 4.4.1 - 2026-12-XX
+Release 4.4.1 - 2026/08/28
 ----------------------
 * [DataFactory] Fix ES9 date range facets : range bounds were not sent to ElasticSearch (every range counted all documents) and date bounds threw a `NumberFormatException`
 * [Ui] Add the default (english) bundle of the `hasObjectFieldErrors` message banner : non-french locales displayed `??messages.hasObjectFieldErrors.message??`
