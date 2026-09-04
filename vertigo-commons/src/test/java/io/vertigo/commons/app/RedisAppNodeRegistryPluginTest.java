@@ -24,7 +24,7 @@ import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 
 public class RedisAppNodeRegistryPluginTest extends AbstractAppManagerTest {
-	private static final String REDIS_HOST = "docker-vertigo.part.klee.lan.net";
+	private static final String REDIS_HOST = System.getenv("REDIS_HOST") != null ? System.getenv("REDIS_HOST") : "docker-vertigo.part.klee.lan.net";
 	private static final int REDIS_PORT = 6379;
 	private static final int REDIS_DATABASE = 15;
 

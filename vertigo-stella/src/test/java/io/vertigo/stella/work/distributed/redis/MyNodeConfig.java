@@ -26,7 +26,7 @@ import io.vertigo.core.param.Param;
 import io.vertigo.stella.StellaFeatures;
 
 public final class MyNodeConfig {
-	private static final String REDIS_HOST = "docker-vertigo.part.klee.lan.net";
+	private static final String REDIS_HOST = System.getenv("REDIS_HOST") != null ? System.getenv("REDIS_HOST") : "docker-vertigo.part.klee.lan.net";
 	private static final int REDIS_PORT = 6379;
 	private static final int REDIS_DATABASE = 0;
 

@@ -24,13 +24,14 @@ import io.vertigo.vortex.VortexFeatures;
 import io.vertigo.vortex.bb.AbstractBBBlackBoardTest;
 
 public class RedisBBBlackBoardTest extends AbstractBBBlackBoardTest {
+	private static final String REDIS_HOST = System.getenv("REDIS_HOST") != null ? System.getenv("REDIS_HOST") : "docker-vertigo.part.klee.lan.net";
 
 	@Override
 	protected NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
 				.addModule(new RedisFeatures()
 						.withJedis(
-								Param.of("host", "docker-vertigo.part.klee.lan.net"),
+								Param.of("host", REDIS_HOST),
 								Param.of("port", 6379),
 								Param.of("database", 0))
 						.build())

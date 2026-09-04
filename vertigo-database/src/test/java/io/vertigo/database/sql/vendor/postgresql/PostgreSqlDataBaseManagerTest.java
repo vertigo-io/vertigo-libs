@@ -29,6 +29,7 @@ import io.vertigo.database.sql.vendor.SqlDialect;
 import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
 
 public final class PostgreSqlDataBaseManagerTest extends AbstractSqlManagerTest {
+	private static final String PG_JDBC_URL = System.getenv("PG_JDBC_URL") != null ? System.getenv("PG_JDBC_URL") : "jdbc:postgresql://docker-vertigo.part.klee.lan.net:5432/postgres?user=postgres&password=postgres";
 	@Override
 	public SqlDialect getDialect() {
 		return new PostgreSqlDataBase().getSqlDialect();
@@ -47,7 +48,7 @@ public final class PostgreSqlDataBaseManagerTest extends AbstractSqlManagerTest 
 						.withC3p0(
 								Param.of("dataBaseClass", PostgreSqlDataBase.class.getName()),
 								Param.of("jdbcDriver", "org.postgresql.Driver"),
-								Param.of("jdbcUrl", "jdbc:postgresql://docker-vertigo.part.klee.lan.net:5432/postgres?user=postgres&password=postgres"))
+								Param.of("jdbcUrl", PG_JDBC_URL))
 						.withC3p0(
 								Param.of("name", "secondary"),
 								Param.of("dataBaseClass", H2DataBase.class.getName()),
