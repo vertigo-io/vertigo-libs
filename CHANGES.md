@@ -10,7 +10,7 @@ more to come :)
 
 Running 4.5.0-SNAPSHOT - 2026-12-XX
 ----------------------
-more to come :)
+* [Ui] Fix self-closed custom elements (`<q-btn ... />`) : they are now closed automatically in rendered templates, `UnAutoCloseTagsFilter` is deprecated
 
 
 Release 4.4.1 - 2026/08/28
