@@ -38,7 +38,9 @@ import io.vertigo.datamodel.impl.smarttype.ModelDefinitionProvider;
 import io.vertigo.datastore.DataStoreFeatures;
 
 public final class MyNodeConfig {
-	private static final String REDIS_HOST = "docker-vertigo.part.klee.lan.net";
+	private static final String REDIS_HOST = System.getenv("REDIS_HOST") != null ? System.getenv("REDIS_HOST") : "docker-vertigo.part.klee.lan.net";
+	private static final String LDAP_HOST = System.getenv("LDAP_HOST") != null ? System.getenv("LDAP_HOST") : "docker-vertigo.part.klee.lan.net";
+	private static final String LDAP_PORT = System.getenv("LDAP_PORT") != null ? System.getenv("LDAP_PORT") : "389";
 	private static final int REDIS_PORT = 6379;
 	private static final int REDIS_DATABASE = 15;
 
@@ -90,8 +92,8 @@ public final class MyNodeConfig {
 		switch (idpPlugin) {
 			case ldap:
 				nodeConfigBuilder.addModule(new LdapFeatures().withLdap(
-						Param.of("host", "docker-vertigo.part.klee.lan.net"),
-						Param.of("port", "389"),
+						Param.of("host", LDAP_HOST),
+						Param.of("port", LDAP_PORT),
 						Param.of("readerLogin", "cn=admin,dc=vertigo,dc=io"),
 						Param.of("readerPassword", "v3rt1g0")).build());
 

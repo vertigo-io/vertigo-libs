@@ -21,6 +21,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.thymeleaf.dialect.AbstractProcessorDialect;
+import org.thymeleaf.dialect.IPostProcessorDialect;
+import org.thymeleaf.postprocessor.IPostProcessor;
 import org.thymeleaf.processor.IProcessor;
 import org.thymeleaf.standard.processor.StandardXmlNsTagProcessor;
 import org.thymeleaf.templatemode.TemplateMode;
@@ -37,7 +39,7 @@ import io.vertigo.ui.impl.thymeleaf.components.SlotComponentProcessor;
 import io.vertigo.ui.impl.thymeleaf.components.VuiTextTagProcessor;
 import io.vertigo.ui.impl.thymeleaf.components.VuiUTextTagProcessor;
 
-public final class VUiStandardDialect extends AbstractProcessorDialect {
+public final class VUiStandardDialect extends AbstractProcessorDialect implements IPostProcessorDialect {
 
 	public static final String NAME = "VertigoStandard";
 	public static final String PREFIX = "vu";
@@ -47,10 +49,7 @@ public final class VUiStandardDialect extends AbstractProcessorDialect {
 	private final Set<NamedComponentDefinition> components;
 
 	public VUiStandardDialect(final Set<NamedComponentDefinition> components) {
-		super(NAME, PREFIX, PROCESSOR_PRECEDENCE);
-		Assertion.check().isNotNull(components);
-		//---
-		this.components = components;
+		this(PREFIX, components);
 	}
 
 	public VUiStandardDialect(final String prefix, final Set<NamedComponentDefinition> components) {
@@ -63,6 +62,16 @@ public final class VUiStandardDialect extends AbstractProcessorDialect {
 	@Override
 	public Set<IProcessor> getProcessors(final String dialectPrefix) {
 		return createVUiStandardProcessorsSet(dialectPrefix);
+	}
+
+	@Override
+	public int getDialectPostProcessorPrecedence() {
+		return PROCESSOR_PRECEDENCE;
+	}
+
+	@Override
+	public Set<IPostProcessor> getPostProcessors() {
+		return Set.of(AutoCloseTagsPostProcessor.POST_PROCESSOR);
 	}
 
 	private Set<IProcessor> createVUiStandardProcessorsSet(final String dialectPrefix) {

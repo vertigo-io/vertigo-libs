@@ -34,6 +34,7 @@ import io.vertigo.datastore.kvstore.AbstractKVStoreManagerTest;
  * @author pchretien
  */
 public final class RedisKVStoreManagerTest extends AbstractKVStoreManagerTest {
+	private static final String REDIS_HOST = System.getenv("REDIS_HOST") != null ? System.getenv("REDIS_HOST") : "docker-vertigo.part.klee.lan.net";
 
 	@Override
 	protected NodeConfig buildNodeConfig() {
@@ -44,7 +45,7 @@ public final class RedisKVStoreManagerTest extends AbstractKVStoreManagerTest {
 						.build())
 				.addModule(new RedisFeatures()
 						.withJedis(
-								Param.of("host", "docker-vertigo.part.klee.lan.net"),
+								Param.of("host", REDIS_HOST),
 								Param.of("port", "6379"),
 								Param.of("ssl", "false"),
 								Param.of("database", "0"))
