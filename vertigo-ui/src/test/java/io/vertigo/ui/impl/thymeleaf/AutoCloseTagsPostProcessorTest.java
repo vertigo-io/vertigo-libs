@@ -70,7 +70,7 @@ class AutoCloseTagsPostProcessorTest {
 
 	@Test
 	void an_attribute_value_holding_a_gt_is_no_obstacle() {
-		// out of reach of a regex on the rendered html, which is why the deprecated UnAutoCloseTagsFilter misses it
+		// out of reach of a regex on the rendered html, which is why the servlet filter this replaces used to miss it
 		Assertions.assertEquals(
 				"<q-btn :disable=\"[1,2].length > 5\"></q-btn>",
 				render(Map.of("page", "<q-btn :disable=\"[1,2].length > 5\" />")));

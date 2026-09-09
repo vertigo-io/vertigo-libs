@@ -11,6 +11,7 @@ Running 5.0.0
 * **[Commons] `PegResult` is now a record** : `getIndex()`/`getValue()` accessors renamed to `index()`/`value()`
 * **[Ui] Embedded Jetty : `extraClasspath` renamed to `addonPaths`** (`JettyBootParams` builder)
 * **[Ui] Multipart configuration is now part of `JettyBootParams`** (`multiPartTempPath`, `maxPartSizeMb`, `maxRequestSize`, `maxPartSizeInMemoryKb`) : no more multipart handler to register at server start
+* **[Ui] `UnAutoCloseTagsFilter` is removed** : self-closed custom elements (`<q-btn ... />`) are now closed by a Thymeleaf post-processor, with no declaration and none of the filter's blind spots. Remove its `<filter>` and `<filter-mapping>` from your `web.xml` : the class no longer exists and the webapp would fail to start
 * **[Ui][Wysiwyg] Update TipTap v2 -> v3** : custom wysiwyg extensions must be migrated to the TipTap v3 API
 * **[Vega] ContentSecurityPolicyFilter ${..} are now resolved by the paramManager. Old syntax must be updated :**
     * `${cspFrameAncestor}` => `${CSP_FRAME_ANCESTOR}`
