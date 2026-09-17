@@ -47,6 +47,7 @@ import co.elastic.clients.elasticsearch._types.mapping.DynamicTemplate;
 import co.elastic.clients.elasticsearch._types.mapping.KeywordProperty;
 import co.elastic.clients.elasticsearch.core.GetResponse;
 import co.elastic.clients.elasticsearch.indices.IndexSettings;
+import co.elastic.clients.elasticsearch.indices.IndexSettingsAnalysis;
 import co.elastic.clients.elasticsearch.indices.PutMappingRequest;
 import co.elastic.clients.elasticsearch.indices.PutMappingResponse;
 import co.elastic.clients.elasticsearch.indices.get_mapping.IndexMappingRecord;
@@ -245,32 +246,35 @@ public final class RestClientESSearchServicesPlugin implements SearchServicesPlu
 		if (currentSettings == null) {
 			return true;
 		}
+		return isAnalysisDirty(myIndexName, currentSettings.index().analysis(), expectedSettings.index().analysis());
+	}
 
-		// 3. Comparaison logique
-		// Note : Le client Java ne permet pas facilement une comparaison "flat" comme en v7.
-		// L'astuce consiste à comparer les "analysis" ou les réglages spécifiques.
-
-		var indexSettingsDirty = false;
-		// Comparaison des analyseurs (la partie la plus critique dans votre YAML)
-		var currentAnalysis = currentSettings.index().analysis();
-		var expectedAnalysis = expectedSettings.index().analysis();
-		boolean analysisChanged = !Objects.equals(normalizeWhitespace(currentAnalysis.toString()), normalizeWhitespace(currentAnalysis.toString()));
-		if (analysisChanged) {
-			boolean subSettingsDirty = false;
-			subSettingsDirty = subSettingsDirty
-					|| isSubSettingsChanges(myIndexName, "analysis.normalizer", currentAnalysis.normalizer(), expectedAnalysis.normalizer());
-			subSettingsDirty = subSettingsDirty
-					|| isSubSettingsChanges(myIndexName, "analysis.tokenizer", currentAnalysis.tokenizer(), expectedAnalysis.tokenizer());
-			subSettingsDirty = subSettingsDirty
-					|| isSubSettingsChanges(myIndexName, "analysis.analyzer", currentAnalysis.analyzer(), expectedAnalysis.analyzer());
-			subSettingsDirty = subSettingsDirty || isSubSettingsChanges(myIndexName, "analysis.filter", currentAnalysis.filter(), expectedAnalysis.filter());
-			if (!subSettingsDirty) {
-				LOGGER.warn("[{}] : settings changed on some properties. {}", myIndexName,
-						showStringDifference(currentAnalysis.toString(), expectedAnalysis.toString()));
-			}
+	/**
+	 * Compare the analysis settings of the existing index with the expected ones.
+	 * The Java client doesn't allow a "flat" comparison like in v7 : a raw string difference only triggers the fine-grained
+	 * comparison of normalizers, tokenizers, analyzers and filters, which decides (a representation difference alone is only logged).
+	 * @return true if a normalizer, tokenizer, analyzer or filter expected by the config is missing or different on the index
+	 */
+	static boolean isAnalysisDirty(final String myIndexName, final IndexSettingsAnalysis currentAnalysis, final IndexSettingsAnalysis expectedAnalysis) {
+		if (expectedAnalysis == null) {
+			return false;
 		}
-		indexSettingsDirty = indexSettingsDirty || analysisChanged;
-		return indexSettingsDirty;
+		if (currentAnalysis == null) {
+			return true;
+		}
+		final boolean analysisChanged = !Objects.equals(normalizeWhitespace(currentAnalysis.toString()), normalizeWhitespace(expectedAnalysis.toString()));
+		if (!analysisChanged) {
+			return false;
+		}
+		final boolean subSettingsDirty = isSubSettingsChanges(myIndexName, "analysis.normalizer", currentAnalysis.normalizer(), expectedAnalysis.normalizer())
+				|| isSubSettingsChanges(myIndexName, "analysis.tokenizer", currentAnalysis.tokenizer(), expectedAnalysis.tokenizer())
+				|| isSubSettingsChanges(myIndexName, "analysis.analyzer", currentAnalysis.analyzer(), expectedAnalysis.analyzer())
+				|| isSubSettingsChanges(myIndexName, "analysis.filter", currentAnalysis.filter(), expectedAnalysis.filter());
+		if (!subSettingsDirty) {
+			LOGGER.warn("[{}] : settings changed on some properties. {}", myIndexName,
+					showStringDifference(currentAnalysis.toString(), expectedAnalysis.toString()));
+		}
+		return subSettingsDirty;
 	}
 
 	private static boolean isSubSettingsChanges(String myIndexName, String settingsName, Map<String, ?> currentSettings, Map<String, ?> espectedSettings) {
