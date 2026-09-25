@@ -19,9 +19,11 @@ package io.vertigo.vega.impl.ratelimiting;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -181,8 +183,13 @@ public final class RateLimitingManagerImpl implements RateLimitingManager {
 		}
 		this.banishMessage = banishMessage.orElse(defaultBanishMessage.toString()); //Message returned if banished
 
-		ipWhitelistHelper = new IpWhitelistHelper(whiteListUsers.map(s -> Set.of(s.split("\\s*[,;]\\s*"))).orElse(Set.of()), MAX_WHITELIST_SIZE);
-
+		ipWhitelistHelper = new IpWhitelistHelper(
+				whiteListUsers
+						.map(s -> Arrays.stream(s.split("\\s*[,;]\\s*"))
+								.filter(ip -> !ip.isBlank())
+								.collect(Collectors.toSet()))
+						.orElse(Set.of()),
+				MAX_WHITELIST_SIZE);
 	}
 
 	@Override
