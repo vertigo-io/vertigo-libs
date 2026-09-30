@@ -21,6 +21,7 @@ import java.util.Iterator;
 
 import io.vertigo.core.lang.ListBuilder;
 import io.vertigo.datastore.entitystore.data.domain.SmartItem;
+import io.vertigo.datastore.entitystore.data.domain.SortDescItem;
 import io.vertigo.datastore.entitystore.data.domain.car.Car;
 import io.vertigo.datastore.entitystore.data.domain.car.MotorType;
 import io.vertigo.datastore.entitystore.data.domain.famille.Famille;
@@ -32,6 +33,7 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	public Iterator<Class<?>> iterator() {
 		return new ListBuilder<Class<?>>()
 				.add(SmartItem.class)
+				.add(SortDescItem.class)
 				.add(Car.class)
 				.add(MotorType.class)
 				.add(Famille.class)
