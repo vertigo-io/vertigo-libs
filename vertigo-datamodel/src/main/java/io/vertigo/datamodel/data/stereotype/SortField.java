@@ -30,5 +30,13 @@ import java.lang.annotation.Target;
 @Inherited
 @Target({ ElementType.FIELD, ElementType.METHOD })
 public @interface SortField {
-	//
+	/**
+	 * Default sort direction for the sort field.
+	 * <p>
+	 * {@code false} (ASC) by default for backward compatibility : classes compiled
+	 * without this attribute keep the ASC default at runtime.
+	 *
+	 * @return {@code true} to sort the field in descending order
+	 */
+	boolean desc() default false;
 }
