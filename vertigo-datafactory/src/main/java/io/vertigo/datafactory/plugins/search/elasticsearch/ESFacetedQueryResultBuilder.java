@@ -331,30 +331,30 @@ public final class ESFacetedQueryResultBuilder<I extends DataObject> implements 
 	private static Facet createMetricFacet(final FacetDefinition facetDefinition, final Aggregate aggregate) {
 		final Map<FacetValue, Long> facetValues = new LinkedHashMap<>();
 
-		double metricValue = 0.0;
-
 		// Extraction de la valeur selon le Kind
-		metricValue = switch (aggregate._kind()) {
+		// ES returns null for metrics without value (avg, min, max... of no document)
+		final Double metricValue = switch (aggregate._kind()) {
 			case Avg -> aggregate.avg().value();
-			case Cardinality -> aggregate.cardinality().value(); //ES return long
+			case Cardinality -> Double.valueOf(aggregate.cardinality().value()); //ES return long
 			case Max -> aggregate.max().value();
 			case Min -> aggregate.min().value();
 			case Sum -> aggregate.sum().value();
-			case ValueCount -> aggregate.valueCount().value(); //ES return long
+			case ValueCount -> aggregate.valueCount().value();
 			case WeightedAvg -> aggregate.weightedAvg().value();
 			case SimpleValue -> aggregate.simpleValue().value();
-			case SimpleLongValue -> aggregate.simpleLongValue().value();//ES return long
+			case SimpleLongValue -> Double.valueOf(aggregate.simpleLongValue().value());//ES return long
 			default -> extractMetricValueDynamically(aggregate); // Fallback pour les _Custom ou métriques complexes qu'on essaierait d'extraire dynamiquement
 		};
 
-		final FacetValue facetValue = new FacetValue(facetDefinition.getName(), ListFilter.of("_noOp:_"), LocaleMessageText.of(facetDefinition.getName()));
+		if (metricValue != null) { // no value : facet without facetValue, rather than a misleading 0
+			final FacetValue facetValue = new FacetValue(facetDefinition.getName(), ListFilter.of("_noOp:_"), LocaleMessageText.of(facetDefinition.getName()));
 
-		// Application de la précision décimale
-		final int decimalPrecision = Integer.parseInt(facetDefinition.getCustomParams().getOrDefault("_decimalPrecision", "0"));
-		final long precisionMult = (long) Math.pow(10, decimalPrecision);
+			// Application de la précision décimale
+			final int decimalPrecision = Integer.parseInt(facetDefinition.getCustomParams().getOrDefault("_decimalPrecision", "0"));
+			final long precisionMult = (long) Math.pow(10, decimalPrecision);
 
-		facetValues.put(facetValue, Math.round(metricValue * precisionMult));
-
+			facetValues.put(facetValue, Math.round(metricValue * precisionMult));
+		}
 		return new Facet(facetDefinition, facetValues);
 	}
 
@@ -369,11 +369,12 @@ public final class ESFacetedQueryResultBuilder<I extends DataObject> implements 
 	}
 
 	/** Extrait la valeur d'une métrique par réflexion si elle n'est pas dans les 'if' standards */
-	private static double extractMetricValueDynamically(final Aggregate aggregate) {
+	private static Double extractMetricValueDynamically(final Aggregate aggregate) {
 		try {
 			final Object specificAggregation = aggregate._get();
 			final var valueMethod = specificAggregation.getClass().getMethod("value");
-			return (double) valueMethod.invoke(specificAggregation);
+			final Number value = (Number) valueMethod.invoke(specificAggregation); //may be a long, or null if no value
+			return value != null ? value.doubleValue() : null;
 		} catch (final Exception e) {
 			throw new VSystemException(e, "Impossible d'extraire la valeur pour l'agrégation de métrique {0}", aggregate._kind());
 		}

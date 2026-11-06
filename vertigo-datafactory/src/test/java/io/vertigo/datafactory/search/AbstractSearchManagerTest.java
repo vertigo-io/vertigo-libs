@@ -1117,6 +1117,30 @@ public abstract class AbstractSearchManagerTest {
 		}
 	}
 
+	@Test
+	public void testCustomFacetQueryNoResult() {
+		index(true);
+		final SearchQuery searchQuery = SearchQuery.builder("QryItemCustomAggFacet")
+				.withCriteria("unknownCriteria")
+				.withFacet(EMPTY_SELECTED_FACET_VALUES)
+				.build();
+
+		final FacetedQueryResult<Item, SearchQuery> result = doQuery(searchQuery, null);
+		Assertions.assertEquals(0, result.getCount());
+
+		//metric facets are still listed, even without any document
+		Assertions.assertEquals(3, result.getFacets().size());
+
+		//sum of nothing is 0
+		final Facet customSumPriceFacet = getFacetByName(result, "FctCustomSumPriceItem");
+		Assertions.assertEquals(1, customSumPriceFacet.getFacetValues().size());
+		Assertions.assertEquals(0, customSumPriceFacet.getFacetValues().values().iterator().next());
+
+		//avg of nothing has no value (ES returns null) : no facetValue, rather than a misleading 0
+		Assertions.assertTrue(getFacetByName(result, "FctCustomAvgKiloItem").getFacetValues().isEmpty());
+		Assertions.assertTrue(getFacetByName(result, "FctCustomAvgYearItem").getFacetValues().isEmpty());
+	}
+
 	private void checkOrderByCount(final Facet facet) {
 		//on vérifie l'ordre
 		int lastCount = Integer.MAX_VALUE;

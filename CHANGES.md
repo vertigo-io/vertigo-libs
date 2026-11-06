@@ -14,6 +14,7 @@ Running 4.5.0-SNAPSHOT - 2026-12-XX
 * [DataFactory] Fix ElasticSearch index settings check at startup (broken since 4.4.0, ES9 plugin) : the analysis settings of the existing index were compared to themselves, so an incompatible change (analyzer, tokenizer, filter, normalizer) was never detected ; the check now compares to the expected settings and fails the startup with the index deletion command
 * [DataModel] @SortField gains a backward compatible desc() attribute : a MasterData definition can declare a descending default sort direction (default remains ascending when not set)
 * [DataStore] MasterData cached lists honor @SortField(desc = true) for their default sort direction
+* [DataFactory] Fix ES9 metric custom facets (avg, min, max...) on a search without result : a `NullPointerException` was thrown ; the facet is now returned without facetValue (sum, value_count and cardinality still return 0)
 
 
 Release 4.4.1 - 2026/08/28
