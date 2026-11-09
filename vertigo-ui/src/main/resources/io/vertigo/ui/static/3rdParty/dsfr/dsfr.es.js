@@ -9742,14 +9742,14 @@ var Vm = (e = "", t = "") => (e ? `${e}-` : "") + Bm() + (t ? `-${t}` : ""), Hm 
 }, Dh = { class: "fr-sr-only" }, Oh = { class: "fr-mb-2w" };
 function kh(e, t, n, r, i, a) {
 	let o = rh("DsfrTag"), s = rh("DsfrCheckbox"), c = rh("DsfrButton");
-	return Z(), $m("div", lh, [a.isAnyFacetValueSelected() ? (Z(), $m("div", uh, [th("ul", dh, [(Z(!0), $m(Qm, null, Zm(n.selectedFacets, (r, i) => (Z(), $m(Qm, { key: i }, [a.facetMultipleByCode(i) ? oh("", !0) : (Z(!0), $m(Qm, { key: 0 }, Zm(r, (r) => (Z(), $m("li", { key: r.code }, [ah(o, {
+	return Z(), $m("div", lh, [a.isAnyFacetValueSelected() ? (Z(), $m("div", uh, [th("ul", dh, [(Z(!0), $m(Qm, null, Zm(n.selectedFacets, (r, i) => (Z(), $m(Qm, { key: i }, [a.facetByCode(i) && !a.facetMultipleByCode(i) ? (Z(!0), $m(Qm, { key: 0 }, Zm(r, (r) => (Z(), $m("li", { key: r.code }, [ah(o, {
 		class: "fr-tag--dismiss",
 		"tag-name": "button",
 		onClick: (t) => e.$emit("toogle-facet", i, r, n.contextKey)
 	}, {
 		default: ih(() => [nh(eh(a.facetLabelByCode(i)) + ": " + eh(a.facetValueLabelByCode(i, r)) + " ", 1), t[0] ||= th("span", { class: "fr-sr-only" }, "(cliquez pour supprimer le filtre)", -1)]),
 		_: 2
-	}, 1032, ["onClick"])]))), 128))], 64))), 128))])])) : oh("", !0), th("ul", null, [(Z(!0), $m(Qm, null, Zm(n.facets.filter(n.facetFilter), (r) => (Z(), $m("li", {
+	}, 1032, ["onClick"])]))), 128)) : oh("", !0)], 64))), 128))])])) : oh("", !0), th("ul", null, [(Z(!0), $m(Qm, null, Zm(n.facets.filter(n.facetFilter), (r) => (Z(), $m("li", {
 		key: r.code,
 		class: "facets"
 	}, [r.multiple || !a.isFacetSelected(r.code) ? (Z(), $m(Qm, { key: 0 }, [
@@ -9838,7 +9838,7 @@ function kh(e, t, n, r, i, a) {
 		}, 8, ["onClick"])) : oh("", !0)])
 	], 64)) : oh("", !0)]))), 128))])]);
 }
-var Ah = /*#__PURE__*/ Ym(Xm, [["render", kh], ["__scopeId", "data-v-57f805b9"]]), jh = window.Vue.ref, Mh = () => {
+var Ah = /*#__PURE__*/ Ym(Xm, [["render", kh], ["__scopeId", "data-v-654176f6"]]), jh = window.Vue.ref, Mh = () => {
 	let e = jh(), t = jh(!1), n = jh(!1), r = () => {
 		if (!e.value) return;
 		e.value.style.setProperty("--collapser", "none");
