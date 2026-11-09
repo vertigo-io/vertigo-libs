@@ -1,10 +1,11 @@
 <th:block
-        th:fragment="dsfr-text-area-edit(object, field, rowIndex, labelVisible, label, required, input_attrs)"
+        th:fragment="dsfr-text-area-edit(object, field, rowIndex, labelVisible, label, required, max, showCounter, input_attrs)"
         vu:alias="dsfr-text-area"
         vu:selector="${viewMode=='edit' && (readonly==null || !readonly)}"
         th:with="myLabel=${label?:model.util.label(object + '.' + field)},
 	             myLabelVisible=${labelVisible != null ? labelVisible : myLabel!=null},
-                 myRequired=${required != null ? required : model.util.required(object + '.' + field)}"
+                 myRequired=${required != null ? required : model.util.required(object + '.' + field)},
+				 myMax=${max?:model.util.smartTypeMaxLength(object, field)?:null}"
         th:assert="${object} != null and ${field} != null">
     <vu:include-data object="${object}" field="${field}" modifiable="true"/>
 
@@ -16,12 +17,16 @@
                       :is-textarea="true"
                       th::error-message="|getErrorMessage('${object}', '${field}', ${rowIndex})|"
                       th:v-model="${model.util.vueDataKey(object, field, rowIndex)}"
+					  th:maxlength="${myMax}"
                       th:attr="__${input_attrs}__">
         <vu:content/>
     </dsfr-input-group>
+	<p th:if="${showCounter == true || myMax != null}" class="fr-hint-text text-right fr-mt-n2w">
+	    <span>{{ [[${model.util.vueDataKey(object, field, rowIndex)}]]?.length ?? 0 }}</span><span th:if="${myMax != null}"> / [[${myMax}]] </span><span> caractères</span>
+	</p>
 </th:block>
 <th:block
-        th:fragment="dsfr-text-area-read(object, field, label, required, emptyValue, input_attrs, label_attrs)"
+        th:fragment="dsfr-text-area-read(object, field, label, required, max, showCounter, emptyValue, input_attrs, label_attrs)"
         vu:alias="dsfr-text-area" vu:selector="${viewMode=='read' || (readonly!=null && readonly)}"
         th:assert="${object} != null and ${field} != null"
         th:with="myLabel=${label?:model.util.label(object + '.' + field)},
