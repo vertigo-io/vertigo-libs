@@ -40,9 +40,9 @@ final class AppServletStarter extends AbstractAppServletStarter {
 			logFileName = null;
 		}
 
-		final String configFileNames = bootConf.getProperty("boot.applicationConfiguration");
+		final String configFileNames = bootConf.getProperty(APPLICATION_CONFIGURATION_PARAM_NAME);
 		final String[] configFileNamesSplit = configFileNames.split(";");
-		bootConf.remove("boot.applicationConfiguration");
+		bootConf.remove(APPLICATION_CONFIGURATION_PARAM_NAME);
 		//-----
 		final YamlNodeConfigBuilder nodeConfigBuilder = new YamlNodeConfigBuilder(bootConf);
 		if (logFileName != null) {

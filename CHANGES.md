@@ -15,6 +15,7 @@ Running 4.5.0-SNAPSHOT - 2026-12-XX
 * [DataModel] @SortField gains a backward compatible desc() attribute : a MasterData definition can declare a descending default sort direction (default remains ascending when not set)
 * [DataStore] MasterData cached lists honor @SortField(desc = true) for their default sort direction
 * [DataFactory] Fix ES9 metric custom facets (avg, min, max...) on a search without result : a `NullPointerException` was thrown ; the facet is now returned without facetValue (sum, value_count and cardinality still return 0)
+* [Vega] Fix the node configuration files given by environment variable or system property, ignored since 3.4.0 : they are now read under singular names, like `boot.applicationConfiguration` in web.xml : `VERTIGO_BOOT_APPLICATION_CONFIGURATION` and `-Dboot.application-configuration` (the former plural names are no longer read) ; precedence : system property, external properties file, environment variable, web.xml
 
 
 Release 4.4.1 - 2026/08/28

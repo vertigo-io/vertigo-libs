@@ -45,8 +45,8 @@ abstract class AbstractAppServletStarter {
 	private static final String BOOT_PROPERTIES_PREFIX = "boot.";
 	private static final String EXTERNAL_PROPERTIES_PARAM_NAME = "external-properties";
 	protected static final String LOG4J_CONFIGURATION_PARAM_NAME = "log4j.configurationFileName";
-
-	/** clés dans le fichier Web.xml */
+	/** Configuration files of the node (';' separated) : web.xml, external properties, env variable or system property */
+	protected static final String APPLICATION_CONFIGURATION_PARAM_NAME = "boot.applicationConfiguration";
 
 	/** Servlet listener */
 	private final AppServletListener appServletListener = new AppServletListener();
@@ -67,7 +67,9 @@ abstract class AbstractAppServletStarter {
 			WebAppContextParamPlugin.setParams(webAppConf);
 			//-----
 			final var bootConf = createBootProperties(servletContext);
-			Assertion.check().isTrue(bootConf.containsKey("boot.applicationConfiguration"), "Param \"boot.applicationConfiguration\" is mandatory, check your .properties or web.xml.");
+			Assertion.check().isTrue(bootConf.containsKey(APPLICATION_CONFIGURATION_PARAM_NAME),
+					"Param \"{0}\" is mandatory, set it in your web.xml, your external properties file (-Dexternal-properties), the env variable VERTIGO_BOOT_APPLICATION_CONFIGURATION or the system property -Dboot.application-configuration",
+					APPLICATION_CONFIGURATION_PARAM_NAME);
 
 			// Initialisation de l'état de l'application
 			node = new AutoCloseableNode(buildNodeConfig(bootConf));
@@ -146,7 +148,7 @@ abstract class AbstractAppServletStarter {
 			servletParams.put(LOG4J_CONFIGURATION_PARAM_NAME, log4jConfigurationFileName);
 		}
 
-		readFromEnv(servletParams, "boot.applicationConfigurations", "VERTIGO_BOOT_APPLICATION_CONFIGURATIONS");
+		readFromEnv(servletParams, APPLICATION_CONFIGURATION_PARAM_NAME, "VERTIGO_BOOT_APPLICATION_CONFIGURATION");
 		readFromEnv(servletParams, "boot.activeFlags", "VERTIGO_BOOT_ACTIVE_FLAGS");
 
 		/*
@@ -161,7 +163,7 @@ abstract class AbstractAppServletStarter {
 			throw WrappedException.wrap(e, "Erreur lors de la lecture du fichier");
 		}
 
-		readFromSystemProperties(servletParams, "boot.applicationConfigurations", "boot.application-configurations");
+		readFromSystemProperties(servletParams, APPLICATION_CONFIGURATION_PARAM_NAME, "boot.application-configuration");
 		readFromSystemProperties(servletParams, "boot.activeFlags", "boot.active-flags");
 
 		return servletParams;
