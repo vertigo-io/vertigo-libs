@@ -17,11 +17,15 @@
  */
 package io.vertigo.datafactory.search.model;
 
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
+import java.util.function.Function;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
 import io.vertigo.core.node.Node;
+import io.vertigo.core.node.definition.DefinitionId;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.collections.definitions.FacetDefinition;
 import io.vertigo.datafactory.collections.definitions.FacetedQueryDefinition;
@@ -48,6 +52,7 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 	private FacetedQuery myFacetedQuery;
 	private FacetDefinition myClusteringFacetDefinition;
 	private boolean myUseHighlight = false; // new flag
+	private final Set<DefinitionId<FacetDefinition>> mySkippedFacets = new HashSet<>();
 
 	/**
 	 * Constructor.
@@ -154,7 +159,7 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 	public SearchQueryBuilder withFacetClustering(final String clusteringFacetName) {
 		Assertion.check().isNotBlank(clusteringFacetName);
 		//-----
-		final FacetDefinition clusteringFacetDefinition = Node.getNode().getDefinitionSpace().resolve(clusteringFacetName, FacetDefinition.class);
+		final var clusteringFacetDefinition = Node.getNode().getDefinitionSpace().resolve(clusteringFacetName, FacetDefinition.class);
 		withFacetClustering(clusteringFacetDefinition);
 		return this;
 	}
@@ -165,6 +170,30 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 	 */
 	public SearchQueryBuilder withHighlight() {
 		this.myUseHighlight = true;
+		return this;
+	}
+
+	/**
+	 * Skips somes facets in the FacetedQueryDefinition in the final query
+	 * @param skippedFacetsFilter function to choose which facets are skipped
+	 * @return this builder
+	 */
+	public SearchQueryBuilder withSkippedFacetFilter(final Function<FacetedQueryDefinition, Set<DefinitionId<FacetDefinition>>> skippedFacetsFilter) {
+		Assertion.check().isNotNull(skippedFacetsFilter);
+		//-----
+		mySkippedFacets.addAll(skippedFacetsFilter.apply(facetedQueryDefinition));
+		return this;
+	}
+
+	/**
+	 * Skips somes facets in the FacetedQueryDefinition in the final query
+	 * @param skippedFacets facets skipped
+	 * @return this builder
+	 */
+	public SearchQueryBuilder withSkippedFacets(final Set<DefinitionId<FacetDefinition>> skippedFacets) {
+		Assertion.check().isNotNull(skippedFacets);
+		//-----
+		mySkippedFacets.addAll(skippedFacets);
 		return this;
 	}
 
@@ -182,6 +211,7 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 				myDateField,
 				myNumDaysOfBoostRef,
 				myMostRecentBoost,
-				myUseHighlight);
+				myUseHighlight,
+				mySkippedFacets);
 	}
 }

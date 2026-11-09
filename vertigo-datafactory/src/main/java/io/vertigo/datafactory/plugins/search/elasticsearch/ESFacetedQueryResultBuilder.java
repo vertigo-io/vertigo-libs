@@ -42,7 +42,6 @@ import io.vertigo.core.locale.LocaleMessageText;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.collections.definitions.FacetDefinition;
-import io.vertigo.datafactory.collections.definitions.FacetedQueryDefinition;
 import io.vertigo.datafactory.collections.model.Facet;
 import io.vertigo.datafactory.collections.model.FacetValue;
 import io.vertigo.datafactory.collections.model.FacetedQueryResult;
@@ -101,23 +100,23 @@ public final class ESFacetedQueryResultBuilder<I extends DataObject> implements 
 	public FacetedQueryResult<I, SearchQuery> build() {
 		final Map<I, Map<DataField, String>> resultHighlights = new HashMap<>();
 		final Map<FacetValue, DtList<I>> resultCluster;
-		final DtList<I> dtc = new DtList<>(indexDtDefinition);
+		final var dtc = new DtList<I>(indexDtDefinition);
 		if (searchQuery.isClusteringFacet()) {
 			final Map<String, I> dtcIndex = new LinkedHashMap<>();
 			resultCluster = createCluster(dtcIndex, resultHighlights);
 			dtc.addAll(dtcIndex.values());
 		} else {
 			for (final Hit<Map> hit : queryResponse.hits().hits()) {
-				final I result = esDocumentCodec.searchHit2DtIndex(indexDtDefinition, hit);
+				final var result = (I) esDocumentCodec.searchHit2DtIndex(indexDtDefinition, hit);
 				dtc.add(result);
-				final Map<DataField, String> highlights = createHighlight(hit, indexDtDefinition);
+				final var highlights = createHighlight(hit, indexDtDefinition);
 				resultHighlights.put(result, highlights);
 			}
 			resultCluster = Collections.emptyMap();
 		}
 		//On fabrique à la volée le résultat.
-		final List<Facet> facets = createFacetList(searchQuery, queryResponse);
-		final long count = queryResponse.hits().total() != null ? queryResponse.hits().total().value() : 0;
+		final var facets = createFacetList(searchQuery, queryResponse);
+		final var count = queryResponse.hits().total() != null ? queryResponse.hits().total().value() : 0;
 		return new FacetedQueryResult<>(
 				searchQuery.getFacetedQuery(),
 				count,
@@ -134,19 +133,19 @@ public final class ESFacetedQueryResultBuilder<I extends DataObject> implements 
 			final Map<String, I> dtcIndex,
 			final Map<I, Map<DataField, String>> resultHighlights) {
 		final Map<FacetValue, DtList<I>> resultCluster = new LinkedHashMap<>();
-		final FacetDefinition facetDefinition = searchQuery.getClusteringFacetDefinition();
-		final Aggregate facetAggregate = obtainAggregate(queryResponse, facetDefinition.getName());
-		final Map<String, MultiBucketBase> buckets = extractKeyedBuckets(facetAggregate);
+		final var facetDefinition = searchQuery.getClusteringFacetDefinition();
+		final var facetAggregate = obtainAggregate(queryResponse, facetDefinition.getName());
+		final var buckets = extractKeyedBuckets(facetAggregate);
 
 		if (facetDefinition.isRangeFacet()) {
 			for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
-				final MultiBucketBase bucket = buckets.get(facetRange.code());
+				final var bucket = buckets.get(facetRange.code());
 				Assertion.check().isNotNull(bucket, "No bucket {0} found", facetRange.code());
 				populateCluster(bucket, facetRange, resultCluster, dtcIndex, resultHighlights);
 			}
 		} else {
 			for (final var entry : buckets.entrySet()) {
-				final FacetValue facetValue = createFacetTermValue(entry.getKey(), facetDefinition);
+				final var facetValue = createFacetTermValue(entry.getKey(), facetDefinition);
 				populateCluster(entry.getValue(), facetValue, resultCluster, dtcIndex, resultHighlights);
 			}
 		}
@@ -160,15 +159,15 @@ public final class ESFacetedQueryResultBuilder<I extends DataObject> implements 
 			final Map<FacetValue, DtList<I>> resultCluster,
 			final Map<String, I> dtcIndex,
 			final Map<I, Map<DataField, String>> resultHighlights) {
-		final Aggregate topHitsAggregate = bucket.aggregations().get(TOPHITS_SUBAGGREGATION_NAME);
-		final List<Hit<Map>> topHits = (List<Hit<Map>>) (List<?>) topHitsAggregate.topHits().hits().hits();
-		final DtList<I> facetDtc = new DtList<>(indexDtDefinition);
+		final var topHitsAggregate = bucket.aggregations().get(TOPHITS_SUBAGGREGATION_NAME);
+		final var topHits = (List<Hit<Map>>) (List<?>) topHitsAggregate.topHits().hits().hits();
+		final var facetDtc = new DtList<I>(indexDtDefinition);
 		for (final Hit<Map> hit : topHits) {
-			I result = dtcIndex.get(hit.id());
+			var result = dtcIndex.get(hit.id());
 			if (result == null) {
 				result = esDocumentCodec.searchHit2DtIndex(indexDtDefinition, hit);
 				dtcIndex.put(hit.id(), result);
-				final Map<DataField, String> highlights = createHighlight(hit, indexDtDefinition);
+				final var highlights = createHighlight(hit, indexDtDefinition);
 				resultHighlights.put(result, highlights);
 			}
 			facetDtc.add(result);
@@ -178,14 +177,14 @@ public final class ESFacetedQueryResultBuilder<I extends DataObject> implements 
 
 	private static Map<DataField, String> createHighlight(final Hit<Map> hit, final DataDefinition resultDtDefinition) {
 		final Map<DataField, String> highlights = new HashMap<>();
-		final Map<String, List<String>> highlightsMap = hit.highlight();
+		final var highlightsMap = hit.highlight();
 
 		if (highlightsMap != null) {
 			for (final Map.Entry<String, List<String>> entry : highlightsMap.entrySet()) {
-				final String fieldName = entry.getKey();
+				final var fieldName = entry.getKey();
 				if (resultDtDefinition.contains(fieldName)) { //We only keep highlights match on result's fields
-					final DataField dtField = resultDtDefinition.getField(fieldName);
-					final StringBuilder sb = new StringBuilder();
+					final var dtField = resultDtDefinition.getField(fieldName);
+					final var sb = new StringBuilder();
 					for (final String fragment : entry.getValue()) {
 						sb.append("<hlfrag>").append(fragment).append("</hlfrag>");
 					}
@@ -199,12 +198,14 @@ public final class ESFacetedQueryResultBuilder<I extends DataObject> implements 
 	private static List<Facet> createFacetList(final SearchQuery searchQuery, final SearchResponse<Map> queryResponse) {
 		final List<Facet> facets = new ArrayList<>();
 		if (searchQuery.getFacetedQuery().isPresent() && queryResponse.aggregations() != null) {
-			final FacetedQueryDefinition queryDefinition = searchQuery.getFacetedQuery().get().getDefinition();
+			final var queryDefinition = searchQuery.getFacetedQuery().get().getDefinition();
 			for (final FacetDefinition facetDefinition : queryDefinition.getFacetDefinitions()) {
-				final Aggregate aggregate = obtainAggregate(queryResponse, facetDefinition.getName());
-				if (aggregate != null) {
-					final Facet facet = createFacet(facetDefinition, aggregate);
-					facets.add(facet);
+				if (!searchQuery.getSkippedFacets().contains(facetDefinition.id())) {
+					final var aggregate = obtainAggregate(queryResponse, facetDefinition.getName());
+					if (aggregate != null) {
+						final var facet = createFacet(facetDefinition, aggregate);
+						facets.add(facet);
+					}
 				}
 			}
 		}
@@ -213,7 +214,7 @@ public final class ESFacetedQueryResultBuilder<I extends DataObject> implements 
 
 	private static Aggregate obtainAggregate(final SearchResponse<Map> queryResponse, final String name) {
 		// Check for filter wrapper first (multi-selectable facets pattern: name_filter wrapping name)
-		final Aggregate filterAggregate = queryResponse.aggregations().get(name + "_filter");
+		final var filterAggregate = queryResponse.aggregations().get(name + "_filter");
 		if (filterAggregate != null && filterAggregate.isFilter()) {
 			return filterAggregate.filter().aggregations().get(name);
 		}
@@ -291,9 +292,9 @@ public final class ESFacetedQueryResultBuilder<I extends DataObject> implements 
 
 	private static Facet createTermFacet(final FacetDefinition facetDefinition, final Aggregate aggregate) {
 		final Map<FacetValue, Long> facetValues = new LinkedHashMap<>();
-		final Map<String, Long> buckets = extractKeyedDocCounts(aggregate);
+		final var buckets = extractKeyedDocCounts(aggregate);
 		for (final Map.Entry<String, Long> bucket : buckets.entrySet()) {
-			final FacetValue facetValue = createFacetTermValue(bucket.getKey(), facetDefinition);
+			final var facetValue = createFacetTermValue(bucket.getKey(), facetDefinition);
 			facetValues.put(facetValue, bucket.getValue());
 		}
 		return new Facet(facetDefinition, facetValues);
@@ -319,7 +320,7 @@ public final class ESFacetedQueryResultBuilder<I extends DataObject> implements 
 	private static Facet createFacetRange(final FacetDefinition facetDefinition, final Aggregate aggregate) {
 		final Map<FacetValue, Long> rangeValues = new LinkedHashMap<>();
 
-		final Map<String, Long> buckets = extractKeyedDocCounts(aggregate);
+		final var buckets = extractKeyedDocCounts(aggregate);
 		for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
 			final var bucketCount = buckets.get(facetRange.code());
 			Assertion.check().isNotNull(bucketCount, "No facet {0} found in result", facetRange.code());
@@ -333,7 +334,7 @@ public final class ESFacetedQueryResultBuilder<I extends DataObject> implements 
 
 		// Extraction de la valeur selon le Kind
 		// ES returns null for metrics without value (avg, min, max... of no document)
-		final Double metricValue = switch (aggregate._kind()) {
+		final var metricValue = switch (aggregate._kind()) {
 			case Avg -> aggregate.avg().value();
 			case Cardinality -> Double.valueOf(aggregate.cardinality().value()); //ES return long
 			case Max -> aggregate.max().value();
@@ -347,11 +348,11 @@ public final class ESFacetedQueryResultBuilder<I extends DataObject> implements 
 		};
 
 		if (metricValue != null) { // no value : facet without facetValue, rather than a misleading 0
-			final FacetValue facetValue = new FacetValue(facetDefinition.getName(), ListFilter.of("_noOp:_"), LocaleMessageText.of(facetDefinition.getName()));
+			final var facetValue = new FacetValue(facetDefinition.getName(), ListFilter.of("_noOp:_"), LocaleMessageText.of(facetDefinition.getName()));
 
 			// Application de la précision décimale
-			final int decimalPrecision = Integer.parseInt(facetDefinition.getCustomParams().getOrDefault("_decimalPrecision", "0"));
-			final long precisionMult = (long) Math.pow(10, decimalPrecision);
+			final var decimalPrecision = Integer.parseInt(facetDefinition.getCustomParams().getOrDefault("_decimalPrecision", "0"));
+			final var precisionMult = (long) Math.pow(10, decimalPrecision);
 
 			facetValues.put(facetValue, Math.round(metricValue * precisionMult));
 		}
@@ -371,9 +372,9 @@ public final class ESFacetedQueryResultBuilder<I extends DataObject> implements 
 	/** Extrait la valeur d'une métrique par réflexion si elle n'est pas dans les 'if' standards */
 	private static Double extractMetricValueDynamically(final Aggregate aggregate) {
 		try {
-			final Object specificAggregation = aggregate._get();
+			final var specificAggregation = aggregate._get();
 			final var valueMethod = specificAggregation.getClass().getMethod("value");
-			final Number value = (Number) valueMethod.invoke(specificAggregation); //may be a long, or null if no value
+			final var value = (Number) valueMethod.invoke(specificAggregation); //may be a long, or null if no value
 			return value != null ? value.doubleValue() : null;
 		} catch (final Exception e) {
 			throw new VSystemException(e, "Impossible d'extraire la valeur pour l'agrégation de métrique {0}", aggregate._kind());
@@ -394,7 +395,7 @@ public final class ESFacetedQueryResultBuilder<I extends DataObject> implements 
 
 	private static Map<String, MultiBucketBase> extractKeyedBuckets(final Aggregate aggregate) {
 		final Map<String, MultiBucketBase> result = new LinkedHashMap<>();
-		final Object specificAggregation = aggregate._get();
+		final var specificAggregation = aggregate._get();
 
 		try {
 			final var bucketsMethod = specificAggregation.getClass().getMethod("buckets");
@@ -438,7 +439,7 @@ public final class ESFacetedQueryResultBuilder<I extends DataObject> implements 
 		try {
 			// 1. Tente d'appeler la méthode "key()" (cas des Terms, Geohash, etc.)
 			final var keyMethod = bucket.getClass().getMethod("key");
-			final Object keyObj = keyMethod.invoke(bucket);
+			final var keyObj = keyMethod.invoke(bucket);
 
 			if (keyObj != null) {
 				// Selon la version d'ES9, la clé peut être encapsulée dans un "FieldValue".
@@ -454,7 +455,7 @@ public final class ESFacetedQueryResultBuilder<I extends DataObject> implements 
 			// 2. Fallback pour les RangeBuckets (qui n'ont pas key() mais keyAsString() ou from/to)
 			try {
 				final var keyAsStringMethod = bucket.getClass().getMethod("keyAsString");
-				final Object keyAsStringObj = keyAsStringMethod.invoke(bucket);
+				final var keyAsStringObj = keyAsStringMethod.invoke(bucket);
 				if (keyAsStringObj != null) {
 					return keyAsStringObj.toString();
 				}
