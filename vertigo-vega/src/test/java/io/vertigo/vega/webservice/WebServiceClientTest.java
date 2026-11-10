@@ -39,6 +39,8 @@ import io.vertigo.connectors.httpclient.HttpClientCookie;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.datamodel.data.model.DtList;
+import io.vertigo.vega.engines.webservice.json.JsonEngine;
+import io.vertigo.vega.impl.webservice.client.HttpRequestBuilder;
 import io.vertigo.vega.impl.webservice.client.WebServiceUserException;
 import io.vertigo.vega.webservice.data.MyNodeConfig;
 import io.vertigo.vega.webservice.data.domain.Address;
@@ -85,6 +87,23 @@ public final class WebServiceClientTest {
 	@Test
 	public void testAnonymousTest() {
 		service.anonymousTest();
+	}
+
+	@Test
+	public void testEncodeUrlParams() {
+		//RFC 3986 : space is %20 (not the form-urlencoded '+'), and '+', '&', '=', '/' are data
+		final HttpRequestBuilder httpRequestBuilder = new HttpRequestBuilder("http://localhost", "/echo/{pathValue}", node.getComponentSpace().resolve(JsonEngine.class));
+		httpRequestBuilder.pathParam("pathValue", "a b+c/d");
+		httpRequestBuilder.queryParam("queryValue", "a b+c&d=é");
+		assertEquals("http://localhost/echo/a%20b%2Bc%2Fd?queryValue=a%20b%2Bc%26d%3D%C3%A9", httpRequestBuilder.buildURI().toString());
+	}
+
+	@Test
+	public void testEncodeUrlParamsRoundTrip() {
+		final String value = "a b+c&d=é";
+		final Map<String, Object> echo = service.echo(value, value);
+		assertEquals(value, echo.get("pathValue"));
+		assertEquals(value, echo.get("queryValue"));
 	}
 
 	@Test

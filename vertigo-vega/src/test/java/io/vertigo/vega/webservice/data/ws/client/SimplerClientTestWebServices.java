@@ -74,6 +74,11 @@ public interface SimplerClientTestWebServices extends Amplifier {
 	@GET("/anonymousTest")
 	List<Contact> anonymousTest();
 
+	@SessionLess
+	@AnonymousAccessAllowed
+	@GET("/echo/{pathValue}")
+	Map<String, Object> echo(@PathParam("pathValue") final String pathValue, @QueryParam("queryValue") final String queryValue);
+
 	@GET("/authentifiedTest")
 	List<Contact> authentifiedTest();
 

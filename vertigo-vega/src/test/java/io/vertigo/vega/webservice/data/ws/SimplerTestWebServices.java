@@ -97,6 +97,16 @@ public final class SimplerTestWebServices implements WebServices {
 		return contactDao.getList();
 	}
 
+	@SessionLess
+	@AnonymousAccessAllowed
+	@GET("/echo/{pathValue}")
+	public UiContext echo(@PathParam("pathValue") final String pathValue, @QueryParam("queryValue") final String queryValue) {
+		final UiContext result = new UiContext();
+		result.put("pathValue", pathValue);
+		result.put("queryValue", queryValue);
+		return result;
+	}
+
 	@GET("/authentifiedTest")
 	public List<Contact> authentifiedTest() {
 		//offset + range ?

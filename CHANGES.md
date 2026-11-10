@@ -16,6 +16,7 @@ Running 4.5.0-SNAPSHOT - 2026-12-XX
 * [DataStore] MasterData cached lists honor @SortField(desc = true) for their default sort direction
 * [DataFactory] Fix ES9 metric custom facets (avg, min, max...) on a search without result : a `NullPointerException` was thrown ; the facet is now returned without facetValue (sum, value_count and cardinality still return 0)
 * [Vega] Fix the node configuration files given by environment variable or system property, ignored since 3.4.0 : they are now read under singular names, like `boot.applicationConfiguration` in web.xml : `VERTIGO_BOOT_APPLICATION_CONFIGURATION` and `-Dboot.application-configuration` (the former plural names are no longer read) ; precedence : system property, external properties file, environment variable, web.xml
+* [Vega] Fix the encoding of the webservice client parameters (`@WebServiceProxyAnnotation`) : `@PathParam` and `@QueryParam` were encoded as an html form (space -> `+`), they are now encoded as RFC 3986 (space -> `%20`, `+` -> `%2B`). A space was received as a literal `+` in a path param (even by a Vertigo server), and in a query param by strict REST APIs
 
 
 Release 4.4.1 - 2026/08/28

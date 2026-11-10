@@ -140,6 +140,7 @@ public final class RoutesOrderTest {
 				.body("get(" + i++ + ")", Matchers.equalTo("Get /test/dtList10elts/{id} (long :Path:id) -> class io.vertigo.datamodel.data.model.DtList<Contact>"))
 				.body("get(" + i++ + ")", Matchers.equalTo("Get /test/dtListMeta () -> class io.vertigo.datamodel.data.model.DtList<Contact>"))
 				.body("get(" + i++ + ")", Matchers.equalTo("Get /test/dtListMetaAsList () -> interface java.util.List<Contact>"))
+				.body("get(" + i++ + ")", Matchers.equalTo("Get /test/echo/{pathValue} (class java.lang.String :Path:pathValue, class java.lang.String :Query:queryValue) -> UiContext"))
 				.body("get(" + i++ + ")", Matchers.equalTo("Get /test/export/pdf/ () -> VFile"))
 				.body("get(" + i++ + ")", Matchers.equalTo("Get /test/export/pdf/{conId} (long :Path:conId) -> VFile"))
 				.body("get(" + i++ + ")", Matchers.equalTo("Get /test/filtered/{conId} (long :Path:conId) -> Contact"))
