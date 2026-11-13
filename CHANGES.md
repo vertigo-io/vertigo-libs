@@ -10,13 +10,21 @@ more to come :)
 
 Running 4.5.0-SNAPSHOT - 2026-12-XX
 ----------------------
-* [Ui] Fix self-closed custom elements (`<q-btn ... />`) : they are now closed automatically in rendered templates, `UnAutoCloseTagsFilter` is deprecated
-* [DataFactory] Fix ElasticSearch index settings check at startup (broken since 4.4.0, ES9 plugin) : the analysis settings of the existing index were compared to themselves, so an incompatible change (analyzer, tokenizer, filter, normalizer) was never detected ; the check now compares to the expected settings and fails the startup with the index deletion command
-* [DataModel] @SortField gains a backward compatible desc() attribute : a MasterData definition can declare a descending default sort direction (default remains ascending when not set)
-* [DataStore] MasterData cached lists honor @SortField(desc = true) for their default sort direction
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-441-to-450)
+
+* **[Ui] Fix self-closed custom elements (`<q-btn ... />`) : they are now closed automatically in rendered templates** : the browser kept them open, so they swallowed the markup that followed (extended `v-if` scope, siblings absorbed as default slot). `UnAutoCloseTagsFilter` is deprecated
+* [dsfr-ui] Add a character counter under `vu:dsfr-text-area` : displayed when the field has a max length (smartType constraint or `max` attribute) or with `showCounter="true"` (hide it with `showCounter="false"`) ; the max length is also set as `maxlength` on the textarea (the browser blocks typing beyond it)
+* [dsfr-ui] `dsfr-facets` : the selected filters of a facet absent from the result (ex: skipped facet) are no longer displayed
+* **[DataFactory] Fix ElasticSearch index settings check at startup (broken since 4.4.0, ES9 plugin)** : the analysis settings of the existing index were compared to themselves, so an incompatible change (analyzer, tokenizer, filter, normalizer) was never detected ; the check now compares to the expected settings and fails the startup with the index deletion command
+* [DataFactory] Allow skipping some facets of a `FacetedQueryDefinition` for one search (`SearchQueryBuilder.withSkippedFacets` / `withSkippedFacetFilter`) : no aggregation is computed and the facet is absent from the result (the clustering facet is never skipped)
 * [DataFactory] Fix ES9 metric custom facets (avg, min, max...) on a search without result : a `NullPointerException` was thrown ; the facet is now returned without facetValue (sum, value_count and cardinality still return 0)
-* [Vega] Fix the node configuration files given by environment variable or system property, ignored since 3.4.0 : they are now read under singular names, like `boot.applicationConfiguration` in web.xml : `VERTIGO_BOOT_APPLICATION_CONFIGURATION` and `-Dboot.application-configuration` (the former plural names are no longer read) ; precedence : system property, external properties file, environment variable, web.xml
+* [DataModel] Add `@SortField(desc = true)` to declare a descending default sort direction (ascending remains the default), used by `DtListState.defaultOf(entityClass)`
+* [DataStore] MasterData cached lists honor `@SortField(desc = true)` for their default sort direction
+* **[Vega] Fix the node configuration files given by environment variable or system property, ignored since 3.4.0** : they are now read under singular names, like `boot.applicationConfiguration` in web.xml : `VERTIGO_BOOT_APPLICATION_CONFIGURATION` and `-Dboot.application-configuration` (the former plural names are no longer read) ; precedence : system property, external properties file, environment variable, web.xml
 * [Vega] Fix the encoding of the webservice client parameters (`@WebServiceProxyAnnotation`) : `@PathParam` and `@QueryParam` were encoded as an html form (space -> `+`), they are now encoded as RFC 3986 (space -> `%20`, `+` -> `%2B`). A space was received as a literal `+` in a path param (even by a Vertigo server), and in a query param by strict REST APIs
+* [Vega] Fix the rate limiting `whiteListUsers` param parsing : a duplicated IP or an empty entry (`a,,b`) failed the startup ; blank entries are now ignored
+
+more to come :)
 
 
 Release 4.4.1 - 2026/08/28
