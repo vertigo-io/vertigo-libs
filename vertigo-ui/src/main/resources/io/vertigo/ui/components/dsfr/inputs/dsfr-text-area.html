@@ -21,7 +21,7 @@
                       th:attr="__${input_attrs}__">
         <vu:content/>
     </dsfr-input-group>
-	<p th:if="${showCounter == true || myMax != null}" class="fr-hint-text text-right fr-mt-n2w">
+	<p th:if="${showCounter ?: myMax != null}" class="fr-hint-text text-right fr-mt-n2w">
 	    <span>{{ [[${model.util.vueDataKey(object, field, rowIndex)}]]?.length ?? 0 }}</span><span th:if="${myMax != null}"> / [[${myMax}]] </span><span> caractères</span>
 	</p>
 </th:block>
