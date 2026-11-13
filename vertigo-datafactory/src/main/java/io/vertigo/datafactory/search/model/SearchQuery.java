@@ -64,7 +64,7 @@ public final class SearchQuery implements Serializable {
 	 * @param boostedDocumentDateField Nom du champ portant la date du document (null si non utilisé)
 	 * @param numDaysOfBoostRefDocument Age des documents servant de référence pour le boost des plus récents par rapport à eux (null si non utilisé)
 	 * @param mostRecentBoost Boost relatif maximum entre les plus récents et ceux ayant l'age de référence (doit être > 1) (null si non utilisé)
-	 * @param mySkippedFacets The facets of the QueryDefinition to skip for this Query
+	 * @param skippedFacets The facets of the QueryDefinition to skip for this Query
 	 */
 	SearchQuery(
 			final String listFilterBuilderQuery,
@@ -119,12 +119,10 @@ public final class SearchQuery implements Serializable {
 				? clusteringFacetDefinition.id()
 				: null;
 		this.useHighlight = useHighlight;
-		if (clusteringFacetDefinitionId != null) {
-			// we cannot skip the clustering facet (added after the skip) so we need to correct it after
-			this.skippedFacets = skippedFacets.stream().filter(facetId -> !facetId.equals(clusteringFacetDefinitionId)).collect(Collectors.toSet());
-		} else {
-			this.skippedFacets = skippedFacets;
-		}
+		// the clustering facet can't be skipped ; immutable copy : the builder set must not leak into the query
+		this.skippedFacets = skippedFacets.stream()
+				.filter(facetId -> !facetId.equals(clusteringFacetDefinitionId))
+				.collect(Collectors.toUnmodifiableSet());
 	}
 
 	/**

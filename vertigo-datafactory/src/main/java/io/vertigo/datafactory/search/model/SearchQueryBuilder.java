@@ -179,7 +179,9 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 	 * @return this builder
 	 */
 	public SearchQueryBuilder withSkippedFacetFilter(final Function<FacetedQueryDefinition, Set<DefinitionId<FacetDefinition>>> skippedFacetsFilter) {
-		Assertion.check().isNotNull(skippedFacetsFilter);
+		Assertion.check()
+				.isNotNull(skippedFacetsFilter)
+				.isNotNull(facetedQueryDefinition, "Skipped facets need a FacetedQueryDefinition");
 		//-----
 		mySkippedFacets.addAll(skippedFacetsFilter.apply(facetedQueryDefinition));
 		return this;

@@ -34,6 +34,7 @@ import java.util.TreeSet;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -884,6 +885,38 @@ public abstract class AbstractSearchManagerTest {
 		index(false);
 		final FacetedQueryResult<Item, SearchQuery> result = facetQuery("");
 		testFacetResultByTerm(result, "");
+	}
+
+	@Test
+	public void testFacetQueryWithSkippedFacet() {
+		index(false);
+		final SearchQuery searchQuery = SearchQuery.builder("QryItemFacet")
+				.withCriteria("")
+				.withFacet(EMPTY_SELECTED_FACET_VALUES)
+				.withSkippedFacets(Set.of(manufacturerFacetDefinition.id()))
+				.build();
+		final var result = doQuery(searchQuery, null);
+		Assertions.assertEquals(itemDataBase.size(), result.getCount());
+		//the skipped facet is neither computed nor returned, the others are unchanged
+		Assertions.assertEquals(3, result.getFacets().size());
+		Assertions.assertTrue(result.getFacets().stream().noneMatch(facet -> facet.getDefinition().equals(manufacturerFacetDefinition)));
+		Assertions.assertFalse(getFacetByName(result, "FctYearItem").getFacetValues().isEmpty());
+	}
+
+	@Test
+	public void testFacetQueryWithSkippedFacetFilter() {
+		index(false);
+		final SearchQuery searchQuery = SearchQuery.builder("QryItemFacet")
+				.withCriteria("")
+				.withFacet(EMPTY_SELECTED_FACET_VALUES)
+				.withSkippedFacetFilter(facetedQueryDefinition -> facetedQueryDefinition.getFacetDefinitions().stream()
+						.filter(facetDefinition -> !facetDefinition.equals(yearFacetDefinition))
+						.map(FacetDefinition::id)
+						.collect(Collectors.toSet()))
+				.build();
+		final var result = doQuery(searchQuery, null);
+		Assertions.assertEquals(1, result.getFacets().size());
+		Assertions.assertEquals(yearFacetDefinition, result.getFacets().get(0).getDefinition());
 	}
 
 	@Test

@@ -527,10 +527,12 @@ public final class ViewContext implements Serializable {
 		put(() -> contextKey.get() + "_facets", translateFacets(facetedQueryResult.getFacets()));
 
 		final var facetedQuery = facetedQueryResult.getSource().getFacetedQuery().get();
+		final var skippedFacets = facetedQueryResult.getSource().getSkippedFacets();
 		put(() -> contextKey.get() + "_selectedFacets", new UiSelectedFacetValues(
 				facetedQuery.getSelectedFacetValues(),
 				facetedQuery.getDefinition().getFacetDefinitions()
 						.stream()
+						.filter(facetDefinition -> !skippedFacets.contains(facetDefinition.id())) //skipped facets are absent from _facets : the ui components need the same keys
 						.map(FacetDefinition::getName)
 						.collect(Collectors.toList())));
 		put(() -> contextKey.get() + "_totalcount", facetedQueryResult.getCount());
