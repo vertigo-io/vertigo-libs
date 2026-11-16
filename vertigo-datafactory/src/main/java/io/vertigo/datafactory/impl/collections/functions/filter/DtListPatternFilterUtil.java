@@ -30,12 +30,12 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.util.DateUtil;
-import io.vertigo.datafactory.collections.model.IndexType;
 import io.vertigo.datamodel.criteria.CriterionLimit;
 import io.vertigo.datamodel.criteria.Criterions;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.model.DataObject;
+import io.vertigo.datamodel.smarttype.definitions.DtProperty;
 import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 
 /**
@@ -135,8 +135,7 @@ public final class DtListPatternFilterUtil {
 	 */
 	public static boolean isTokenizedIndexType(final SmartTypeDefinition smartTypeDefinition) {
 		Assertion.check().isNotNull(smartTypeDefinition);
-		return IndexType.readIndexType(smartTypeDefinition)
-				.getIndexAnalyzer()
+		return readIndexAnalyzer(smartTypeDefinition)
 				.map(TOKENIZED_INDEX_TYPES::containsKey)
 				.orElse(false);
 	}
@@ -150,13 +149,30 @@ public final class DtListPatternFilterUtil {
 	 */
 	public static String[] tokenizedIndexValue(final SmartTypeDefinition smartTypeDefinition, final Object value) {
 		Assertion.check().isNotNull(smartTypeDefinition);
-		final String indexAnalyzer = IndexType.readIndexType(smartTypeDefinition).getIndexAnalyzer().orElse(null);
+		final String indexAnalyzer = readIndexAnalyzer(smartTypeDefinition).orElse(null);
 		final Pattern pattern = TOKENIZED_INDEX_TYPES.get(indexAnalyzer);
 		Assertion.check().isNotNull(pattern, "IndexType {0} is not tokenized", smartTypeDefinition.getName());
 		if (value == null) {
 			return new String[0];
 		}
 		return pattern.split(String.valueOf(value));
+	}
+
+	/**
+	 * Reads the analyzer of the indexType (its first part, before ':'), without the checks of IndexType.readIndexType :
+	 * these checks are ElasticSearch index constraints (ex: a String smartType must declare its indexType),
+	 * they don't apply to the in memory facets and filters.
+	 *
+	 * @param smartTypeDefinition SmartType
+	 * @return the analyzer of the indexType, empty if there is no indexType
+	 */
+	private static Optional<String> readIndexAnalyzer(final SmartTypeDefinition smartTypeDefinition) {
+		final String indexType = smartTypeDefinition.getProperties().getValue(DtProperty.INDEX_TYPE);
+		if (indexType == null) {
+			return Optional.empty();
+		}
+		final String indexAnalyzer = indexType.split(":", 2)[0];
+		return indexAnalyzer.isEmpty() ? Optional.empty() : Optional.of(indexAnalyzer);
 	}
 
 	private static <D extends DataObject> Predicate<D> createDtListTermFilter(final String[] parsedFilter, final String fieldName, final BasicType dataType, final DataField dtField) {

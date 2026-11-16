@@ -45,5 +45,10 @@ public enum TestCollectionsSmartTypes {
 
 	@SmartTypeDefinition(Integer.class)
 	@Formatter(clazz = FormatterDefault.class)
-	Integer;
+	Integer,
+
+	/** String without indexType : valid for the in memory collections (the indexType is an ElasticSearch index setting). */
+	@SmartTypeDefinition(String.class)
+	@Formatter(clazz = FormatterDefault.class)
+	Label;
 }
