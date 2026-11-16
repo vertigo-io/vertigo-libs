@@ -182,6 +182,12 @@
       <version>4.52.0</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>com.microsoft.playwright</groupId>
+      <artifactId>playwright</artifactId>
+      <version>1.65.0</version>
+      <scope>test</scope> <!-- QuasarUpgradeScreenshotTest (disabled, run manually when upgrading quasar) -->
+    </dependency>
     <!-- Search -->
     <dependency>
       <groupId>co.elastic.clients</groupId>
