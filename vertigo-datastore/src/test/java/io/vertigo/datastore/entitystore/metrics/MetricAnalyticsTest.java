@@ -122,7 +122,9 @@ public final class MetricAnalyticsTest {
 
 	@Test
 	public void testAnalyze() {
-		final List<Metric> metrics = analyticsManager.getMetrics();
+		final List<Metric> metrics = analyticsManager.getMetrics().stream()
+				.filter(metric -> !"daemons".equals(metric.feature())) // the DaemonManager core component publishes its pool metrics
+				.toList();
 		//---
 		Assertions.assertEquals(11, metrics.size());
 	}

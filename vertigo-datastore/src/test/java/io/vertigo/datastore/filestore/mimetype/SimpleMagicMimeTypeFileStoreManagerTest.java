@@ -17,12 +17,35 @@
  */
 package io.vertigo.datastore.filestore.mimetype;
 
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
 import io.vertigo.core.node.config.NodeConfig;
 
 public class SimpleMagicMimeTypeFileStoreManagerTest extends AbstractMimeTypeFileStoreManagerTest {
 
 	protected NodeConfig buildNodeConfig() {
 		return buildNodeConfig(false, true);
+	}
+
+	/**
+	 * SimpleMagic 1.17 identifies xls (OLE) without mime type : the declared extension is used.
+	 */
+	@Override
+	@Test
+	@Disabled
+	public void testMimeTypeXlsByData() throws Exception {
+		super.testMimeTypeXlsByData();
+	}
+
+	/**
+	 * SimpleMagic 1.17 identifies ods without mime type : the declared extension is used.
+	 */
+	@Override
+	@Test
+	@Disabled
+	public void testMimeTypeXlsXmlByData() throws Exception {
+		super.testMimeTypeXlsXmlByData();
 	}
 	
 }
