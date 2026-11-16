@@ -42,7 +42,7 @@
       <dependency>
         <groupId>org.thymeleaf</groupId>
         <artifactId>thymeleaf-spring6</artifactId>
-        <version>3.1.5.RELEASE</version>
+        <version>3.1.7.RELEASE</version>
       </dependency>
       <dependency>
         <groupId>nz.net.ultraq.thymeleaf</groupId>
@@ -67,12 +67,12 @@
       <dependency>
         <groupId>io.opentelemetry</groupId>
         <artifactId>opentelemetry-api</artifactId>
-        <version>1.51.0</version>
+        <version>1.68.0</version>
       </dependency>
       <dependency>
         <groupId>io.opentelemetry</groupId>
         <artifactId>opentelemetry-context</artifactId>
-        <version>1.51.0</version>
+        <version>1.68.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -155,13 +155,13 @@
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-support</artifactId>
-      <version>4.33.0</version>
+      <version>4.52.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-api</artifactId>
-      <version>4.33.0</version>
+      <version>4.52.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -179,7 +179,7 @@
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-firefox-driver</artifactId>
-      <version>4.33.0</version>
+      <version>4.52.0</version>
       <scope>test</scope>
     </dependency>
     <!-- Search -->
@@ -197,10 +197,6 @@
         <exclusion>
           <groupId>io.opentelemetry</groupId>
           <artifactId>opentelemetry-context</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>io.opentelemetry.semconv</groupId>
-          <artifactId>opentelemetry-semconv</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -229,28 +225,28 @@
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
-      <version>2.22.0</version>
+      <version>2.23.0</version>
       <!-- version for spring -->
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.dataformat</groupId>
       <artifactId>jackson-dataformat-smile</artifactId>
-      <version>2.22.0</version>
+      <version>2.23.0</version>
       <!-- version for spring -->
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.dataformat</groupId>
       <artifactId>jackson-dataformat-yaml</artifactId>
-      <version>2.22.0</version>
+      <version>2.23.0</version>
       <!-- version for spring -->
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.dataformat</groupId>
       <artifactId>jackson-dataformat-cbor</artifactId>
-      <version>2.22.0</version>
+      <version>2.23.0</version>
       <!-- version for spring -->
       <scope>test</scope>
     </dependency>

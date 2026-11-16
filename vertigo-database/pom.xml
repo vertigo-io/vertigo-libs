@@ -21,12 +21,12 @@
 			<dependency>
 				<groupId>com.oracle.database.jdbc</groupId>
 				<artifactId>ojdbc11</artifactId>
-				<version>23.26.2.0.0</version>
+				<version>23.26.4.0.0</version>
 			</dependency>
 			<dependency>
 				<groupId>org.postgresql</groupId>
 				<artifactId>postgresql</artifactId>
-				<version>42.7.12</version>
+				<version>42.7.14</version>
 			</dependency>
 			<dependency>
 				<groupId>org.liquibase</groupId>
