@@ -46,6 +46,6 @@
 	    </span>
     </template>
     <template v-slot:error>
-        <p th:id="|${myComponentId}_desc-error|" role="alert">{{ <th:block th:text="|getErrorMessage('${object}', '${field}', ${rowIndex})|"/> }}</p>
+        <p class="q-mb-none" th:id="|${myComponentId}_desc-error|" role="alert">{{ <th:block th:text="|getErrorMessage('${object}', '${field}', ${rowIndex})|"/> }}</p>
     </template>
 </th:block>
