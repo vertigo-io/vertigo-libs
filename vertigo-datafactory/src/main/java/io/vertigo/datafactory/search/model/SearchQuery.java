@@ -119,10 +119,14 @@ public final class SearchQuery implements Serializable {
 				? clusteringFacetDefinition.id()
 				: null;
 		this.useHighlight = useHighlight;
-		// the clustering facet can't be skipped ; immutable copy : the builder set must not leak into the query
-		this.skippedFacets = skippedFacets.stream()
-				.filter(facetId -> !facetId.equals(clusteringFacetDefinitionId))
-				.collect(Collectors.toUnmodifiableSet());
+		if (clusteringFacetDefinitionId != null) {
+			// the clustering facet can't be skipped : the clusters counts are read from its facet in the result
+			this.skippedFacets = skippedFacets.stream()
+					.filter(facetId -> !facetId.equals(clusteringFacetDefinitionId))
+					.collect(Collectors.toUnmodifiableSet());
+		} else {
+			this.skippedFacets = skippedFacets;
+		}
 	}
 
 	/**

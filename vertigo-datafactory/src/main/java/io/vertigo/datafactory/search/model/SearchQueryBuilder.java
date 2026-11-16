@@ -214,6 +214,6 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 				myNumDaysOfBoostRef,
 				myMostRecentBoost,
 				myUseHighlight,
-				mySkippedFacets);
+				Set.copyOf(mySkippedFacets)); //immutable copy : the builder set must not leak into the query
 	}
 }
