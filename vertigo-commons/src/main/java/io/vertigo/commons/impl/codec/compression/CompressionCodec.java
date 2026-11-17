@@ -83,17 +83,24 @@ public final class CompressionCodec implements Codec<byte[], byte[]> {
 		// Calcul du nombre de permis à acquérir en fonction de la taille de l'objet à compresser, avec un minimum de 1 et un maximum de MAX_CONCURRENT_COMPRESSIONS
 		final int permits = Math.min(MAX_CONCURRENT_COMPRESSIONS, Math.max(1,
 				(int) Math.ceil((double) nonCompressedLength * MAX_CONCURRENT_COMPRESSIONS / MAX_SIZE_FOR_COMPRESSION)));
-		final byte[] compressedObject = new byte[nonCompressedLength + 8];
+		final byte[] compressedObject;
 		final int compressedSize;
 		try {
 			compressionSemaphore.acquire(permits);
 			try {
+				// allocated once the permits are acquired : the waiting compressions hold no buffer
+				// an incompressible payload (jpeg, pdf, zip...) gets bigger : the buffer must hold the worst case (zlib compressBound)
+				compressedObject = new byte[compressBound(nonCompressedLength)];
 				final Deflater deflater = new Deflater(COMPRESSION_LEVEL);
-				deflater.setInput(unCompressedObject);
-				deflater.finish();
-				deflater.deflate(compressedObject);
-				compressedSize = deflater.getTotalOut();
-				deflater.end();
+				try {
+					deflater.setInput(unCompressedObject);
+					deflater.finish();
+					deflater.deflate(compressedObject);
+					Assertion.check().isTrue(deflater.finished(), "Compression buffer too small ({0} bytes to compress)", nonCompressedLength);
+					compressedSize = deflater.getTotalOut();
+				} finally {
+					deflater.end();
+				}
 			} finally {
 				compressionSemaphore.release(permits);
 			}
@@ -110,6 +117,15 @@ public final class CompressionCodec implements Codec<byte[], byte[]> {
 
 		System.arraycopy(compressedObject, 0, newCompressedObject, COMPRESS_KEY.length + 4, compressedSize);
 		return newCompressedObject;
+	}
+
+	/**
+	 * Upper bound of the zlib output size for an input of the given size (zlib compressBound : stored blocks overhead, zlib header and checksum).
+	 * @param sourceLength input size
+	 * @return max output size
+	 */
+	private static int compressBound(final int sourceLength) {
+		return sourceLength + (sourceLength >> 12) + (sourceLength >> 14) + (sourceLength >> 25) + 13;
 	}
 
 	private static boolean startsWithCompressKey(final byte[] data) {
@@ -165,10 +181,15 @@ public final class CompressionCodec implements Codec<byte[], byte[]> {
 					decompressionSemaphore.acquire(permits);
 					try {
 						final Inflater inflater = new Inflater();
-						inflater.setInput(compressedObject, COMPRESS_KEY.length + 4, compressedObject.length - (COMPRESS_KEY.length + 4));
-						uncompressedObject = new byte[unCompressedLength];
-						inflater.inflate(uncompressedObject);
-						inflater.end();
+						try {
+							inflater.setInput(compressedObject, COMPRESS_KEY.length + 4, compressedObject.length - (COMPRESS_KEY.length + 4));
+							uncompressedObject = new byte[unCompressedLength];
+							final int uncompressedSize = inflater.inflate(uncompressedObject);
+							// a truncated payload (ie: compressed before 4.5.0 with a too small buffer) must fail rather than be completed with zeros
+							Assertion.check().isTrue(uncompressedSize == unCompressedLength, "Corrupted compressed data : {0} bytes uncompressed, {1} expected", uncompressedSize, unCompressedLength);
+						} finally {
+							inflater.end();
+						}
 					} finally {
 						decompressionSemaphore.release(permits);
 					}

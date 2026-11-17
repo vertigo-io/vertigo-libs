@@ -17,10 +17,13 @@
  */
 package io.vertigo.commons.codec.compression;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.Random;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -93,6 +96,37 @@ public final class CompressionCodecTest extends AbstractCodecTest<byte[], byte[]
 		final byte[] encoded = codec.encode(s);
 		final byte[] result = codec.decode(encoded);
 		assertEquals(payload, new String(result));
+	}
+
+	/**
+	 * Incompressible payloads (already compressed content : jpeg, pdf, zip...) : deflate output is bigger than the input.
+	 * The round trip must give back the same bytes.
+	 */
+	@Test
+	public void testIncompressibleRoundTrip() {
+		final Random random = new Random(42);
+		for (final int size : new int[] { 1_000, 20_000, 100_000, 1_000_000 }) {
+			final byte[] payload = new byte[size];
+			random.nextBytes(payload);
+			final byte[] encoded = codec.encode(payload);
+			assertArrayEquals(payload, codec.decode(encoded), "Round trip of " + size + " random bytes");
+		}
+	}
+
+	/**
+	 * Compressible payloads of various sizes : the round trip must give back the same bytes.
+	 */
+	@Test
+	public void testCompressibleRoundTrip() {
+		for (final int size : new int[] { 1_000, 20_000, 100_000, 1_000_000 }) {
+			final byte[] payload = new byte[size];
+			for (int i = 0; i < size; i++) {
+				payload[i] = (byte) ('a' + i % 7);
+			}
+			final byte[] encoded = codec.encode(payload);
+			assertTrue(encoded.length < size, "A compressible payload of " + size + " bytes must be compressed");
+			assertArrayEquals(payload, codec.decode(encoded), "Round trip of " + size + " compressible bytes");
+		}
 	}
 
 	@Test

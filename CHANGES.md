@@ -29,6 +29,7 @@ Running 4.5.0-SNAPSHOT - 2026-12-XX
 * **[Vega] Fix the node configuration files given by environment variable or system property, ignored since 3.4.0** : they are now read under singular names, like `boot.applicationConfiguration` in web.xml : `VERTIGO_BOOT_APPLICATION_CONFIGURATION` and `-Dboot.application-configuration` (the former plural names are no longer read) ; precedence : system property, external properties file, environment variable, web.xml
 * [Vega] Fix the encoding of the webservice client parameters (`@WebServiceProxyAnnotation`) : `@PathParam` and `@QueryParam` were encoded as an html form (space -> `+`), they are now encoded as RFC 3986 (space -> `%20`, `+` -> `%2B`). A space was received as a literal `+` in a path param (even by a Vertigo server), and in a query param by strict REST APIs
 * [Vega] Fix the rate limiting `whiteListUsers` param parsing : a duplicated IP or an empty entry (`a,,b`) failed the startup ; blank entries are now ignored
+* [Commons] Fix the compression codec (`getCompressionCodec`, `getCompressedSerializationCodec` : caches, KV stores, ElasticSearch documents, stella works) : an incompressible payload over about 16 KB (already compressed content : jpeg, pdf, zip...) was silently truncated, then uncompressed with trailing zeros ; a truncated payload now fails to decode instead of giving corrupted data
 * New libs
   - playwright 1.65.0 (test dependency : `QuasarUpgradeScreenshotTest`, disabled by default, compares screenshots of the vertigo-ui test webapp between two Quasar versions)
 * Update libs
