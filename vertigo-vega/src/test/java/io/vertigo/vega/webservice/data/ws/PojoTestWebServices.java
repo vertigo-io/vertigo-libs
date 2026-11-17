@@ -17,6 +17,10 @@
  */
 package io.vertigo.vega.webservice.data.ws;
 
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+
 import javax.inject.Inject;
 
 import io.vertigo.account.security.VSecurityManager;
@@ -77,6 +81,28 @@ public final class PojoTestWebServices implements WebServices {
 	@POST("/contactIncludedFieldsIn")
 	public ContactViewPojo testIncludedFieldsIn(final @IncludedFields({ "name", "firstName" }) ContactViewPojo contact) {
 		return contact;
+	}
+
+	@GET("/stringArray")
+	public String[] testStringArray() {
+		return new String[] { "first", "second" };
+	}
+
+	@GET("/stringSet")
+	public Set<String> testStringSet() {
+		return new LinkedHashSet<>(List.of("first", "second"));
+	}
+
+	@POST("/contactArrayExcludeFieldsOut")
+	@ExcludedFields({ "honorificCode", "email" })
+	public ContactViewPojo[] testArrayExcludeFieldsOut(final ContactViewPojo contact) {
+		return new ContactViewPojo[] { contact, contact };
+	}
+
+	@POST("/contactArrayIncludedFieldsOut")
+	@IncludedFields({ "name", "firstName" })
+	public ContactViewPojo[] testArrayIncludedFieldsOut(final ContactViewPojo contact) {
+		return new ContactViewPojo[] { contact, contact };
 	}
 
 }

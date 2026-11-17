@@ -108,6 +108,61 @@ public final class WebServiceManagerPojoTest {
 				.post("/testPojo/contactExcludeFieldsIn");
 	}
 
+	@Test
+	public void testStringArrayResult() {
+		// an array (not a List) is serialized as a json array
+		loggedAndExpect(RestAssured.given())
+				.body("size()", Matchers.equalTo(2))
+				.body("[0]", Matchers.equalTo("first"))
+				.body("[1]", Matchers.equalTo("second"))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.get("/testPojo/stringArray");
+	}
+
+	@Test
+	public void testStringSetResult() {
+		// a Set (not a List) is serialized as a json array
+		loggedAndExpect(RestAssured.given())
+				.body("size()", Matchers.equalTo(2))
+				.body("[0]", Matchers.equalTo("first"))
+				.body("[1]", Matchers.equalTo("second"))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.get("/testPojo/stringSet");
+	}
+
+	@Test
+	public void testContactArrayExcludeFieldsOut() {
+		final Map<String, Object> newContact = createDefaultContact(null);
+
+		loggedAndExpect(RestAssured.given().body(newContact))
+				.body("size()", Matchers.equalTo(2))
+				.body("[0].firstName", Matchers.equalTo("Catherine"))
+				.body("[0].email", Matchers.nullValue())
+				.body("[1].email", Matchers.nullValue())
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.post("/testPojo/contactArrayExcludeFieldsOut");
+	}
+
+	@Test
+	public void testContactArrayIncludedFieldsOut() {
+		final Map<String, Object> newContact = createDefaultContact(null);
+
+		loggedAndExpect(RestAssured.given().body(newContact))
+				.body("size()", Matchers.equalTo(2))
+				.body("[0].name", Matchers.equalTo("Fournier"))
+				.body("[0].firstName", Matchers.equalTo("Catherine"))
+				.body("[0].email", Matchers.nullValue())
+				.body("[0].honorificCode", Matchers.nullValue())
+				.body("[1].firstName", Matchers.equalTo("Catherine"))
+				.body("[1].email", Matchers.nullValue())
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.post("/testPojo/contactArrayIncludedFieldsOut");
+	}
+
 	protected ResponseSpecification loggedAndExpect(final RequestSpecification given) {
 		final var expect = given
 				.filter(loggedSessionFilter)
