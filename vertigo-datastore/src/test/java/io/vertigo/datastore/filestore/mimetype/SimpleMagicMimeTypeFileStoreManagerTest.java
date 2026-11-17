@@ -33,7 +33,7 @@ public class SimpleMagicMimeTypeFileStoreManagerTest extends AbstractMimeTypeFil
 	 */
 	@Override
 	@Test
-	@Disabled
+	@Disabled("SimpleMagic 1.17 identifies xls (OLE) without mime type")
 	public void testMimeTypeXlsByData() throws Exception {
 		super.testMimeTypeXlsByData();
 	}
@@ -43,7 +43,7 @@ public class SimpleMagicMimeTypeFileStoreManagerTest extends AbstractMimeTypeFil
 	 */
 	@Override
 	@Test
-	@Disabled
+	@Disabled("SimpleMagic 1.17 identifies ods without mime type")
 	public void testMimeTypeXlsXmlByData() throws Exception {
 		super.testMimeTypeXlsXmlByData();
 	}
