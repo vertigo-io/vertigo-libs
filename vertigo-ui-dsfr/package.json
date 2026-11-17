@@ -11,7 +11,7 @@
                     "test:coverage":  "vitest run --coverage --reporter=verbose --coverage.reporter=text --coverage.reporter=html --coverage.reporter=lcov --coverage.reporter=clover"
                 },
     "dependencies":  {
-                         "@gouvfr/dsfr":  "^1.14.4",
+                         "@gouvfr/dsfr":  "~1.14.4",
                          "@gouvminint/vue-dsfr":  "^8.17.0",
                          "@iconify-json/ri":  "^1.2.3",
                          "@trevoreyre/autocomplete":  "^3.0.3",

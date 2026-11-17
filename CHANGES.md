@@ -48,7 +48,6 @@ Running 4.5.0-SNAPSHOT - 2026-12-XX
   - core-js 3.49.0 -> 3.51.0
   - d3-color 3.1.0 -> 3.1.1
   - d3-interpolate 3.0.1 -> 3.0.2
-  - @gouvfr/dsfr 1.14.4 -> 1.15.4
   - @gouvminint/vue-dsfr 8.17.0 -> 8.21.0
   - @tiptap/* 2.27.2 -> 2.27.3
   - express 4.22.2 -> 4.22.3
