@@ -447,4 +447,22 @@ public class IpWhitelistHelperTest {
 		// Assert that each lookup takes less than 0.05ms on average (very generous threshold)
 		assertTrue(durationMs < maxTimeMs, "IP lookup should be faster than 0.05ms (" + maxTimeMs + "ms for " + testLookup + " lookups)");
 	}
+
+	// ===== Values that are not an IP address (the user key comes from a request header) =====
+
+	@Test
+	void testForwardedForChainIsNotAnError() {
+		// X-Forwarded-For through several proxies : one header line "client, proxy1, ..."
+		final IpWhitelistHelper helper = new IpWhitelistHelper(Set.of("203.0.113.5"), DEFAULT_MAX_WHITELIST_SIZE);
+		assertDoesNotThrow(() -> helper.isIpInWhitelist("203.0.113.5, 10.0.0.1"));
+		assertFalse(helper.isIpInWhitelist("203.0.113.5, 10.0.0.1"));
+	}
+
+	@Test
+	void testHostNameIsNotResolved() {
+		// a forged header with a host name : not an IP, not whitelisted, no error (and no DNS lookup)
+		final IpWhitelistHelper helper = new IpWhitelistHelper(Set.of("203.0.113.5"), DEFAULT_MAX_WHITELIST_SIZE);
+		assertDoesNotThrow(() -> helper.isIpInWhitelist("unknown-host.0.example.invalid"));
+		assertFalse(helper.isIpInWhitelist("unknown-host.0.example.invalid"));
+	}
 }

@@ -366,11 +366,15 @@ public final class RateLimitingManagerImpl implements RateLimitingManager {
 		final var ipEnumeration = request.getHeaders(headerName);
 		if (ipEnumeration != null) {
 			while (ipEnumeration.hasMoreElements()) {
-				final var useHeaderUserIp = ipEnumeration.nextElement().trim();
-				if (USER_EXCLUDED_IPS.contains(useHeaderUserIp)) {
-					continue;
+				// a header line may be a proxy chain "client, proxy1, proxy2" (X-Forwarded-For) : the first address is the client one.
+				// The reverse proxy in front of the application is responsible for the reliability of this header.
+				for (final String headerUserIp : ipEnumeration.nextElement().split(",")) {
+					final var useHeaderUserIp = headerUserIp.trim();
+					if (useHeaderUserIp.isEmpty() || USER_EXCLUDED_IPS.contains(useHeaderUserIp)) {
+						continue;
+					}
+					return Optional.of(useHeaderUserIp);
 				}
-				return Optional.of(useHeaderUserIp);
 			}
 		}
 		return Optional.empty();//header not found
