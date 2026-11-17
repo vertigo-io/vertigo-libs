@@ -51,7 +51,7 @@ public final class ClusterUiList<O extends DataObject> extends AbstractUiListUnm
 		super(dtList.getDefinition(), keyFieldNameOpt);
 		//-----
 		this.dtList = dtList;
-		if (dtList.size() < NB_MAX_ELEMENTS) {
+		if (dtList.size() < getMaxElements()) {
 			initUiObjectByIdIndex();
 		}
 		this.code = code;

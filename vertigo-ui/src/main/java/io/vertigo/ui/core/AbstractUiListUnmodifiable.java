@@ -55,7 +55,14 @@ import io.vertigo.vega.webservice.model.UiObject;
 public abstract class AbstractUiListUnmodifiable<O extends DataObject> extends AbstractList<UiObject<O>> implements UiList<O>, Serializable {
 	private static final long serialVersionUID = 5475819598230056558L;
 
-	protected static final int NB_MAX_ELEMENTS = Math.max(1000, DtListState.DEFAULT_MAX_ROWS); //Max nb elements in list. Must be kept under 1000 to ensure good performances.
+	private static final int MIN_MAX_ELEMENTS = 1000; //Max nb elements in a list sent to the page : kept under 1000 to ensure good performances, unless the default max rows of the lists is higher
+
+	/**
+	 * @return Max nb elements in list : 1000, or the default max rows of the lists if higher (param DT_LIST_DEFAULT_MAX_ROWS), so a default list always fits
+	 */
+	protected static int getMaxElements() {
+		return Math.max(MIN_MAX_ELEMENTS, DtListState.getDefaultMaxRows());
+	}
 
 	/**
 	 * Accès au storeManager.
@@ -149,7 +156,7 @@ public abstract class AbstractUiListUnmodifiable<O extends DataObject> extends A
 	@Override
 	public final UiObject<O> get(final int index) {
 		return uiObjectByIndex.computeIfAbsent(index, i -> {
-			Assertion.check().isTrue(uiObjectByIndex.size() < NB_MAX_ELEMENTS, "Trop d'élément dans le buffer uiObjectByIndex de la liste de {0}", getDtDefinition().getName());
+			Assertion.check().isTrue(uiObjectByIndex.size() < getMaxElements(), "Trop d'élément dans le buffer uiObjectByIndex de la liste de {0}", getDtDefinition().getName());
 			return new MapUiObject<>(obtainDtList().get(i), ViewContextUpdateSecurity.unmodifiable());
 		});
 	}
@@ -223,7 +230,7 @@ public abstract class AbstractUiListUnmodifiable<O extends DataObject> extends A
 		final O entity = (O) loadDto(keyValue);
 		uiObject = new MapUiObject<>(entity, ViewContextUpdateSecurity.unmodifiable());
 		uiObjectById.put(keyValue, uiObject);
-		Assertion.check().isTrue(uiObjectById.size() < NB_MAX_ELEMENTS, "Trop d'élément dans le buffer uiObjectById de la liste de {0}", getDtDefinition().getName());
+		Assertion.check().isTrue(uiObjectById.size() < getMaxElements(), "Trop d'élément dans le buffer uiObjectById de la liste de {0}", getDtDefinition().getName());
 		return uiObject;
 	}
 
