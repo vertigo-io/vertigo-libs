@@ -13,6 +13,8 @@ Running 4.5.0-SNAPSHOT - 2026-12-XX
 [Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-441-to-450)
 
 * **[Ui] Fix self-closed custom elements (`<q-btn ... />`) : they are now closed automatically in rendered templates** : the browser kept them open, so they swallowed the markup that followed (extended `v-if` scope, siblings absorbed as default slot). `UnAutoCloseTagsFilter` is deprecated
+* **[Ui] The embedded CDN no longer serves vue 3.5.13, quasar 2.18.1 and axios 1.8.4** : only the default versions and the previous ones are kept (vue 3.5.45 / 3.5.39, quasar 2.35.4 / 2.21.1, axios 1.21.1 / 1.18.1) ; a project setting `vueJsVersion`, `quasarVersion` or `axiosVersion` to a removed version must change it
+* [Ui] Upgrade Quasar 2.21.1 -> 2.35.4, Vue 3.5.39 -> 3.5.45 and axios 1.18.1 -> 1.21.1 (defaults of `vu:head` / `vu:head-meta`) : the message zone under the fields (hint, error) now takes its place in the layout (Quasar 2.25.1), the default margin of the Vertigo error message is removed so a field in error keeps its size, but the narrow columns of `vu:table-modifiable` get wider and their rows higher ; a field keeps the focus while its popup is open ; a sorted date column keeps its empty dates first in ascending order and last in descending order (Quasar 2.23.4 `extractDate` returns an Invalid Date for them)
 * [dsfr-ui] Add a character counter under `vu:dsfr-text-area` : displayed when the field has a max length (smartType constraint or `max` attribute) or with `showCounter="true"` (hide it with `showCounter="false"`) ; the max length is also set as `maxlength` on the textarea (the browser blocks typing beyond it)
 * [dsfr-ui] `dsfr-facets` : the selected filters of a facet absent from the result (ex: skipped facet) are no longer displayed
 * **[DataFactory] Fix ElasticSearch index settings check at startup (broken since 4.4.0, ES9 plugin)** : the analysis settings of the existing index were compared to themselves, so an incompatible change (analyzer, tokenizer, filter, normalizer) was never detected ; the check now compares to the expected settings and fails the startup with the index deletion command
@@ -24,6 +26,36 @@ Running 4.5.0-SNAPSHOT - 2026-12-XX
 * **[Vega] Fix the node configuration files given by environment variable or system property, ignored since 3.4.0** : they are now read under singular names, like `boot.applicationConfiguration` in web.xml : `VERTIGO_BOOT_APPLICATION_CONFIGURATION` and `-Dboot.application-configuration` (the former plural names are no longer read) ; precedence : system property, external properties file, environment variable, web.xml
 * [Vega] Fix the encoding of the webservice client parameters (`@WebServiceProxyAnnotation`) : `@PathParam` and `@QueryParam` were encoded as an html form (space -> `+`), they are now encoded as RFC 3986 (space -> `%20`, `+` -> `%2B`). A space was received as a literal `+` in a path param (even by a Vertigo server), and in a query param by strict REST APIs
 * [Vega] Fix the rate limiting `whiteListUsers` param parsing : a duplicated IP or an empty entry (`a,,b`) failed the startup ; blank entries are now ignored
+* New libs
+  - playwright 1.65.0 (test dependency : `QuasarUpgradeScreenshotTest`, disabled by default, compares screenshots of the vertigo-ui test webapp between two Quasar versions)
+* Update libs
+  - c3p0 0.14.1 -> 0.15.1
+  - guava 33.6.0-jre -> 33.8.0-jre
+  - ojdbc11 23.26.2.0.0 -> 23.26.4.0.0
+  - postgresql 42.7.12 -> 42.7.14
+  - thymeleaf-spring6 3.1.5.RELEASE -> 3.1.7.RELEASE
+  - tika-core 3.3.1 -> 3.3.3
+  - jackson-core / jackson-dataformat-cbor / jackson-dataformat-smile / jackson-dataformat-yaml 2.22.0 -> 2.23.0 (tests)
+  - opentelemetry-api / opentelemetry-context 1.51.0 -> 1.68.0 (tests)
+  - selenium 4.33.0 -> 4.52.0 (tests)
+  - vue 3.5.39 -> 3.5.45
+  - quasar 2.21.1 -> 2.35.4
+  - axios 1.18.1 -> 1.21.1
+  - ol 10.9.0 -> 10.11.0
+  - core-js 3.49.0 -> 3.51.0
+  - d3-color 3.1.0 -> 3.1.1
+  - d3-interpolate 3.0.1 -> 3.0.2
+  - @gouvfr/dsfr 1.14.4 -> 1.15.4
+  - @gouvminint/vue-dsfr 8.17.0 -> 8.21.0
+  - @tiptap/* 2.27.2 -> 2.27.3
+  - express 4.22.2 -> 4.22.3
+  - vite 8.1.3 -> 8.3.8
+  - @vitejs/plugin-vue 6.0.7 -> 6.0.11
+  - sass-embedded 1.100.0 -> 1.108.2
+  - eslint 10.6.0 -> 10.15.0
+  - eslint-plugin-vue 10.9.2 -> 10.12.1
+  - vitest 4.1.10 -> 4.1.12
+  - @vue/test-utils 2.4.11 -> 2.6.0
 
 more to come :)
 
