@@ -26,8 +26,13 @@
 			</vu:block>
 			<vu:block id="collection" title="Collection">
 				<div class="catalog-collection">
-					<!-- showMore : the pagination mode of vu:collection (so vu:cards) fails, pagination_attrs is not a param of collection -->
 					<vu:cards list="movies" componentId="moviesCards" rowsPerPage="3" cardClass="col-4" showMore="true" showMoreLabel="More cards">
+						{{ item.title }}
+					</vu:cards>
+				</div>
+				<div class="catalog-cards-pages">
+					<!-- pagination mode (no showMore) ; pagination_ attributes go to the q-pagination -->
+					<vu:cards list="movies" componentId="moviesCardsPages" rowsPerPage="3" cardClass="col-4" pagination_color="secondary">
 						{{ item.title }}
 					</vu:cards>
 				</div>

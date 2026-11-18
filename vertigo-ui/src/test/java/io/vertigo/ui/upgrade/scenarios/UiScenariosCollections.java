@@ -43,6 +43,13 @@ public final class UiScenariosCollections {
 							assertThat(page.locator(".catalog-list .q-item")).hasCount(3); // rowsPerPage
 							assertThat(page.locator(".catalog-collection .q-card")).hasCount(3);
 						}),
+				// pagination mode of vu:cards : 3 cards per page, the page 2 shows the next ones ; pagination_color reaches the q-pagination
+				UiScenario.page("catalog-collections-pagination", FAMILY, PAGE)
+						.withActions(page -> page.locator(".catalog-cards-pages .q-pagination .q-btn:has-text('2')").first().click())
+						.withChecks(page -> {
+							assertThat(page.locator(".catalog-cards-pages .q-card")).hasCount(3);
+							assertThat(page.locator(".catalog-cards-pages .q-pagination .q-btn.bg-secondary")).hasText("2");
+						}),
 				UiScenario.page("catalog-collections-show-more", FAMILY, PAGE)
 						.withActions(page -> page.locator(".catalog-list .q-btn:has-text('More movies')").click())
 						.withChecks(page -> assertThat(page.locator(".catalog-list .q-item")).hasCount(6)),
