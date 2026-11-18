@@ -29,8 +29,14 @@
 					<div class="catalog-checkbox">
 						<vu:checkbox object="form" field="accepted"/>
 					</div>
-					<div class="catalog-checkbox-confirm" th:if="${model.modeEdit}">
-						<vu:checkbox-confirm object="form" field="confirmed" label="Confirmed"/>
+					<div class="catalog-checkbox-inline">
+						<vu:checkbox-inline object="form" field="consented"/>
+					</div>
+					<div class="catalog-checkbox-confirm">
+						<!-- former name of checkbox-inline-edit : always editable -->
+						<vu:checkbox-confirm object="form" field="confirmed" label="Confirmed">
+							<vu:slot name="edit_content_slot"><span class="catalog-confirm-slot">I confirm</span></vu:slot>
+						</vu:checkbox-confirm>
 					</div>
 				</vu:grid>
 				<div class="catalog-text-editor">

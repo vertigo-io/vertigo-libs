@@ -32,7 +32,7 @@ import com.microsoft.playwright.options.AriaRole;
 import io.vertigo.ui.upgrade.UiScenario;
 
 /**
- * The Quasar inputs no demo page showed : select-multiple, label, checkbox, checkbox-confirm, q-text-editor, tree
+ * The Quasar inputs no demo page showed : select-multiple, label, checkbox, checkbox-inline (and checkbox-confirm, former name of checkbox-inline-edit), q-text-editor, tree
  * (page catalogInputs).
  */
 public final class UiScenariosInputs {
@@ -49,6 +49,14 @@ public final class UiScenariosInputs {
 						.withChecks(page -> {
 							assertThat(page.getByText("France").first()).isVisible(); // select-multiple and tree read : labels of the selected nodes
 							assertThat(page.locator("#editAction")).isVisible();
+							// checkbox-inline read : the given consent, checked and disabled, with its label, nothing sent
+							final var consent = page.locator(".catalog-checkbox-inline [role=checkbox]").first();
+							assertThat(consent).hasAttribute("aria-checked", "true");
+							assertThat(consent).hasAttribute("aria-disabled", "true");
+							assertThat(page.locator(".catalog-checkbox-inline")).containsText("Consented");
+							assertThat(page.locator(".catalog-checkbox-inline input[type=hidden]")).hasCount(0);
+							// checkbox-confirm (deprecated, = checkbox-inline-edit) : always editable, even in a read page
+							assertThat(page.locator(".catalog-checkbox-confirm [role=checkbox]").first()).not().hasAttribute("aria-disabled", "true");
 						}),
 				UiScenario.page("catalog-inputs-edit", FAMILY, PAGE)
 						.withActions(UiScenariosInputs::edit)
@@ -60,13 +68,19 @@ public final class UiScenariosInputs {
 							waitVisible(page, ".q-menu");
 						})
 						.withChecks(page -> assertThat(page.getByRole(AriaRole.OPTION)).hasCount(4)),
-				// checkbox-confirm : a consent checkbox ("I confirm ..."), no dialog
-				UiScenario.page("catalog-inputs-checkbox-confirm", FAMILY, PAGE)
+				// checkbox-inline : the label next to the box ("I agree ..."), no dialog ; checkbox-confirm is the former name of checkbox-inline-edit
+				UiScenario.page("catalog-inputs-checkbox-inline", FAMILY, PAGE)
 						.withActions(page -> {
 							edit(page);
+							page.locator(".catalog-checkbox-inline .q-checkbox").first().click();
 							page.locator(".catalog-checkbox-confirm .q-checkbox").first().click();
 						})
-						.withChecks(page -> assertThat(page.locator(".catalog-checkbox-confirm [role=checkbox]").first()).hasAttribute("aria-checked", "true")),
+						.withChecks(page -> {
+							assertThat(page.locator(".catalog-checkbox-inline [role=checkbox]").first()).hasAttribute("aria-checked", "false");
+							assertThat(page.locator(".catalog-checkbox-inline input[type=hidden]")).hasCount(1);
+							assertThat(page.locator(".catalog-checkbox-confirm [role=checkbox]").first()).hasAttribute("aria-checked", "true");
+							assertThat(page.locator(".catalog-checkbox-confirm .catalog-confirm-slot")).hasText("I confirm"); // its edit_content_slot
+						}),
 				UiScenario.page("catalog-inputs-text-editor", FAMILY, PAGE)
 						.withActions(page -> {
 							edit(page);

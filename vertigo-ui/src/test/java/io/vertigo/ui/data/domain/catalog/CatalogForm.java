@@ -35,6 +35,7 @@ public final class CatalogForm implements DataObject {
 	private String comment;
 	private Boolean accepted;
 	private Boolean confirmed;
+	private Boolean consented;
 	private String reference;
 
 	@Field(smartType = "STyId", label = "Node")
@@ -80,6 +81,15 @@ public final class CatalogForm implements DataObject {
 
 	public void setConfirmed(final Boolean confirmed) {
 		this.confirmed = confirmed;
+	}
+
+	@Field(smartType = "STyOuiNon", label = "Consented")
+	public Boolean getConsented() {
+		return consented;
+	}
+
+	public void setConsented(final Boolean consented) {
+		this.consented = consented;
 	}
 
 	/** A value sent to the client protected (vu:include-data-protected). */

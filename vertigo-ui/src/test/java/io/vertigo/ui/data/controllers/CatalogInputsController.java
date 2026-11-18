@@ -50,6 +50,7 @@ public class CatalogInputsController extends AbstractVSpringMvcController {
 		form.setComment("<p>Catalog of the inputs</p>");
 		form.setAccepted(Boolean.FALSE);
 		form.setConfirmed(Boolean.FALSE);
+		form.setConsented(Boolean.TRUE);
 		form.setReference("REF-42");
 		viewContext.publishDto(formKey, form)
 				.publishDtList(nodesKey, DtList.of(
