@@ -55,6 +55,7 @@ public final class UiScenariosDsfr {
 							assertThat(page.getByText("Catalog block").first()).isVisible(); // dsfr-block
 							assertThat(page.locator(".fr-card").first()).containsText("Card content"); // dsfr-card
 							assertThat(page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Second tab"))).isVisible(); // dsfr-tabnav
+							assertThat(page.locator(".fr-unhidden-md a", new Page.LocatorOptions().setHasText("Anchor tab"))).hasAttribute("href", "#catalog-anchor");
 							// dsfr-button-link : a link shown as a button, with a label or an icon only (its title is the accessible name)
 							assertThat(page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Download").setExact(true))).hasClass(cssClass("fr-btn"));
 							assertThat(page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Download the file"))).hasClass(cssClass("fr-icon-download-line"));

@@ -71,11 +71,11 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 	private static final String COMPONENT_PARAMS = "params";
 	/** For reserved chars @see https://www.thymeleaf.org/doc/articles/standarddialect5minutes.html */
 	private static final String NO_RESERVED_FIRST_CHAR_PATTERN_STR = "^(([^$@~#*]\\{)|.(?!\\{)).*$"; //use to detect if we should escape in placeholder : must encode js string, like 'mylabel'
-	private static final String NO_RESERVED_TEXT_PATTERN_STR = "^[^$#@|']([^$#@]|(&#[0-9]{1,4};))*$"; //don't start with $#@|' and no $#@ after (excepted html encoded chars : &#[0-9]+;)
+	private static final String NO_RESERVED_TEXT_PATTERN_STR = "^(?![|'])(?!.*[$#@]\\{).*$"; //an expression : ${ #{ @{ anywhere (as in listName + ${id}), | or ' at start ; *{ ~{ at start only (see NO_RESERVED_FIRST_CHAR_PATTERN) ; a $ # @ starting no expression is text (#anchor, mail@domain)
 	private static final String NUMBER_PATTERN_STR = "^[0-9\\.]+";
 	private static final String SIMPLE_TEXT_PATTERN_STR = "^[a-zA-Z]*$";
 	private static final Pattern NO_RESERVED_FIRST_CHAR_PATTERN = Pattern.compile(NO_RESERVED_FIRST_CHAR_PATTERN_STR, Pattern.DOTALL);
-	private static final Pattern NO_RESERVED_TEXT_PATTERN = Pattern.compile(NO_RESERVED_TEXT_PATTERN_STR);
+	private static final Pattern NO_RESERVED_TEXT_PATTERN = Pattern.compile(NO_RESERVED_TEXT_PATTERN_STR, Pattern.DOTALL);
 	private static final Pattern NUMBER_PATTERN = Pattern.compile(NUMBER_PATTERN_STR);
 	private static final Pattern SIMPLE_TEXT_PATTERN = Pattern.compile(SIMPLE_TEXT_PATTERN_STR);
 
@@ -365,7 +365,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 		setLocalPlaceholderVariables(context, structureHandler, placeholders);
 	}
 
-	private static Object encodeAttributeValue(final Object attributeValue, final boolean isPlaceholder) {
+	static Object encodeAttributeValue(final Object attributeValue, final boolean isPlaceholder) {
 		if (attributeValue == null) {
 			return "${true}";
 		} else if ("".equals(((String) attributeValue).trim())) {
@@ -378,12 +378,21 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 						|| NO_RESERVED_TEXT_PATTERN.matcher((String) attributeValue).matches()) //no reserved char
 				&& NO_RESERVED_FIRST_CHAR_PATTERN.matcher((String) attributeValue).matches()) { //don't start with reserved char
 			//We escape :
-			//IF placeholder or no thymeleaf's reserved char ($ @ # | )  (but authorized || and &#xx; )
+			//IF placeholder or no thymeleaf expression (${ #{ @{ anywhere, | or ' at start)
 			//AND dont start with reserved char (for case like ${value} )
 			//BUT IF true, false or number (it become string instead)
-			return "'" + ((String) attributeValue).replace("'", "\\'") + "'"; //escape as text
+			return "'" + escapeFinalBackslash(((String) attributeValue).replace("'", "\\'")) + "'"; //escape as text
 		}
 		return attributeValue;
+	}
+
+	private static String escapeFinalBackslash(final String text) {
+		int finalBackslashes = 0;
+		while (finalBackslashes < text.length() && text.charAt(text.length() - 1 - finalBackslashes) == '\\') {
+			finalBackslashes++;
+		}
+		//an odd final \ would escape the closing quote : it is doubled, as Thymeleaf reads \\ as \
+		return finalBackslashes % 2 == 1 ? text + '\\' : text;
 	}
 
 	private void setLocalPlaceholderVariables(final ITemplateContext context, final IElementModelStructureHandler structureHandler, final Map<String, Map<String, Object>> placeholders) {

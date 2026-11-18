@@ -49,6 +49,12 @@ public final class UiScenariosPages {
 						.withChecks(page -> assertThat(page.locator(".q-table tbody tr").first()).isVisible()),
 				UiScenario.page("movie-read", FAMILY, "/movie/1000"),
 				UiScenario.page("components-demo", FAMILY, "/componentsDemo/"),
+				// values passed to the components : expressions evaluated, texts as they are
+				UiScenario.page("passing-attributes", FAMILY, "/passingAttributes/")
+						.withChecks(page -> {
+							assertThat(page.getByText("Case #12 (contact@example.com, 100$)")).isVisible();
+							assertThat(page.getByText("Link #first")).isVisible();
+						}),
 				UiScenario.page("modifiable-table", FAMILY, "/modifiableTableDemo/"),
 				UiScenario.page("my", FAMILY, "/my/")
 						.withChecks(page -> assertThat(page.locator("input[type=submit]")).isVisible()),
