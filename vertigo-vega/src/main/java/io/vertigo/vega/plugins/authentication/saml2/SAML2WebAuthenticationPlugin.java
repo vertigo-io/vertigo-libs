@@ -299,7 +299,7 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 
 		// Validating the signature
 		final var sig = response.getSignature();
-		if (!checkSignature(saml2Parameters, sig)) {
+		if (!checkSignature(saml2Parameters.getIpPublicCredentials(), sig)) {
 			throw new VSystemException("SAML signature check fail.");
 		}
 
@@ -314,29 +314,33 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 		}
 	}
 
-	private static boolean checkSignature(final SAML2Parameters saml2Parameters, final Signature signature) {
-		var signatureValid = false;
-		var checkCount = 1;
-		for (final Credential cred : saml2Parameters.getIpPublicCredentials()) {
+	/**
+	 * Checks the signature with the IdP certificates, in the configured order.
+	 * @return true if one of them validates the signature
+	 */
+	static boolean checkSignature(final List<Credential> ipPublicCredentials, final Signature signature) {
+		final var count = ipPublicCredentials.size();
+		for (var i = 0; i < count; i++) {
 			try {
-				SignatureValidator.validate(signature, cred);
-				signatureValid = true;
-				break;
+				SignatureValidator.validate(signature, ipPublicCredentials.get(i));
+				if (i > 0) {
+					LOG.warn("SAML signature validated with certificate n°{}/{}, not with the primary one : consider deleting old certificates from configuration.", i + 1, count);
+				}
+				return true;
 			} catch (final SignatureException e) {
 				if (LOG.isDebugEnabled()) {
-					LOG.debug("SAML signature check fail for cert n°{}/{}.", checkCount, saml2Parameters.getIpPublicCredentials().size(), e);
+					LOG.debug("SAML signature check fail for cert n°{}/{}.", i + 1, count, e);
 				} else {
-					LOG.info("SAML signature check fail for cert n°{}/{}.", checkCount, saml2Parameters.getIpPublicCredentials().size());
+					LOG.info("SAML signature check fail for cert n°{}/{}.", i + 1, count);
 				}
 			}
-			++checkCount;
 		}
-		if (checkCount > 1) {
-			LOG.warn("SAML signature validation do not use primary defined certificate, consider deleting old certificates from configuration.");
-		} else if (checkCount == 0) {
+		if (count == 0) {
 			LOG.warn("SAML signature validation can't found any certificate");
+		} else {
+			LOG.warn("SAML signature not validated by any of the {} configured certificates.", count);
 		}
-		return signatureValid;
+		return false;
 	}
 
 	private static Assertion getAssertion(final SAML2Parameters saml2Parameters, final Response response) {
