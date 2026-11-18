@@ -55,6 +55,7 @@ import org.opensaml.saml.saml2.encryption.Decrypter;
 import org.opensaml.saml.saml2.metadata.impl.AssertionConsumerServiceBuilder;
 import org.opensaml.saml.saml2.metadata.impl.EntityDescriptorBuilder;
 import org.opensaml.saml.saml2.metadata.impl.SPSSODescriptorBuilder;
+import org.opensaml.saml.security.impl.SAMLSignatureProfileValidator;
 import org.opensaml.security.credential.Credential;
 import org.opensaml.security.credential.UsageType;
 import org.opensaml.xmlsec.SignatureSigningParameters;
@@ -319,6 +320,15 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 	 * @return true if one of them validates the signature
 	 */
 	static boolean checkSignature(final List<Credential> ipPublicCredentials, final Signature signature) {
+		if (signature == null) {
+			throw new VSystemException("SAML response is not signed.");
+		}
+		try {
+			new SAMLSignatureProfileValidator().validate(signature);
+		} catch (final SignatureException e) {
+			LOG.warn("SAML signature not compliant with the SAML signature profile : {}", e.getMessage());
+			return false;
+		}
 		final var count = ipPublicCredentials.size();
 		for (var i = 0; i < count; i++) {
 			try {

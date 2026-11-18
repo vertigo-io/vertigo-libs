@@ -19,8 +19,11 @@ package io.vertigo.vega.plugins.authentication.saml2;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyPairGenerator;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -43,8 +46,11 @@ import org.opensaml.security.credential.Credential;
 import org.opensaml.xmlsec.signature.Signature;
 import org.opensaml.xmlsec.signature.support.SignatureConstants;
 import org.opensaml.xmlsec.signature.support.Signer;
+import org.w3c.dom.Element;
 
 import io.vertigo.connectors.saml2.OpenSAMLUtil;
+import io.vertigo.core.lang.VSystemException;
+import net.shibboleth.shared.xml.SerializeSupport;
 
 /**
  * Signature check of the SAMLResponse with the IdP certificates (the primary one, then the next ones during a renewal).
@@ -61,7 +67,7 @@ class SAML2WebAuthenticationPluginTest {
 		idp = generateCredential();
 		idpNext = generateCredential();
 		other = generateCredential();
-		signature = signedResponse(idp).getSignature();
+		signature = signedResponse().getSignature();
 	}
 
 	@Test
@@ -89,6 +95,21 @@ class SAML2WebAuthenticationPluginTest {
 		assertEquals(List.of("SAML signature validation can't found any certificate"), warnings);
 	}
 
+	@Test
+	void testUnsignedResponse() {
+		final var exception = assertThrows(VSystemException.class, () -> SAML2WebAuthenticationPlugin.checkSignature(List.of(idp), null));
+		assertEquals("SAML response is not signed.", exception.getMessage());
+	}
+
+	@Test
+	void testSignatureProfile() throws Throwable {
+		//the signature follows the SAML signature profile
+		final var response = nonCompliantSignedResponse();
+		final var warnings = captureWarnings(() -> SAML2WebAuthenticationPlugin.checkSignature(List.of(idp), response.getSignature()), false);
+		assertEquals(1, warnings.size(), warnings::toString);
+		assertTrue(warnings.get(0).startsWith("SAML signature not compliant with the SAML signature profile"), warnings::toString);
+	}
+
 	private static Credential generateCredential() throws Exception {
 		final var generator = KeyPairGenerator.getInstance("RSA");
 		generator.initialize(2048);
@@ -96,21 +117,36 @@ class SAML2WebAuthenticationPluginTest {
 		return new BasicCredential(keyPair.getPublic(), keyPair.getPrivate());
 	}
 
-	private static Response signedResponse(final Credential signingCredential) throws Exception {
+	private static Response response() {
 		final var builders = XMLObjectProviderRegistrySupport.getBuilderFactory();
 		final var response = (Response) builders.getBuilder(Response.DEFAULT_ELEMENT_NAME).buildObject(Response.DEFAULT_ELEMENT_NAME);
 		response.setID(OpenSAMLUtil.generateSecureRandomId());
 		response.setVersion(SAMLVersion.VERSION_20);
 		response.setIssueInstant(Instant.now());
 		response.setIssuer(OpenSAMLUtil.buildIssuer("https://idp.test/saml"));
+		return response;
+	}
+
+	/** A response signed by the IdP. */
+	private static Response signedResponse() throws Exception {
+		final var response = response();
+		final var builders = XMLObjectProviderRegistrySupport.getBuilderFactory();
 		final var responseSignature = (Signature) builders.getBuilder(Signature.DEFAULT_ELEMENT_NAME).buildObject(Signature.DEFAULT_ELEMENT_NAME);
-		responseSignature.setSigningCredential(signingCredential);
+		responseSignature.setSigningCredential(idp);
 		responseSignature.setSignatureAlgorithm(SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA256);
 		responseSignature.setCanonicalizationAlgorithm(SignatureConstants.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
 		response.setSignature(responseSignature);
 		XMLObjectProviderRegistrySupport.getMarshallerFactory().getMarshaller(response).marshall(response);
 		Signer.signObject(responseSignature);
 		return response;
+	}
+
+	/** A signed response modified after its signature : not compliant with the SAML signature profile. */
+	private static Response nonCompliantSignedResponse() throws Exception {
+		final Element responseDom = signedResponse().getDOM();
+		responseDom.setAttributeNS(null, "ID", OpenSAMLUtil.generateSecureRandomId());
+		final var xml = SerializeSupport.nodeToString(responseDom).getBytes(StandardCharsets.UTF_8);
+		return OpenSAMLUtil.extractSamlResponse(new ByteArrayInputStream(xml));
 	}
 
 	/**

@@ -35,6 +35,7 @@ Running 4.5.0-SNAPSHOT - 2026-12-XX
 * [Stella] Redis : fix the late result of a re-queued work (its node seen dead while it was only slow) : the re-queued copy stayed in the waiting list, its data deleted once the master read the result, and the node taking it failed (NullPointerException). The copy is now skipped by the node taking it
 * [Commons] Fix the compression codec (`getCompressionCodec`, `getCompressedSerializationCodec` : caches, KV stores, ElasticSearch documents, stella works) : an incompressible payload over about 16 KB (already compressed content : jpeg, pdf, zip...) was silently truncated, then uncompressed with trailing zeros ; a truncated payload now fails to decode instead of giving corrupted data
 * [Vega] SAML2 : fix the signature check logs, a response validated by no IdP certificate was logged as validated by a next one (certificate renewal)
+* [Vega] SAML2 : stricter checks of the SAML response signature ; an unsigned response fails with an explicit message
 * New libs
   - playwright 1.65.0 (test dependency : `QuasarUpgradeScreenshotTest`, disabled by default, compares screenshots of the vertigo-ui test webapp between two Quasar versions)
 * Update libs
