@@ -17,6 +17,10 @@
  */
 package io.vertigo.stella.plugins.work.rest.master;
 
+import java.util.Arrays;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import javax.inject.Inject;
 
 import io.vertigo.core.lang.Assertion;
@@ -50,6 +54,24 @@ public final class RestMasterWebService implements WebServices {
 				.isTrue(masterPlugin instanceof RestMasterPlugin, "Node MasterPlugin must be a RestMasterPlugin, in order to use Rest protocol ({0})", masterPlugin.getClass().getName());
 		//-----
 		restQueueServer = ((RestMasterPlugin) masterPlugin).getRestQueueServer();
+	}
+
+	/**
+	 * Node heartBeat : keeps the node alive while all its workers are busy.
+	 * @param nodeUID node uid
+	 * @param timeoutSeconds node timeout : without heartBeat or poll for this time, the node is seen dead
+	 * @param workTypes work types of the node, separated by ';'
+	 */
+	@SessionLess
+	@AnonymousAccessAllowed
+	@POST("/heartBeat")
+	public void heartBeat(@QueryParam("nodeUID") final String nodeUID, @QueryParam("timeoutSeconds") final int timeoutSeconds, final String workTypes) {
+		Assertion.check().isNotBlank(workTypes, "workTypes of the node are required");
+		//-----
+		final Set<String> nodeWorkTypes = Arrays.stream(workTypes.split(";"))
+				.filter(workType -> !workType.isBlank())
+				.collect(Collectors.toSet());
+		restQueueServer.heartBeat(nodeUID, nodeWorkTypes, timeoutSeconds);
 	}
 
 	/**

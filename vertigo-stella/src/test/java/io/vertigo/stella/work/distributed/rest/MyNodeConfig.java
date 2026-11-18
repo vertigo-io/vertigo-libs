@@ -51,8 +51,7 @@ public final class MyNodeConfig {
 					.withMaster(
 							Param.of("nodeId", nodeId),
 							Param.of("pollFrequencyMs", 100))
-					.withRestMasterPlugin(
-							Param.of("timeoutSeconds", "20"));
+					.withRestMasterPlugin(); //default deadWorkTypeTimeoutSeconds : 60s
 		}
 		if (workers) {
 			stellaFeatures
@@ -62,7 +61,6 @@ public final class MyNodeConfig {
 							Param.of("pollFrequencyMs", 100),
 							Param.of("workTypes", "io.vertigo.stella.work.mock.DivideWorkEngine^5;io.vertigo.stella.work.mock.SlowWorkEngine^5;io.vertigo.stella.work.AbstractWorkManagerTest$LengthWorkEngine^1;io.vertigo.stella.work.AbstractWorkManagerTest$SquareWorkEngine^1;io.vertigo.stella.work.mock.ThreadLocalWorkEngine^5"))
 					.withRestWorkerPlugin(
-							Param.of("timeoutSeconds", "10"),
 							Param.of("serverUrl", "http://127.0.0.1:10998"));
 		}
 

@@ -17,6 +17,7 @@
  */
 package io.vertigo.stella.plugins.work.rest.workers;
 
+import java.util.Optional;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -41,20 +42,24 @@ public final class RestWorkersPlugin implements WorkersPlugin {
 
 	/**
 	 * Constructeur.
+	 * Same timeoutSeconds as the RedisWorkersPlugin.
 	 * @param serverUrl Url du serveur
-	 * @param timeoutSeconds Timeout en seconde des connections vers le serveur (doit être > au timeoutSeconds du serveur)
+	 * @param timeoutSeconds Timeout (seconds) without sign of life (heartBeat every 20s) before the server sees this node dead (60s by default)
+	 * @param httpTimeoutSeconds Read timeout (seconds) of the calls to the server (10s by default, must be longer than the wait for a work on the server side : 5s)
 	 * @param codecManager Manager d'encodage/decodage
 	 */
 	@Inject
 	public RestWorkersPlugin(
 			@ParamValue("serverUrl") final String serverUrl,
-			@ParamValue("timeoutSeconds") final int timeoutSeconds,
+			@ParamValue("timeoutSeconds") final Optional<Integer> timeoutSeconds,
+			@ParamValue("httpTimeoutSeconds") final Optional<Integer> httpTimeoutSeconds,
 			final CodecManager codecManager) {
 		Assertion.check()
 				.isNotBlank(serverUrl)
-				.isTrue(timeoutSeconds < 10000, "Le timeout s'exprime en seconde.");
+				.isNotNull(timeoutSeconds)
+				.isNotNull(httpTimeoutSeconds);
 		//-----
-		restQueueClient = new RestQueueClient(serverUrl + "/backend/workQueue", timeoutSeconds, codecManager);
+		restQueueClient = new RestQueueClient(serverUrl + "/backend/workQueue", timeoutSeconds.orElse(60), httpTimeoutSeconds.orElse(10), codecManager);
 	}
 
 	/** {@inheritDoc} */

@@ -19,7 +19,6 @@ package io.vertigo.stella.work.distributed.rest;
 
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.stella.work.distributed.StellaNodeConfigClientNode;
-import io.vertigo.stella.work.distributed.redis.MyNodeConfig;
 
 public class StellaNodeConfigClientNode1 implements StellaNodeConfigClientNode {
 
