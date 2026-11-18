@@ -23,9 +23,11 @@ import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Base64;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.BiFunction;
 
 import javax.inject.Inject;
@@ -81,6 +83,7 @@ import io.vertigo.vega.impl.authentication.WebAuthenticationPlugin;
 import io.vertigo.vega.impl.authentication.WebAuthenticationUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * Base authentication handler for SAML2.
@@ -92,8 +95,11 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 	private static final Logger LOG = LogManager.getLogger(SAML2WebAuthenticationPlugin.class);
 
 	private static final String BINDING_TYPE = SAMLConstants.SAML2_POST_BINDING_URI;
+	private static final String PENDING_REQUEST_IDS = "SAML2_PENDING_REQUEST_IDS";
+	private static final int MAX_PENDING_REQUESTS = 10;
 
 	private final SAML2Parameters saml2Parameters;
+	private final SAML2ResponseValidator responseValidator;
 	private final String urlPrefix;
 	private final String urlHandlerPrefix;
 	private final String callbackUrl;
@@ -114,6 +120,7 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 				.filter(connector -> connectorName.equals(connector.getName()))
 				.findFirst().orElseThrow(() -> new IllegalArgumentException("Can't found Saml2DeploymentConnector named '" + connectorName + "' in " + saml2DeploymentConnectors));
 		saml2Parameters = saml2DeploymentConnector.getClient();
+		responseValidator = new SAML2ResponseValidator(saml2Parameters);
 		urlPrefix = urlPrefixOpt.orElse("/");
 		urlHandlerPrefix = urlHandlerPrefixOpt.orElse("/saml/");
 		callbackUrl = urlHandlerPrefix + "callback";
@@ -231,6 +238,9 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 	@Override
 	public void doRedirectToSso(final HttpServletRequest request, final HttpServletResponse response) {
 		final var authnRequest = buildAuthnRequest(request);
+		if (saml2Parameters.isCheckInResponseTo()) {
+			addPendingRequestId(request.getSession(), authnRequest.getID());
+		}
 
 		final var context = new MessageContext();
 		context.setMessage(authnRequest);
@@ -304,8 +314,12 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 			throw new VSystemException("SAML signature check fail.");
 		}
 
+		final var callbackUri = WebAuthenticationUtil.resolveExternalUrl(httpRequest, getExternalUrlOptional()) + getCallbackUrl();
+		responseValidator.validateResponse(response, callbackUri);
+
 		// read or decrypt assertion
 		final var assertion = getAssertion(saml2Parameters, response);
+		responseValidator.validateAssertion(assertion, callbackUri, getPendingRequestIds(httpRequest), Instant.now());
 		try {
 			final var claims = OpenSAMLUtil.extractAttributes(assertion);
 			return AuthenticationResult.of(claims, assertion);
@@ -351,6 +365,27 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 			LOG.warn("SAML signature not validated by any of the {} configured certificates.", count);
 		}
 		return false;
+	}
+
+	/** Keeps the ids of the last requests sent from this session, for the InResponseTo check. */
+	private static synchronized void addPendingRequestId(final HttpSession session, final String requestId) {
+		final var pendingRequestIds = new LinkedHashSet<String>(getPendingRequestIds(session));
+		pendingRequestIds.add(requestId);
+		while (pendingRequestIds.size() > MAX_PENDING_REQUESTS) {
+			pendingRequestIds.remove(pendingRequestIds.iterator().next());
+		}
+		session.setAttribute(PENDING_REQUEST_IDS, pendingRequestIds);
+	}
+
+	private static Set<String> getPendingRequestIds(final HttpServletRequest httpRequest) {
+		final var session = httpRequest.getSession(false);
+		return session == null ? Set.of() : getPendingRequestIds(session);
+	}
+
+	@SuppressWarnings("unchecked")
+	private static Set<String> getPendingRequestIds(final HttpSession session) {
+		final var pendingRequestIds = (Set<String>) session.getAttribute(PENDING_REQUEST_IDS);
+		return pendingRequestIds == null ? Set.of() : pendingRequestIds;
 	}
 
 	private static Assertion getAssertion(final SAML2Parameters saml2Parameters, final Response response) {

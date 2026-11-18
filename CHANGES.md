@@ -36,6 +36,7 @@ Running 4.5.0-SNAPSHOT - 2026-12-XX
 * [Commons] Fix the compression codec (`getCompressionCodec`, `getCompressedSerializationCodec` : caches, KV stores, ElasticSearch documents, stella works) : an incompressible payload over about 16 KB (already compressed content : jpeg, pdf, zip...) was silently truncated, then uncompressed with trailing zeros ; a truncated payload now fails to decode instead of giving corrupted data
 * [Vega] SAML2 : fix the signature check logs, a response validated by no IdP certificate was logged as validated by a next one (certificate renewal)
 * [Vega] SAML2 : stricter checks of the SAML response signature ; an unsigned response fails with an explicit message
+* **[Vega] SAML2 : the SAML response is checked as required by the SAML 2.0 Web Browser SSO profile, and its assertion must be encrypted, on by default** : a response not compliant is refused, with an error naming the param to adapt ; an assertion is accepted once and must hold a bearer subject confirmation. Params of the saml connector to adapt to the IdP : `cryptAssertion` (true by default, now applied : an IdP that does not encrypt the assertions needs `cryptAssertion=false`), `checkDestination` (set `externalUrl` behind a proxy), `checkAudience`, `clockSkewSeconds`, `checkInResponseTo` (false by default)
 * New libs
   - playwright 1.65.0 (test dependency : `QuasarUpgradeScreenshotTest`, disabled by default, compares screenshots of the vertigo-ui test webapp between two Quasar versions)
 * Update libs
