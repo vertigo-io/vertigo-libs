@@ -21,7 +21,12 @@ import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertTha
 import static io.vertigo.ui.upgrade.UiActions.centerAndClick;
 import static io.vertigo.ui.upgrade.UiActions.waitVisible;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import org.junit.jupiter.api.Assertions;
+
+import com.microsoft.playwright.Page;
 
 import io.vertigo.ui.upgrade.UiScenario;
 
@@ -37,7 +42,8 @@ public final class UiScenariosCollections {
 	}
 
 	public static List<UiScenario> scenarios() {
-		return List.of(
+		final List<UiScenario> scenarios = new ArrayList<>(buttonsGroupResponsive());
+		scenarios.addAll(List.of(
 				UiScenario.page("catalog-collections", FAMILY, PAGE)
 						.withChecks(page -> {
 							assertThat(page.locator(".catalog-list .q-item")).hasCount(3); // rowsPerPage
@@ -62,6 +68,61 @@ public final class UiScenariosCollections {
 						.withChecks(page -> assertThat(page.locator(".q-menu .q-btn:visible")).hasCount(2)),
 				UiScenario.page("catalog-collections-buttons-group-click", FAMILY, PAGE)
 						.withActions(page -> page.locator(".catalog-buttons .q-btn:has-text('Action 2') >> visible=true").first().click())
-						.withChecks(page -> assertThat(page.locator(".q-notification").first()).containsText("Action 2")));
+						.withChecks(page -> assertThat(page.locator(".q-notification").first()).containsText("Action 2"))));
+		return scenarios;
+	}
+
+	/** Quasar screen sizes, a width in each : xs < 600px, sm < 1024px, md < 1440px, lg < 1920px, xl. */
+	private static final List<String> SIZES = List.of("xs", "sm", "md", "lg", "xl");
+	private static final List<Integer> WIDTHS = List.of(400, 800, 1200, 1600, 2000);
+
+	/**
+	 * buttons-group by screen size : with N the threshold of the size, the buttons of rank &lt; N inline, the others in the
+	 * "more" menu, the "more" button only if there are more than N buttons (catalog-bg-* groups of the page).
+	 */
+	private static List<UiScenario> buttonsGroupResponsive() {
+		final List<UiScenario> scenarios = new ArrayList<>();
+		for (int i = 0; i < SIZES.size(); i++) {
+			final int size = i;
+			scenarios.add(UiScenario.page("catalog-buttons-group-" + SIZES.get(i), FAMILY, PAGE).withWidth(WIDTHS.get(i))
+					.withChecks(page -> {
+						assertThat(page.locator(".catalog-bg-none .q-btn").first()).isVisible(); // mounted
+						final String expected = String.join(" ; ",
+								group("none", 6, 6), // no threshold
+								group("showcase", List.of(1, 2, 2, 4, 5).get(size), 6), // xs=1 md=2 lg=4 xl=5 (sm follows md)
+								group("base", List.of(0, 0, 2, 3, 3).get(size), 3), // sm=0 md=2 (xs follows sm)
+								group("equal", 3, 3)); // md=3 : as many as the buttons
+						final String shown = String.join(" ; ",
+								shownGroup(page, "none", "More none"),
+								shownGroup(page, "showcase", "More showcase"),
+								shownGroup(page, "base", "More base"),
+								shownGroup(page, "equal", "More equal"));
+						Assertions.assertEquals(expected, shown);
+					}));
+		}
+		scenarios.add(buttonsGroupMenu("md", 1200, "More showcase", 4));
+		scenarios.add(buttonsGroupMenu("xl", 2000, "More showcase", 1));
+		scenarios.add(buttonsGroupMenu("md", 1200, "More base", 1)); // from md : below, the drawer of the test layout covers the page
+		return scenarios;
+	}
+
+	private static UiScenario buttonsGroupMenu(final String size, final int width, final String moreLabel, final int items) {
+		return UiScenario.page("catalog-buttons-group-menu-" + size + "-" + moreLabel.substring("More ".length()), FAMILY, PAGE).withWidth(width).withOverlay()
+				.withActions(page -> {
+					centerAndClick(page.locator(".q-btn[title='" + moreLabel + "']").first());
+					waitVisible(page, ".q-menu");
+				})
+				.withChecks(page -> assertThat(page.locator(".q-menu .q-btn:visible")).hasCount(items));
+	}
+
+	private static String group(final String group, final int inline, final int count) {
+		return group + " : " + inline + " inline, more " + (inline < count ? "shown" : "hidden");
+	}
+
+	private static String shownGroup(final Page page, final String group, final String moreLabel) {
+		final var container = page.locator(".catalog-bg-" + group);
+		final int inline = container.locator(".q-btn:visible:not([title='" + moreLabel + "'])").count();
+		final boolean more = container.locator(".q-btn[title='" + moreLabel + "']:visible").count() > 0;
+		return group + " : " + inline + " inline, more " + (more ? "shown" : "hidden");
 	}
 }
