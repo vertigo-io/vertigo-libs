@@ -23,8 +23,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -55,6 +57,13 @@ class UiTemplateLintTest {
 	private static final Pattern BARE_FUNCTION_EXPRESSION = Pattern.compile("=\"\\|?\\s*function\\s*\\(");
 
 	private static final Pattern I18N_KEY = Pattern.compile("#\\{([a-zA-Z0-9_.]+)\\}");
+
+	/** A component is named by its fragment, and by its vu:alias if any. */
+	private static final Pattern FRAGMENT_NAME = Pattern.compile("th:fragment=\"\\s*([a-zA-Z0-9_-]+)");
+	private static final Pattern COMPONENT_ALIAS = Pattern.compile("vu:alias=\"([a-zA-Z0-9_-]+)\"");
+	private static final Pattern VU_ELEMENT = Pattern.compile("<vu:([a-zA-Z0-9_-]+)");
+	/** Elements handled by the processors of the dialect, not by a component file. */
+	private static final Set<String> BUILT_IN_ELEMENTS = Set.of("content", "content-item", "slot", "content-slot");
 
 	@Test
 	void no_template_uses_a_bare_function_expression_as_handler() throws IOException {
@@ -88,6 +97,35 @@ class UiTemplateLintTest {
 		}
 		Assertions.assertTrue(offenders.isEmpty(),
 				() -> "i18n keys without a sibling bundle entry, they render as ??key_locale??:\n" + String.join("\n", offenders));
+	}
+
+	/**
+	 * A vu: element without component is written as is and ignored by the browser, without any error
+	 * (a component removed or renamed, a typo) : the feature it should show silently disappears.
+	 */
+	@Test
+	void every_vu_element_is_a_known_component() throws IOException {
+		final Set<String> components = new HashSet<>(BUILT_IN_ELEMENTS);
+		for (final Path template : htmlFilesIn(COMPONENTS_DIR)) {
+			final String content = Files.readString(template, StandardCharsets.UTF_8);
+			Stream.of(FRAGMENT_NAME, COMPONENT_ALIAS)
+					.flatMap(pattern -> pattern.matcher(content).results())
+					.forEach(match -> components.add(match.group(1)));
+		}
+		final List<String> offenders = new ArrayList<>();
+		for (final Path template : Stream.concat(htmlFilesIn(COMPONENTS_DIR).stream(), htmlFilesIn(VIEWS_DIR).stream()).toList()) {
+			final List<String> lines = Files.readAllLines(template, StandardCharsets.UTF_8);
+			for (int i = 0; i < lines.size(); i++) {
+				final Matcher matcher = VU_ELEMENT.matcher(lines.get(i));
+				while (matcher.find()) {
+					if (!components.contains(matcher.group(1))) {
+						offenders.add(template + ":" + (i + 1) + " -> unknown component vu:" + matcher.group(1));
+					}
+				}
+			}
+		}
+		Assertions.assertTrue(offenders.isEmpty(),
+				() -> "vu: elements without component, they render as an ignored tag:\n" + String.join("\n", offenders));
 	}
 
 	private static String bundleName(final Path view) {
