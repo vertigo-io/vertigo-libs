@@ -21,7 +21,10 @@
 						<vu:v-fileupload th:url="'@{/commons/upload}'" object="movie2" field="pictures" multiple="true"/>
 					</vu:v-fileupload-dropzone>
 				</div>
-				<!-- vu:v-fileupload-simple (key mode of v-fileupload) fails : its assertion needs a label, which is not a param -->
+				<div class="catalog-v-fileupload-simple">
+					<!-- key mode : a file list of the context, no field to give the label -->
+					<vu:v-fileupload-simple th:url="'@{/commons/upload}'" key="myFiles" label="My files" multiple="true"/>
+				</div>
 				<div class="catalog-v-fileupload-simple-object">
 					<vu:v-fileupload-simple-object th:url="'@{/commons/upload}'" object="movie" field="mainPicture"/>
 				</div>

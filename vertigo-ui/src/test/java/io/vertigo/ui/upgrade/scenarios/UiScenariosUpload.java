@@ -23,6 +23,7 @@ import static io.vertigo.ui.upgrade.UiActions.submit;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.FilePayload;
 
 import io.vertigo.ui.upgrade.UiScenario;
@@ -46,6 +47,9 @@ public final class UiScenariosUpload {
 						.withChecks(page -> {
 							assertThat(page.locator(".catalog-v-fileupload").getByText("my1stFile.csv").first()).isVisible();
 							assertThat(page.locator(".catalog-v-fileupload-simple-object").getByText("my3rdFile.csv").first()).isVisible();
+							checkLabels(page);
+							// key mode : a file list of the context, its label given
+							assertThat(page.locator(".catalog-v-fileupload-simple").getByText("my2ndFile.csv").first()).isVisible();
 						}),
 				UiScenario.page("catalog-upload-add", FAMILY, PAGE)
 						.withActions(page -> page.locator(".catalog-v-fileupload input[type=file]").first().setInputFiles(UPLOADED))
@@ -58,6 +62,14 @@ public final class UiScenariosUpload {
 						.withChecks(page -> {
 							assertThat(page.locator("#editAction")).isVisible();
 							assertThat(page.locator(".catalog-v-fileupload").getByText("my1stFile.csv").first()).isVisible();
+							checkLabels(page);
 						}));
+	}
+
+	/** v-fileupload is labelled as a field : the label of the field (object mode) or the given label (key mode). */
+	private static void checkLabels(final Page page) {
+		assertThat(page.locator(".catalog-v-fileupload .q-field__label")).containsText("Pictures");
+		assertThat(page.locator(".catalog-v-fileupload-simple-object .q-field__label")).containsText("Main Picture");
+		assertThat(page.locator(".catalog-v-fileupload-simple .q-field__label")).containsText("My files");
 	}
 }
