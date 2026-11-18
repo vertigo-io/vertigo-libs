@@ -138,7 +138,7 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 		final var uiComponents = moduleUiComponents.stream()
 				.flatMap(m -> m.getUiComponents().stream())
 				.collect(Collectors.toUnmodifiableSet());
-		templateEngine.addDialect("vu", new VUiStandardDialect(uiComponents));
+		templateEngine.addDialect("vu", new VUiStandardDialect(VUiStandardDialect.PREFIX, uiComponents, getAutoCloseTagsPrefixes()));
 
 		templateEngine.addDialect(new LayoutDialect());
 
@@ -260,6 +260,17 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 	@Deprecated
 	protected String getCustomComponentsPathPrefix() {
 		return null;
+	}
+
+	/**
+	 * Prefixes of the custom elements closed when self-closed (q-btn ... / becomes an open/close pair) : the browser
+	 * ignores the trailing slash of a custom element, which would swallow everything that follows.
+	 * Override to add the prefixes of your own components.
+	 *
+	 * @return prefixes of the elements to close (q-, v-, vui-, dsfr- by default)
+	 */
+	protected Set<String> getAutoCloseTagsPrefixes() {
+		return VUiStandardDialect.DEFAULT_AUTO_CLOSE_TAGS_PREFIXES;
 	}
 
 	@Bean(DispatcherServlet.REQUEST_TO_VIEW_NAME_TRANSLATOR_BEAN_NAME)

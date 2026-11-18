@@ -100,20 +100,35 @@ class AutoCloseTagsPostProcessorTest {
 	}
 
 	@Test
-	void a_dialect_prefixed_element_no_processor_matched_is_closed_too() {
-		// vu-foo is the html5 spelling of vu:foo, but a component that exists has been expanded long before this point :
-		// one still standing here resolved to nothing, so it reaches the browser verbatim and swallows what follows just
-		// like any other dashed element. Closing it keeps that failure visible instead of turning it into a stray v-if scope.
+	void the_default_whitelisted_prefixes_are_closed() {
 		Assertions.assertEquals(
-				"<div><vu-unknown-component></vu-unknown-component></div>",
-				render(Map.of("page", "<div><vu-unknown-component /></div>")));
+				"<div><v-chatbot></v-chatbot><vui-thing></vui-thing><dsfr-button></dsfr-button></div>",
+				render(Map.of("page", "<div><v-chatbot /><vui-thing /><dsfr-button /></div>")));
+	}
+
+	@Test
+	void custom_elements_out_of_the_whitelist_are_left_alone() {
+		// a vu-unknown-component (vu: component no processor matched) included : out of the whitelist, written as it is
+		final String template = "<div><my-widget /><vu-unknown-component /></div>";
+		Assertions.assertEquals(template, render(Map.of("page", template)));
+	}
+
+	@Test
+	void the_whitelist_can_be_overridden() {
+		Assertions.assertEquals(
+				"<div><my-widget></my-widget><q-btn /></div>",
+				render(Map.of("page", "<div><my-widget /><q-btn /></div>"), Set.of("my-")));
 	}
 
 	private static String render(final Map<String, String> templates) {
+		return render(templates, VUiStandardDialect.DEFAULT_AUTO_CLOSE_TAGS_PREFIXES);
+	}
+
+	private static String render(final Map<String, String> templates, final Set<String> autoCloseTagsPrefixes) {
 		// SpringTemplateEngine, as in production : the plain TemplateEngine evaluates expressions with OGNL, which vertigo-ui does not ship
 		final TemplateEngine templateEngine = new SpringTemplateEngine();
 		templateEngine.setTemplateResolver(new MapTemplateResolver(templates));
-		templateEngine.addDialect("vu", new VUiStandardDialect("vu", Set.of()));
+		templateEngine.addDialect("vu", new VUiStandardDialect("vu", Set.of(), autoCloseTagsPrefixes));
 		return templateEngine.process("page", new Context());
 	}
 

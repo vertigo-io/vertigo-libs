@@ -17,9 +17,10 @@
  */
 package io.vertigo.ui.impl.thymeleaf;
 
+import java.util.Set;
+
+import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.engine.AbstractTemplateHandler;
-import org.thymeleaf.engine.ElementDefinition;
-import org.thymeleaf.engine.HTMLElementDefinition;
 import org.thymeleaf.model.IAttribute;
 import org.thymeleaf.model.IModelFactory;
 import org.thymeleaf.model.IOpenElementTag;
@@ -40,14 +41,24 @@ import org.thymeleaf.templatemode.TemplateMode;
  * Being a post-processor, it runs on the final model, once the vu: components have been expanded, so a tag brought in
  * by a component is handled too.
  *
- * Only elements whose name holds a dash are concerned (quasar q-*, Vue components, web components), minus the void
- * elements, for which the trailing slash is legal.
+ * Only the elements whose name starts with a whitelisted prefix are concerned : q-, v-, vui- and dsfr- by default
+ * (VUiStandardDialect.DEFAULT_AUTO_CLOSE_TAGS_PREFIXES), overridable with VSpringWebConfig.getAutoCloseTagsPrefixes().
+ * Other elements are written out as they are.
  *
  * @author skerdudou
  */
 public final class AutoCloseTagsPostProcessor extends AbstractTemplateHandler {
 
 	static final IPostProcessor POST_PROCESSOR = new PostProcessor(TemplateMode.HTML, AutoCloseTagsPostProcessor.class, VUiStandardDialect.PROCESSOR_PRECEDENCE);
+
+	private Set<String> autoCloseTagsPrefixes;
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void setContext(final ITemplateContext context) {
+		super.setContext(context);
+		autoCloseTagsPrefixes = (Set<String>) context.getConfiguration().getExecutionAttributes().get(VUiStandardDialect.AUTO_CLOSE_TAGS_PREFIXES_ATTRIBUTE);
+	}
 
 	@Override
 	public void handleStandaloneElement(final IStandaloneElementTag standaloneElementTag) {
@@ -67,21 +78,17 @@ public final class AutoCloseTagsPostProcessor extends AbstractTemplateHandler {
 		getNext().handleCloseElement(modelFactory.createCloseElementTag(name));
 	}
 
-	private static boolean isSwallowedByTheBrowser(final IStandaloneElementTag tag) {
+	private boolean isSwallowedByTheBrowser(final IStandaloneElementTag tag) {
 		if (!tag.isMinimized()) {
 			return false; // hr written without a slash : the parser reports it as standalone anyway, there is nothing to repair
 		}
-		if (tag.getElementCompleteName().indexOf('-') < 1) {
-			return false; // only custom elements (q-btn, my-component) are concerned, to stay clear of false positives
+		// only the whitelisted custom elements are concerned, to stay clear of false positives (no void element holds a dash)
+		final String name = tag.getElementCompleteName();
+		for (final String prefix : autoCloseTagsPrefixes) {
+			if (name.startsWith(prefix)) {
+				return true;
+			}
 		}
-		// Names prefixed by a Thymeleaf dialect (vu-, th-, layout-) are deliberately NOT exempted. A post-processor runs
-		// on the final model : every element a dialect knows has already been consumed by its processor, so a vu- still
-		// standing here is a name no processor matched. It will be written out verbatim and the browser will read it as
-		// an open tag, exactly like any other dashed element. Exempting it would leave in place the very symptoms this
-		// class removes, on the templates that are hardest to diagnose : a v-if whose scope silently extends past the
-		// tag, the following markup absorbed as a default slot, and not one error message anywhere.
-		final ElementDefinition elementDefinition = tag.getElementDefinition();
-		return !(elementDefinition instanceof final HTMLElementDefinition htmlElementDefinition)
-				|| !htmlElementDefinition.getType().isVoid();
+		return false;
 	}
 }
