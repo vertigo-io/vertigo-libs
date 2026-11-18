@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+  xmlns:vu="https://vertigo.io/thymeleaf/vertigo-ui"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{templates/mmcLayout}"
+>
+
+<head>
+	<title>Catalog of the inputs</title>
+</head>
+
+<body>
+	<div layout:fragment="content">
+		<vu:form>
+			<!-- client data only : label of the node (nodeId_display), protected reference -->
+			<vu:include-data-map object="form" field="nodeId_display" list="nodes" listKey="nodeId" listDisplay="label"/>
+			<vu:include-data-protected object="form" field="reference"/>
+			<vu:block id="inputs" title="Inputs">
+				<vu:grid cols="2">
+					<div class="catalog-select-multiple">
+						<vu:select-multiple object="form" field="nodeIds" list="nodes" valueField="nodeId" labelField="label"/>
+					</div>
+					<div class="catalog-tree">
+						<vu:tree object="form" field="nodeId" list="nodes" valueField="nodeId" labelField="label" parentKeyField="parentId"/>
+					</div>
+					<div class="catalog-label">
+						<vu:label object="form" field="comment"/>
+					</div>
+					<div class="catalog-checkbox">
+						<vu:checkbox object="form" field="accepted"/>
+					</div>
+					<div class="catalog-checkbox-confirm" th:if="${model.modeEdit}">
+						<vu:checkbox-confirm object="form" field="confirmed" label="Confirmed"/>
+					</div>
+				</vu:grid>
+				<div class="catalog-text-editor">
+					<vu:q-text-editor object="form" field="comment"/>
+				</div>
+			</vu:block>
+			<vu:button-submit th:if="${!model.modeEdit}" id="editAction" label="Edit" action="@{_edit}" color="primary"/>
+			<vu:button-submit th:if="${model.modeEdit}" id="saveAction" label="Save" action="@{_save}" color="primary"/>
+			<vu:button-submit th:if="${model.modeEdit}" id="readAction" label="Read" action="@{_read}"/>
+		</vu:form>
+	</div>
+</body>
+</html>

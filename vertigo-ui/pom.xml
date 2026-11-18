@@ -186,7 +186,7 @@
       <groupId>com.microsoft.playwright</groupId>
       <artifactId>playwright</artifactId>
       <version>1.65.0</version>
-      <scope>test</scope> <!-- QuasarUpgradeScreenshotTest (disabled, run manually when upgrading quasar) -->
+      <scope>test</scope> <!-- UiUpgradeComparisonTest (disabled, run manually when upgrading quasar) -->
     </dependency>
     <!-- Search -->
     <dependency>

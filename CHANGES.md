@@ -38,7 +38,7 @@ Running 4.5.0-SNAPSHOT - 2026-12-XX
 * [Vega] SAML2 : stricter checks of the SAML response signature ; an unsigned response fails with an explicit message
 * **[Vega] SAML2 : the SAML response is checked as required by the SAML 2.0 Web Browser SSO profile, and its assertion must be encrypted, on by default** : a response not compliant is refused, with an error naming the param to adapt ; an assertion is accepted once and must hold a bearer subject confirmation. Params of the saml connector to adapt to the IdP : `cryptAssertion` (true by default, now applied : an IdP that does not encrypt the assertions needs `cryptAssertion=false`), `checkDestination` (set `externalUrl` behind a proxy), `checkAudience`, `clockSkewSeconds`, `checkInResponseTo` (false by default)
 * New libs
-  - playwright 1.65.0 (test dependency : `QuasarUpgradeScreenshotTest`, disabled by default, compares screenshots of the vertigo-ui test webapp between two Quasar versions)
+  - playwright 1.65.0 (test dependency : `UiUpgradeComparisonTest`, disabled by default, compares the vertigo-ui components between two versions of Quasar, Vue, axios or vue-dsfr : screenshots, accessibility tree, overlays, javascript errors and checks)
 * Update libs
   - c3p0 0.14.1 -> 0.15.1
   - guava 33.6.0-jre -> 33.8.0-jre

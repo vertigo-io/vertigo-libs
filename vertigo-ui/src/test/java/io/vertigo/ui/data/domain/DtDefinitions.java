@@ -38,6 +38,10 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		ApplicationUser(io.vertigo.ui.data.domain.users.ApplicationUser.class),
 		/** Objet de données Casting. */
 		Casting(io.vertigo.ui.data.domain.people.Casting.class),
+		/** Data object CatalogForm (catalog pages of the components, not generated). */
+		CatalogForm(io.vertigo.ui.data.domain.catalog.CatalogForm.class),
+		/** Data object CatalogNode (catalog pages of the components, not generated). */
+		CatalogNode(io.vertigo.ui.data.domain.catalog.CatalogNode.class),
 		/** Objet de données Commune. */
 		Commune(io.vertigo.ui.data.domain.reference.Commune.class),
 		/** Objet de données Movie. */

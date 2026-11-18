@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+  xmlns:vu="https://vertigo.io/thymeleaf/vertigo-ui"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{templates/mmcLayout}"
+>
+
+<head>
+	<title>Catalog of the collections</title>
+</head>
+
+<body>
+	<div layout:fragment="content">
+		<vu:form>
+			<!-- vu:list and vu:cards don't include the data of their list -->
+			<vu:include-data object="movies" field="movId"/>
+			<vu:include-data object="movies" field="title"/>
+			<vu:include-data object="movies" field="year"/>
+			<vu:block id="list" title="List">
+				<div class="catalog-list">
+					<vu:list list="movies" componentId="moviesList" rowsPerPage="3" showMore="true" showMoreLabel="More movies" separator="true">
+						<q-item-section>{{ item.title }}</q-item-section>
+						<q-item-section side>{{ item.year }}</q-item-section>
+					</vu:list>
+				</div>
+			</vu:block>
+			<vu:block id="collection" title="Collection">
+				<div class="catalog-collection">
+					<!-- showMore : the pagination mode of vu:collection (so vu:cards) fails, pagination_attrs is not a param of collection -->
+					<vu:cards list="movies" componentId="moviesCards" rowsPerPage="3" cardClass="col-4" showMore="true" showMoreLabel="More cards">
+						{{ item.title }}
+					</vu:cards>
+				</div>
+			</vu:block>
+			<vu:block id="buttons" title="Buttons group">
+				<div class="catalog-buttons">
+					<vu:buttons-group md="2" moreLabel="More actions">
+						<!-- vu: components : vu:content-item gives them the responsive classes (contentAttrs) -->
+						<vu:button title="Action 1" label="Action 1" color="primary" @click="$q.notify('Action 1')"/>
+						<vu:button title="Action 2" label="Action 2" color="primary" @click="$q.notify('Action 2')"/>
+						<vu:button title="Action 3" label="Action 3" color="primary" @click="$q.notify('Action 3')"/>
+						<vu:button title="Action 4" label="Action 4" color="primary" @click="$q.notify('Action 4')"/>
+					</vu:buttons-group>
+				</div>
+			</vu:block>
+		</vu:form>
+	</div>
+</body>
+</html>

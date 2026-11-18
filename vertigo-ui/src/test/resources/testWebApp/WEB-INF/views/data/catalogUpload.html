@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+  xmlns:vu="https://vertigo.io/thymeleaf/vertigo-ui"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{templates/mmcLayout}"
+>
+
+<head>
+	<title>Catalog of the uploads</title>
+</head>
+
+<body>
+	<div layout:fragment="content">
+		<vu:form>
+			<vu:block id="upload" title="v-fileupload">
+				<div class="catalog-v-fileupload">
+					<vu:v-fileupload th:url="'@{/commons/upload}'" object="movie" field="pictures" multiple="true"/>
+				</div>
+				<div class="catalog-v-fileupload-dropzone">
+					<vu:v-fileupload-dropzone fileComponentId="catalogDropzone">
+						<vu:v-fileupload th:url="'@{/commons/upload}'" object="movie2" field="pictures" multiple="true"/>
+					</vu:v-fileupload-dropzone>
+				</div>
+				<!-- vu:v-fileupload-simple (key mode of v-fileupload) fails : its assertion needs a label, which is not a param -->
+				<div class="catalog-v-fileupload-simple-object">
+					<vu:v-fileupload-simple-object th:url="'@{/commons/upload}'" object="movie" field="mainPicture"/>
+				</div>
+			</vu:block>
+			<vu:button-submit th:if="${!model.modeEdit}" id="editAction" label="Edit" action="@{_edit}" color="primary"/>
+			<vu:button-submit th:if="${model.modeEdit}" id="readAction" label="Read" action="@{_read}"/>
+		</vu:form>
+	</div>
+</body>
+</html>

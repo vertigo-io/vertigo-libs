@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+  xmlns:vu="https://vertigo.io/thymeleaf/vertigo-ui"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{templates/mmcLayout}"
+>
+
+<head>
+	<title>Catalog of the Vue components</title>
+	<!-- v-dashboard-chart : Chart.js and dayjs are not embedded by vertigo-ui, the page gives them (with the dayjs adapter of Chart.js for the time axis) -->
+	<script th:src="@{/static/js/chart/chart.js@4.4.3_chart.umd.js}"></script>
+	<script th:src="@{/static/js/chart/dayjs@1.11.11_dayjs.min.js}"></script>
+	<script th:src="@{/static/js/chart/dayjs@1.11.11_plugin_customParseFormat.js}"></script>
+	<script th:src="@{/static/js/chart/dayjs@1.11.11_plugin_advancedFormat.js}"></script>
+	<script th:src="@{/static/js/chart/dayjs@1.11.11_plugin_quarterOfYear.js}"></script>
+	<script th:src="@{/static/js/chart/dayjs@1.11.11_plugin_localizedFormat.js}"></script>
+	<script th:src="@{/static/js/chart/dayjs@1.11.11_plugin_isoWeek.js}"></script>
+	<script th:src="@{/static/js/chart/dayjs@1.11.11_plugin_duration.js}"></script>
+	<script th:src="@{/static/js/chart/locales/dayjs@1.11.11_locale_fr.js}"></script>
+	<script th:src="@{/static/js/chart/chartjs-adapter-dayjs-4@1.0.4_chartjs-adapter-dayjs-4.cjs.production.umd.min.js}"></script>
+	<script>
+		dayjs.locale('fr');
+		[dayjs_plugin_customParseFormat, dayjs_plugin_advancedFormat, dayjs_plugin_quarterOfYear, dayjs_plugin_localizedFormat, dayjs_plugin_isoWeek, dayjs_plugin_duration]
+			.forEach(plugin => dayjs.extend(plugin));
+	</script>
+</head>
+
+<body>
+	<div layout:fragment="content">
+		<vu:form>
+			<vu:block id="charts" title="v-dashboard-chart">
+				<div class="row catalog-chart">
+					<div class="col-6">
+						<v-dashboard-chart title="Visits" type="linechart" time-format="YYYY-MM-DDTHH:mm"
+							:datas="{seriesNames:['visits:count'], timedDataSeries:[{time:'2026-01-01T00:00', values:{'visits:count':3}}, {time:'2026-01-02T00:00', values:{'visits:count':5}}, {time:'2026-01-03T00:00', values:{'visits:count':2}}]}"
+							:labels="{'visits:count':'Visits'}"></v-dashboard-chart>
+					</div>
+					<div class="col-6">
+						<v-dashboard-chart title="Bookings" type="stackedbarchart" time-format="YYYY-MM-DDTHH:mm"
+							:datas="{seriesNames:['web:count','agent:count'], timedDataSeries:[{time:'2026-01-01T00:00', values:{'web:count':3,'agent:count':1}}, {time:'2026-01-02T00:00', values:{'web:count':4,'agent:count':2}}]}"
+							:labels="{'web:count':'Web', 'agent:count':'Agent'}"></v-dashboard-chart>
+					</div>
+				</div>
+			</vu:block>
+			<vu:block id="json" title="v-json-editor">
+				<vu:include-data-primitive key="catalogJson" modifiable="true"/>
+				<div class="catalog-json-editor">
+					<v-json-editor v-model="vueData.catalogJson" :readonly="false" :cols="2"></v-json-editor>
+				</div>
+			</vu:block>
+		</vu:form>
+	</div>
+</body>
+</html>
