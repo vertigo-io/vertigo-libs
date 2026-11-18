@@ -1,4 +1,4 @@
-<th:block th:fragment="head(title, vueJsVersion, axiosVersion, vuejsDevMode, vuiDevMode, vuiSsr, vertigoUiVersion, useQuasar, quasarVersion, robotoVersion, fontAwesomeVersion, useDsfr, useWysiwyg, additional_defer_libs_slot)" >
+<th:block th:fragment="head(title, vueJsVersion, axiosVersion, vuejsDevMode, vuiDevMode, vuiSsr, vertigoUiVersion, useQuasar, quasarVersion, robotoVersion, fontAwesomeVersion, useDsfr, vueDsfrVersion, useWysiwyg, additional_defer_libs_slot)" >
 		<meta charset="utf8">
 		<vu:head-meta
 		    vueJsVersion="${vueJsVersion}"
@@ -12,6 +12,7 @@
 		    robotoVersion="${robotoVersion}"
 		    fontAwesomeVersion="${fontAwesomeVersion}"
 		    useDsfr="${useDsfr}"
+		    vueDsfrVersion="${vueDsfrVersion}"
 		    useWysiwyg="${useWysiwyg}"
 		    additional_defer_libs_slot="${additional_defer_libs_slot}"/>
 		<vu:content/>
@@ -19,7 +20,7 @@
 	</head>
 </th:block>
 
-<th:block th:fragment="head-meta(vueJsVersion, axiosVersion, vuejsDevMode, vuiDevMode, vuiSsr, vertigoUiVersion, useQuasar, quasarVersion, onlyDsfrStyle, robotoVersion, fontAwesomeVersion, useDsfr, useWysiwyg, additional_defer_libs_slot)"
+<th:block th:fragment="head-meta(vueJsVersion, axiosVersion, vuejsDevMode, vuiDevMode, vuiSsr, vertigoUiVersion, useQuasar, quasarVersion, onlyDsfrStyle, robotoVersion, fontAwesomeVersion, useDsfr, vueDsfrVersion, useWysiwyg, additional_defer_libs_slot)"
         th:with="isVuiDevMode=${vuiDevMode != null ? vuiDevMode : false}, 
                  isVuejsDevMode=${vuejsDevMode != null ? vuejsDevMode : false},
                  isVuiSsr=${vuiSsr != null ? vuiSsr : false},
@@ -28,7 +29,8 @@
                   myUseQuasar=${useQuasar ?: true}, myQuasarVersion=${quasarVersion?:'2.35.4'}, myOnlyDsfrStyle=${onlyDsfrStyle?:false},
                  myRobotoVersion=${robotoVersion?:'51'},
                  myFontAwesomeVersion=${fontAwesomeVersion?:'6.7.2'},
-                 myUseDsfr=${useDsfr ?: false}, myDsfrDevMode=${dsfrDevMode ?: false}"
+                 myUseDsfr=${useDsfr ?: false}, myDsfrDevMode=${dsfrDevMode ?: false},
+                 myVueDsfrVersion=${vueDsfrVersion?:'8.21.0'}"
 		>
 
 	<th:block th:if="${!myOnlyDsfrStyle}">
@@ -58,10 +60,10 @@
 		<link th:href="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/quasar@__${myQuasarVersion}__/dist/quasar.css}" rel="stylesheet" type="text/css"/>
 	</th:block>
 
-	<!--/* Vertigo UI - DSFR */-->
+	<!--/* Vertigo UI - DSFR : the Vertigo DSFR components built with vue-dsfr, in a folder named by the vue-dsfr version (the default and the previous one shipped) */-->
 	<th:block th:if="${myUseDsfr}">
-		<link th:href="@{/vertigo-ui/static/3rdParty/dsfr/vertigo-dsfr.css?v=__${myVertigoUiVersion}__}" rel="stylesheet" type="text/css"/>
-		<script th:src="@{/vertigo-ui/static/3rdParty/dsfr/dsfr.umd.js?v=__${myVertigoUiVersion}__}"></script>
+		<link th:href="@{/vertigo-ui/static/3rdParty/dsfr/vue-dsfr@__${myVueDsfrVersion}__/vertigo-dsfr.css?v=__${myVertigoUiVersion}__}" rel="stylesheet" type="text/css"/>
+		<script th:src="@{/vertigo-ui/static/3rdParty/dsfr/vue-dsfr@__${myVueDsfrVersion}__/vertigo-dsfr.umd.js?v=__${myVertigoUiVersion}__}"></script>
 	</th:block>
 
 

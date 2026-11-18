@@ -6,7 +6,7 @@
     "scripts":  {
                     "dev":  "vite --port 3001",
                     "build":  "vite build",
-                    "build-lib":  "vite build \u0026\u0026 cp dist/*.* ../vertigo-ui/src/main/resources/io/vertigo/ui/static/3rdParty/dsfr/",
+                    "build-lib":  "vite build \u0026\u0026 node copy-lib.mjs",
                     "test":  "vitest run",
                     "test:coverage":  "vitest run --coverage --reporter=verbose --coverage.reporter=text --coverage.reporter=html --coverage.reporter=lcov --coverage.reporter=clover"
                 },

@@ -65,6 +65,22 @@ class UiLibrarySwapTest {
 	}
 
 	@Test
+	void vueDsfr() {
+		final var properties = new Properties();
+		properties.setProperty("vue-dsfr.candidate", "8.22.0");
+		properties.setProperty("vue-dsfr.baseline", "8.21.0");
+		final var vueDsfr = new UiLibrarySwap("vue-dsfr", UiLibrarySwap.VUE_DSFR_VERSION_EXPRESSION, "8.21.0", "8.22.0");
+		assertEquals(List.of(vueDsfr), UiLibrarySwap.fromProperties(properties));
+		final String bundle = "http://localhost:18080/test/vertigo-ui/static/3rdParty/dsfr/vue-dsfr@8.21.0/vertigo-dsfr.umd.js?v=4.5.0";
+		assertEquals(bundle.replace("8.21.0", "8.22.0"), vueDsfr.rewrite(bundle, "8.22.0"));
+		// the vue swap leaves the vue-dsfr bundle
+		assertEquals(bundle, new UiLibrarySwap("vue", "Vue.version", "3.5.39", "3.5.45").rewrite(bundle, "3.5.39"));
+		// the bundle doesn't hold its vue-dsfr version : loaded (true) means the rewritten url was served
+		assertEquals(Optional.empty(), vueDsfr.versionMismatch("dsfr", "8.22.0", Boolean.TRUE, true));
+		assertEquals(Optional.of("dsfr : vue-dsfr not loaded instead of 8.22.0"), vueDsfr.versionMismatch("dsfr", "8.22.0", null, true));
+	}
+
+	@Test
 	void versionMismatch() {
 		final var quasar = new UiLibrarySwap("quasar", "Quasar.version", "2.21.1", "2.35.4");
 		assertEquals(Optional.empty(), quasar.versionMismatch("movies", "2.35.4", "2.35.4", true));

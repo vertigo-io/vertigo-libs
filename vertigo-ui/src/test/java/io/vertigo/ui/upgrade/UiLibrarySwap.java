@@ -35,11 +35,22 @@ import java.util.regex.Pattern;
  */
 public record UiLibrarySwap(String name, String globalVersionExpression, String baseline, String candidate) {
 
-	/** Swappable libraries : name, version expression, the two vendored versions (oldest first), to follow static/3rdParty. */
+	/**
+	 * The DSFR bundle (vertigo-ui-dsfr built with vue-dsfr, in 3rdParty/dsfr/vue-dsfr@x.y.z/) doesn't hold its vue-dsfr version :
+	 * true if it is loaded (global dsfr), the version being the one of the url the test rewrote (the script src of the page
+	 * keeps the url the page asked) ; null if not loaded.
+	 */
+	static final String VUE_DSFR_VERSION_EXPRESSION = "window.dsfr ? true : null";
+
+	/**
+	 * Swappable libraries : name, version expression, the two vendored versions (oldest first), to follow static/3rdParty.
+	 * For vue-dsfr, both builds hold the same Vertigo DSFR components, built with each vue-dsfr version.
+	 */
 	private static final List<String[]> LIBRARIES = List.of(
 			new String[] { "quasar", "Quasar.version", "2.21.1", "2.35.4" },
 			new String[] { "vue", "Vue.version", "3.5.39", "3.5.45" },
-			new String[] { "axios", "axios.VERSION", "1.18.1", "1.21.1" });
+			new String[] { "axios", "axios.VERSION", "1.18.1", "1.21.1" },
+			new String[] { "vue-dsfr", VUE_DSFR_VERSION_EXPRESSION, "8.17.0", "8.21.0" });
 
 	/**
 	 * @param properties system properties : <name>.candidate enables the swap of a library, <name>.baseline is optional
@@ -69,7 +80,8 @@ public record UiLibrarySwap(String name, String globalVersionExpression, String 
 	}
 
 	/**
-	 * @param loaded version given by {@link #globalVersionExpression()} (null if the library is not loaded)
+	 * @param loaded version given by {@link #globalVersionExpression()} (null if the library is not loaded, true if loaded
+	 * from the rewritten url by a library without version, see {@link #VUE_DSFR_VERSION_EXPRESSION})
 	 * @param requested true if the page asked the library : not loaded is then a mismatch (version not vendored, typo in the property)
 	 * @return the mismatch of the version loaded by the scenario, if any
 	 */
@@ -77,7 +89,7 @@ public record UiLibrarySwap(String name, String globalVersionExpression, String 
 		if (loaded == null) {
 			return requested ? Optional.of(scenario + " : " + name + " not loaded instead of " + expected) : Optional.empty();
 		}
-		return expected.equals(loaded) ? Optional.empty() : Optional.of(scenario + " : " + name + " " + loaded + " instead of " + expected);
+		return expected.equals(loaded) || Boolean.TRUE.equals(loaded) ? Optional.empty() : Optional.of(scenario + " : " + name + " " + loaded + " instead of " + expected);
 	}
 
 	/** @return true if the url leaves the machine (a host other than localhost) */

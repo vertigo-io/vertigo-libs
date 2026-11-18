@@ -48,7 +48,7 @@ import io.vertigo.ui.upgrade.scenarios.UiScenariosVue;
 
 /**
  * Plays every scenario of the vertigo-ui components with the baseline and the candidate versions of the libraries of
- * the embedded CDN (Quasar, Vue, axios), in the same build : only their urls are rewritten. Run it before releasing an
+ * the embedded CDN (Quasar, Vue, axios) and of vue-dsfr, in the same build : only their urls are rewritten. Run it before releasing an
  * upgrade of one of them.
  *
  * <h2>Run</h2>
@@ -60,6 +60,9 @@ import io.vertigo.ui.upgrade.scenarios.UiScenariosVue;
  * <ul>
  * <li>libraries : quasar.candidate / quasar.baseline, vue.candidate / vue.baseline, axios.candidate / axios.baseline
  * (a missing baseline is the other vendored version) ;</li>
+ * <li>vue-dsfr (the DSFR bundle of vertigo-ui-dsfr, in 3rdParty/dsfr/vue-dsfr@x.y.z/) : two versions are shipped, as for
+ * quasar, both built with the same Vertigo DSFR components (npm run build-lib writes the folder of the installed vue-dsfr) :
+ * vue-dsfr.candidate / vue-dsfr.baseline ;</li>
  * <li>-Dui.scenarios=&lt;regex&gt; plays the matching scenarios only (catalog-.*, dsfr-.*...). On Windows, mvn.cmd breaks
  * a value holding a | : use optional groups instead, (my)?(notif)? ;</li>
  * <li>the test webapp starts an embedded Elasticsearch on port 9200 (testcontainers, Docker) unless ES_HOST answers :
