@@ -29,6 +29,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.connectors.redis.RedisConnector;
 import io.vertigo.core.lang.Assertion;
@@ -50,6 +53,8 @@ import redis.clients.jedis.params.SetParams;
 public final class RedisDB {
 
 	//TODO : think about that : simpler if workId is parseable abd contains : {workType} - callerNodeId - an uuid
+
+	private static final Logger LOG = LogManager.getLogger(RedisDB.class);
 
 	private static final String REDIS_KEY_PREFIX = "vertigo:work";
 	private static final int MAX_LOOP = 10_000;
@@ -120,17 +125,28 @@ public final class RedisDB {
 		Assertion.check().isNotNull(workType);
 		//-----
 		final UnifiedJedis jedis = redisConnector.getClient();
-		//We could do a blocked wait, because we have one thread per workType BUT blmove won't work if not enought redis connections : default 8 !!
-		final String workId = jedis.lmove(redisKeyWorksTodo(workType), redisKeyWorksInProgress(nodeId, workType), ListDirection.RIGHT, ListDirection.LEFT);
-		if (workId == null) {
-			return null;
+		for (int loop = 0; loop < MAX_LOOP; loop++) {
+			//We could do a blocked wait, because we have one thread per workType BUT blmove won't work if not enought redis connections : default 8 !!
+			final String workId = jedis.lmove(redisKeyWorksTodo(workType), redisKeyWorksInProgress(nodeId, workType), ListDirection.RIGHT, ListDirection.LEFT);
+			if (workId == null) {
+				return null;
+			}
+			final Map<String, String> hash = jedis.hgetAll(redisKeyWork(workType, workId));
+			if (hash.isEmpty() || hash.containsKey("status")) {
+				//a copy re-queued while its work was running (its node seen dead while it was only slow) : its result is already known
+				//(status put, or data deleted once the master read it) : skipped, without scanning the todo list when the result arrives
+				jedis.lrem(redisKeyWorksInProgress(nodeId, workType), 0, workId);
+				continue;
+			}
+			final W work = (W) decode(hash.get("work64"));
+			final String name = (String) decode(hash.get("provider64"));
+			final String callerNodeId = (String) decode(hash.get("caller64"));
+			final Class<? extends WorkEngine> workEngineClass = ClassUtil.classForName(name, WorkEngine.class);
+			return new WorkItem(callerNodeId, workId, work, workEngineClass);
 		}
-		final Map<String, String> hash = jedis.hgetAll(redisKeyWork(workType, workId));
-		final W work = (W) decode(hash.get("work64"));
-		final String name = (String) decode(hash.get("provider64"));
-		final String callerNodeId = (String) decode(hash.get("caller64"));
-		final Class<? extends WorkEngine> workEngineClass = ClassUtil.classForName(name, WorkEngine.class);
-		return new WorkItem(callerNodeId, workId, work, workEngineClass);
+		//bounded : only obsolete copies so far, the next poll goes on
+		LOG.warn("Works : {} obsolete copies skipped in a row for the workType {}", MAX_LOOP, workType);
+		return null;
 	}
 
 	/**
