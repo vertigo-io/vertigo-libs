@@ -18,7 +18,7 @@
 			<vu:include-data object="movies" field="year"/>
 			<vu:block id="list" title="List">
 				<div class="catalog-list">
-					<vu:list list="movies" componentId="moviesList" rowsPerPage="3" showMore="true" showMoreLabel="More movies" separator="true">
+					<vu:list list="movies" componentId="moviesList" rowsPerPage="3" showMore="true" showMoreLabel="More movies" separator="true" listClass="catalog-movies">
 						<q-item-section>{{ item.title }}</q-item-section>
 						<q-item-section side>{{ item.year }}</q-item-section>
 					</vu:list>
