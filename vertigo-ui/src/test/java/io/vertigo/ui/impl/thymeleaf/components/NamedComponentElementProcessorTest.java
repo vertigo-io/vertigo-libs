@@ -49,6 +49,11 @@ class NamedComponentElementProcessorTest {
 		// *{ and ~{ start an expression only at the beginning of the value (as before)
 		assertEquals("'Total: *{price}'", param("Total: *{price}"));
 		assertEquals("'see ~{fragments :: header}'", param("see ~{fragments :: header}"));
+		// a | that writes no literal substitution |...| (as a separator)
+		assertEquals("'|'", param("|"));
+		assertEquals("'| a'", param("| a"));
+		// || is an expression (an empty literal substitution, a Thymeleaf syntax error)
+		assertEquals("||", param("||"));
 	}
 
 	@Test
@@ -66,7 +71,7 @@ class NamedComponentElementProcessorTest {
 
 	@Test
 	void declaredParamExpression() {
-		// an expression : ${ #{ @{ anywhere, *{ ~{ | ' at the beginning
+		// an expression : ${ #{ @{ anywhere, *{ ~{ ' at the beginning, a literal substitution |...| as the whole value
 		assertEquals("${flag}", param("${flag}"));
 		assertEquals("${count} + 1", param("${count} + 1"));
 		assertEquals("!${flag}", param("!${flag}"));
@@ -100,5 +105,23 @@ class NamedComponentElementProcessorTest {
 		assertEquals("'() {dataX.join(\\';\\') || && __ } ${notEvaluate}'", attr("() {dataX.join(';') || && __ } ${notEvaluate}"));
 		assertEquals("${flag}", attr("${flag}"));
 		assertEquals("' ${flag}'", attr(" ${flag}"));
+		// a literal substitution, as for a param (no javascript starts with |)
+		assertEquals("|goTo('@{/movie/}' + props.row.movId)|", attr("|goTo('@{/movie/}' + props.row.movId)|"));
+		// a javascript string or template literal stays a text
+		assertEquals("'\\'Text\\''", attr("'Text'"));
+		assertEquals("'`Hello ${name}`'", attr("`Hello ${name}`"));
+		// a | that writes no literal substitution |...| is a text
+		assertEquals("'|'", attr("|"));
+		assertEquals("'| a'", attr("| a"));
+		assertEquals("||", attr("||"));
+	}
+
+	@Test
+	void literalSubstitutionThenMore() {
+		// a value starting with | and holding another one is an expression, for a param as for an attribute
+		for (final String value : new String[] { "|a| + 'b'", "|@{/x/}| + ${id}", "|Hello ${name}| " }) {
+			assertEquals(value, param(value));
+			assertEquals(value, attr(value));
+		}
 	}
 }

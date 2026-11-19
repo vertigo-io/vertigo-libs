@@ -70,8 +70,8 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 
 	private static final String COMPONENT_PARAMS = "params";
 	/** For reserved chars @see https://www.thymeleaf.org/doc/articles/standarddialect5minutes.html */
-	private static final String NO_RESERVED_FIRST_CHAR_PATTERN_STR = "^(([^$@~#*]\\{)|.(?!\\{)).*$"; //use to detect if we should escape in placeholder : must encode js string, like 'mylabel'
-	private static final String NO_RESERVED_TEXT_PATTERN_STR = "^(?![|'])(?!.*[$#@]\\{).*$"; //an expression : ${ #{ @{ anywhere (as in listName + ${id}), | or ' at start ; *{ ~{ at start only (see NO_RESERVED_FIRST_CHAR_PATTERN) ; a $ # @ starting no expression is text (#anchor, mail@domain)
+	private static final String NO_RESERVED_FIRST_CHAR_PATTERN_STR = "^(([^$@~#*]\\{)|.(?!\\{)).*$"; //use to detect if we should escape in placeholder : must encode js string, like 'mylabel' ; an expression starts with ${ #{ @{ *{ ~{ (no javascript starts so) ; |...| : see isLiteralSubstitution
+	private static final String NO_RESERVED_TEXT_PATTERN_STR = "^(?!')(?!.*[$#@]\\{).*$"; //an expression : ${ #{ @{ anywhere (as in listName + ${id}), ' at start ; |...| : see isLiteralSubstitution ; *{ ~{ at start only (see NO_RESERVED_FIRST_CHAR_PATTERN) ; a $ # @ starting no expression is text (#anchor, mail@domain)
 	private static final String NUMBER_PATTERN_STR = "^[0-9\\.]+";
 	private static final String SIMPLE_TEXT_PATTERN_STR = "^[a-zA-Z]*$";
 	private static final Pattern NO_RESERVED_FIRST_CHAR_PATTERN = Pattern.compile(NO_RESERVED_FIRST_CHAR_PATTERN_STR, Pattern.DOTALL);
@@ -431,16 +431,22 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 				&& !"true".equalsIgnoreCase((String) attributeValue) //not boolean
 				&& !"false".equalsIgnoreCase((String) attributeValue)
 				&& !NUMBER_PATTERN.matcher((String) attributeValue).matches() //not number
+				&& !isLiteralSubstitution((String) attributeValue)
 				&& (isPlaceholder //is a placeholder => escape for thymeleaf
 						|| NO_RESERVED_TEXT_PATTERN.matcher((String) attributeValue).matches()) //no reserved char
 				&& NO_RESERVED_FIRST_CHAR_PATTERN.matcher((String) attributeValue).matches()) { //don't start with reserved char
 			//We escape :
-			//IF placeholder or no thymeleaf expression (${ #{ @{ anywhere, | or ' at start)
+			//IF placeholder or no thymeleaf expression (${ #{ @{ anywhere, ' at start, |...|)
 			//AND dont start with reserved char (for case like ${value} )
 			//BUT IF true, false or number (it become string instead)
 			return "'" + escapeFinalBackslash(((String) attributeValue).replace("'", "\\'")) + "'"; //escape as text
 		}
 		return attributeValue;
+	}
+
+	/** @return if the value starts with a literal substitution |...| : a | then another one (a single | is a text, as a separator) */
+	private static boolean isLiteralSubstitution(final String value) {
+		return value.charAt(0) == '|' && value.indexOf('|', 1) > 0;
 	}
 
 	private static String escapeFinalBackslash(final String text) {
