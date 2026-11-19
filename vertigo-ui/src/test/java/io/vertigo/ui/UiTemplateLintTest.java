@@ -23,8 +23,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -61,6 +63,7 @@ class UiTemplateLintTest {
 	/** A component is named by its fragment, and by its vu:alias if any. */
 	private static final Pattern FRAGMENT_NAME = Pattern.compile("th:fragment=\"\\s*([a-zA-Z0-9_-]+)");
 	private static final Pattern COMPONENT_ALIAS = Pattern.compile("vu:alias=\"([a-zA-Z0-9_-]+)\"");
+	private static final Pattern FRAGMENT_SIGNATURE = Pattern.compile("th:fragment=\"\\s*([a-zA-Z0-9_-]+)\\s*(?:\\(([^)]*)\\))?");
 	private static final Pattern VU_ELEMENT = Pattern.compile("<vu:([a-zA-Z0-9_-]+)");
 	/** Elements handled by the processors of the dialect, not by a component file. */
 	private static final Set<String> BUILT_IN_ELEMENTS = Set.of("content", "content-item", "slot", "content-slot");
@@ -126,6 +129,30 @@ class UiTemplateLintTest {
 		}
 		Assertions.assertTrue(offenders.isEmpty(),
 				() -> "vu: elements without component, they render as an ignored tag:\n" + String.join("\n", offenders));
+	}
+
+	/**
+	 * Fragments of the same name in a file (told apart by a th:if) are one component : its params are read
+	 * from one of them, picked in no fixed order at startup. They must declare the same params, in the same
+	 * order (the last *_attrs gets the unknown attributes), or a param is randomly ignored.
+	 */
+	@Test
+	void fragments_of_the_same_name_declare_the_same_params() throws IOException {
+		final List<String> offenders = new ArrayList<>();
+		for (final Path template : htmlFilesIn(COMPONENTS_DIR)) {
+			final String content = Files.readString(template, StandardCharsets.UTF_8);
+			final Map<String, String> paramsByFragment = new HashMap<>();
+			final Matcher matcher = FRAGMENT_SIGNATURE.matcher(content);
+			while (matcher.find()) {
+				final String params = matcher.group(2) == null ? "" : matcher.group(2).replaceAll("\\s+", "");
+				final String previous = paramsByFragment.putIfAbsent(matcher.group(1), params);
+				if (previous != null && !previous.equals(params)) {
+					offenders.add(template + " -> fragment " + matcher.group(1) + " declared with (" + previous + ") and (" + params + ")");
+				}
+			}
+		}
+		Assertions.assertTrue(offenders.isEmpty(),
+				() -> "Fragments of the same name with different params, one of them is used at random:\n" + String.join("\n", offenders));
 	}
 
 	private static String bundleName(final Path view) {
