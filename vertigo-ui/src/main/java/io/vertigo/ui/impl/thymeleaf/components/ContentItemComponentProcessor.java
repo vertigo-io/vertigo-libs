@@ -20,6 +20,7 @@ package io.vertigo.ui.impl.thymeleaf.components;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.model.IAttribute;
@@ -58,6 +59,7 @@ public class ContentItemComponentProcessor extends AbstractElementModelProcessor
 	@Override
 	protected void doProcess(final ITemplateContext context, final IModel model, final IElementModelStructureHandler structureHandler) {
 		final Map<String, String> attributes = processAttribute(model);
+		final Set<String> computedAttributes = NamedComponentElementProcessor.computedAttributeNames(context, (IProcessableElementTag) model.get(0));
 		final Object content = context.getVariable(CONTENT_VAR_NAME);
 		Assertion.check().isNotNull(content, "'" + CONTENT_VAR_NAME + "' variable missing. For loop use th:each=\"" + CONTENT_VAR_NAME + ":contentTags\".");
 		//-----
@@ -80,7 +82,8 @@ public class ContentItemComponentProcessor extends AbstractElementModelProcessor
 		}
 		model.reset();//we prepared the model to be set
 		model.addModel(mergedModel);
-		structureHandler.setLocalVariable("contentAttrs", attributes);
+		structureHandler.setLocalVariable(ContentComponentProcessor.CONTENT_ATTRS_NAME, attributes);
+		structureHandler.setLocalVariable(ContentComponentProcessor.CONTENT_COMPUTED_ATTRS_NAME, computedAttributes);
 	}
 
 	private static Map<String, String> processAttribute(final IModel model) {

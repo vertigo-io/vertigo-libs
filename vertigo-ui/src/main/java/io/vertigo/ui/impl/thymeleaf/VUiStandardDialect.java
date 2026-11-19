@@ -56,7 +56,7 @@ public final class VUiStandardDialect extends AbstractProcessorDialect implement
 	// These variables will be initialized lazily following the model applied in the extended StandardDialect.
 	private final Set<NamedComponentDefinition> components;
 	private final Set<String> autoCloseTagsPrefixes;
-	private final boolean warnUnknownComponents;
+	private final boolean devMode;
 
 	public VUiStandardDialect(final Set<NamedComponentDefinition> components) {
 		this(PREFIX, components);
@@ -79,9 +79,9 @@ public final class VUiStandardDialect extends AbstractProcessorDialect implement
 	 * @param prefix Dialect prefix
 	 * @param components Named components
 	 * @param autoCloseTagsPrefixes Prefixes of the elements closed when self-closed (q-btn ... / becomes an open/close pair)
-	 * @param warnUnknownComponents Logs the vu: elements without component (dev mode : a check at each rendering)
+	 * @param devMode Dev mode : logs the vu: elements without component, checks the way the component attributes are written (at each rendering)
 	 */
-	public VUiStandardDialect(final String prefix, final Set<NamedComponentDefinition> components, final Set<String> autoCloseTagsPrefixes, final boolean warnUnknownComponents) {
+	public VUiStandardDialect(final String prefix, final Set<NamedComponentDefinition> components, final Set<String> autoCloseTagsPrefixes, final boolean devMode) {
 		super(NAME, prefix, PROCESSOR_PRECEDENCE);
 		Assertion.check()
 				.isNotNull(components)
@@ -89,7 +89,7 @@ public final class VUiStandardDialect extends AbstractProcessorDialect implement
 		//---
 		this.components = components;
 		this.autoCloseTagsPrefixes = Set.copyOf(autoCloseTagsPrefixes);
-		this.warnUnknownComponents = warnUnknownComponents;
+		this.devMode = devMode;
 	}
 
 	@Override
@@ -127,9 +127,9 @@ public final class VUiStandardDialect extends AbstractProcessorDialect implement
 
 		//standard components
 		for (final NamedComponentDefinition comp : components) {
-			processors.add(new NamedComponentElementProcessor(dialectPrefix, comp));
+			processors.add(new NamedComponentElementProcessor(dialectPrefix, comp, devMode));
 		}
-		if (warnUnknownComponents) {
+		if (devMode) {
 			final Set<String> elementNames = new HashSet<>(BUILT_IN_ELEMENTS);
 			components.forEach(component -> elementNames.add(component.getName()));
 			processors.add(new UnknownComponentWarnProcessor(dialectPrefix, elementNames));
