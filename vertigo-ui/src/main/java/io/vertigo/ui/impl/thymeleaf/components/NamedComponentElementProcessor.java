@@ -72,13 +72,12 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 	/** For reserved chars @see https://www.thymeleaf.org/doc/articles/standarddialect5minutes.html */
 	private static final String NO_RESERVED_FIRST_CHAR_PATTERN_STR = "^(([^$@~#*]\\{)|.(?!\\{)).*$"; //use to detect if we should escape in placeholder : must encode js string, like 'mylabel' ; an expression starts with ${ #{ @{ *{ ~{ (no javascript starts so) ; |...| : see isLiteralSubstitution
 	private static final String NO_RESERVED_TEXT_PATTERN_STR = "^(?!')(?!.*[$#@]\\{).*$"; //an expression : ${ #{ @{ anywhere (as in listName + ${id}), ' at start ; |...| : see isLiteralSubstitution ; *{ ~{ at start only (see NO_RESERVED_FIRST_CHAR_PATTERN) ; a $ # @ starting no expression is text (#anchor, mail@domain)
-	private static final String NUMBER_PATTERN_STR = "^[0-9\\.]+";
 	private static final String SIMPLE_TEXT_PATTERN_STR = "^[a-zA-Z]*$";
 	private static final Pattern NO_RESERVED_FIRST_CHAR_PATTERN = Pattern.compile(NO_RESERVED_FIRST_CHAR_PATTERN_STR, Pattern.DOTALL);
 	private static final Pattern NO_RESERVED_TEXT_PATTERN = Pattern.compile(NO_RESERVED_TEXT_PATTERN_STR, Pattern.DOTALL);
-	private static final Pattern NUMBER_PATTERN = Pattern.compile(NUMBER_PATTERN_STR);
 	private static final Pattern SIMPLE_TEXT_PATTERN = Pattern.compile(SIMPLE_TEXT_PATTERN_STR);
-	private static final Pattern CANONICAL_NUMBER_PATTERN = Pattern.compile("^(0|[1-9][0-9]*)(\\.[0-9]+)?$");
+	/** A number Thymeleaf writes back as it is (no leading 0, no -0) : the other ones (0102030405, .5) are texts */
+	private static final Pattern CANONICAL_NUMBER_PATTERN = Pattern.compile("^(?!-0(\\.0*)?$)-?(0|[1-9][0-9]*)(\\.[0-9]+)?$");
 	/** A _ followed by a _ : see encodeComputedValue */
 	private static final Pattern UNDERSCORE_BEFORE_UNDERSCORE_PATTERN = Pattern.compile("_(?=_)");
 	private static final Pattern SINGLE_EXPRESSION_PATTERN = Pattern.compile("^\\s*[$#@*~]\\{(?:[^{}]++|\\{[^{}]*+\\})*+\\}\\s*$"); //one level of nested braces, as @{/x/{id}(id=${id})}
@@ -430,7 +429,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 		} else if (attributeValue instanceof String
 				&& !"true".equalsIgnoreCase((String) attributeValue) //not boolean
 				&& !"false".equalsIgnoreCase((String) attributeValue)
-				&& !NUMBER_PATTERN.matcher((String) attributeValue).matches() //not number
+				&& !CANONICAL_NUMBER_PATTERN.matcher((String) attributeValue).matches() //not number
 				&& !isLiteralSubstitution((String) attributeValue)
 				&& (isPlaceholder //is a placeholder => escape for thymeleaf
 						|| NO_RESERVED_TEXT_PATTERN.matcher((String) attributeValue).matches()) //no reserved char
@@ -469,7 +468,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 		return "'" + UNDERSCORE_BEFORE_UNDERSCORE_PATTERN.matcher(computedValue.replace("\\", "\\\\").replace("'", "\\'")).replaceAll("_' + '") + "'";
 	}
 
-	/** true or false (any case), or a number written in its usual form (01000 stays a text). */
+	/** true or false (any case), or a number written in its usual form (01000 stays a text), as for a written value. */
 	private static boolean isBooleanOrNumber(final String value) {
 		return "true".equalsIgnoreCase(value) || "false".equalsIgnoreCase(value) || CANONICAL_NUMBER_PATTERN.matcher(value).matches();
 	}

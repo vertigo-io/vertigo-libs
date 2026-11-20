@@ -98,6 +98,21 @@ class NamedComponentElementProcessorTest {
 	}
 
 	@Test
+	void numbers() {
+		// a number keeps its type only when Thymeleaf writes it back as it is : else a text, as written (written or computed)
+		for (final String number : new String[] { "12", "0", "0.5", "10.50", "-5", "-0.5" }) {
+			assertEquals(number, param(number));
+			assertEquals(number, attr(number));
+			assertEquals(number, NamedComponentElementProcessor.encodeComputedValue(number));
+		}
+		for (final String text : new String[] { "0102030405", "007", ".5", "5.", "-0", "-0.0", "-05", "1.2.3", "+5", "1e3", "-.5", "--5" }) {
+			assertEquals("'" + text + "'", param(text));
+			assertEquals("'" + text + "'", attr(text));
+			assertEquals("'" + text + "'", NamedComponentElementProcessor.encodeComputedValue(text));
+		}
+	}
+
+	@Test
 	void attrsUnchanged() {
 		// the attributes put in a *_attrs param : text unless they start with an expression
 		assertEquals("'##'", attr("##"));

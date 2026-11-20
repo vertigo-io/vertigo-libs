@@ -98,6 +98,10 @@ class NamedComponentComputedValueTest {
 		assertEquals("<span><b>Hello Value</b></span>", render("<vu:show label=\"|Hello ${value}|\"/>", "Value"));
 		assertEquals("<span title=\"${user.name}\"><b></b></span>", render("<vu:show title=\"${value}\"/>", "${user.name}"));
 		assertEquals("<span><b></b><i>yes</i></span>", render("<vu:show flag=\"true\"/>", "Value"));
+		// a leading 0 is kept
+		assertEquals("<span><b>0102030405</b></span>", render("<vu:show label=\"0102030405\"/>", "Value"));
+		// a negative number
+		assertEquals("<span><b>-5</b></span>", render("<vu:show label=\"-5\"/>", "Value"));
 	}
 
 	@Test
