@@ -367,7 +367,10 @@ public final class RateLimitingManagerImpl implements RateLimitingManager {
 		if (ipEnumeration != null) {
 			while (ipEnumeration.hasMoreElements()) {
 				// a header line may be a proxy chain "client, proxy1, proxy2" (X-Forwarded-For) : the first address is the client one.
-				// The reverse proxy in front of the application is responsible for the reliability of this header.
+				// The reverse proxy in front of the application is responsible for the reliability of this header : the first proxy managed by the
+				// application team overwrites it ; behind a CDN that appends to it, use useHeaderUserIp with the header set by the CDN.
+				// TODO : a param for the proxies, read from the right : their number (the address that many from the right), or their
+				// address ranges (the first address not in them, from right to left).
 				for (final String headerUserIp : ipEnumeration.nextElement().split(",")) {
 					final var useHeaderUserIp = headerUserIp.trim();
 					if (useHeaderUserIp.isEmpty() || USER_EXCLUDED_IPS.contains(useHeaderUserIp)) {
