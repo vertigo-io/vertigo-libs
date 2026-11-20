@@ -55,7 +55,14 @@ class NamedComponentComputedValueTest {
 			"field.html", "<q-input th:fragment=\"field(input_attrs)\" title=\"default\" stack-label maxlength=\"10\" class=\"a\" :class=\"{b: true}\" th:attr=\"__${input_attrs}__\"></q-input>",
 			"outer.html", "<div th:fragment=\"outer(input_attrs)\"><vu:field input_attrs=\"${input_attrs}\"/></div>",
 			// a component setting an attribute of its inner tag with a th:
-			"fixed.html", "<q-input th:fragment=\"fixed(input_attrs)\" th:maxlength=\"${10}\" th:attr=\"__${input_attrs}__\"></q-input>");
+			"fixed.html", "<q-input th:fragment=\"fixed(input_attrs)\" th:maxlength=\"${10}\" th:attr=\"__${input_attrs}__\"></q-input>",
+			// a component forwarding its relay_attrs to an inner one, and writing a value on the same tag
+			"relay.html", "<div th:fragment=\"relay(relay_attrs)\"><vu:show other_attrs=\"${relay_attrs}\" label=\"${'Written'}\"/></div>",
+			// a component writing an attribute without value after (relayflat) or before (flatrelay) the forwarded ones
+			"relayflat.html", "<div th:fragment=\"relayflat(relay_attrs)\"><vu:show other_attrs=\"${relay_attrs}\" flat/></div>",
+			"flatrelay.html", "<div th:fragment=\"flatrelay(relay_attrs)\"><vu:show flat other_attrs=\"${relay_attrs}\"/></div>",
+			// a component giving a value to the attributes of its content, as the menu of vu:buttons-group
+			"item.html", "<div th:fragment=\"item()\"><vu:content label=\"${'Item'}\"/></div>");
 
 	private static String render(final String page, final String value) {
 		return render(page, value, false);
@@ -83,12 +90,18 @@ class NamedComponentComputedValueTest {
 		final var field = new NamedComponentDefinition("field", "field.html", Optional.of("input_attrs"), "field");
 		final var outer = new NamedComponentDefinition("outer", "outer.html", Optional.of("input_attrs"), "outer");
 		final var fixed = new NamedComponentDefinition("fixed", "fixed.html", Optional.of("input_attrs"), "fixed");
+		final var relay = new NamedComponentDefinition("relay", "relay.html", Optional.of("relay_attrs"), "relay");
+		final var relayflat = new NamedComponentDefinition("relayflat", "relayflat.html", Optional.of("relay_attrs"), "relayflat");
+		final var flatrelay = new NamedComponentDefinition("flatrelay", "flatrelay.html", Optional.of("relay_attrs"), "flatrelay");
+		final var item = new NamedComponentDefinition("item", "item.html", Optional.empty(), "item");
 		engine.addDialect(new AbstractProcessorDialect("test", "vu", 2000) { // as VUiStandardDialect : after the th: standard dialect (1000)
 			@Override
 			public Set<IProcessor> getProcessors(final String dialectPrefix) {
 				return Set.of(new NamedComponentElementProcessor(dialectPrefix, show, devMode), new NamedComponentElementProcessor(dialectPrefix, wrap, devMode),
 						new NamedComponentElementProcessor(dialectPrefix, deep, devMode), new NamedComponentElementProcessor(dialectPrefix, field, devMode),
 						new NamedComponentElementProcessor(dialectPrefix, outer, devMode), new NamedComponentElementProcessor(dialectPrefix, fixed, devMode),
+						new NamedComponentElementProcessor(dialectPrefix, relay, devMode), new NamedComponentElementProcessor(dialectPrefix, relayflat, devMode),
+						new NamedComponentElementProcessor(dialectPrefix, flatrelay, devMode), new NamedComponentElementProcessor(dialectPrefix, item, devMode),
 						new ContentComponentProcessor(dialectPrefix));
 			}
 		});
@@ -98,6 +111,7 @@ class NamedComponentComputedValueTest {
 		// the attributes forwarded by an enclosing component, as label_attrs="${label_attrs}"
 		context.setVariable("forwardedLabel", "label=${value}");
 		context.setVariable("forwardedTitle", "title=${value}");
+		context.setVariable("forwardedNoTitle", "title=${null}");
 		return engine.process(page, context);
 	}
 
@@ -133,6 +147,36 @@ class NamedComponentComputedValueTest {
 		assertEquals("<q-input title=\"true\" stack-label maxlength=\"10\" class=\"a\" :class=\"{b: true}\"></q-input>", render("<vu:field input_th:title=\"true\"/>", "Value"));
 		// an attribute set by the component with a th: is processed after : it is not replaced (the component offers a param for it)
 		assertEquals("<q-input maxlength=\"10\" :maxlength=\"vueData.max\"></q-input>", render("<vu:fixed input_:maxlength=\"vueData.max\"/>", "Value"));
+	}
+
+	@Test
+	void forwardedValueWins() {
+		// the value given by the page, forwarded by a component, wins over the value the component writes on the same tag
+		assertEquals("<div><span><b>Page</b></span></div>", render("<vu:relay relay_label=\"Page\"/>", "Value"));
+		// nothing given by the page : the written value, evaluated
+		assertEquals("<div><span><b>Written</b></span></div>", render("<vu:relay/>", "Value"));
+		// whatever the place of the attribute written by the component, a ${null} included
+		assertEquals("<div><span :flat=\"false\"><b></b></span></div>", render("<vu:relayflat relay_flat=\"false\"/>", "Value"));
+		assertEquals("<div><span :flat=\"false\"><b></b></span></div>", render("<vu:flatrelay relay_flat=\"false\"/>", "Value"));
+		assertEquals("<div><span><b></b></span></div>", render("<vu:relayflat relay_flat=\"${null}\"/>", "Value"));
+		assertEquals("<span><b></b></span>", render("<vu:show th:title=\"${value}\" other_attrs=\"${forwardedNoTitle}\"/>", "Value"));
+	}
+
+	@Test
+	void booleanForwardedToDeclaredParam() {
+		// true, false or no value, forwarded to a declared param of the inner component : the param gets it
+		assertEquals("<div><span><b>Written</b><i>yes</i></span></div>", render("<vu:relay relay_flag=\"true\"/>", "Value"));
+		assertEquals("<div><span><b>Written</b><i>yes</i></span></div>", render("<vu:relay relay_flag/>", "Value"));
+		assertEquals("<div><span><b>Written</b></span></div>", render("<vu:relay relay_flag=\"false\"/>", "Value"));
+		// a :x evaluated by VueJS stays an attribute, the declared param x keeps its value
+		assertEquals("<div><span :flag=\"vueData.ok\"><b>Written</b></span></div>", render("<vu:relay relay_:flag=\"vueData.ok\"/>", "Value"));
+		assertEquals("<div><span :label=\"vueData.label\"><b>Written</b></span></div>", render("<vu:relay relay_:label=\"vueData.label\"/>", "Value"));
+	}
+
+	@Test
+	void contentAttributeReplacesComputedValue() {
+		// a value given by the component to its content replaces the value computed on the tag, and is evaluated
+		assertEquals("<div><span><b>Item</b></span></div>", render("<vu:item><vu:show th:label=\"${value}\"/></vu:item>", "Value"));
 	}
 
 	@Test
@@ -215,6 +259,10 @@ class NamedComponentComputedValueTest {
 		// a single expression is advised without the spaces around
 		final Exception spaces = assertThrows(Exception.class, () -> render("<vu:show th:label=\"' ${value} '\"/>", "Value", true));
 		assertTrue(rootMessage(spaces).contains("write label=\"${value}\""), rootMessage(spaces));
+		// an undeclared attribute : a javascript text is fine, a text starting with an expression is not
+		assertEquals("<span @click=\"fn(`${value}`)\"><b></b></span>", render("<vu:show th:@click=\"'fn(`${value}`)'\"/>", "Value", true));
+		final Exception attr = assertThrows(Exception.class, () -> render("<vu:show th:title=\"'${value}'\"/>", "Value", true));
+		assertTrue(rootMessage(attr).contains("write title=\"${value}\""), rootMessage(attr));
 		// a long value is checked without overflow
 		final Exception longValue = assertThrows(Exception.class, () -> render("<vu:show th:label=\"'${" + "{a}".repeat(5000) + "x'\"/>", "Value", true));
 		assertTrue(rootMessage(longValue).contains("gives the text"), rootMessage(longValue));

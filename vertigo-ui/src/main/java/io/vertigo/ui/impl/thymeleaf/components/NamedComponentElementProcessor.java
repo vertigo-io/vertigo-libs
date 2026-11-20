@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -509,6 +510,8 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 			final ITemplateContext context, final IElementModelStructureHandler structureHandler) {
 		final ITemplateEvent firstEvent = model.get(0);
 		final Map<String, String> attributes = new HashMap<>();
+		//the keys given by the page (th: attribute or forwarded, a ${null} included) : they win over the attributes written by the component
+		final Set<String> pageKeys = new HashSet<>();
 
 		if (firstEvent instanceof final IProcessableElementTag processableElementTag) {
 			checkSourceTag(sourceTag, processableElementTag);
@@ -517,10 +520,12 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 				if (isComputed(sourceTag, attribute)) {
 					//set by a th: attribute : the value computed by Thymeleaf (escaped for html)
 					if (devMode) {
-						checkThAttributeValue(sourceTag, completeName);
+						checkThAttributeValue(sourceTag, completeName, parameterNames.contains(completeName));
 					}
-					computedAttributes.add(putAttributeSupportKebabCase(completeName,
-							EscapedAttributeUtils.unescapeAttribute(context.getTemplateMode(), attribute.getValue()), attributes));
+					final String key = putAttributeSupportKebabCase(completeName,
+							EscapedAttributeUtils.unescapeAttribute(context.getTemplateMode(), attribute.getValue()), attributes);
+					computedAttributes.add(key);
+					pageKeys.add(key);
 				} else if (!isDynamicAttribute(completeName, StandardDialect.PREFIX)) {
 					if (isPlaceholder(completeName)) {
 						final String attrsValue = executeAttrsExpression(context, attribute.getValue());
@@ -528,6 +533,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 						if (assignations == null) {
 							throw new TemplateProcessingException("Could not parse value as attribute assignations: \"" + attribute.getValue() + "\"");
 						}
+						final Map<String, Object> forwardedValues = new LinkedHashMap<>();
 						for (final Assignation assignation : assignations.getAssignations()) {
 							final IStandardExpression leftExpr = assignation.getLeft();
 							final Object leftValue = leftExpr.execute(context);
@@ -542,14 +548,28 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 							final IStandardExpression rightExpr = assignation.getRight();
 							//must execute rightExpr too : if not must use th: in component, else expression will be parsed/encoded two times
 							//the executed value is data (as computed) ; a null (x=${null} removes the attribute) is forwarded as such
-							final Object rightValue = rightExpr.execute(context);
-							if (rightValue == null) {
-								putAttributeSupportKebabCase(newVariableName, "${null}", attributes);
-							} else {
-								computedAttributes.add(putAttributeSupportKebabCase(newVariableName, String.valueOf(rightValue), attributes));
-							}
+							forwardedValues.put(newVariableName, rightExpr.execute(context));
 						}
-					} else {
+						for (final Entry<String, Object> forwardedValue : forwardedValues.entrySet()) {
+							String name = forwardedValue.getKey();
+							final Object value = forwardedValue.getValue();
+							if (isBooleanOfDeclaredParam(name, value)) {
+								name = name.substring(1); //:x="true" (true, false or no value written by the page) : the declared param x gets it
+							} else if (value == null && forwardedValues.containsKey(':' + name) && isColonOfDeclaredParam(':' + name)) {
+								continue; //the removal of the static x going with :x : not for the declared param x
+							}
+							final String key;
+							if (value == null) {
+								key = putAttributeSupportKebabCase(name, "${null}", attributes);
+								computedAttributes.remove(key);
+							} else {
+								key = putAttributeSupportKebabCase(name, String.valueOf(value), attributes);
+								computedAttributes.add(key);
+							}
+							pageKeys.add(key);
+						}
+					} else if (!pageKeys.contains(attributeKey(completeName))) {
+						//a value forwarded from the page (a *_attrs) wins over the value written by the component on the same tag
 						putAttributeSupportKebabCase(completeName, attribute.getValue(), attributes);
 					}
 				}
@@ -575,6 +595,8 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 					final String key = putAttributeSupportKebabCase(attribute.getKey(), value, attributes);
 					if (computed) {
 						computedAttributes.add(key);
+					} else {
+						computedAttributes.remove(key); //a value written on vu:content replaces the value computed on the tag : evaluated
 					}
 				}
 			}
@@ -586,13 +608,17 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 	 * Dev mode : th:url="'@{/x}'" gives the text @{/x}, not a link (a text literal holding an expression) : fails with the
 	 * way to write it, url="@{/x}".
 	 */
-	private static void checkThAttributeValue(final IProcessableElementTag sourceTag, final String attributeName) {
+	private static void checkThAttributeValue(final IProcessableElementTag sourceTag, final String attributeName, final boolean declaredParam) {
 		for (final String thName : List.of(StandardDialect.PREFIX + ":" + attributeName, "data-" + StandardDialect.PREFIX + "-" + attributeName)) {
 			final String writtenValue = sourceTag.getAttributeValue(thName);
 			if (writtenValue != null && TEXT_LITERAL_HOLDING_EXPRESSION_PATTERN.matcher(writtenValue).matches()) {
 				final String text = writtenValue.trim().substring(1, writtenValue.trim().length() - 1).trim();
 				if (text.length() > 1 && text.charAt(0) == '`' && text.charAt(text.length() - 1) == '`') {
 					continue; //a javascript template literal : a text for Thymeleaf, its ${...} are for javascript
+				}
+				final boolean startsWithExpression = !NO_RESERVED_FIRST_CHAR_PATTERN.matcher(text).matches() || isLiteralSubstitution(text);
+				if (!declaredParam && !startsWithExpression) {
+					continue; //an undeclared attribute is a text (often javascript) unless it starts with an expression
 				}
 				//a single expression is written as it is, a text mixed with expressions as a literal substitution (unless it holds a |)
 				final String advice;
@@ -610,16 +636,30 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 		}
 	}
 
+	/** @return if the name is :x for the declared param x (and :x is not declared) */
+	private boolean isColonOfDeclaredParam(final String name) {
+		return name.length() > 1 && name.charAt(0) == ':' && !parameterNames.contains(name) && parameterNames.contains(name.substring(1));
+	}
+
+	/** @return if :x is true or false for the declared param x (written so in a *_attrs, as VueJS reads the text "false" as true) */
+	private boolean isBooleanOfDeclaredParam(final String name, final Object value) {
+		return value != null && isColonOfDeclaredParam(name)
+				&& ("true".equalsIgnoreCase(String.valueOf(value)) || "false".equalsIgnoreCase(String.valueOf(value)));
+	}
+
+	/** @return the key of an attribute : a kebab-case or :x name of a declared param in camelCase */
+	private String attributeKey(final String variableName) {
+		if (variableName.contains("-") && parameterNames.contains(variableName)) {
+			return kebabToCamelCase(variableName);
+		} else if (variableName.charAt(0) == ':' && parameterNames.contains(variableName)) {
+			return kebabToCamelCase("v-" + variableName.substring(1));
+		}
+		return variableName;
+	}
+
 	/** @return the key of the attribute */
 	private String putAttributeSupportKebabCase(final String variableName, final String variableValue, final Map<String, String> attributes) {
-		final String key;
-		if (variableName.contains("-") && parameterNames.contains(variableName)) {
-			key = kebabToCamelCase(variableName);
-		} else if (variableName.charAt(0) == ':' && parameterNames.contains(variableName)) {
-			key = kebabToCamelCase("v-" + variableName.substring(1));
-		} else {
-			key = variableName;
-		}
+		final String key = attributeKey(variableName);
 		attributes.put(key, variableValue);
 		return key;
 	}
