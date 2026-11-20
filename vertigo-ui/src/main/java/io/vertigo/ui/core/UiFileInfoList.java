@@ -51,18 +51,31 @@ public final class UiFileInfoList<F extends FileInfo> extends ArrayList<UiFileIn
 				.collect(Collectors.joining("; "));
 	}
 
-	public boolean add(final F f) {
-		add(new UiFileInfo<>(f));
-		return true;
+	//add, remove and get(uri) are synchronized : the uploaders of a page ask for their files at the same time.
+	//The other methods of the list (iteration, stream, size...) are not : synchronize on the list to use them during the uploads.
+
+	public synchronized boolean add(final F f) {
+		return add(new UiFileInfo<>(f));
 	}
 
-	public boolean remove(final FileInfoURI uri) {
-		return removeIf(f -> uri.equals(f.getFileUri()));
+	@Override
+	public synchronized boolean add(final UiFileInfo<F> uiFileInfo) {
+		return super.add(uiFileInfo);
 	}
 
-	public UiFileInfo<F> get(final FileInfoURI uri) {
-		final int index = indexOf(uri);
-		return index == -1 ? null : get(index);
+	public synchronized boolean remove(final FileInfoURI uri) {
+		return removeIf(f -> f.getFileUri().equals(uri));
+	}
+
+	/**
+	 * @param uri uri of the file
+	 * @return the info of this file, null if not in the list
+	 */
+	public synchronized UiFileInfo<F> get(final FileInfoURI uri) {
+		return stream()
+				.filter(f -> f.getFileUri().equals(uri))
+				.findFirst()
+				.orElse(null);
 	}
 
 }
