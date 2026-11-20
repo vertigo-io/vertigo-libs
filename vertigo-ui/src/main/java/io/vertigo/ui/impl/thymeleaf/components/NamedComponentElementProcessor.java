@@ -33,6 +33,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -79,6 +80,8 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 	private static final Pattern SIMPLE_TEXT_PATTERN = Pattern.compile(SIMPLE_TEXT_PATTERN_STR);
 	/** A number Thymeleaf writes back as it is (no leading 0, no -0) : the other ones (0102030405, .5) are texts */
 	private static final Pattern CANONICAL_NUMBER_PATTERN = Pattern.compile("^(?!-0(\\.0*)?$)-?(0|[1-9][0-9]*)(\\.[0-9]+)?$");
+	/** A \ not followed by a _ : see escapeAsText */
+	private static final Pattern BACKSLASH_NOT_BEFORE_UNDERSCORE_PATTERN = Pattern.compile("\\\\(?!_)");
 	/** A _ followed by a _ : see encodeComputedValue */
 	private static final Pattern UNDERSCORE_BEFORE_UNDERSCORE_PATTERN = Pattern.compile("_(?=_)");
 	private static final Pattern SINGLE_EXPRESSION_PATTERN = Pattern.compile("^\\s*[$#@*~]\\{(?:[^{}]++|\\{[^{}]*+\\})*+\\}\\s*$"); //one level of nested braces, as @{/x/{id}(id=${id})}
@@ -439,7 +442,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 			//IF placeholder or no thymeleaf expression (${ #{ @{ anywhere, ' at start, |...|)
 			//AND dont start with reserved char (for case like ${value} )
 			//BUT IF true, false or number (it become string instead)
-			return "'" + escapeFinalBackslash(((String) attributeValue).replace("'", "\\'")) + "'"; //escape as text
+			return "'" + escapeAsText((String) attributeValue) + "'"; //escape as text
 		}
 		return attributeValue;
 	}
@@ -449,13 +452,12 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 		return value.charAt(0) == '|' && value.indexOf('|', 1) > 0;
 	}
 
-	private static String escapeFinalBackslash(final String text) {
-		int finalBackslashes = 0;
-		while (finalBackslashes < text.length() && text.charAt(text.length() - 1 - finalBackslashes) == '\\') {
-			finalBackslashes++;
-		}
-		//an odd final \ would escape the closing quote : it is doubled, as Thymeleaf reads \\ as \
-		return finalBackslashes % 2 == 1 ? text + '\\' : text;
+	/**
+	 * A text shown as written, \ included : each \ is doubled, as Thymeleaf reads \\ as \ in a text literal (and a final \ would escape the closing quote),
+	 * but before _ (\_\_ shows __ without the Thymeleaf preprocessing) ; each ' is escaped.
+	 */
+	private static String escapeAsText(final String text) {
+		return BACKSLASH_NOT_BEFORE_UNDERSCORE_PATTERN.matcher(text).replaceAll(Matcher.quoteReplacement("\\\\")).replace("'", "\\'");
 	}
 
 	/**

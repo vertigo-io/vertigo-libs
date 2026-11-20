@@ -57,16 +57,25 @@ class NamedComponentElementProcessorTest {
 	}
 
 	@Test
-	void textEndingWithBackslash() {
-		// a final \ would escape the closing quote : it is doubled, as Thymeleaf reads \\ as \
-		assertEquals("'C:\\dir\\\\'", param("C:\\dir\\"));
-		assertEquals("'C:\\dir\\\\'", attr("C:\\dir\\"));
-		assertEquals("'end\\\\\\\\'", param("end\\\\\\"));
+	void textWithBackslash() {
+		// a text is shown as written, \ included : each \ is doubled, as Thymeleaf reads \\ as \ (a final \ would escape the closing quote)
+		assertEquals("'C:\\\\dir\\\\'", param("C:\\dir\\"));
+		assertEquals("'C:\\\\dir\\\\'", attr("C:\\dir\\"));
+		assertEquals("'end\\\\\\\\\\\\'", param("end\\\\\\"));
+		assertEquals("'end\\\\\\\\'", param("end\\\\"));
 		assertEquals("'quote\\'\\\\'", param("quote'\\"));
-		// an already doubled final \ and a \ inside are unchanged (\_\_ shows __ without preprocessing)
-		assertEquals("'end\\\\'", param("end\\\\"));
-		assertEquals("'^\\d+$'", param("^\\d+$"));
+		assertEquals("'^\\\\d+$'", param("^\\d+$"));
+		assertEquals("'a\\\\\\\\b'", param("a\\\\b"));
+		// a \' is shown as written (javascript)
+		assertEquals("'it\\\\\\'s'", param("it\\'s"));
+		assertEquals("'confirm(\\'l\\\\\\'effacer ?\\')'", attr("confirm('l\\'effacer ?')"));
+		assertEquals("'a\\\\\\\\\\'b'", param("a\\\\'b"));
+		// but \_\_ : it shows __ without the Thymeleaf preprocessing
 		assertEquals("'\\_\\_init\\_\\_'", param("\\_\\_init\\_\\_"));
+		// a \_ alone is shown as written (Thymeleaf only reads the pair \_\_)
+		assertEquals("'a\\_b'", param("a\\_b"));
+		assertEquals("'\\\\\\_'", param("\\\\_"));
+		assertEquals("'abc\\_'", param("abc\\_"));
 	}
 
 	@Test

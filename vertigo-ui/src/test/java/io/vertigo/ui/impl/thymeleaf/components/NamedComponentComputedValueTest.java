@@ -188,6 +188,26 @@ class NamedComponentComputedValueTest {
 		assertEquals("<span><b></b><i>yes</i></span>", render("<vu:show flag=\"true\"/>", "Value"));
 		// a leading 0 is kept
 		assertEquals("<span><b>0102030405</b></span>", render("<vu:show label=\"0102030405\"/>", "Value"));
+		// a text is shown as written, \ included (javascript too) ; \_\_ shows __ (Thymeleaf)
+		assertEquals("<span><b>C:\\dir\\</b></span>", render("<vu:show label=\"C:\\dir\\\"/>", "Value"));
+		assertEquals("<span title=\"C:\\dir\\\"><b></b></span>", render("<vu:show title=\"C:\\dir\\\"/>", "Value"));
+		assertEquals("<span><b>C:\\dir\\\\</b></span>", render("<vu:show label=\"C:\\dir\\\\\"/>", "Value"));
+		assertEquals("<span title=\"C:\\dir\\\\\"><b></b></span>", render("<vu:show title=\"C:\\dir\\\\\"/>", "Value"));
+		assertEquals("<span><b>confirm(&#39;l\\&#39;effacer ?&#39;)</b></span>", render("<vu:show label=\"confirm('l\\'effacer ?')\"/>", "Value"));
+		assertEquals("<span title=\"confirm(&#39;l\\&#39;effacer ?&#39;)\"><b></b></span>", render("<vu:show title=\"confirm('l\\'effacer ?')\"/>", "Value"));
+		assertEquals("<span><b>fin \\&#39;</b></span>", render("<vu:show label=\"fin \\'\"/>", "Value"));
+		assertEquals("<span title=\"fin \\&#39;\"><b></b></span>", render("<vu:show title=\"fin \\'\"/>", "Value"));
+		assertEquals("<span><b>a\\\\b</b></span>", render("<vu:show label=\"a\\\\b\"/>", "Value"));
+		assertEquals("<span title=\"a\\\\b\"><b></b></span>", render("<vu:show title=\"a\\\\b\"/>", "Value"));
+		assertEquals("<span><b>\\\\server\\share</b></span>", render("<vu:show label=\"\\\\server\\share\"/>", "Value"));
+		assertEquals("<span title=\"\\\\server\\share\"><b></b></span>", render("<vu:show title=\"\\\\server\\share\"/>", "Value"));
+		assertEquals("<span><b>^\\d+$</b></span>", render("<vu:show label=\"^\\d+$\"/>", "Value"));
+		assertEquals("<span title=\"^\\d+$\"><b></b></span>", render("<vu:show title=\"^\\d+$\"/>", "Value"));
+		assertEquals("<span><b>C:\\new\\table</b></span>", render("<vu:show label=\"C:\\new\\table\"/>", "Value"));
+		assertEquals("<span title=\"C:\\new\\table\"><b></b></span>", render("<vu:show title=\"C:\\new\\table\"/>", "Value"));
+		assertEquals("<span><b>a\\\\&#39;b</b></span>", render("<vu:show label=\"a\\\\'b\"/>", "Value"));
+		assertEquals("<span title=\"a\\\\&#39;b\"><b></b></span>", render("<vu:show title=\"a\\\\'b\"/>", "Value"));
+		assertEquals("<span><b>__init__</b></span>", render("<vu:show label=\"\\_\\_init\\_\\_\"/>", "Value"));
 		// a negative number
 		assertEquals("<span><b>-5</b></span>", render("<vu:show label=\"-5\"/>", "Value"));
 	}
