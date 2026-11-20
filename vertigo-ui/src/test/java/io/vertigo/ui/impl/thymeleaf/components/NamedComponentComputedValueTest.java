@@ -50,7 +50,12 @@ class NamedComponentComputedValueTest {
 			"show.html", "<span th:fragment=\"show(label, flag, other_attrs)\" th:attr=\"__${other_attrs}__\">"
 					+ "<b th:text=\"${label}\"></b><i th:if=\"${flag == true}\">yes</i></span>",
 			"wrap.html", "<div th:fragment=\"wrap()\"><vu:content th:title=\"${value}\"/></div>",
-			"deep.html", "<i th:fragment=\"deep(depth)\" th:attr=\"data-d=${depth}\"><vu:deep th:if=\"${depth lt 3}\" th:depth=\"${depth + 1}\"/></i>");
+			"deep.html", "<i th:fragment=\"deep(depth)\" th:attr=\"data-d=${depth}\"><vu:deep th:if=\"${depth lt 3}\" th:depth=\"${depth + 1}\"/></i>",
+			// a component with static attributes on its inner tag, and a component forwarding its input_attrs to it
+			"field.html", "<q-input th:fragment=\"field(input_attrs)\" title=\"default\" stack-label maxlength=\"10\" class=\"a\" :class=\"{b: true}\" th:attr=\"__${input_attrs}__\"></q-input>",
+			"outer.html", "<div th:fragment=\"outer(input_attrs)\"><vu:field input_attrs=\"${input_attrs}\"/></div>",
+			// a component setting an attribute of its inner tag with a th:
+			"fixed.html", "<q-input th:fragment=\"fixed(input_attrs)\" th:maxlength=\"${10}\" th:attr=\"__${input_attrs}__\"></q-input>");
 
 	private static String render(final String page, final String value) {
 		return render(page, value, false);
@@ -75,11 +80,16 @@ class NamedComponentComputedValueTest {
 		final var show = new NamedComponentDefinition("show", "show.html", Optional.of("label, flag, other_attrs"), "show");
 		final var wrap = new NamedComponentDefinition("wrap", "wrap.html", Optional.empty(), "wrap");
 		final var deep = new NamedComponentDefinition("deep", "deep.html", Optional.of("depth"), "deep");
+		final var field = new NamedComponentDefinition("field", "field.html", Optional.of("input_attrs"), "field");
+		final var outer = new NamedComponentDefinition("outer", "outer.html", Optional.of("input_attrs"), "outer");
+		final var fixed = new NamedComponentDefinition("fixed", "fixed.html", Optional.of("input_attrs"), "fixed");
 		engine.addDialect(new AbstractProcessorDialect("test", "vu", 2000) { // as VUiStandardDialect : after the th: standard dialect (1000)
 			@Override
 			public Set<IProcessor> getProcessors(final String dialectPrefix) {
 				return Set.of(new NamedComponentElementProcessor(dialectPrefix, show, devMode), new NamedComponentElementProcessor(dialectPrefix, wrap, devMode),
-						new NamedComponentElementProcessor(dialectPrefix, deep, devMode), new ContentComponentProcessor(dialectPrefix));
+						new NamedComponentElementProcessor(dialectPrefix, deep, devMode), new NamedComponentElementProcessor(dialectPrefix, field, devMode),
+						new NamedComponentElementProcessor(dialectPrefix, outer, devMode), new NamedComponentElementProcessor(dialectPrefix, fixed, devMode),
+						new ContentComponentProcessor(dialectPrefix));
 			}
 		});
 		final var context = new Context();
@@ -89,6 +99,40 @@ class NamedComponentComputedValueTest {
 		context.setVariable("forwardedLabel", "label=${value}");
 		context.setVariable("forwardedTitle", "title=${value}");
 		return engine.process(page, context);
+	}
+
+	@Test
+	void booleanAttributes() {
+		// true or false (any case) for an attribute of a *_attrs : written with : to be evaluated by VueJS, as a boolean param (VueJS reads the text "false" as true)
+		assertEquals("<span :stack-label=\"false\"><b></b></span>", render("<vu:show stack-label=\"false\"/>", "Value"));
+		assertEquals("<span :stack-label=\"true\"><b></b></span>", render("<vu:show stack-label=\"TRUE\"/>", "Value"));
+		assertEquals("<span :stack-label=\"false\"><b></b></span>", render("<vu:show th:stack-label=\"${value == 'Other'}\"/>", "Value"));
+		// an attribute without value, as before
+		assertEquals("<span :flat=\"true\"><b></b></span>", render("<vu:show flat/>", "Value"));
+		// an event or a slot keeps its name
+		assertEquals("<span @click=\"true\"><b></b></span>", render("<vu:show @click=\"true\"/>", "Value"));
+		// another value stays a text
+		assertEquals("<span stack-label=\"no\"><b></b></span>", render("<vu:show stack-label=\"no\"/>", "Value"));
+	}
+
+	@Test
+	void colonAttributeReplacesStaticAttribute() {
+		// an attribute written with : by the developer (or true / false) replaces the static attribute of the same name put by the component (VueJS keeps the first one)
+		final String others = "title=\"default\" maxlength=\"10\" class=\"a\" :class=\"{b: true}\"";
+		assertEquals("<q-input " + others + " :stack-label=\"false\"></q-input>", render("<vu:field input_stack-label=\"false\"/>", "Value"));
+		assertEquals("<div><q-input " + others + " :stack-label=\"false\"></q-input></div>", render("<vu:outer input_stack-label=\"false\"/>", "Value"));
+		assertEquals("<q-input title=\"default\" stack-label class=\"a\" :class=\"{b: true}\" :maxlength=\"vueData.max\"></q-input>",
+				render("<vu:field input_:maxlength=\"vueData.max\"/>", "Value"));
+		// a text replaces the attribute of the same name, ${null} removes it (also forwarded by a component)
+		assertEquals("<q-input title=\"Name\" stack-label maxlength=\"10\" class=\"a\" :class=\"{b: true}\"></q-input>", render("<vu:field input_title=\"Name\"/>", "Value"));
+		assertEquals("<q-input title=\"default\" stack-label class=\"a\" :class=\"{b: true}\"></q-input>", render("<vu:field input_maxlength=\"${null}\"/>", "Value"));
+		assertEquals("<div><q-input title=\"default\" stack-label class=\"a\" :class=\"{b: true}\"></q-input></div>", render("<vu:outer input_maxlength=\"${null}\"/>", "Value"));
+		// class and style are merged by VueJS : a :class replaces the :class of the component, its class stays
+		assertEquals("<q-input title=\"default\" stack-label maxlength=\"10\" class=\"a\" :class=\"{c: true}\"></q-input>", render("<vu:field input_:class=\"{c: true}\"/>", "Value"));
+		// a th: attribute given by the developer is evaluated on the inner tag, true or false included
+		assertEquals("<q-input title=\"true\" stack-label maxlength=\"10\" class=\"a\" :class=\"{b: true}\"></q-input>", render("<vu:field input_th:title=\"true\"/>", "Value"));
+		// an attribute set by the component with a th: is processed after : it is not replaced (the component offers a param for it)
+		assertEquals("<q-input maxlength=\"10\" :maxlength=\"vueData.max\"></q-input>", render("<vu:fixed input_:maxlength=\"vueData.max\"/>", "Value"));
 	}
 
 	@Test

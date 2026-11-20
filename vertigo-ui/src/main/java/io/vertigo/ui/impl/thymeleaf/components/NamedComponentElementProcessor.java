@@ -541,8 +541,13 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 							}
 							final IStandardExpression rightExpr = assignation.getRight();
 							//must execute rightExpr too : if not must use th: in component, else expression will be parsed/encoded two times
-							//the executed value is data (as computed)
-							computedAttributes.add(putAttributeSupportKebabCase(newVariableName, String.valueOf(rightExpr.execute(context)), attributes));
+							//the executed value is data (as computed) ; a null (x=${null} removes the attribute) is forwarded as such
+							final Object rightValue = rightExpr.execute(context);
+							if (rightValue == null) {
+								putAttributeSupportKebabCase(newVariableName, "${null}", attributes);
+							} else {
+								computedAttributes.add(putAttributeSupportKebabCase(newVariableName, String.valueOf(rightValue), attributes));
+							}
 						}
 					} else {
 						putAttributeSupportKebabCase(completeName, attribute.getValue(), attributes);
@@ -663,15 +668,25 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 		}
 		//a computed value is data ; the value of a th: attribute (as label_th:title) is evaluated by that th: attribute only
 		final boolean asData = value instanceof String && (computed || isDynamicAttribute(attributeName, StandardDialect.PREFIX));
-		previousPlaceholderValues.put(encodePlaceholderAttributeName(attributeName, value), asData ? encodeComputedValue((String) value) : encodeAttributeValue(value, true));
+		final String placeholderAttributeName = encodePlaceholderAttributeName(attributeName, value);
+		previousPlaceholderValues.put(placeholderAttributeName, asData ? encodeComputedValue((String) value) : encodeAttributeValue(value, true));
+		//an attribute written with : (evaluated by VueJS) replaces the static attribute of the same name put by the component, as VueJS keeps the first one (not class nor style, merged by VueJS)
+		if (placeholderAttributeName.startsWith("':")) {
+			final String boundName = placeholderAttributeName.substring(2, placeholderAttributeName.length() - 1);
+			if (!"class".equals(boundName) && !"style".equals(boundName)) {
+				previousPlaceholderValues.putIfAbsent(encodePlaceholderAttributeName(boundName, ""), "${null}");
+			}
+		}
 	}
 
 	private static String encodePlaceholderAttributeName(final String attributeName, final Object attributeValue) {
+		//no value, true or false : written with : to be evaluated by VueJS (:x="false"), as VueJS reads the text "false" as true ; not for an attribute already written with :, an event, a slot or a th: attribute
 		if (!attributeName.startsWith(":") && !attributeName.startsWith("v-") && !attributeName.startsWith("'")
+				&& !attributeName.startsWith("@") && !attributeName.startsWith("#") && !isDynamicAttribute(attributeName, StandardDialect.PREFIX)
 				&& (attributeValue == null
 						|| attributeValue instanceof String
-								&& "true".equalsIgnoreCase((String) attributeValue) //boolean
-								&& "false".equalsIgnoreCase((String) attributeValue))) {
+								&& ("true".equalsIgnoreCase((String) attributeValue) //boolean
+										|| "false".equalsIgnoreCase((String) attributeValue)))) {
 			return "':" + attributeName + "'";
 		} else if (!attributeName.startsWith("'") //if not only char and don't already start by ' add them
 				&& !SIMPLE_TEXT_PATTERN.matcher(attributeName).matches()) {
