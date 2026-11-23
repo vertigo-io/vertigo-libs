@@ -1,5 +1,5 @@
 /*!
-* Quasar Framework v2.35.4
+* Quasar Framework v2.35.6
 * (c) 2015-present Razvan Stoenescu
 * Released under the MIT License.
 */
@@ -1311,7 +1311,7 @@
 		};
 	}
 	var install_quasar_default = function installQuasar(parentApp, opts = {}) {
-		const $q = { version: "2.35.4" };
+		const $q = { version: "2.35.6" };
 		if (!globalConfigIsFrozen) {
 			if (opts.config !== void 0) Object.assign(globalConfig, opts.config);
 			$q.config = { ...globalConfig };
@@ -1342,13 +1342,18 @@
 		"TB",
 		"PB"
 	];
-	function humanStorageSize(bytes, decimals = 1) {
+	const unitsUpperLen = units.length - 1;
+	function humanStorageSize(rawBytes, decimals = 1) {
+		let bytes = typeof rawBytes === "string" && rawBytes.trim() !== "" ? Number(rawBytes) : rawBytes;
+		if (typeof bytes !== "number" || Number.isNaN(bytes)) throw new TypeError("humanStorageSize: expected a number or a numeric string");
 		let u = 0;
-		while (Number.parseInt(bytes, 10) >= 1024 && u < units.length - 1) {
+		let fixedBytes = bytes.toFixed(decimals);
+		while (Math.abs(Number(fixedBytes)) >= 1024 && u < unitsUpperLen) {
 			bytes /= 1024;
 			++u;
+			fixedBytes = bytes.toFixed(decimals);
 		}
-		return `${bytes.toFixed(decimals)}${units[u]}`;
+		return `${fixedBytes}${units[u]}`;
 	}
 	function capitalize(str) {
 		return str.charAt(0).toUpperCase() + str.slice(1);
@@ -32538,7 +32543,7 @@ onmessage = evt => {
 	});
 	// src/index.umd.js
 	window.Quasar = {
-		version: "2.35.4",
+		version: "2.35.6",
 		install(app, opts) {
 			install_quasar_default(app, {
 				components: components_exports,
