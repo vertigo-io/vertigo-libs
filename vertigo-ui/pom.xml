@@ -63,7 +63,7 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      <!-- Force OpenTelemetry 1.51.0 Ã”Ã‡Ã¶ Selenium 4.33 wants 1.50.0 which is not fully available on Nexus; 1.51.0 is compatible -->
+      <!-- Force OpenTelemetry 1.68.0 : the version wanted by Selenium 4.54 -->
       <dependency>
         <groupId>io.opentelemetry</groupId>
         <artifactId>opentelemetry-api</artifactId>
@@ -155,13 +155,13 @@
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-support</artifactId>
-      <version>4.52.0</version>
+      <version>4.54.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-api</artifactId>
-      <version>4.52.0</version>
+      <version>4.54.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -179,13 +179,13 @@
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-firefox-driver</artifactId>
-      <version>4.52.0</version>
+      <version>4.54.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.microsoft.playwright</groupId>
       <artifactId>playwright</artifactId>
-      <version>1.65.0</version>
+      <version>1.65.1</version>
       <scope>test</scope> <!-- UiUpgradeComparisonTest (disabled, run manually when upgrading quasar) -->
     </dependency>
     <!-- Search -->
