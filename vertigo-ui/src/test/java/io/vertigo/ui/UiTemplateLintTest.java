@@ -59,6 +59,8 @@ class UiTemplateLintTest {
 	private static final Pattern BARE_FUNCTION_EXPRESSION = Pattern.compile("=\"\\|?\\s*function\\s*\\(");
 
 	private static final Pattern I18N_KEY = Pattern.compile("#\\{([a-zA-Z0-9_.]+)\\}");
+	/** The keys of the components may hold a dash (the name of the component). */
+	private static final Pattern COMPONENT_I18N_KEY = Pattern.compile("#\\{([a-zA-Z0-9_.-]+)\\}");
 
 	/** A component is named by its fragment, and by its vu:alias if any. */
 	private static final Pattern FRAGMENT_NAME = Pattern.compile("th:fragment=\"\\s*([a-zA-Z0-9_-]+)");
@@ -100,6 +102,36 @@ class UiTemplateLintTest {
 		}
 		Assertions.assertTrue(offenders.isEmpty(),
 				() -> "i18n keys without a sibling bundle entry, they render as ??key_locale??:\n" + String.join("\n", offenders));
+	}
+
+	/**
+	 * A component with bundles next to its template (sharing its name) reads its messages from them : a key it reads must be in each
+	 * of them (the default one, _en, _fr), or in the default one, or the page shows the raw key.
+	 */
+	@Test
+	void every_i18n_key_of_the_components_is_declared_in_their_sibling_bundles() throws IOException {
+		final List<String> offenders = new ArrayList<>();
+		for (final Path component : htmlFilesIn(COMPONENTS_DIR)) {
+			final String name = component.getFileName().toString().replaceAll("\\.html$", "");
+			final Properties defaultBundle = load(component.resolveSibling(name + ".properties"));
+			final Map<String, Properties> bundles = new HashMap<>();
+			for (final String suffix : List.of("", "_en", "_fr")) {
+				final Path bundle = component.resolveSibling(name + suffix + ".properties");
+				if (Files.exists(bundle)) {
+					bundles.put(bundle.getFileName().toString(), load(bundle));
+				}
+			}
+			final Matcher matcher = COMPONENT_I18N_KEY.matcher(Files.readString(component, StandardCharsets.UTF_8));
+			while (matcher.find()) {
+				for (final Map.Entry<String, Properties> bundle : bundles.entrySet()) {
+					if (!bundle.getValue().containsKey(matcher.group(1)) && !defaultBundle.containsKey(matcher.group(1))) {
+						offenders.add(component + " -> missing key '" + matcher.group(1) + "' in " + bundle.getKey());
+					}
+				}
+			}
+		}
+		Assertions.assertTrue(offenders.isEmpty(),
+				() -> "i18n keys of a component missing in its bundle, they render as ??key_locale??:\n" + String.join("\n", offenders));
 	}
 
 	/**
@@ -161,8 +193,11 @@ class UiTemplateLintTest {
 	}
 
 	private static Properties bundleOf(final Path view) throws IOException {
+		return load(view.resolveSibling(bundleName(view)));
+	}
+
+	private static Properties load(final Path bundle) throws IOException {
 		final Properties properties = new Properties();
-		final Path bundle = view.resolveSibling(bundleName(view));
 		if (Files.exists(bundle)) {
 			try (InputStream in = Files.newInputStream(bundle)) {
 				properties.load(in);
