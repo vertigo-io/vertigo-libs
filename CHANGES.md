@@ -13,8 +13,8 @@ Running 4.5.0-SNAPSHOT - 2026-12-XX
 [Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-441-to-450)
 
 * **[Ui] Fix self-closed custom elements (`<q-btn ... />`) : they are now closed automatically in rendered templates** : the browser kept them open, so they swallowed the markup that followed (extended `v-if` scope, siblings absorbed as default slot). Only the elements prefixed by `q-`, `v-`, `vui-` or `dsfr-` are concerned, a list overridable with `VSpringWebConfig.getAutoCloseTagsPrefixes()`. `UnAutoCloseTagsFilter` is deprecated
-* **[Ui] The embedded CDN no longer serves vue 3.5.13, quasar 2.18.1 and axios 1.8.4** : only the default versions and the previous ones are kept (vue 3.5.45 / 3.5.39, quasar 2.35.4 / 2.21.1, axios 1.21.1 / 1.18.1) ; a project setting `vueJsVersion`, `quasarVersion` or `axiosVersion` to a removed version must change it
-* [Ui] Upgrade Quasar 2.21.1 -> 2.35.4, Vue 3.5.39 -> 3.5.45 and axios 1.18.1 -> 1.21.1 (defaults of `vu:head` / `vu:head-meta`) : the message zone under the fields (hint, error) now takes its place in the layout (Quasar 2.25.1), the default margin of the Vertigo error message is removed so a field in error keeps its size, but the narrow columns of `vu:table-modifiable` get wider and their rows higher ; a field keeps the focus while its popup is open ; a sorted date column keeps its empty dates first in ascending order and last in descending order (Quasar 2.23.4 `extractDate` returns an Invalid Date for them)
+* **[Ui] The embedded CDN no longer serves vue 3.5.13, quasar 2.18.1 and axios 1.8.4** : only the default versions and the previous ones are kept (vue 3.5.46 / 3.5.39, quasar 2.35.6 / 2.21.1, axios 1.21.1 / 1.18.1) ; a project setting `vueJsVersion`, `quasarVersion` or `axiosVersion` to a removed version must change it
+* [Ui] Upgrade Quasar 2.21.1 -> 2.35.6, Vue 3.5.39 -> 3.5.46 and axios 1.18.1 -> 1.21.1 (defaults of `vu:head` / `vu:head-meta`) : the message zone under the fields (hint, error) now takes its place in the layout (Quasar 2.25.1), the default margin of the Vertigo error message is removed so a field in error keeps its size, but the narrow columns of `vu:table-modifiable` get wider and their rows higher ; a field keeps the focus while its popup is open ; a sorted date column keeps its empty dates first in ascending order and last in descending order (Quasar 2.23.4 `extractDate` returns an Invalid Date for them)
 * **[Ui] Param `THYMELEAF_DEV_MODE` (true by default) : templates not cached and `vu:` elements without component logged as WARN (once by template)** : set it to false in production ; a WARN at startup says so (`VSpringWebConfig.isDevMode()` returned true unless overridden)
 * **[Ui] The values given to a component by a `th:` attribute, or forwarded by another component, are passed as they are** : `th:url="'@{/commons/upload}'"` gives the text `@{/commons/upload}`, write `url="@{/commons/upload}"` (in dev mode, a page written so fails with this advice, for a param, or an attribute whose text starts with an expression) ; a value given by the page and forwarded by a component wins over the value the component writes on the same tag
 * **[Ui] Fix the attributes of a component (other than its params) set to `true` or `false` : written with `:` to be evaluated by VueJS, as a param (`stack-label="false"` gives `:stack-label="false"`)** : VueJS read the text `"false"` as true (the Quasar or DSFR prop was on, a `disabled="false"` disabled the field). An attribute written with `:` (`:stack-label="vueData.stacked"`, or `true` / `false`) replaces the static attribute of the same name put by the component, VueJS kept the first one ; `x="${null}"` removes it, also when forwarded to an inner component
@@ -55,19 +55,20 @@ Running 4.5.0-SNAPSHOT - 2026-12-XX
 * [Vega] SAML2 : stricter checks of the SAML response signature ; an unsigned response fails with an explicit message
 * **[Vega] SAML2 : the SAML response is checked as required by the SAML 2.0 Web Browser SSO profile, and its assertion must be encrypted, on by default** : a response not compliant is refused, with an error naming the param to adapt ; an assertion is accepted once and must hold a bearer subject confirmation. Params of the saml connector to adapt to the IdP : `cryptAssertion` (true by default, now applied : an IdP that does not encrypt the assertions needs `cryptAssertion=false`), `checkDestination` (set `externalUrl` behind a proxy), `checkAudience`, `clockSkewSeconds`, `checkInResponseTo` (false by default)
 * New libs
-  - playwright 1.65.0 (test dependency : `UiUpgradeComparisonTest`, disabled by default, compares the vertigo-ui components between two versions of Quasar, Vue, axios or vue-dsfr : screenshots, accessibility tree, overlays, javascript errors and checks)
+  - playwright 1.65.1 (test dependency : `UiUpgradeComparisonTest`, disabled by default, compares the vertigo-ui components between two versions of Quasar, Vue, axios or vue-dsfr : screenshots, accessibility tree, overlays, javascript errors and checks)
 * Update libs
   - c3p0 0.14.1 -> 0.15.1
   - guava 33.6.0-jre -> 33.8.0-jre
   - ojdbc11 23.26.2.0.0 -> 23.26.4.0.0
-  - postgresql 42.7.12 -> 42.7.14
+  - postgresql 42.7.12 -> 42.7.15
+  - h2 2.2.224 -> 2.5.252 (version managed by vertigo-database ; `org.h2.tools.Console` is no longer instantiable, see migration guide)
   - thymeleaf-spring6 3.1.5.RELEASE -> 3.1.7.RELEASE
   - tika-core 3.3.1 -> 3.3.3
   - jackson-core / jackson-dataformat-cbor / jackson-dataformat-smile / jackson-dataformat-yaml 2.22.0 -> 2.23.0 (tests)
   - opentelemetry-api / opentelemetry-context 1.51.0 -> 1.68.0 (tests)
-  - selenium 4.33.0 -> 4.52.0 (tests)
-  - vue 3.5.39 -> 3.5.45
-  - quasar 2.21.1 -> 2.35.4
+  - selenium 4.33.0 -> 4.54.0 (tests)
+  - vue 3.5.39 -> 3.5.46
+  - quasar 2.21.1 -> 2.35.6
   - axios 1.18.1 -> 1.21.1
   - ol 10.9.0 -> 10.11.0
   - core-js 3.49.0 -> 3.51.0
