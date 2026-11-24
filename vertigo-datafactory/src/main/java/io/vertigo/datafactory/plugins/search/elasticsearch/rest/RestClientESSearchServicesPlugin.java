@@ -46,6 +46,7 @@ import co.elastic.clients.elasticsearch._types.HealthStatus;
 import co.elastic.clients.elasticsearch._types.mapping.DynamicTemplate;
 import co.elastic.clients.elasticsearch._types.mapping.KeywordProperty;
 import co.elastic.clients.elasticsearch.core.GetResponse;
+import co.elastic.clients.elasticsearch.indices.CreateIndexRequest;
 import co.elastic.clients.elasticsearch.indices.IndexSettings;
 import co.elastic.clients.elasticsearch.indices.IndexSettingsAnalysis;
 import co.elastic.clients.elasticsearch.indices.PutMappingRequest;
@@ -195,18 +196,27 @@ public final class RestClientESSearchServicesPlugin implements SearchServicesPlu
 		return StringUtil.camelToConstCase(envIndexPrefix + indexDefinition.getName()).toLowerCase(Locale.ROOT);
 	}
 
+	/**
+	 * Sets the index settings (analyzers...) read from the config file on an index creation request.
+	 * @param builder the index creation request
+	 * @param configFileUrl the index settings file
+	 */
+	static void applyIndexSettings(final CreateIndexRequest.Builder builder, final URL configFileUrl) {
+		try (var is = configFileUrl.openStream()) {
+			// 2. Construire la requête en utilisant withJson au niveau des settings (qui sait aussi lire le yaml)
+			builder.settings(s -> s.withJson(is));
+		} catch (final IOException e) {
+			//an index created without its settings (analyzers...) would give wrong search results
+			throw WrappedException.wrap(e, "Can't read the index settings {0}", configFileUrl);
+		}
+	}
+
 	private void createIndex(final String myIndexName) throws IOException {
 		if (!esClient.indices().exists(b -> b.index(myIndexName)).value()) {
 			final var createIndexResponse = esClient.indices().create(b -> {
 				b.index(myIndexName);
 				if (configFileUrl != null) {
-					try (var is = configFileUrl.openStream()) {
-						// 2. Construire la requête en utilisant withJson au niveau des settings (qui sait aussi lire le yaml)
-						b.settings(s -> s.withJson(is));
-					} catch (final IOException e) {
-						// Gestion des erreurs (IOException, ElasticSearchException)
-						e.printStackTrace();
-					}
+					applyIndexSettings(b, configFileUrl);
 				}
 				return b;
 			});

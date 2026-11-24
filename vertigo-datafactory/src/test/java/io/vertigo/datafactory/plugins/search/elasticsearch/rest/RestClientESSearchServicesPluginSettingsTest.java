@@ -17,10 +17,17 @@
  */
 package io.vertigo.datafactory.plugins.search.elasticsearch.rest;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.file.Path;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
+import co.elastic.clients.elasticsearch.indices.CreateIndexRequest;
 import co.elastic.clients.elasticsearch.indices.IndexSettingsAnalysis;
+import io.vertigo.core.lang.WrappedException;
 
 /**
  * Checks the comparison between the analysis settings of an existing index and the expected ones (index settings dirty check at startup).
@@ -64,5 +71,12 @@ public final class RestClientESSearchServicesPluginSettingsTest {
 	public void testNoCurrentAnalysisIsDirty() {
 		Assertions.assertTrue(RestClientESSearchServicesPlugin.isAnalysisDirty("idx", null, analysis("text_fr", "lowercase")));
 		Assertions.assertFalse(RestClientESSearchServicesPlugin.isAnalysisDirty("idx", analysis("text_fr", "lowercase"), null));
+	}
+
+	@Test
+	public void testUnreadableSettingsFileFails(@TempDir final Path tempDir) throws MalformedURLException {
+		//an index created without its settings (analyzers...) would give wrong search results
+		final URL missingFile = tempDir.resolve("missing-settings.json").toUri().toURL();
+		Assertions.assertThrows(WrappedException.class, () -> RestClientESSearchServicesPlugin.applyIndexSettings(new CreateIndexRequest.Builder(), missingFile));
 	}
 }
