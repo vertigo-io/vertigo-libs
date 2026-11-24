@@ -55,7 +55,8 @@ import io.vertigo.vega.webservice.model.UiObject;
 public abstract class AbstractUiListUnmodifiable<O extends DataObject> extends AbstractList<UiObject<O>> implements UiList<O>, Serializable {
 	private static final long serialVersionUID = 5475819598230056558L;
 
-	private static final int MIN_MAX_ELEMENTS = 1000; //Max nb elements in a list sent to the page : kept under 1000 to ensure good performances, unless the default max rows of the lists is higher
+	/** Max nb elements in a list sent to the page : kept under 1000 to ensure good performances, unless the default max rows of the lists is higher. */
+	private static final int MIN_MAX_ELEMENTS = 1000;
 
 	/**
 	 * @return Max nb elements in list : 1000, or the default max rows of the lists if higher (param DT_LIST_DEFAULT_MAX_ROWS), so a default list always fits

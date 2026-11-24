@@ -72,7 +72,8 @@ final class RestQueueClient {
 		Assertion.check()
 				.isNotBlank(serverUrl)
 				.isTrue(nodeTimeoutSeconds > WorkersManagerImpl.HEART_BEAT_PERIOD_SECONDS && nodeTimeoutSeconds <= 60 * 60,
-						"timeoutSeconds is the time without sign of life before the master sees the node dead : it must be greater than the heartBeat period ({0}s) and at most 3600s : {1}s (the http timeout is httpTimeoutSeconds)",
+						"timeoutSeconds is the time without sign of life before the master sees the node dead : "
+								+ "it must be greater than the heartBeat period ({0}s) and at most 3600s : {1}s (the http timeout is httpTimeoutSeconds)",
 						WorkersManagerImpl.HEART_BEAT_PERIOD_SECONDS, nodeTimeoutSeconds)
 				.isTrue(httpTimeoutSeconds > SERVER_PULL_TIMEOUT_SECONDS, "httpTimeoutSeconds must be greater than the server long poll ({0}s) : {1}s", SERVER_PULL_TIMEOUT_SECONDS, httpTimeoutSeconds)
 				.isNotNull(codecManager);

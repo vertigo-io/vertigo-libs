@@ -72,19 +72,28 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 
 	private static final String COMPONENT_PARAMS = "params";
 	/** For reserved chars @see https://www.thymeleaf.org/doc/articles/standarddialect5minutes.html */
-	private static final String NO_RESERVED_FIRST_CHAR_PATTERN_STR = "^(([^$@~#*]\\{)|.(?!\\{)).*$"; //use to detect if we should escape in placeholder : must encode js string, like 'mylabel' ; an expression starts with ${ #{ @{ *{ ~{ (no javascript starts so) ; |...| : see isLiteralSubstitution
-	private static final String NO_RESERVED_TEXT_PATTERN_STR = "^(?!')(?!.*[$#@]\\{).*$"; //an expression : ${ #{ @{ anywhere (as in listName + ${id}), ' at start ; |...| : see isLiteralSubstitution ; *{ ~{ at start only (see NO_RESERVED_FIRST_CHAR_PATTERN) ; a $ # @ starting no expression is text (#anchor, mail@domain)
+	/**
+	 * Used to detect if we should escape in placeholder : must encode js string, like 'mylabel' ;
+	 * an expression starts with ${ #{ @{ *{ ~{ (no javascript starts so) ; |...| : see isLiteralSubstitution
+	 */
+	private static final String NO_RESERVED_FIRST_CHAR_PATTERN_STR = "^(([^$@~#*]\\{)|.(?!\\{)).*$";
+	/**
+	 * An expression : ${ #{ @{ anywhere (as in listName + ${id}), ' at start ; |...| : see isLiteralSubstitution ;
+	 * *{ ~{ at start only (see NO_RESERVED_FIRST_CHAR_PATTERN) ; a $ # @ starting no expression is text (#anchor, mail@domain)
+	 */
+	private static final String NO_RESERVED_TEXT_PATTERN_STR = "^(?!')(?!.*[$#@]\\{).*$";
 	private static final String SIMPLE_TEXT_PATTERN_STR = "^[a-zA-Z]*$";
 	private static final Pattern NO_RESERVED_FIRST_CHAR_PATTERN = Pattern.compile(NO_RESERVED_FIRST_CHAR_PATTERN_STR, Pattern.DOTALL);
 	private static final Pattern NO_RESERVED_TEXT_PATTERN = Pattern.compile(NO_RESERVED_TEXT_PATTERN_STR, Pattern.DOTALL);
 	private static final Pattern SIMPLE_TEXT_PATTERN = Pattern.compile(SIMPLE_TEXT_PATTERN_STR);
 	/** A number Thymeleaf writes back as it is (no leading 0, no -0) : the other ones (0102030405, .5) are texts */
-	private static final Pattern CANONICAL_NUMBER_PATTERN = Pattern.compile("^(?!-0(\\.0*)?$)-?(0|[1-9][0-9]*)(\\.[0-9]+)?$");
+	private static final Pattern CANONICAL_NUMBER_PATTERN = Pattern.compile("^(?!-0(\\.0*)?$)-?(0|[1-9]\\d*)(\\.\\d+)?$");
 	/** A \ not followed by a _ : see escapeAsText */
 	private static final Pattern BACKSLASH_NOT_BEFORE_UNDERSCORE_PATTERN = Pattern.compile("\\\\(?!_)");
 	/** A _ followed by a _ : see encodeComputedValue */
 	private static final Pattern UNDERSCORE_BEFORE_UNDERSCORE_PATTERN = Pattern.compile("_(?=_)");
-	private static final Pattern SINGLE_EXPRESSION_PATTERN = Pattern.compile("^\\s*[$#@*~]\\{(?:[^{}]++|\\{[^{}]*+\\})*+\\}\\s*$"); //one level of nested braces, as @{/x/{id}(id=${id})}
+	/** A single expression, with one level of nested braces, as {@code @{/x/{id}(id=${id})}}. */
+	private static final Pattern SINGLE_EXPRESSION_PATTERN = Pattern.compile("^\\s*[$#@*~]\\{(?:[^{}]++|\\{[^{}]*+\\})*+\\}\\s*$");
 	/** A th: value which is a text literal holding an expression ('@{/x}') : gives the text, not its value. */
 	private static final Pattern TEXT_LITERAL_HOLDING_EXPRESSION_PATTERN = Pattern.compile("^\\s*'[^']*[$#@*~]\\{[^}']*\\}[^']*'\\s*$", Pattern.DOTALL);
 
@@ -430,19 +439,19 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 			return "${true}";
 		} else if ("".equals(((String) attributeValue).trim())) {
 			return "''";
-		} else if (attributeValue instanceof String
-				&& !"true".equalsIgnoreCase((String) attributeValue) //not boolean
-				&& !"false".equalsIgnoreCase((String) attributeValue)
-				&& !CANONICAL_NUMBER_PATTERN.matcher((String) attributeValue).matches() //not number
-				&& !isLiteralSubstitution((String) attributeValue)
+		} else if (attributeValue instanceof final String stringValue
+				&& !"true".equalsIgnoreCase(stringValue) //not boolean
+				&& !"false".equalsIgnoreCase(stringValue)
+				&& !CANONICAL_NUMBER_PATTERN.matcher(stringValue).matches() //not number
+				&& !isLiteralSubstitution(stringValue)
 				&& (isPlaceholder //is a placeholder => escape for thymeleaf
-						|| NO_RESERVED_TEXT_PATTERN.matcher((String) attributeValue).matches()) //no reserved char
-				&& NO_RESERVED_FIRST_CHAR_PATTERN.matcher((String) attributeValue).matches()) { //don't start with reserved char
+						|| NO_RESERVED_TEXT_PATTERN.matcher(stringValue).matches()) //no reserved char
+				&& NO_RESERVED_FIRST_CHAR_PATTERN.matcher(stringValue).matches()) { //don't start with reserved char
 			//We escape :
 			//IF placeholder or no thymeleaf expression (${ #{ @{ anywhere, ' at start, |...|)
 			//AND dont start with reserved char (for case like ${value} )
 			//BUT IF true, false or number (it become string instead)
-			return "'" + escapeAsText((String) attributeValue) + "'"; //escape as text
+			return "'" + escapeAsText(stringValue) + "'"; //escape as text
 		}
 		return attributeValue;
 	}
@@ -589,7 +598,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 				if (ContentComponentProcessor.CONTENT_ID_ATTR_NAME.equals(attribute.getKey())) {
 					//don't copy contentId on inner tags
 				} else if (shouldConcat(attribute.getKey())) { //concat some attribute (like class) //no kebab-case here
-					attributes.compute(attribute.getKey(), (k, v) -> (v == null ? "" : v + " ") + value);
+					attributes.compute(attribute.getKey(), (k, v) -> ((v == null) ? "" : v + " ") + value);
 					if (computed) {
 						computedAttributes.add(attribute.getKey());
 					}
@@ -726,9 +735,9 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 		if (!attributeName.startsWith(":") && !attributeName.startsWith("v-") && !attributeName.startsWith("'")
 				&& !attributeName.startsWith("@") && !attributeName.startsWith("#") && !isDynamicAttribute(attributeName, StandardDialect.PREFIX)
 				&& (attributeValue == null
-						|| attributeValue instanceof String
-								&& ("true".equalsIgnoreCase((String) attributeValue) //boolean
-										|| "false".equalsIgnoreCase((String) attributeValue)))) {
+						|| (attributeValue instanceof final String stringValue
+								&& ("true".equalsIgnoreCase(stringValue) //boolean
+										|| "false".equalsIgnoreCase(stringValue))))) {
 			return "':" + attributeName + "'";
 		} else if (!attributeName.startsWith("'") //if not only char and don't already start by ' add them
 				&& !SIMPLE_TEXT_PATTERN.matcher(attributeName).matches()) {
@@ -772,9 +781,9 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 		if (!isPlaceholder(attributeKey) && isPlaceholderable(attributeKey)) {
 			//We prepared prefixed placeholders variables.
 			Object unescapedattributeValue = attributeValue;
-			if (attributeValue instanceof String && !computed) { //a computed value is already unescaped
+			if (attributeValue instanceof final String stringValue && !computed) { //a computed value is already unescaped
 				//We need to unescape placeholder : it will be escaped again when used in component (th:attr="__${other_attrs}__" => escape value)
-				unescapedattributeValue = EscapedAttributeUtils.unescapeAttribute(context.getTemplateMode(), (String) attributeValue);
+				unescapedattributeValue = EscapedAttributeUtils.unescapeAttribute(context.getTemplateMode(), stringValue);
 			}
 			addPlaceholderVariable(placeholders, attributeKey, unescapedattributeValue, computed);
 		} else if (!parameterNames.contains(attributeKey)) {
@@ -783,9 +792,9 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 					"Component '{0}' can't accept this parameter : '{1}' (accepted params : {2})", componentName, attributeKey, parameterNames);
 			//We prepared unnamed placeholder variable
 			Object unescapedattributeValue = attributeValue;
-			if (attributeValue instanceof String && !computed) { //a computed value is already unescaped
+			if (attributeValue instanceof final String stringValue && !computed) { //a computed value is already unescaped
 				//We need to unescape placeholder : it will be escaped again when used in component (th:attr="__${other_attrs}__" => escape value)
-				unescapedattributeValue = EscapedAttributeUtils.unescapeAttribute(context.getTemplateMode(), (String) attributeValue);
+				unescapedattributeValue = EscapedAttributeUtils.unescapeAttribute(context.getTemplateMode(), stringValue);
 			}
 			addPlaceholderVariable(placeholders, unnamedPlaceholderPrefix.get(), attributeKey, unescapedattributeValue, computed);
 		} else {

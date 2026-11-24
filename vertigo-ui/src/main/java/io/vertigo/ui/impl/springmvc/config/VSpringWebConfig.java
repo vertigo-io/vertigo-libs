@@ -89,13 +89,13 @@ import nz.net.ultraq.thymeleaf.layoutdialect.LayoutDialect;
 @EnableWebMvc
 public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAware {
 
-	@Autowired
-	private ApplicationContext applicationContext;
-
 	private static final String COMPONENT_PATH_PREFIX = "io/vertigo/ui/components/";
 	private static final Logger LOG = LogManager.getLogger(VSpringWebConfig.class);
 	/** Param of the dev mode of the templates (true by default), see {@link #isDevMode()}. */
 	public static final String THYMELEAF_DEV_MODE_PARAM_NAME = "THYMELEAF_DEV_MODE";
+
+	@Autowired
+	private ApplicationContext applicationContext;
 
 	private Boolean devMode; //read once
 

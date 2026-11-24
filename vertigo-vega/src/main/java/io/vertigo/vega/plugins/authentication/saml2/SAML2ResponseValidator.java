@@ -44,6 +44,9 @@ import io.vertigo.core.lang.VSystemException;
  * Each check can be opened by a param of the SAML2 connector when an IdP doesn't follow the standard.
  */
 final class SAML2ResponseValidator {
+	private static final int HTTP_DEFAULT_PORT = 80;
+	private static final int HTTPS_DEFAULT_PORT = 443;
+
 	private final String spEntityId;
 	private final Duration clockSkew;
 	private final boolean cryptAssertion;
@@ -172,6 +175,6 @@ final class SAML2ResponseValidator {
 		if (uri.getPort() != -1) {
 			return uri.getPort();
 		}
-		return "https".equalsIgnoreCase(uri.getScheme()) ? 443 : 80;
+		return "https".equalsIgnoreCase(uri.getScheme()) ? HTTPS_DEFAULT_PORT : HTTP_DEFAULT_PORT;
 	}
 }
