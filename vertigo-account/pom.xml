@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>io.vertigo</groupId>
 		<artifactId>vertigo-libs</artifactId>
-		<version>4.4.1</version>
+		<version>4.5.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>vertigo-account</artifactId>
@@ -78,7 +78,6 @@
                 <!-- We need a test jar too (for LTS plugins) -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>3.1.1</version>
                 <configuration>
                     <forceCreation>true</forceCreation>
                     <skipIfEmpty>true</skipIfEmpty>

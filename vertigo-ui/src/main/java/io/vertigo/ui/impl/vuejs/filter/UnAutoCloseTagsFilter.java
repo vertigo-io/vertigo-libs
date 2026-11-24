@@ -35,8 +35,16 @@ import jakarta.servlet.http.HttpServletResponse;
  * Un AutoClosed Vue.js tags filter.
  * Vue.js has some weird behavior with autoclosed tags, they aren't executed normally.
  * This filter detected autoclosed tags, warn them in logs and replace with a end tags.
+ *
+ * @deprecated superseded by {@link io.vertigo.ui.impl.thymeleaf.AutoCloseTagsPostProcessor}, which does the same repair
+ *             on the Thymeleaf model instead of on the response text, and needs no declaration. Being a regex over the
+ *             rendered html, this filter cannot see a tag holding a closing angle bracket inside an attribute value,
+ *             as in :disable="[1,2].length > 5", only knows the q-* and v-* prefixes, rewrites inside comments and
+ *             scripts as well, buffers the whole response in memory, and logs nothing despite what this javadoc
+ *             claims. It stays functional, and harmless next to the post-processor, which leaves it nothing to match.
  * @author npiedeloup
  */
+@Deprecated
 public final class UnAutoCloseTagsFilter extends AbstractFilter {
 	private final List<Pattern> tagsPrefixPattern = new ArrayList<>();
 

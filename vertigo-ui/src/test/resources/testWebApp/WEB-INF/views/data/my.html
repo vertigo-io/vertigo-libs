@@ -16,7 +16,6 @@
          <p>Id 2: <input type="text" th:field="*{vContext[movie2][movId]}" /></p>
         <p><input type="submit" value="Submit" />
    		<input type="hidden" name="CTX" th:value="${model.vContext[CTX]}">
-   		<vu:valid-input label="testLabel" field="[movie][movId]"/>
    		<vu:include-data object="movie" field="'*'"/>
    		<vu:vue-data/>
    </form>

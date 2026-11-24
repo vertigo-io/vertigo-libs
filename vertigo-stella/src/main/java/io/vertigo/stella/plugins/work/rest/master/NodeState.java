@@ -33,21 +33,38 @@ import io.vertigo.core.lang.Assertion;
 final class NodeState {
 	private final String nodeUID;
 	private final Set<String> nodeWorkTypes = Collections.synchronizedSet(new HashSet<String>());
-	private long lastSeen;
+	private volatile long lastSeen; //written by the webservices threads, read by the dead node daemon
+	private volatile int timeoutSeconds; //given by the node with its heartBeat (like the Redis workers timeoutSeconds)
 
 	/**
 	 * Constructeur.
 	 * @param nodeUID id du noeud
 	 * @param nodeWorkType type de work pris en charge (cumulatif)
+	 * @param timeoutSeconds Timeout (seconds) without sign of life before the node is seen dead
 	 */
-	public NodeState(final String nodeUID, final String nodeWorkType) {
+	public NodeState(final String nodeUID, final String nodeWorkType, final int timeoutSeconds) {
 		Assertion.check()
 				.isNotBlank(nodeUID)
 				.isNotNull(nodeWorkType);
 		//-----
 		this.nodeUID = nodeUID;
 		nodeWorkTypes.add(nodeWorkType);
+		this.timeoutSeconds = timeoutSeconds;
 		lastSeen = System.currentTimeMillis();
+	}
+
+	/**
+	 * @param timeoutSeconds Timeout (seconds) without sign of life before the node is seen dead, given by the node
+	 */
+	public void setTimeoutSeconds(final int timeoutSeconds) {
+		this.timeoutSeconds = timeoutSeconds;
+	}
+
+	/**
+	 * @return true if the node gave a sign of life within its timeout
+	 */
+	public boolean isActive() {
+		return System.currentTimeMillis() - lastSeen < timeoutSeconds * 1000L;
 	}
 
 	/**

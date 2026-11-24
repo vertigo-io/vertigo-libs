@@ -21,6 +21,7 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Set;
 
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.model.IAttribute;
@@ -38,6 +39,8 @@ public class ContentComponentProcessor extends AbstractElementModelProcessor {
 
 	public static final String CONTENT_ID_ATTR_NAME = "contentId";
 	public static final String CONTENT_ATTRS_NAME = "contentAttrs";
+	/** Names of the contentAttrs computed at rendering (th: attributes) : passed as they are. */
+	public static final String CONTENT_COMPUTED_ATTRS_NAME = "contentComputedAttrs";
 	private static final String CONTENT_TAG_NAME = "content";
 	private static final int PRECEDENCE = 400;
 
@@ -60,6 +63,7 @@ public class ContentComponentProcessor extends AbstractElementModelProcessor {
 	@Override
 	protected void doProcess(final ITemplateContext context, final IModel model, final IElementModelStructureHandler structureHandler) {
 		final Map<String, String> attributes = processAttribute(model);
+		final Set<String> computedAttributes = NamedComponentElementProcessor.computedAttributeNames(context, (IProcessableElementTag) model.get(0));
 		final var contentId = attributes.remove(CONTENT_ID_ATTR_NAME); //remove() return removed element
 		final Object content = context.getVariable("contentStack");
 
@@ -89,6 +93,7 @@ public class ContentComponentProcessor extends AbstractElementModelProcessor {
 		model.reset();//we prepared the model to be set
 		model.addModel(mergedModel);
 		structureHandler.setLocalVariable(CONTENT_ATTRS_NAME, attributes);
+		structureHandler.setLocalVariable(CONTENT_COMPUTED_ATTRS_NAME, computedAttributes);
 	}
 
 	private static Map<String, String> processAttribute(final IModel model) {

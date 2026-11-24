@@ -19,9 +19,11 @@ package io.vertigo.vega.impl.ratelimiting;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -181,8 +183,13 @@ public final class RateLimitingManagerImpl implements RateLimitingManager {
 		}
 		this.banishMessage = banishMessage.orElse(defaultBanishMessage.toString()); //Message returned if banished
 
-		ipWhitelistHelper = new IpWhitelistHelper(whiteListUsers.map(s -> Set.of(s.split("\\s*[,;]\\s*"))).orElse(Set.of()), MAX_WHITELIST_SIZE);
-
+		ipWhitelistHelper = new IpWhitelistHelper(
+				whiteListUsers
+						.map(s -> Arrays.stream(s.split("\\s*[,;]\\s*"))
+								.filter(ip -> !ip.isBlank())
+								.collect(Collectors.toSet()))
+						.orElse(Set.of()),
+				MAX_WHITELIST_SIZE);
 	}
 
 	@Override
@@ -359,11 +366,18 @@ public final class RateLimitingManagerImpl implements RateLimitingManager {
 		final var ipEnumeration = request.getHeaders(headerName);
 		if (ipEnumeration != null) {
 			while (ipEnumeration.hasMoreElements()) {
-				final var useHeaderUserIp = ipEnumeration.nextElement().trim();
-				if (USER_EXCLUDED_IPS.contains(useHeaderUserIp)) {
-					continue;
+				// a header line may be a proxy chain "client, proxy1, proxy2" (X-Forwarded-For) : the first address is the client one.
+				// The reverse proxy in front of the application is responsible for the reliability of this header : the first proxy managed by the
+				// application team overwrites it ; behind a CDN that appends to it, use useHeaderUserIp with the header set by the CDN.
+				// TODO : a param for the proxies, read from the right : their number (the address that many from the right), or their
+				// address ranges (the first address not in them, from right to left).
+				for (final String headerUserIp : ipEnumeration.nextElement().split(",")) {
+					final var useHeaderUserIp = headerUserIp.trim();
+					if (useHeaderUserIp.isEmpty() || USER_EXCLUDED_IPS.contains(useHeaderUserIp)) {
+						continue;
+					}
+					return Optional.of(useHeaderUserIp);
 				}
-				return Optional.of(useHeaderUserIp);
 			}
 		}
 		return Optional.empty();//header not found

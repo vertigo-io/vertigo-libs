@@ -26,6 +26,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
@@ -52,6 +53,8 @@ import io.vertigo.core.lang.WrappedException;
  * @author npiedeloup
  */
 class IpWhitelistHelper {
+	/** IPv4 literal (four decimal parts) or IPv6 literal (hexadecimal parts with ':') : InetAddress parses them without DNS lookup. */
+	private static final Pattern IP_LITERAL_PATTERN = Pattern.compile("\\d{1,3}(\\.\\d{1,3}){3}|[0-9a-fA-F.]*:[0-9a-fA-F:.]*");
 
 	private final Set<String> whitelistPatterns;
 	private final Set<String> whitelist;
@@ -81,26 +84,32 @@ class IpWhitelistHelper {
 	 * @return true if the IP address is in the whitelist, false otherwise
 	 */
 	public boolean isIpInWhitelist(final String ip) {
+		if (ip == null) {
+			return false;
+		}
 		return whitelist.contains(normalizeAddress(ip));
 	}
 
 	/**
 	 * Normalizes an IP address by removing brackets for IPv6 and handling leading zeros.
+	 * The value may come from a request header (anything : a proxy chain, a host name) : only an IP literal is normalized,
+	 * a host name is never resolved and an invalid value is returned as is (it is not in the whitelist).
 	 *
 	 * @param ip IP address to normalize
 	 * @return Normalized IP address
 	 */
-	private String normalizeAddress(final String ip) {
-		var normalized = removeBracketsIpv6Address(ip);
-		// If IP contains leading zeros, normalize it using InetAddress
-		if (normalized.startsWith("0") || normalized.contains(".0") || normalized.contains(":0") || normalized.contains("::")) {
+	private static String normalizeAddress(final String ip) {
+		final var address = removeBracketsIpv6Address(ip);
+		// If IP contains leading zeros, normalize it using InetAddress (an IP literal is parsed, never resolved)
+		if (IP_LITERAL_PATTERN.matcher(address).matches()
+				&& (address.startsWith("0") || address.contains(".0") || address.contains(":0") || address.contains("::"))) {
 			try {
-				normalized = InetAddress.getByName(normalized).getHostAddress();
+				return InetAddress.getByName(address).getHostAddress();
 			} catch (final UnknownHostException e) {
-				throw WrappedException.wrap(e, "Invalid whitelist IP " + normalized);
+				return address; //not a valid IP : not in the whitelist
 			}
 		}
-		return normalized;
+		return address;
 	}
 
 	/**
@@ -208,14 +217,14 @@ class IpWhitelistHelper {
 		final String startIp = parts[0].trim();
 		final String endIp = parts[1].trim();
 		// Determine if we're dealing with IPv4 or IPv6
-		final char prefixSep = startIp.indexOf(':') > 0 ? ':' : '.';
+		final char prefixSep = (startIp.indexOf('.') >= 0) ? '.' : ':'; //an IPv6 address may start with :: and end with an IPv4 address (::ffff:1.2.3.4)
 		final String prefix = startIp.substring(0, startIp.lastIndexOf(prefixSep));
 
 		final InetAddress startAdr = InetAddress.getByName(startIp);
 		final InetAddress endAdr;
 
 		// Handle two different formats: full IP in end range or just the last part
-		if (endIp.indexOf(prefixSep) > 0) {
+		if (endIp.indexOf(prefixSep) >= 0) {
 			if (!endIp.startsWith(prefix)) {
 				throw new IllegalArgumentException("Invalid IP range " + ipRange + ", endIp must start with first part of startIp");
 			}
@@ -225,9 +234,10 @@ class IpWhitelistHelper {
 			endAdr = InetAddress.getByName(prefix + prefixSep + endIp);
 		}
 
-		// Convert IP addresses to numeric representation for iteration
-		final BigInteger hmin = new BigInteger(startAdr.getAddress());
-		final BigInteger hmax = new BigInteger(endAdr.getAddress());
+		// Convert IP addresses to numeric representation for iteration (unsigned, as in initCIDR)
+		final int addressLength = startAdr.getAddress().length;
+		final BigInteger hmin = new BigInteger(1, startAdr.getAddress());
+		final BigInteger hmax = new BigInteger(1, endAdr.getAddress());
 		Assertion.check()
 				.isTrue(hmin.compareTo(hmax) <= 0, "Invalid IP range " + ipRange + ", startIp must be less than endIp");
 		if (hmin.add(BigInteger.ONE.shiftLeft(20).subtract(BigInteger.ONE)).compareTo(hmax) < 0) {
@@ -237,7 +247,7 @@ class IpWhitelistHelper {
 		// Generate all IP addresses in the range
 		final var ipRangeSet = new HashSet<String>();
 		for (BigInteger ip = hmin; ip.compareTo(hmax) <= 0; ip = ip.add(BigInteger.ONE)) {
-			final InetAddress ipAddress = InetAddress.getByAddress(ip.toByteArray());
+			final InetAddress ipAddress = InetAddress.getByAddress(toByteArray(ip, addressLength));
 			ipRangeSet.add(ipAddress.getHostAddress());
 		}
 		return ipRangeSet;

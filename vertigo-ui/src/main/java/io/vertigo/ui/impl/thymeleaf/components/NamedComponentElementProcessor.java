@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +33,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -70,14 +72,30 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 
 	private static final String COMPONENT_PARAMS = "params";
 	/** For reserved chars @see https://www.thymeleaf.org/doc/articles/standarddialect5minutes.html */
-	private static final String NO_RESERVED_FIRST_CHAR_PATTERN_STR = "^(([^$@~#*]\\{)|.(?!\\{)).*$"; //use to detect if we should escape in placeholder : must encode js string, like 'mylabel'
-	private static final String NO_RESERVED_TEXT_PATTERN_STR = "^[^$#@|']([^$#@]|(&#[0-9]{1,4};))*$"; //don't start with $#@|' and no $#@ after (excepted html encoded chars : &#[0-9]+;)
-	private static final String NUMBER_PATTERN_STR = "^[0-9\\.]+";
+	/**
+	 * Used to detect if we should escape in placeholder : must encode js string, like 'mylabel' ;
+	 * an expression starts with ${ #{ @{ *{ ~{ (no javascript starts so) ; |...| : see isLiteralSubstitution
+	 */
+	private static final String NO_RESERVED_FIRST_CHAR_PATTERN_STR = "^(([^$@~#*]\\{)|.(?!\\{)).*$";
+	/**
+	 * An expression : ${ #{ @{ anywhere (as in listName + ${id}), ' at start ; |...| : see isLiteralSubstitution ;
+	 * *{ ~{ at start only (see NO_RESERVED_FIRST_CHAR_PATTERN) ; a $ # @ starting no expression is text (#anchor, mail@domain)
+	 */
+	private static final String NO_RESERVED_TEXT_PATTERN_STR = "^(?!')(?!.*[$#@]\\{).*$";
 	private static final String SIMPLE_TEXT_PATTERN_STR = "^[a-zA-Z]*$";
 	private static final Pattern NO_RESERVED_FIRST_CHAR_PATTERN = Pattern.compile(NO_RESERVED_FIRST_CHAR_PATTERN_STR, Pattern.DOTALL);
-	private static final Pattern NO_RESERVED_TEXT_PATTERN = Pattern.compile(NO_RESERVED_TEXT_PATTERN_STR);
-	private static final Pattern NUMBER_PATTERN = Pattern.compile(NUMBER_PATTERN_STR);
+	private static final Pattern NO_RESERVED_TEXT_PATTERN = Pattern.compile(NO_RESERVED_TEXT_PATTERN_STR, Pattern.DOTALL);
 	private static final Pattern SIMPLE_TEXT_PATTERN = Pattern.compile(SIMPLE_TEXT_PATTERN_STR);
+	/** A number Thymeleaf writes back as it is (no leading 0, no -0) : the other ones (0102030405, .5) are texts */
+	private static final Pattern CANONICAL_NUMBER_PATTERN = Pattern.compile("^(?!-0(\\.0*)?$)-?(0|[1-9]\\d*)(\\.\\d+)?$");
+	/** A \ not followed by a _ : see escapeAsText */
+	private static final Pattern BACKSLASH_NOT_BEFORE_UNDERSCORE_PATTERN = Pattern.compile("\\\\(?!_)");
+	/** A _ followed by a _ : see encodeComputedValue */
+	private static final Pattern UNDERSCORE_BEFORE_UNDERSCORE_PATTERN = Pattern.compile("_(?=_)");
+	/** A single expression, with one level of nested braces, as {@code @{/x/{id}(id=${id})}}. */
+	private static final Pattern SINGLE_EXPRESSION_PATTERN = Pattern.compile("^\\s*[$#@*~]\\{(?:[^{}]++|\\{[^{}]*+\\})*+\\}\\s*$");
+	/** A th: value which is a text literal holding an expression ('@{/x}') : gives the text, not its value. */
+	private static final Pattern TEXT_LITERAL_HOLDING_EXPRESSION_PATTERN = Pattern.compile("^\\s*'[^']*[$#@*~]\\{[^}']*\\}[^']*'\\s*$", Pattern.DOTALL);
 
 	private static final String VARIABLE_PLACEHOLDER_SEPARATOR = "_";
 	private static final String SLOTS_SUFFIX = "slot";
@@ -94,6 +112,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 	private final List<String> placeholderPrefixes;
 	private final Optional<String> unnamedPlaceholderPrefix;
 	private final String frag;
+	private final boolean devMode;
 
 	private final Deque<IModel> emptyStack = new UnmodifiableDeque<>();
 
@@ -105,7 +124,19 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 	 * @param componentName Fragment to search for
 	 */
 	public NamedComponentElementProcessor(final String dialectPrefix, final NamedComponentDefinition thymeleafComponent) {
+		this(dialectPrefix, thymeleafComponent, false);
+	}
+
+	/**
+	 * Constructor
+	 *
+	 * @param dialectPrefix Dialect prefix (tc)
+	 * @param thymeleafComponent Component definition
+	 * @param devMode Dev mode : checks the way the attributes are written (at each rendering)
+	 */
+	public NamedComponentElementProcessor(final String dialectPrefix, final NamedComponentDefinition thymeleafComponent, final boolean devMode) {
 		super(TemplateMode.HTML, dialectPrefix, thymeleafComponent.getName(), true, null, false, PRECEDENCE);
+		this.devMode = devMode;
 		componentName = thymeleafComponent.getFragmentTemplate();
 		frag = thymeleafComponent.getFrag();
 
@@ -144,7 +175,9 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 				|| (boolean) selectionExpressionOpt.get().execute(context)) { //or selector valid
 
 			final IProcessableElementTag tag = processElementTag(context, model);
-			final Map<String, String> attributes = processAttribute(model, context, structureHandler);
+			//the values computed at rendering (th: attributes, forwarded *_attrs, vu:content attributes) are passed as they are
+			final Set<String> computedAttributes = new HashSet<>();
+			final Map<String, String> attributes = processAttribute(model, tag, computedAttributes, context, structureHandler);
 
 			final String param = attributes.get(COMPONENT_PARAMS);
 			final String fragmentToUse = "~{" + componentName + " :: " + frag + "}";
@@ -198,7 +231,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 			model.reset();
 			model.addModel(clonedFragmentModel);
 
-			processVariables(attributes, context, structureHandler, excludeAttributes);
+			processVariables(attributes, computedAttributes, context, structureHandler, excludeAttributes);
 		} // else nothing
 
 	}
@@ -332,12 +365,47 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 					&& elementCompleteName.equals(((ICloseElementTag) lastEvent).getElementCompleteName()),
 					"Can't find endTag of {0} in {1} line {2} col {3}", elementCompleteName, firstEvent.getTemplateName(), firstEvent.getLine(), firstEvent.getCol());
 		}
-		for (final IProcessableElementTag tag : context.getElementStack()) {
-			if (locationMatches(firstEvent, tag)) {
-				return tag;
+		return sourceTag(context, firstEvent);
+	}
+
+	/**
+	 * The element stack keeps the tag as written in the template, before the th: processors ran on it : the lowest of the
+	 * tags of this location on top of the stack (a component in itself stacks several tags of the same location).
+	 */
+	private static IProcessableElementTag sourceTag(final ITemplateContext context, final ITemplateEvent event) {
+		final List<IProcessableElementTag> elementStack = context.getElementStack();
+		IProcessableElementTag sourceTag = null;
+		for (int i = elementStack.size() - 1; i >= 0 && locationMatches(event, elementStack.get(i)); i--) {
+			sourceTag = elementStack.get(i);
+		}
+		return sourceTag;
+	}
+
+	/**
+	 * @return the names of the attributes set at rendering by a processor (a th: attribute), not written in the template :
+	 * not the same attribute instance as the tag written in the template
+	 */
+	static Set<String> computedAttributeNames(final ITemplateContext context, final IProcessableElementTag tag) {
+		final IProcessableElementTag sourceTag = sourceTag(context, tag);
+		checkSourceTag(sourceTag, tag);
+		//-----
+		final Set<String> computedAttributeNames = new HashSet<>();
+		for (final IAttribute attribute : tag.getAllAttributes()) {
+			if (isComputed(sourceTag, attribute)) {
+				computedAttributeNames.add(attribute.getAttributeCompleteName());
 			}
 		}
-		return null;
+		return computedAttributeNames;
+	}
+
+	private static void checkSourceTag(final IProcessableElementTag sourceTag, final IProcessableElementTag tag) {
+		Assertion.check().isNotNull(sourceTag, "Can't find the tag {0} as written in {1} line {2} col {3}", tag.getElementCompleteName(), tag.getTemplateName(),
+				String.valueOf(tag.getLine()), String.valueOf(tag.getCol()));
+	}
+
+	/** @return if the attribute was set at rendering by a processor (a th: attribute) : not the instance written in the template */
+	private static boolean isComputed(final IProcessableElementTag sourceTag, final IAttribute attribute) {
+		return sourceTag.getAttribute(attribute.getAttributeCompleteName()) != attribute;
 	}
 
 	private static boolean locationMatches(final ITemplateEvent a, final ITemplateEvent b) {
@@ -347,6 +415,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 	}
 
 	private void processVariables(final Map<String, String> attributes,
+			final Set<String> computedAttributes,
 			final ITemplateContext context,
 			final IElementModelStructureHandler structureHandler,
 			final Set<String> excludeAttr) {
@@ -358,32 +427,62 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 			if (excludeAttr.contains(entry.getKey()) || isDynamicAttribute(entry.getKey(), getDialectPrefix())) {
 				continue;
 			}
-			processWith(context, entry.getKey(), entry.getValue(), structureHandler, placeholders);
+			processWith(context, entry.getKey(), entry.getValue(), computedAttributes.contains(entry.getKey()), structureHandler, placeholders);
 		}
 
 		//we set placeholders as localvariables (inner components shouldn't affect these in case of name conflict)
 		setLocalPlaceholderVariables(context, structureHandler, placeholders);
 	}
 
-	private static Object encodeAttributeValue(final Object attributeValue, final boolean isPlaceholder) {
+	static Object encodeAttributeValue(final Object attributeValue, final boolean isPlaceholder) {
 		if (attributeValue == null) {
 			return "${true}";
 		} else if ("".equals(((String) attributeValue).trim())) {
 			return "''";
-		} else if (attributeValue instanceof String
-				&& !"true".equalsIgnoreCase((String) attributeValue) //not boolean
-				&& !"false".equalsIgnoreCase((String) attributeValue)
-				&& !NUMBER_PATTERN.matcher((String) attributeValue).matches() //not number
+		} else if (attributeValue instanceof final String stringValue
+				&& !"true".equalsIgnoreCase(stringValue) //not boolean
+				&& !"false".equalsIgnoreCase(stringValue)
+				&& !CANONICAL_NUMBER_PATTERN.matcher(stringValue).matches() //not number
+				&& !isLiteralSubstitution(stringValue)
 				&& (isPlaceholder //is a placeholder => escape for thymeleaf
-						|| NO_RESERVED_TEXT_PATTERN.matcher((String) attributeValue).matches()) //no reserved char
-				&& NO_RESERVED_FIRST_CHAR_PATTERN.matcher((String) attributeValue).matches()) { //don't start with reserved char
+						|| NO_RESERVED_TEXT_PATTERN.matcher(stringValue).matches()) //no reserved char
+				&& NO_RESERVED_FIRST_CHAR_PATTERN.matcher(stringValue).matches()) { //don't start with reserved char
 			//We escape :
-			//IF placeholder or no thymeleaf's reserved char ($ @ # | )  (but authorized || and &#xx; )
+			//IF placeholder or no thymeleaf expression (${ #{ @{ anywhere, ' at start, |...|)
 			//AND dont start with reserved char (for case like ${value} )
 			//BUT IF true, false or number (it become string instead)
-			return "'" + ((String) attributeValue).replace("'", "\\'") + "'"; //escape as text
+			return "'" + escapeAsText(stringValue) + "'"; //escape as text
 		}
 		return attributeValue;
+	}
+
+	/** @return if the value starts with a literal substitution |...| : a | then another one (a single | is a text, as a separator) */
+	private static boolean isLiteralSubstitution(final String value) {
+		return value.charAt(0) == '|' && value.indexOf('|', 1) > 0;
+	}
+
+	/**
+	 * A text shown as written, \ included : each \ is doubled, as Thymeleaf reads \\ as \ in a text literal (and a final \ would escape the closing quote),
+	 * but before _ (\_\_ shows __ without the Thymeleaf preprocessing) ; each ' is escaped.
+	 */
+	private static String escapeAsText(final String text) {
+		return BACKSLASH_NOT_BEFORE_UNDERSCORE_PATTERN.matcher(text).replaceAll(Matcher.quoteReplacement("\\\\")).replace("'", "\\'");
+	}
+
+	/**
+	 * A value computed at rendering, as a text literal holding it. true, false and numbers keep their type.
+	 * A __ is written as a concatenation, as the Thymeleaf preprocessing reads the __ of a whole attribute value.
+	 */
+	static String encodeComputedValue(final String computedValue) {
+		if (isBooleanOrNumber(computedValue)) {
+			return computedValue;
+		}
+		return "'" + UNDERSCORE_BEFORE_UNDERSCORE_PATTERN.matcher(computedValue.replace("\\", "\\\\").replace("'", "\\'")).replaceAll("_' + '") + "'";
+	}
+
+	/** true or false (any case), or a number written in its usual form (01000 stays a text), as for a written value. */
+	private static boolean isBooleanOrNumber(final String value) {
+		return "true".equalsIgnoreCase(value) || "false".equalsIgnoreCase(value) || CANONICAL_NUMBER_PATTERN.matcher(value).matches();
 	}
 
 	private void setLocalPlaceholderVariables(final ITemplateContext context, final IElementModelStructureHandler structureHandler, final Map<String, Map<String, Object>> placeholders) {
@@ -418,20 +517,34 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 		}
 	}
 
-	private Map<String, String> processAttribute(final IModel model, final ITemplateContext context, final IElementModelStructureHandler structureHandler) {
+	private Map<String, String> processAttribute(final IModel model, final IProcessableElementTag sourceTag, final Set<String> computedAttributes,
+			final ITemplateContext context, final IElementModelStructureHandler structureHandler) {
 		final ITemplateEvent firstEvent = model.get(0);
 		final Map<String, String> attributes = new HashMap<>();
+		//the keys given by the page (th: attribute or forwarded, a ${null} included) : they win over the attributes written by the component
+		final Set<String> pageKeys = new HashSet<>();
 
 		if (firstEvent instanceof final IProcessableElementTag processableElementTag) {
+			checkSourceTag(sourceTag, processableElementTag);
 			for (final IAttribute attribute : processableElementTag.getAllAttributes()) {
 				final String completeName = attribute.getAttributeCompleteName();
-				if (!isDynamicAttribute(completeName, StandardDialect.PREFIX)) {
+				if (isComputed(sourceTag, attribute)) {
+					//set by a th: attribute : the value computed by Thymeleaf (escaped for html)
+					if (devMode) {
+						checkThAttributeValue(sourceTag, completeName, parameterNames.contains(completeName));
+					}
+					final String key = putAttributeSupportKebabCase(completeName,
+							EscapedAttributeUtils.unescapeAttribute(context.getTemplateMode(), attribute.getValue()), attributes);
+					computedAttributes.add(key);
+					pageKeys.add(key);
+				} else if (!isDynamicAttribute(completeName, StandardDialect.PREFIX)) {
 					if (isPlaceholder(completeName)) {
 						final String attrsValue = executeAttrsExpression(context, attribute.getValue());
 						final AssignationSequence assignations = AssignationUtils.parseAssignationSequence(context, attrsValue, false /* no parameters without value */);
 						if (assignations == null) {
 							throw new TemplateProcessingException("Could not parse value as attribute assignations: \"" + attribute.getValue() + "\"");
 						}
+						final Map<String, Object> forwardedValues = new LinkedHashMap<>();
 						for (final Assignation assignation : assignations.getAssignations()) {
 							final IStandardExpression leftExpr = assignation.getLeft();
 							final Object leftValue = leftExpr.execute(context);
@@ -445,9 +558,29 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 							}
 							final IStandardExpression rightExpr = assignation.getRight();
 							//must execute rightExpr too : if not must use th: in component, else expression will be parsed/encoded two times
-							putAttributeSupportKebabCase(newVariableName, String.valueOf(rightExpr.execute(context)), attributes);
+							//the executed value is data (as computed) ; a null (x=${null} removes the attribute) is forwarded as such
+							forwardedValues.put(newVariableName, rightExpr.execute(context));
 						}
-					} else {
+						for (final Entry<String, Object> forwardedValue : forwardedValues.entrySet()) {
+							String name = forwardedValue.getKey();
+							final Object value = forwardedValue.getValue();
+							if (isBooleanOfDeclaredParam(name, value)) {
+								name = name.substring(1); //:x="true" (true, false or no value written by the page) : the declared param x gets it
+							} else if (value == null && forwardedValues.containsKey(':' + name) && isColonOfDeclaredParam(':' + name)) {
+								continue; //the removal of the static x going with :x : not for the declared param x
+							}
+							final String key;
+							if (value == null) {
+								key = putAttributeSupportKebabCase(name, "${null}", attributes);
+								computedAttributes.remove(key);
+							} else {
+								key = putAttributeSupportKebabCase(name, String.valueOf(value), attributes);
+								computedAttributes.add(key);
+							}
+							pageKeys.add(key);
+						}
+					} else if (!pageKeys.contains(attributeKey(completeName))) {
+						//a value forwarded from the page (a *_attrs) wins over the value written by the component on the same tag
 						putAttributeSupportKebabCase(completeName, attribute.getValue(), attributes);
 					}
 				}
@@ -456,28 +589,90 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 		//We keep attributs put on <vu:content> tag (except contentId attribute)
 		final Map<String, String> contentAttrs = (Map<String, String>) context.getVariable(ContentComponentProcessor.CONTENT_ATTRS_NAME);
 		if (contentAttrs != null && !contentAttrs.isEmpty()) {
+			final Set<String> contentComputedAttrs = (Set<String>) context.getVariable(ContentComponentProcessor.CONTENT_COMPUTED_ATTRS_NAME);
 			structureHandler.removeLocalVariable(ContentComponentProcessor.CONTENT_ATTRS_NAME);
+			structureHandler.removeLocalVariable(ContentComponentProcessor.CONTENT_COMPUTED_ATTRS_NAME);
 			for (final Entry<String, String> attribute : contentAttrs.entrySet()) {
+				final boolean computed = contentComputedAttrs != null && contentComputedAttrs.contains(attribute.getKey());
+				final String value = computed ? EscapedAttributeUtils.unescapeAttribute(context.getTemplateMode(), attribute.getValue()) : attribute.getValue();
 				if (ContentComponentProcessor.CONTENT_ID_ATTR_NAME.equals(attribute.getKey())) {
 					//don't copy contentId on inner tags
 				} else if (shouldConcat(attribute.getKey())) { //concat some attribute (like class) //no kebab-case here
-					attributes.compute(attribute.getKey(), (k, v) -> (v == null ? "" : v + " ") + attribute.getValue());
+					attributes.compute(attribute.getKey(), (k, v) -> ((v == null) ? "" : v + " ") + value);
+					if (computed) {
+						computedAttributes.add(attribute.getKey());
+					}
 				} else {
-					putAttributeSupportKebabCase(attribute.getKey(), attribute.getValue(), attributes);
+					final String key = putAttributeSupportKebabCase(attribute.getKey(), value, attributes);
+					if (computed) {
+						computedAttributes.add(key);
+					} else {
+						computedAttributes.remove(key); //a value written on vu:content replaces the value computed on the tag : evaluated
+					}
 				}
 			}
 		}
 		return attributes;
 	}
 
-	private void putAttributeSupportKebabCase(final String variableName, final String variableValue, final Map<String, String> attributes) {
-		if (variableName.contains("-") && parameterNames.contains(variableName)) {
-			attributes.put(kebabToCamelCase(variableName), variableValue);
-		} else if (variableName.charAt(0) == ':' && parameterNames.contains(variableName)) {
-			attributes.put(kebabToCamelCase("v-" + variableName.substring(1)), variableValue);
-		} else {
-			attributes.put(variableName, variableValue);
+	/**
+	 * Dev mode : th:url="'@{/x}'" gives the text @{/x}, not a link (a text literal holding an expression) : fails with the
+	 * way to write it, url="@{/x}".
+	 */
+	private static void checkThAttributeValue(final IProcessableElementTag sourceTag, final String attributeName, final boolean declaredParam) {
+		for (final String thName : List.of(StandardDialect.PREFIX + ":" + attributeName, "data-" + StandardDialect.PREFIX + "-" + attributeName)) {
+			final String writtenValue = sourceTag.getAttributeValue(thName);
+			if (writtenValue != null && TEXT_LITERAL_HOLDING_EXPRESSION_PATTERN.matcher(writtenValue).matches()) {
+				final String text = writtenValue.trim().substring(1, writtenValue.trim().length() - 1).trim();
+				if (text.length() > 1 && text.charAt(0) == '`' && text.charAt(text.length() - 1) == '`') {
+					continue; //a javascript template literal : a text for Thymeleaf, its ${...} are for javascript
+				}
+				final boolean startsWithExpression = !NO_RESERVED_FIRST_CHAR_PATTERN.matcher(text).matches() || isLiteralSubstitution(text);
+				if (!declaredParam && !startsWithExpression) {
+					continue; //an undeclared attribute is a text (often javascript) unless it starts with an expression
+				}
+				//a single expression is written as it is, a text mixed with expressions as a literal substitution (unless it holds a |)
+				final String advice;
+				if (SINGLE_EXPRESSION_PATTERN.matcher(text).matches()) {
+					advice = StringUtil.format("{0}=\"{1}\" (without th: nor quotes)", attributeName, text);
+				} else if (text.indexOf('|') < 0) {
+					advice = StringUtil.format("{0}=\"|{1}|\" (without th: nor quotes)", attributeName, text);
+				} else {
+					advice = attributeName + " without th:, as an expression giving this text,";
+				}
+				throw new TemplateProcessingException(StringUtil.format("<{0} {1}=\"{2}\"> gives the text {3}, not its value : write {4} in {5} line {6}",
+						sourceTag.getElementCompleteName(), thName, writtenValue, text, advice,
+						sourceTag.getTemplateName(), String.valueOf(sourceTag.getLine())));
+			}
 		}
+	}
+
+	/** @return if the name is :x for the declared param x (and :x is not declared) */
+	private boolean isColonOfDeclaredParam(final String name) {
+		return name.length() > 1 && name.charAt(0) == ':' && !parameterNames.contains(name) && parameterNames.contains(name.substring(1));
+	}
+
+	/** @return if :x is true or false for the declared param x (written so in a *_attrs, as VueJS reads the text "false" as true) */
+	private boolean isBooleanOfDeclaredParam(final String name, final Object value) {
+		return value != null && isColonOfDeclaredParam(name)
+				&& ("true".equalsIgnoreCase(String.valueOf(value)) || "false".equalsIgnoreCase(String.valueOf(value)));
+	}
+
+	/** @return the key of an attribute : a kebab-case or :x name of a declared param in camelCase */
+	private String attributeKey(final String variableName) {
+		if (variableName.contains("-") && parameterNames.contains(variableName)) {
+			return kebabToCamelCase(variableName);
+		} else if (variableName.charAt(0) == ':' && parameterNames.contains(variableName)) {
+			return kebabToCamelCase("v-" + variableName.substring(1));
+		}
+		return variableName;
+	}
+
+	/** @return the key of the attribute */
+	private String putAttributeSupportKebabCase(final String variableName, final String variableValue, final Map<String, String> attributes) {
+		final String key = attributeKey(variableName);
+		attributes.put(key, variableValue);
+		return key;
 	}
 
 	private String executeAttrsExpression(final ITemplateContext context, final String attrValue) {
@@ -506,30 +701,43 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 		return "class".equals(key); //TODO : found the great rule
 	}
 
-	private void addPlaceholderVariable(final Map<String, Map<String, Object>> placeholders, final String prefixedVariableName, final Object value) {
+	private void addPlaceholderVariable(final Map<String, Map<String, Object>> placeholders, final String prefixedVariableName, final Object value, final boolean computed) {
 		for (final String placeholderPrefix : placeholderPrefixes) {
 			if (prefixedVariableName.startsWith(placeholderPrefix)) {
 				final String attributeName = prefixedVariableName.substring(placeholderPrefix.length());
-				addPlaceholderVariable(placeholders, placeholderPrefix, attributeName, value);
+				addPlaceholderVariable(placeholders, placeholderPrefix, attributeName, value, computed);
 			}
 		}
 	}
 
-	private static void addPlaceholderVariable(final Map<String, Map<String, Object>> placeholders, final String placeholderPrefix, final String attributeName, final Object value) {
+	private static void addPlaceholderVariable(final Map<String, Map<String, Object>> placeholders, final String placeholderPrefix, final String attributeName, final Object value,
+			final boolean computed) {
 		Map<String, Object> previousPlaceholderValues = placeholders.get(placeholderPrefix + ATTRS_SUFFIX);
 		if (previousPlaceholderValues == null) {
 			previousPlaceholderValues = new HashMap<>();
 			placeholders.put(placeholderPrefix + ATTRS_SUFFIX, previousPlaceholderValues);
 		}
-		previousPlaceholderValues.put(encodePlaceholderAttributeName(attributeName, value), encodeAttributeValue(value, true));
+		//a computed value is data ; the value of a th: attribute (as label_th:title) is evaluated by that th: attribute only
+		final boolean asData = value instanceof String && (computed || isDynamicAttribute(attributeName, StandardDialect.PREFIX));
+		final String placeholderAttributeName = encodePlaceholderAttributeName(attributeName, value);
+		previousPlaceholderValues.put(placeholderAttributeName, asData ? encodeComputedValue((String) value) : encodeAttributeValue(value, true));
+		//an attribute written with : (evaluated by VueJS) replaces the static attribute of the same name put by the component, as VueJS keeps the first one (not class nor style, merged by VueJS)
+		if (placeholderAttributeName.startsWith("':")) {
+			final String boundName = placeholderAttributeName.substring(2, placeholderAttributeName.length() - 1);
+			if (!"class".equals(boundName) && !"style".equals(boundName)) {
+				previousPlaceholderValues.putIfAbsent(encodePlaceholderAttributeName(boundName, ""), "${null}");
+			}
+		}
 	}
 
 	private static String encodePlaceholderAttributeName(final String attributeName, final Object attributeValue) {
+		//no value, true or false : written with : to be evaluated by VueJS (:x="false"), as VueJS reads the text "false" as true ; not for an attribute already written with :, an event, a slot or a th: attribute
 		if (!attributeName.startsWith(":") && !attributeName.startsWith("v-") && !attributeName.startsWith("'")
+				&& !attributeName.startsWith("@") && !attributeName.startsWith("#") && !isDynamicAttribute(attributeName, StandardDialect.PREFIX)
 				&& (attributeValue == null
-						|| attributeValue instanceof String
-								&& "true".equalsIgnoreCase((String) attributeValue) //boolean
-								&& "false".equalsIgnoreCase((String) attributeValue))) {
+						|| (attributeValue instanceof final String stringValue
+								&& ("true".equalsIgnoreCase(stringValue) //boolean
+										|| "false".equalsIgnoreCase(stringValue))))) {
 			return "':" + attributeName + "'";
 		} else if (!attributeName.startsWith("'") //if not only char and don't already start by ' add them
 				&& !SIMPLE_TEXT_PATTERN.matcher(attributeName).matches()) {
@@ -564,6 +772,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 			final ITemplateContext context,
 			final String attributeKey,
 			final Object attributeValue,
+			final boolean computed,
 			final IElementModelStructureHandler structureHandler,
 			final Map<String, Map<String, Object>> placeholders) {
 		Assertion.check().isNotBlank(attributeKey, "Variable name can't be null or empty");
@@ -572,22 +781,22 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 		if (!isPlaceholder(attributeKey) && isPlaceholderable(attributeKey)) {
 			//We prepared prefixed placeholders variables.
 			Object unescapedattributeValue = attributeValue;
-			if (attributeValue instanceof String) {
+			if (attributeValue instanceof final String stringValue && !computed) { //a computed value is already unescaped
 				//We need to unescape placeholder : it will be escaped again when used in component (th:attr="__${other_attrs}__" => escape value)
-				unescapedattributeValue = EscapedAttributeUtils.unescapeAttribute(context.getTemplateMode(), (String) attributeValue);
+				unescapedattributeValue = EscapedAttributeUtils.unescapeAttribute(context.getTemplateMode(), stringValue);
 			}
-			addPlaceholderVariable(placeholders, attributeKey, unescapedattributeValue);
+			addPlaceholderVariable(placeholders, attributeKey, unescapedattributeValue, computed);
 		} else if (!parameterNames.contains(attributeKey)) {
 			Assertion.check().isTrue(
 					unnamedPlaceholderPrefix.isPresent(),
 					"Component '{0}' can't accept this parameter : '{1}' (accepted params : {2})", componentName, attributeKey, parameterNames);
 			//We prepared unnamed placeholder variable
 			Object unescapedattributeValue = attributeValue;
-			if (attributeValue instanceof String) {
+			if (attributeValue instanceof final String stringValue && !computed) { //a computed value is already unescaped
 				//We need to unescape placeholder : it will be escaped again when used in component (th:attr="__${other_attrs}__" => escape value)
-				unescapedattributeValue = EscapedAttributeUtils.unescapeAttribute(context.getTemplateMode(), (String) attributeValue);
+				unescapedattributeValue = EscapedAttributeUtils.unescapeAttribute(context.getTemplateMode(), stringValue);
 			}
-			addPlaceholderVariable(placeholders, unnamedPlaceholderPrefix.get(), attributeKey, unescapedattributeValue);
+			addPlaceholderVariable(placeholders, unnamedPlaceholderPrefix.get(), attributeKey, unescapedattributeValue, computed);
 		} else {
 			//See StandardWithTagProcessor
 
@@ -600,6 +809,15 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 			if (context instanceof IEngineContext) {
 				// NOTE this interface is internal and should not be used in users' code
 				engineContext = (IEngineContext) context;
+			}
+			if (computed && !isBooleanOrNumber((String) attributeValue)) {
+				//a computed value is set as it is
+				if (engineContext != null) {
+					engineContext.setVariable(attributeKey, attributeValue);
+				} else {
+					structureHandler.setLocalVariable(attributeKey, attributeValue);
+				}
+				return;
 			}
 
 			final Object encodedAttributeValue = encodeAttributeValue(attributeValue, false);

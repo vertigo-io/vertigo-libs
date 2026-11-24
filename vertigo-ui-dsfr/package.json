@@ -1,17 +1,17 @@
 {
     "name":  "vertigo-dsfr",
-    "version":  "4.4.1",
+    "version":  "4.5.0-SNAPSHOT",
     "private":  false,
     "type":  "module",
     "scripts":  {
                     "dev":  "vite --port 3001",
                     "build":  "vite build",
-                    "build-lib":  "vite build \u0026\u0026 cp dist/*.* ../vertigo-ui/src/main/resources/io/vertigo/ui/static/3rdParty/dsfr/",
+                    "build-lib":  "vite build \u0026\u0026 node copy-lib.mjs",
                     "test":  "vitest run",
                     "test:coverage":  "vitest run --coverage --reporter=verbose --coverage.reporter=text --coverage.reporter=html --coverage.reporter=lcov --coverage.reporter=clover"
                 },
     "dependencies":  {
-                         "@gouvfr/dsfr":  "^1.14.4",
+                         "@gouvfr/dsfr":  "~1.14.4",
                          "@gouvminint/vue-dsfr":  "^8.17.0",
                          "@iconify-json/ri":  "^1.2.3",
                          "@trevoreyre/autocomplete":  "^3.0.3",

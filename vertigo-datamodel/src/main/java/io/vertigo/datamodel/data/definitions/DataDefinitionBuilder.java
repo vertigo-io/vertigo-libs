@@ -64,6 +64,7 @@ public final class DataDefinitionBuilder implements Builder<DataDefinition> {
 	private final List<DataField> myFields = new ArrayList<>();
 	private String myDataSpace;
 	private String mySortFieldName;
+	private boolean mySortFieldDesc = false;
 	private String myDisplayFieldName;
 	private String myHandleFieldName;
 	private String myKeyFieldName;
@@ -285,7 +286,18 @@ public final class DataDefinitionBuilder implements Builder<DataDefinition> {
 	 * @return this builder
 	 */
 	public DataDefinitionBuilder withSortField(final String sortFieldName) {
+		return withSortField(sortFieldName, false);
+	}
+
+	/**
+	 * Specifies which field to be used for sorting and the default sort direction
+	 * @param sortFieldName fieldName to use
+	 * @param desc default sort direction ({@code true} for descending order)
+	 * @return this builder
+	 */
+	public DataDefinitionBuilder withSortField(final String sortFieldName, final boolean desc) {
 		mySortFieldName = sortFieldName;
+		mySortFieldDesc = desc;
 		return this;
 	}
 
@@ -329,13 +341,17 @@ public final class DataDefinitionBuilder implements Builder<DataDefinition> {
 		}
 
 		final DataField sortField;
+		final Optional<Boolean> sortDesc;
 		if (mySortFieldName != null) {
 			sortField = findFieldByName(mySortFieldName)
 					.orElseThrow(() -> new IllegalStateException(StringUtil.format("Sort field '{0}' not found on '{1}'", mySortFieldName, dataDefinition.getName())));
+			sortDesc = Optional.of(mySortFieldDesc);
 		} else if (myStereotype == DataStereotype.Fragment) {
 			sortField = myFragmentId.get().getSortField().orElse(null);
+			sortDesc = myFragmentId.get().getSortDesc();
 		} else {
 			sortField = null;
+			sortDesc = Optional.empty();
 		}
 
 		final DataField displayField;
@@ -374,6 +390,7 @@ public final class DataDefinitionBuilder implements Builder<DataDefinition> {
 				myFields,
 				myDataSpace == null ? DataDefinition.DEFAULT_DATA_SPACE : myDataSpace,
 				Optional.ofNullable(sortField),
+				sortDesc,
 				Optional.ofNullable(displayField),
 				Optional.ofNullable(handleField),
 				Optional.ofNullable(keyField));

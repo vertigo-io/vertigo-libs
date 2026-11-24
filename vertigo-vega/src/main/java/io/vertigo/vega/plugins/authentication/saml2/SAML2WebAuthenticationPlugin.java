@@ -23,9 +23,11 @@ import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Base64;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.BiFunction;
 
 import javax.inject.Inject;
@@ -55,6 +57,7 @@ import org.opensaml.saml.saml2.encryption.Decrypter;
 import org.opensaml.saml.saml2.metadata.impl.AssertionConsumerServiceBuilder;
 import org.opensaml.saml.saml2.metadata.impl.EntityDescriptorBuilder;
 import org.opensaml.saml.saml2.metadata.impl.SPSSODescriptorBuilder;
+import org.opensaml.saml.security.impl.SAMLSignatureProfileValidator;
 import org.opensaml.security.credential.Credential;
 import org.opensaml.security.credential.UsageType;
 import org.opensaml.xmlsec.SignatureSigningParameters;
@@ -80,6 +83,7 @@ import io.vertigo.vega.impl.authentication.WebAuthenticationPlugin;
 import io.vertigo.vega.impl.authentication.WebAuthenticationUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * Base authentication handler for SAML2.
@@ -91,8 +95,11 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 	private static final Logger LOG = LogManager.getLogger(SAML2WebAuthenticationPlugin.class);
 
 	private static final String BINDING_TYPE = SAMLConstants.SAML2_POST_BINDING_URI;
+	private static final String PENDING_REQUEST_IDS = "SAML2_PENDING_REQUEST_IDS";
+	private static final int MAX_PENDING_REQUESTS = 10;
 
 	private final SAML2Parameters saml2Parameters;
+	private final SAML2ResponseValidator responseValidator;
 	private final String urlPrefix;
 	private final String urlHandlerPrefix;
 	private final String callbackUrl;
@@ -113,6 +120,7 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 				.filter(connector -> connectorName.equals(connector.getName()))
 				.findFirst().orElseThrow(() -> new IllegalArgumentException("Can't found Saml2DeploymentConnector named '" + connectorName + "' in " + saml2DeploymentConnectors));
 		saml2Parameters = saml2DeploymentConnector.getClient();
+		responseValidator = new SAML2ResponseValidator(saml2Parameters);
 		urlPrefix = urlPrefixOpt.orElse("/");
 		urlHandlerPrefix = urlHandlerPrefixOpt.orElse("/saml/");
 		callbackUrl = urlHandlerPrefix + "callback";
@@ -230,6 +238,9 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 	@Override
 	public void doRedirectToSso(final HttpServletRequest request, final HttpServletResponse response) {
 		final var authnRequest = buildAuthnRequest(request);
+		if (saml2Parameters.isCheckInResponseTo()) {
+			addPendingRequestId(request.getSession(), authnRequest.getID());
+		}
 
 		final var context = new MessageContext();
 		context.setMessage(authnRequest);
@@ -299,12 +310,16 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 
 		// Validating the signature
 		final var sig = response.getSignature();
-		if (!checkSignature(saml2Parameters, sig)) {
+		if (!checkSignature(saml2Parameters.getIpPublicCredentials(), sig)) {
 			throw new VSystemException("SAML signature check fail.");
 		}
 
+		final var callbackUri = WebAuthenticationUtil.resolveExternalUrl(httpRequest, getExternalUrlOptional()) + getCallbackUrl();
+		responseValidator.validateResponse(response, callbackUri);
+
 		// read or decrypt assertion
 		final var assertion = getAssertion(saml2Parameters, response);
+		responseValidator.validateAssertion(assertion, callbackUri, getPendingRequestIds(httpRequest), Instant.now());
 		try {
 			final var claims = OpenSAMLUtil.extractAttributes(assertion);
 			return AuthenticationResult.of(claims, assertion);
@@ -314,29 +329,63 @@ public class SAML2WebAuthenticationPlugin implements WebAuthenticationPlugin<Ass
 		}
 	}
 
-	private static boolean checkSignature(final SAML2Parameters saml2Parameters, final Signature signature) {
-		var signatureValid = false;
-		var checkCount = 1;
-		for (final Credential cred : saml2Parameters.getIpPublicCredentials()) {
+	/**
+	 * Checks the signature with the IdP certificates, in the configured order.
+	 * @return true if one of them validates the signature
+	 */
+	static boolean checkSignature(final List<Credential> ipPublicCredentials, final Signature signature) {
+		if (signature == null) {
+			throw new VSystemException("SAML response is not signed.");
+		}
+		try {
+			new SAMLSignatureProfileValidator().validate(signature);
+		} catch (final SignatureException e) {
+			LOG.warn("SAML signature not compliant with the SAML signature profile : {}", e.getMessage());
+			return false;
+		}
+		final var count = ipPublicCredentials.size();
+		for (var i = 0; i < count; i++) {
 			try {
-				SignatureValidator.validate(signature, cred);
-				signatureValid = true;
-				break;
+				SignatureValidator.validate(signature, ipPublicCredentials.get(i));
+				if (i > 0) {
+					LOG.warn("SAML signature validated with certificate n°{}/{}, not with the primary one : consider deleting old certificates from configuration.", i + 1, count);
+				}
+				return true;
 			} catch (final SignatureException e) {
 				if (LOG.isDebugEnabled()) {
-					LOG.debug("SAML signature check fail for cert n°{}/{}.", checkCount, saml2Parameters.getIpPublicCredentials().size(), e);
+					LOG.debug("SAML signature check fail for cert n°{}/{}.", i + 1, count, e);
 				} else {
-					LOG.info("SAML signature check fail for cert n°{}/{}.", checkCount, saml2Parameters.getIpPublicCredentials().size());
+					LOG.info("SAML signature check fail for cert n°{}/{}.", i + 1, count);
 				}
 			}
-			++checkCount;
 		}
-		if (checkCount > 1) {
-			LOG.warn("SAML signature validation do not use primary defined certificate, consider deleting old certificates from configuration.");
-		} else if (checkCount == 0) {
+		if (count == 0) {
 			LOG.warn("SAML signature validation can't found any certificate");
+		} else {
+			LOG.warn("SAML signature not validated by any of the {} configured certificates.", count);
 		}
-		return signatureValid;
+		return false;
+	}
+
+	/** Keeps the ids of the last requests sent from this session, for the InResponseTo check. */
+	private static synchronized void addPendingRequestId(final HttpSession session, final String requestId) {
+		final var pendingRequestIds = new LinkedHashSet<String>(getPendingRequestIds(session));
+		pendingRequestIds.add(requestId);
+		while (pendingRequestIds.size() > MAX_PENDING_REQUESTS) {
+			pendingRequestIds.remove(pendingRequestIds.iterator().next());
+		}
+		session.setAttribute(PENDING_REQUEST_IDS, pendingRequestIds);
+	}
+
+	private static Set<String> getPendingRequestIds(final HttpServletRequest httpRequest) {
+		final var session = httpRequest.getSession(false);
+		return session == null ? Set.of() : getPendingRequestIds(session);
+	}
+
+	@SuppressWarnings("unchecked")
+	private static Set<String> getPendingRequestIds(final HttpSession session) {
+		final var pendingRequestIds = (Set<String>) session.getAttribute(PENDING_REQUEST_IDS);
+		return pendingRequestIds == null ? Set.of() : pendingRequestIds;
 	}
 
 	private static Assertion getAssertion(final SAML2Parameters saml2Parameters, final Response response) {

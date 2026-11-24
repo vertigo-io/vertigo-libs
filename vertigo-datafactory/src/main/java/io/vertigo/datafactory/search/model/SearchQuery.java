@@ -19,6 +19,8 @@ package io.vertigo.datafactory.search.model;
 
 import java.io.Serializable;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.DefinitionId;
@@ -50,6 +52,7 @@ public final class SearchQuery implements Serializable {
 	private final Optional<FacetedQuery> facetedQuery;
 	private final DefinitionId<FacetDefinition> clusteringFacetDefinitionId;
 	private final boolean useHighlight; // new flag to enable highlight
+	private final Set<DefinitionId<FacetDefinition>> skippedFacets;
 
 	/**
 	 * Constructor.
@@ -61,6 +64,7 @@ public final class SearchQuery implements Serializable {
 	 * @param boostedDocumentDateField Nom du champ portant la date du document (null si non utilisé)
 	 * @param numDaysOfBoostRefDocument Age des documents servant de référence pour le boost des plus récents par rapport à eux (null si non utilisé)
 	 * @param mostRecentBoost Boost relatif maximum entre les plus récents et ceux ayant l'age de référence (doit être > 1) (null si non utilisé)
+	 * @param skippedFacets The facets of the QueryDefinition to skip for this Query
 	 */
 	SearchQuery(
 			final String listFilterBuilderQuery,
@@ -73,11 +77,13 @@ public final class SearchQuery implements Serializable {
 			final DataField boostedDocumentDateField,
 			final Integer numDaysOfBoostRefDocument,
 			final Integer mostRecentBoost,
-			final boolean useHighlight) {
+			final boolean useHighlight,
+			final Set<DefinitionId<FacetDefinition>> skippedFacets) {
 		Assertion.check()
 				.isNotNull(facetedQuery)
 				.isNotNull(queryCriteria)
 				.isNotNull(securityListFilter)
+				.isNotNull(skippedFacets)
 				.when(boostedDocumentDateField != null, () -> Assertion.check()
 						.isTrue(numDaysOfBoostRefDocument != null && mostRecentBoost != null, "Lorsque le boost des documents récents est activé, numDaysOfBoostRefDocument et mostRecentBoost sont obligatoires."))
 				.when(boostedDocumentDateField == null, () -> Assertion.check()
@@ -94,7 +100,7 @@ public final class SearchQuery implements Serializable {
 			queryListFilter = ListFilter.of("*:*");
 		} else {
 			final ListFilterBuilder<Object> listFilterBuilder = InjectorUtil.newInstance(listFilterBuilderClass);
-			final ListFilter listFilter = listFilterBuilder
+			final var listFilter = listFilterBuilder
 					.withListFilterQuery(listFilterBuilderQuery)
 					.withCriteria(queryCriteria)
 					.build();
@@ -113,6 +119,14 @@ public final class SearchQuery implements Serializable {
 				? clusteringFacetDefinition.id()
 				: null;
 		this.useHighlight = useHighlight;
+		if (clusteringFacetDefinitionId != null) {
+			// the clustering facet can't be skipped : the clusters counts are read from its facet in the result
+			this.skippedFacets = skippedFacets.stream()
+					.filter(facetId -> !facetId.equals(clusteringFacetDefinitionId))
+					.collect(Collectors.toUnmodifiableSet());
+		} else {
+			this.skippedFacets = skippedFacets;
+		}
 	}
 
 	/**
@@ -238,6 +252,14 @@ public final class SearchQuery implements Serializable {
 	 */
 	public boolean isUseHighlight() {
 		return useHighlight;
+	}
+
+	/**
+	 * Returns the facets that will be skipped by this instance of Query
+	 * @return The facets of the QueryDefinition to skip for this Query
+	 */
+	public Set<DefinitionId<FacetDefinition>> getSkippedFacets() {
+		return skippedFacets;
 	}
 
 }

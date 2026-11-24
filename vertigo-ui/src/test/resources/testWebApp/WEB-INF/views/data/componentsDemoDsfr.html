@@ -138,15 +138,16 @@
                        color="primary" label="Ajax save"></q-btn>
 
                 <vu:dsfr-grid-cell>
-                    <vu:dsfr-link url="@{/componentsDemo/myFiles}" label="insee.csv" download
-                                  detailLabel="Fichier CSV"></vu:dsfr-link>
-                    <vu:dsfr-link url="@{/componentsDemo/myFiles}" label="insee.csv"/>
+                    <!-- a link is the vue component dsfr-link (no thymeleaf component since 4.3.0) ; vu:dsfr-button-link is a button -->
+                    <dsfr-link th:href="@{/componentsDemo/myFiles}" class="fr-link--download" download>insee.csv <span class="fr-link__detail">Fichier CSV</span></dsfr-link>
+                    <dsfr-link th:href="@{/componentsDemo/myFiles}">insee.csv</dsfr-link>
+                    <vu:dsfr-button-link url="@{/componentsDemo/myFiles}" label="Download insee.csv"/>
                 </vu:dsfr-grid-cell>
 
                 <vu:dsfr-v-fileupload label="Movie pictures"
                                       hint="Taille maximale : 500 Mo. Formats supportés : jpg, png, pdf. Plusieurs fichiers possibles. Lorem ipsum dolor sit amet, consectetur adipiscing."
                                       @download-file="(uri) => console.log('Downloading ', uri)"
-                                      th:url="'@{/commons/upload}'" required object="movie" field="pictures"/>
+                                      url="@{/commons/upload}" required object="movie" field="pictures"/>
 
                 <vu:dsfr-dialog v-title="vueData.movie.title" componentId="dialog">
                     <vu:slot name="actions_slot">

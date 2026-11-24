@@ -17,9 +17,13 @@
  */
 package io.vertigo.stella.plugins.work.rest.master;
 
+import java.util.Optional;
 import java.util.Set;
 
 import javax.inject.Inject;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.core.lang.Assertion;
@@ -38,21 +42,34 @@ import io.vertigo.vega.webservice.stereotype.PathPrefix;
  */
 @PathPrefix("/backend/workQueue")
 public final class RestMasterPlugin implements MasterPlugin, WebServices {
+	private static final int DEFAULT_NODE_TIMEOUT_SECONDS = 60; //until the node gives its own timeoutSeconds with its heartBeat (same default as the workers)
+	private static final int PULL_TIMEOUT_SECONDS = 5; //server side long poll
+	private static final Logger LOG = LogManager.getLogger(RestMasterPlugin.class);
 	private final RestQueueServer restQueueServer;
 
 	/**
 	 * Constructeur.
-	 * @param daemonManager Manager des daemons
-	 * @param timeoutSeconds Timeout des travaux en attente de traitement
+	 * Same params as the RedisMasterPlugin.
+	 * @param deadWorkTypeTimeoutSeconds Timeout (seconds) of the waiting works without an active node for their type (60s by default)
+	 * @param deprecatedTimeoutSeconds ignored (kept for the existing configurations) : use deadWorkTypeTimeoutSeconds
 	 * @param codecManager Manager d'encodage/decodage
 	 */
 	@Inject
 	public RestMasterPlugin(
-			@ParamValue("timeoutSeconds") final int timeoutSeconds,
+			@ParamValue("deadWorkTypeTimeoutSeconds") final Optional<Integer> deadWorkTypeTimeoutSeconds,
+			@Deprecated @ParamValue("timeoutSeconds") final Optional<Integer> deprecatedTimeoutSeconds,
 			final CodecManager codecManager) {
-		Assertion.check().isTrue(timeoutSeconds < 10000, "Le timeout s'exprime en seconde.");
+		Assertion.check()
+				.isNotNull(deadWorkTypeTimeoutSeconds)
+				.isNotNull(codecManager);
+		final int deadWorkTypeTimeout = deadWorkTypeTimeoutSeconds.orElse(60);
+		Assertion.check()
+				.isTrue(deadWorkTypeTimeout >= 5 && deadWorkTypeTimeout <= 60 * 60, "deadWorkTypeTimeoutSeconds must be between 5 and 3600s ({0}s)", deadWorkTypeTimeout);
 		//-----
-		restQueueServer = new RestQueueServer(20, codecManager, 5);
+		if (deprecatedTimeoutSeconds.isPresent()) {
+			LOG.warn("RestMasterPlugin : the param timeoutSeconds is ignored, use deadWorkTypeTimeoutSeconds (timeout of the waiting works without an active node for their type)");
+		}
+		restQueueServer = new RestQueueServer(DEFAULT_NODE_TIMEOUT_SECONDS, deadWorkTypeTimeout, codecManager, PULL_TIMEOUT_SECONDS);
 	}
 
 	@Override

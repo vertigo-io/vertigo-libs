@@ -32,7 +32,6 @@ import io.vertigo.stella.master.MasterManager;
 import io.vertigo.stella.work.AbstractWorkManagerTest;
 import io.vertigo.stella.work.MyWorkResultHanlder;
 import io.vertigo.stella.work.distributed.ClientNode;
-import io.vertigo.stella.work.distributed.redis.MyNodeConfig;
 import io.vertigo.stella.work.mock.SlowWork;
 import io.vertigo.stella.work.mock.SlowWorkEngine;
 import jakarta.ws.rs.core.UriBuilder;
@@ -54,7 +53,7 @@ public final class RestWorkManagerTest extends AbstractWorkManagerTest {
 
 	protected static ClientNode startClientNode(final int numClient) throws IOException {
 		LOG.info("Starting ClientNode " + numClient + "...");
-		final ClientNode clientNode = new ClientNode("io.vertigo.stella.work.distributed.rest.StellaNodeConfigClientNode" + numClient, 30);//duree de vie 30s max
+		final ClientNode clientNode = new ClientNode("io.vertigo.stella.work.distributed.rest.StellaNodeConfigClientNode" + numClient, 150);//lifetime 150s max : longer than the dead node detection (60s + daemon 20s) and the 120s wait
 		clientNode.start();
 		return clientNode;
 	}
@@ -66,6 +65,7 @@ public final class RestWorkManagerTest extends AbstractWorkManagerTest {
 
 	/**
 	 * Initialisation du test pour implé spécifique.
+	 *
 	 * @throws Exception Erreur
 	 */
 	@Override
@@ -78,6 +78,7 @@ public final class RestWorkManagerTest extends AbstractWorkManagerTest {
 
 	/**
 	 * Finalisation du test pour implé spécifique.
+	 *
 	 * @throws Exception Erreur
 	 */
 	@Override
@@ -109,7 +110,7 @@ public final class RestWorkManagerTest extends AbstractWorkManagerTest {
 		LOG.info("Start ClientNode 2 : " + workResultHanlder.toString());
 		final ClientNode clientNode2 = startClientNode(2);
 		try {
-			final boolean finished = workResultHanlder.waitFinish(20, 85 * 1000); //Le timeout des nodes est configuré à 20s
+			final boolean finished = workResultHanlder.waitFinish(20, 120 * 1000); //the timeout of the nodes is 60s, checked every 20s
 			LOG.info(workResultHanlder);
 			Assertions.assertEquals(null, workResultHanlder.getLastThrowable());
 			Assertions.assertTrue(finished);

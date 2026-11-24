@@ -280,6 +280,26 @@ public class IpWhitelistHelperTest {
 		}
 	}
 
+	@ParameterizedTest(name = "Range {0}")
+	@CsvSource({
+			"::1-::3, 3, ::1, ::3, ::4", // a compressed IPv6 address starts with ::
+			"::1-3, 3, ::1, ::3, ::4", // shorthand notation
+			"fe80::1-fe80::3, 3, fe80::1, fe80::3, fe80::4", // first bit set (signed bytes)
+			"::ffff:1.2.3.4-5, 2, 1.2.3.4, 1.2.3.5, 1.2.3.6", // IPv4-mapped IPv6 address, shorthand notation
+			"255.255.255.1-3, 3, 255.255.255.1, 255.255.255.3, 255.255.255.4", // first bits set
+			"0.0.0.1-3, 3, 0.0.0.1, 0.0.0.3, 0.0.0.4", // first bytes at 0
+	})
+	void testRangeBounds(final String subnet, final int expectedCount, final String firstIp, final String lastIp, final String outsideIp) {
+		// When
+		final IpWhitelistHelper helper = new IpWhitelistHelper(Set.of(subnet), DEFAULT_MAX_WHITELIST_SIZE);
+
+		// Then
+		assertEquals(expectedCount, helper.estimateIpCount());
+		assertTrue(helper.isIpInWhitelist(firstIp));
+		assertTrue(helper.isIpInWhitelist(lastIp));
+		assertFalse(helper.isIpInWhitelist(outsideIp));
+	}
+
 	// ===== Invalid Input Tests =====
 
 	@ParameterizedTest(name = "Invalid format {0}")
@@ -446,5 +466,23 @@ public class IpWhitelistHelperTest {
 
 		// Assert that each lookup takes less than 0.05ms on average (very generous threshold)
 		assertTrue(durationMs < maxTimeMs, "IP lookup should be faster than 0.05ms (" + maxTimeMs + "ms for " + testLookup + " lookups)");
+	}
+
+	// ===== Values that are not an IP address (the user key comes from a request header) =====
+
+	@Test
+	void testForwardedForChainIsNotAnError() {
+		// X-Forwarded-For through several proxies : one header line "client, proxy1, ..."
+		final IpWhitelistHelper helper = new IpWhitelistHelper(Set.of("203.0.113.5"), DEFAULT_MAX_WHITELIST_SIZE);
+		assertDoesNotThrow(() -> helper.isIpInWhitelist("203.0.113.5, 10.0.0.1"));
+		assertFalse(helper.isIpInWhitelist("203.0.113.5, 10.0.0.1"));
+	}
+
+	@Test
+	void testHostNameIsNotResolved() {
+		// a forged header with a host name : not an IP, not whitelisted, no error (and no DNS lookup)
+		final IpWhitelistHelper helper = new IpWhitelistHelper(Set.of("203.0.113.5"), DEFAULT_MAX_WHITELIST_SIZE);
+		assertDoesNotThrow(() -> helper.isIpInWhitelist("unknown-host.0.example.invalid"));
+		assertFalse(helper.isIpInWhitelist("unknown-host.0.example.invalid"));
 	}
 }

@@ -1,15 +1,28 @@
-<th:block th:fragment="v-fileupload-edit(url, downloadUrl, key, object, field, multiple, simple, uploader_attrs)" 
+<!--/* v-fileupload is labelled as a field : the label of the field (object and field), or the given label (key : a file list of the context, without field label) */-->
+<th:block th:fragment="v-fileupload-edit(url, downloadUrl, key, object, field, label, required, multiple, simple, label_attrs, uploader_attrs)" 
 	vu:alias="v-fileupload" vu:selector="${viewMode=='edit'}"
 	th:assert="((${key} != null and ${label} != null) or (${object} != null and ${field} != null)) and ${url} != null"
-	th:with="object=${object?:key}, myComponentId=${model.util.generateComponentUID('uploader', object, field, rowIndex)}, downloadUrl=${downloadUrl?:(url + '/download/')}, myMultiple=${multiple?:false}, mySimple=${simple?:false}" >
+	th:with="object=${object?:key}, myUploaderId=${model.util.generateComponentUID('uploader', object, field, rowIndex)}, downloadUrl=${downloadUrl?:(url + '/download/')}, myMultiple=${multiple?:false}, mySimple=${simple?:false}" >
 		<vu:include-data-primitive key="${object}" th:if="${field==null}" modifiable="true" />
         <vu:include-data object="${object}" field="${field}" th:if="${field!=null}" modifiable="true"/>
         
         <input type="hidden" th:v-if="|vueDataToArray(${model.util.vueDataKey(object, field, rowIndex)}).length == 0|" th::name="${model.util.contextKey(object, field, rowIndex)}" value="" />
         <input type="hidden" th:v-for="|fileUri in vueDataToArray(${model.util.vueDataKey(object, field, rowIndex)})|" th::name="${model.util.contextKey(object, field, rowIndex)}" v-bind:value="fileUri" />
+        <vu:label-edit th:if="${field != null}" object="${object}" field="${field}" label="${label}" required="${required}" label_attrs="${label_attrs}">
+            <vu:v-fileupload-uploader-edit/>
+        </vu:label-edit>
+        <q-field th:if="${field == null}" th::label-width="${overridedLabelWidth?:3}" th:label="${label}" th:classappend="${required == true ? 'v-field__required' : ''}"
+                orientation="vertical" stack-label borderless th:attr="__${label_attrs}__">
+            <vu:v-fileupload-uploader-edit/>
+        </q-field>
+</th:block>
+
+<!--/* internal : the uploader of v-fileupload-edit (text-dark : the q-field of the label colors its content) */-->
+<th:block th:fragment="v-fileupload-uploader-edit">
         <v-file-upload
-            inputId="${myComponentId}__input"
+            th:input-id="|${myUploaderId}__input|"
             :readonly="false"
+            class="text-dark"
             th:url="${url}" 
             field-name="file"
             th::multiple="${myMultiple}"
@@ -19,16 +32,27 @@
             th:attr="__${uploader_attrs}__"></v-file-upload>
 </th:block>
 
-<th:block th:fragment="v-fileupload-read(url, downloadUrl, key, object, field, multiple, simple, uploader_attrs)" 
+<th:block th:fragment="v-fileupload-read(url, downloadUrl, key, object, field, label, required, multiple, simple, label_attrs, uploader_attrs)" 
     vu:alias="v-fileupload" vu:selector="${viewMode=='read'}"
     th:assert="(${key} != null or (${object} != null and ${field} != null)) and ${url} != null"
-    th:with="object=${object?:key}, myComponentId=${model.util.generateComponentUID('uploader', object, field, rowIndex)}, downloadUrl=${downloadUrl?:(url + '/download/')}, myMultiple=${multiple?:false}, mySimple=${simple?:false}" >
+    th:with="object=${object?:key}, myUploaderId=${model.util.generateComponentUID('uploader', object, field, rowIndex)}, downloadUrl=${downloadUrl?:(url + '/download/')}, myMultiple=${multiple?:false}, mySimple=${simple?:false}" >
        <vu:include-data-primitive key="${object}" th:if="${field==null}"/>
        <vu:include-data object="${object}" field="${field}" th:if="${field!=null}"/>        
+       <vu:label-read th:if="${field != null}" object="${object}" field="${field}" label="${label}" label_attrs="${label_attrs}">
+           <vu:v-fileupload-uploader-read/>
+       </vu:label-read>
+       <q-field th:if="${field == null}" th::label-width="${overridedLabelWidth?:3}" th:label="${label}"
+               orientation="vertical" stack-label readonly aria-readonly="true" borderless th:attr="__${label_attrs}__">
+           <vu:v-fileupload-uploader-read/>
+       </q-field>
+</th:block>
+
+<!--/* internal : the uploader of v-fileupload-read */-->
+<th:block th:fragment="v-fileupload-uploader-read">
        <v-file-upload 
-            th::ref="${myComponentId}"
+            th::ref="${myUploaderId}"
             :readonly="true"
-            class="q-uploader-readonly"
+            class="q-uploader-readonly text-dark"
             th:url="${url}" 
             field-name="file"
             th::simple="${mySimple}"
@@ -54,18 +78,18 @@
         </div>
 </th:block>
 
-<th:block th:fragment="v-fileupload-simple(url, downloadUrl, key, multiple, uploader_attrs)" 
+<th:block th:fragment="v-fileupload-simple(url, downloadUrl, key, label, required, multiple, label_attrs, uploader_attrs)" 
     th:assert="${key} != null and ${url} != null">
     <vu:v-fileupload simple="true" />
 </th:block>
 
-<th:block th:fragment="v-fileupload-simple-object-edit(url, downloadUrl, object, field, multiple, uploader_attrs)" 
+<th:block th:fragment="v-fileupload-simple-object-edit(url, downloadUrl, object, field, label, required, multiple, label_attrs, uploader_attrs)" 
     vu:alias="v-fileupload-simple-object" vu:selector="${viewMode=='edit'}"
     th:assert="${object} != null and ${field} != null and ${url} != null">
         <vu:v-fileupload-edit simple="true" />
 </th:block>
 
-<th:block th:fragment="v-fileupload-simple-object-read(url, downloadUrl, object, field, multiple, uploader_attrs)" 
+<th:block th:fragment="v-fileupload-simple-object-read(url, downloadUrl, object, field, label, required, multiple, label_attrs, uploader_attrs)" 
     vu:alias="v-fileupload-simple-object" vu:selector="${viewMode=='read'}"
     th:assert="${object} != null and ${field} != null and ${url} != null">
         <vu:v-fileupload-read simple="true" />

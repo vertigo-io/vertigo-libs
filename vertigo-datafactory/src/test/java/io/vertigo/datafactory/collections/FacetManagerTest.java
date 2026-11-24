@@ -50,9 +50,11 @@ import io.vertigo.datafactory.collections.model.FacetValue;
 import io.vertigo.datafactory.collections.model.FacetedQuery;
 import io.vertigo.datafactory.collections.model.FacetedQueryResult;
 import io.vertigo.datafactory.collections.model.SelectedFacetValues;
+import io.vertigo.datafactory.impl.collections.functions.filter.DtListPatternFilterUtil;
 import io.vertigo.datamodel.DataModelFeatures;
 import io.vertigo.datamodel.data.model.DtList;
 import io.vertigo.datamodel.impl.smarttype.ModelDefinitionProvider;
+import io.vertigo.datamodel.smarttype.definitions.SmartTypeDefinition;
 import io.vertigo.datastore.DataStoreFeatures;
 
 /**
@@ -197,6 +199,19 @@ public class FacetManagerTest {
 				.filter(facet -> facetName.equals(facet.getDefinition().getName()))
 				.findFirst()
 				.orElseThrow(NullPointerException::new);
+	}
+
+	/**
+	 * A String smartType without indexType is valid for the in memory facets and filters :
+	 * the indexType is an ElasticSearch index setting (regression of 4.4.0 : IllegalArgumentException "Précisez la valeur indexType").
+	 */
+	@Test
+	public void testNotTokenizedWithoutIndexType() {
+		final SmartTypeDefinition labelSmartType = node.getDefinitionSpace().resolve("STyLabel", SmartTypeDefinition.class);
+		Assertions.assertFalse(DtListPatternFilterUtil.isTokenizedIndexType(labelSmartType));
+		final SmartTypeDefinition pipeTextSmartType = node.getDefinitionSpace().resolve("STyPipeText", SmartTypeDefinition.class);
+		Assertions.assertTrue(DtListPatternFilterUtil.isTokenizedIndexType(pipeTextSmartType)); //indexType with parameters : sep_pipe:facetable
+		Assertions.assertArrayEquals(new String[] { "a", "b" }, DtListPatternFilterUtil.tokenizedIndexValue(pipeTextSmartType, "a | b"));
 	}
 
 	/**

@@ -1,4 +1,4 @@
-<th:block th:fragment="cards(list, componentId, rowsPerPage, showMore, showMoreLabel, selectable, rowKey, sortUrl, cardClass, qcard_attrs)" 
+<th:block th:fragment="cards(list, componentId, rowsPerPage, showMore, showMoreLabel, selectable, rowKey, sortUrl, cardClass, pagination_attrs, qcard_attrs)" 
 	th:with="myRowKey=${rowKey?:model.util.getIdField('__${list}__')}, mySelectable=${selectable?:false}" >
 	<vu:collection list="${list}" componentId="${componentId}" rowsPerPage="${rowsPerPage}" showMore=${showMore} showMoreLabel="${showMoreLabel}" selectable="${mySelectable}" sortUrl="${sortUrl}">
 		<div class="row wrap justify-start q-col-gutter-md">

@@ -27,6 +27,8 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -55,6 +57,8 @@ import org.thymeleaf.spring6.view.ThymeleafViewResolver;
 import io.vertigo.connectors.spring.EnableVertigoSpringBridge;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.Node;
+import io.vertigo.core.param.Param;
+import io.vertigo.core.param.ParamManager;
 import io.vertigo.ui.controllers.ListAutocompleteController;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.DtListStateMethodArgumentResolver;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.FileInfoURIConverter;
@@ -85,10 +89,15 @@ import nz.net.ultraq.thymeleaf.layoutdialect.LayoutDialect;
 @EnableWebMvc
 public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAware {
 
+	private static final String COMPONENT_PATH_PREFIX = "io/vertigo/ui/components/";
+	private static final Logger LOG = LogManager.getLogger(VSpringWebConfig.class);
+	/** Param of the dev mode of the templates (true by default), see {@link #isDevMode()}. */
+	public static final String THYMELEAF_DEV_MODE_PARAM_NAME = "THYMELEAF_DEV_MODE";
+
 	@Autowired
 	private ApplicationContext applicationContext;
 
-	private static final String COMPONENT_PATH_PREFIX = "io/vertigo/ui/components/";
+	private Boolean devMode; //read once
 
 	/*
 	 * STEP 1 - Create SpringResourceTemplateResolver
@@ -138,7 +147,7 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 		final var uiComponents = moduleUiComponents.stream()
 				.flatMap(m -> m.getUiComponents().stream())
 				.collect(Collectors.toUnmodifiableSet());
-		templateEngine.addDialect("vu", new VUiStandardDialect(uiComponents));
+		templateEngine.addDialect("vu", new VUiStandardDialect(VUiStandardDialect.PREFIX, uiComponents, getAutoCloseTagsPrefixes(), isDevMode()));
 
 		templateEngine.addDialect(new LayoutDialect());
 
@@ -262,6 +271,17 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 		return null;
 	}
 
+	/**
+	 * Prefixes of the custom elements closed when self-closed (q-btn ... / becomes an open/close pair) : the browser
+	 * ignores the trailing slash of a custom element, which would swallow everything that follows.
+	 * Override to add the prefixes of your own components.
+	 *
+	 * @return prefixes of the elements to close (q-, v-, vui-, dsfr- by default)
+	 */
+	protected Set<String> getAutoCloseTagsPrefixes() {
+		return VUiStandardDialect.DEFAULT_AUTO_CLOSE_TAGS_PREFIXES;
+	}
+
 	@Bean(DispatcherServlet.REQUEST_TO_VIEW_NAME_TRANSLATOR_BEAN_NAME)
 	public RequestToViewNameTranslator customRequestToViewNameTranslator() {
 		return new VRequestToViewNameTranslator();
@@ -349,8 +369,21 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 		return new VertigoLocaleResolver();
 	}
 
+	/**
+	 * Dev mode of the templates : read again at each request (no cache), vu: elements without component logged.
+	 * Param THYMELEAF_DEV_MODE, true by default (comfort of the development) : set it to false in production.
+	 * A project may override this method.
+	 */
 	protected boolean isDevMode() {
-		return true;
+		if (devMode == null) {
+			final ParamManager paramManager = Node.getNode().getComponentSpace().resolve(ParamManager.class);
+			devMode = paramManager.getOptionalParam(THYMELEAF_DEV_MODE_PARAM_NAME).map(Param::getValueAsBoolean).orElse(Boolean.TRUE);
+			if (devMode) {
+				LOG.warn("Thymeleaf dev mode : templates read again at each request (no cache), unknown vu: components logged. Set the param {}=false in production.",
+						THYMELEAF_DEV_MODE_PARAM_NAME);
+			}
+		}
+		return devMode;
 	}
 
 }

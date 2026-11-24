@@ -17,7 +17,6 @@
  */
 package io.vertigo.vega.impl.webservice.client;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.net.http.HttpRequest;
@@ -35,7 +34,6 @@ import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
-import io.vertigo.core.lang.WrappedException;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.webservice.definitions.WebServiceDefinition.Verb;
 import io.vertigo.vega.webservice.definitions.WebServiceParam;
@@ -164,12 +162,9 @@ public final class HttpRequestBuilder implements Builder<HttpRequest> {
 		queryParams.put(name, value);
 	}
 
-	private String encodeURL(final String value) {
-		try {
-			return URLEncoder.encode(value, StandardCharsets.UTF_8.toString());
-		} catch (final UnsupportedEncodingException e) {
-			throw WrappedException.wrap(e);
-		}
+	private static String encodeURL(final String value) {
+		//URLEncoder is form-urlencoded (space -> '+'), URLs need RFC 3986 (space -> %20) : a literal '+' is already encoded as %2B
+		return URLEncoder.encode(value, StandardCharsets.UTF_8).replace("+", "%20");
 	}
 
 	public void innerBodyParam(final String name, final Object object, final WebServiceParam webServiceParam) {

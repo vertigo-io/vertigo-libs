@@ -60,6 +60,7 @@ public final class DataDefinition extends AbstractDefinition<DataDefinition> {
 	private final Optional<DataField> idFieldOpt;
 
 	private final Optional<DataField> sortFieldOpt;
+	private final Optional<Boolean> sortDescOpt;
 	private final Optional<DataField> displayFieldOpt;
 	private final Optional<DataField> handleFieldOpt;
 	private final Optional<DataField> keyFieldOpt;
@@ -77,6 +78,7 @@ public final class DataDefinition extends AbstractDefinition<DataDefinition> {
 			final List<DataField> dtFields,
 			final String dataSpace,
 			final Optional<DataField> sortField,
+			final Optional<Boolean> sortDesc,
 			final Optional<DataField> displayField,
 			final Optional<DataField> handleField,
 			final Optional<DataField> keyField) {
@@ -89,6 +91,8 @@ public final class DataDefinition extends AbstractDefinition<DataDefinition> {
 				.isNotBlank(dataSpace)
 				.isTrue(REGEX_DATA_SPACE.matcher(dataSpace).matches(), "dataSpace {0} must match pattern {1}", dataSpace, REGEX_DATA_SPACE)
 				.isNotNull(sortField)
+				.isNotNull(sortDesc)
+				.isTrue(sortField.isPresent() == sortDesc.isPresent(), "sortDesc {0} must be present if and only if sortField is present on '{1}'", sortDesc, name)
 				.isNotNull(displayField)
 				.isNotNull(handleField)
 				.isNotNull(keyField);
@@ -103,6 +107,7 @@ public final class DataDefinition extends AbstractDefinition<DataDefinition> {
 		DataField id = null;
 
 		sortFieldOpt = sortField;
+		sortDescOpt = sortDesc;
 		displayFieldOpt = displayField;
 		handleFieldOpt = handleField;
 		keyFieldOpt = keyField;
@@ -253,6 +258,14 @@ public final class DataDefinition extends AbstractDefinition<DataDefinition> {
 	 */
 	public Optional<DataField> getSortField() {
 		return sortFieldOpt;
+	}
+
+	/**
+	 * @return The default sort direction ({@code true} for a descending sort).
+	 * Empty when the definition has no sort field.
+	 */
+	public Optional<Boolean> getSortDesc() {
+		return sortDescOpt;
 	}
 
 	/**

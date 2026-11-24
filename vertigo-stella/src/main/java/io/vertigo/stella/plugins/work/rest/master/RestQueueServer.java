@@ -57,29 +57,30 @@ final class RestQueueServer {
 	private final BlockingQueue<WorkResult> resultQueue = new LinkedBlockingQueue<>();
 
 	private final int deadWorkTypeTimeoutSec;
-	private final long nodeTimeOutSec;
+	private final int defaultNodeTimeOutSec;
 	private final int pullTimeoutSec;
 
 	/**
 	 * Constructeur.
-	 * @param nodeTimeOutSec Timeout (secondes) avant de considérer un noeud comme mort
+	 * @param defaultNodeTimeOutSec Timeout (seconds) without poll nor heartBeat before a node is seen dead, until the node gives its own (heartBeat)
+	 * @param deadWorkTypeTimeoutSec Timeout (seconds) of the waiting works without an active node for their type
 	 * @param codecManager Manager de codec
 	 * @param pullTimeoutSec Timeout (secondes) utilisé lors des long pull
-	 * @param daemonManager Daemons manager
 	 */
-	public RestQueueServer(final int nodeTimeOutSec, final CodecManager codecManager, final int pullTimeoutSec) {
+	public RestQueueServer(final int defaultNodeTimeOutSec, final int deadWorkTypeTimeoutSec, final CodecManager codecManager, final int pullTimeoutSec) {
 		Assertion.check().isNotNull(codecManager);
 		//-----
-		this.nodeTimeOutSec = nodeTimeOutSec;
+		this.defaultNodeTimeOutSec = defaultNodeTimeOutSec;
+		this.deadWorkTypeTimeoutSec = deadWorkTypeTimeoutSec;
 		this.pullTimeoutSec = pullTimeoutSec;
-		deadWorkTypeTimeoutSec = 60; //by convention : dead workType timeout after 60s
 		this.codecManager = codecManager;
-
 	}
 
 	/**
-	 * Vérifie les noeuds morts, et si oui remets les workItems dans la pile.
-	 * @param maxRetry max try
+	 * Checks the dead nodes, and puts their workItems back in the queue (once).
+	 * The number of retries is not limited (as for the RedisMasterPlugin).
+	 * @param maxRetry max try (not managed)
+	 * @return Ids of the re-queued works
 	 */
 	Set<String> checkDeadNodes(final int maxRetry) {
 		final Set<String> deadNodes = new HashSet<>();
@@ -93,13 +94,15 @@ final class RestQueueServer {
 		}
 		if (!deadNodes.isEmpty()) {
 			LOG.warn("Stopped nodes detected : {}", deadNodes);
-			for (final RunningWorkInfos runningWorkInfos : runningWorkInfosMap.values()) {
-				if (deadNodes.contains(runningWorkInfos.getNodeUID())) {
-					//if retry < maxRetry else
-					putWorkItem(runningWorkInfos.getWorkItem());
-					retriedWorkId.add(runningWorkInfos.getWorkItem().getId());
+			for (final Map.Entry<String, RunningWorkInfos> entry : runningWorkInfosMap.entrySet()) {
+				//re-queued only if still running on the dead node : once, and not if its result arrived meanwhile
+				if (deadNodes.contains(entry.getValue().getNodeUID()) && runningWorkInfosMap.remove(entry.getKey(), entry.getValue())) {
+					putWorkItem(entry.getValue().getWorkItem());
+					retriedWorkId.add(entry.getKey());
 				}
 			}
+			//forget the dead nodes (checked again : a node may have come back) ; a node coming back is known again at its next poll or heartBeat
+			deadNodes.forEach(nodeUID -> knownNodes.computeIfPresent(nodeUID, (key, nodeState) -> isActiveNode(nodeState) ? nodeState : null));
 		}
 		return retriedWorkId;
 	}
@@ -134,8 +137,8 @@ final class RestQueueServer {
 		return abandonnedWorkId;
 	}
 
-	private boolean isActiveNode(final NodeState nodeState) {
-		return System.currentTimeMillis() - nodeState.getLastSeenTime() < nodeTimeOutSec * 1000;
+	private static boolean isActiveNode(final NodeState nodeState) {
+		return nodeState.isActive();
 	}
 
 	private boolean isActiveWorkType(final String workType) {
@@ -154,10 +157,29 @@ final class RestQueueServer {
 	 * @param nodeWorkType Type de work traité
 	 */
 	private void touchNode(final String nodeUID, final String nodeWorkType) {
-		final NodeState nodeState = knownNodes.putIfAbsent(nodeUID, new NodeState(nodeUID, nodeWorkType));
+		final NodeState nodeState = knownNodes.putIfAbsent(nodeUID, new NodeState(nodeUID, nodeWorkType, defaultNodeTimeOutSec));
 		if (nodeState != null) {
 			nodeState.touch(nodeWorkType);
 		}
+	}
+
+	/**
+	 * Sign of life of a node, even when all its workers are busy.
+	 * @param nodeUID UID of the node
+	 * @param nodeWorkTypes Work types handled
+	 * @param nodeTimeoutSeconds Timeout (seconds) without sign of life before this node is seen dead (timeoutSeconds of the node, as with Redis)
+	 */
+	void heartBeat(final String nodeUID, final Set<String> nodeWorkTypes, final int nodeTimeoutSeconds) {
+		Assertion.check()
+				.isNotBlank(nodeUID)
+				.isNotNull(nodeWorkTypes)
+				.isTrue(nodeTimeoutSeconds > 0 && nodeTimeoutSeconds <= 60 * 60, "timeoutSeconds of the node must be between 1 and 3600s : {0}s", nodeTimeoutSeconds);
+		//-----
+		nodeWorkTypes.forEach(nodeWorkType -> touchNode(nodeUID, nodeWorkType));
+		knownNodes.computeIfPresent(nodeUID, (key, nodeState) -> {
+			nodeState.setTimeoutSeconds(nodeTimeoutSeconds);
+			return nodeState;
+		});
 	}
 
 	/**
@@ -202,7 +224,12 @@ final class RestQueueServer {
 		LOG.info("onDone {} : ({})", success, workId);
 		//-----
 		final RunningWorkInfos runningWorkInfos = runningWorkInfosMap.remove(workId);
-		Assertion.check().isNotNull(runningWorkInfos, "Ce travail ({0}) n''est pas connu, ou n''est plus en cours.", workId);
+		//not running : a work re-queued after its node was seen dead, still waiting : its result is valid, the waiting copy is useless
+		if (runningWorkInfos == null && !removeWaitingWork(workId)) {
+			//neither running nor waiting : already done (a re-queued work done by two nodes) or unknown : ignored before its content is read
+			LOG.warn("onDone of a work neither running nor waiting ({}) : ignored", workId);
+			return;
+		}
 
 		final byte[] serializedResult = codecManager.getBase64Codec().decode(base64Result);
 		final Object value = codecManager.getCompressedSerializationCodec().decode(serializedResult);
@@ -230,6 +257,15 @@ final class RestQueueServer {
 	 */
 	String getApiVersion() {
 		return "1.0.0";
+	}
+
+	/** @return true if a waiting copy of the work was removed */
+	private synchronized boolean removeWaitingWork(final String workId) {
+		boolean removed = false;
+		for (final var workQueue : workQueueMap.values()) {
+			removed |= workQueue.removeIf(waitingWorkInfos -> workId.equals(waitingWorkInfos.getWorkItem().getId()));
+		}
+		return removed;
 	}
 
 	private WorkItem<?, ?> pollWorkItem(final String workType, final int pullTimeoutInSeconds) {

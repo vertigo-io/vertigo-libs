@@ -20,6 +20,9 @@ package io.vertigo.datamodel.data.model;
 import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.Node;
+import io.vertigo.core.param.Param;
+import io.vertigo.core.param.ParamManager;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.definitions.DataField;
 import io.vertigo.datamodel.data.definitions.DataFieldName;
@@ -32,7 +35,10 @@ import io.vertigo.datamodel.data.util.DataModelUtil;
  */
 public final class DtListState {
 	private static final int ABSOLUTE_MAX_ROWS = 5000;
+	/** Default max rows, when the param DT_LIST_DEFAULT_MAX_ROWS is not set : use getDefaultMaxRows() to get the applied value. */
 	public static final int DEFAULT_MAX_ROWS = 250;
+	private static final String DEFAULT_MAX_ROWS_PARAM_NAME = "DT_LIST_DEFAULT_MAX_ROWS";
+	private static volatile int defaultMaxRows; //0 : not read yet ; read once, all nodes share the same configuration
 
 	private final Optional<String> sortFieldName;
 	private final Optional<Boolean> sortDesc;
@@ -40,12 +46,32 @@ public final class DtListState {
 	private final Optional<Integer> maxRows;
 
 	/**
-	 * @param maxRows max returning elements (null if not use)
-	 * skipRows elements to skip (mandatory, 0 by default)
+	 * @param entityClass entity class : gives the default sort field and direction
+	 * @return the default state of the entity lists : default max rows (see getDefaultMaxRows), default sort
 	 */
 	public static DtListState defaultOf(final Class<? extends Entity> entityClass) {
 		final DataDefinition dataDefinition = DataModelUtil.findDataDefinition(entityClass);
-		return new DtListState(DEFAULT_MAX_ROWS, 0, dataDefinition.getSortField().map(DataField::name).orElse(null), false);
+		return new DtListState(getDefaultMaxRows(), 0, dataDefinition.getSortField().map(DataField::name).orElse(null), dataDefinition.getSortDesc().orElse(false));
+	}
+
+	/**
+	 * Default max rows of the lists : the param DT_LIST_DEFAULT_MAX_ROWS (from the ParamManager), DEFAULT_MAX_ROWS if not set.
+	 * The param is read once.
+	 * @return the default max rows
+	 */
+	public static int getDefaultMaxRows() {
+		int maxRowsValue = defaultMaxRows;
+		if (maxRowsValue == 0) {
+			//no lock : at worst, several threads read the same param on the first calls
+			maxRowsValue = Node.getNode().getComponentSpace().resolve(ParamManager.class)
+					.getOptionalParam(DEFAULT_MAX_ROWS_PARAM_NAME)
+					.map(Param::getValueAsInt)
+					.orElse(DEFAULT_MAX_ROWS);
+			Assertion.check().isTrue(maxRowsValue > 0 && maxRowsValue <= ABSOLUTE_MAX_ROWS,
+					"Param {0} must be between 1 and {1} ({2})", DEFAULT_MAX_ROWS_PARAM_NAME, ABSOLUTE_MAX_ROWS, maxRowsValue);
+			defaultMaxRows = maxRowsValue;
+		}
+		return maxRowsValue;
 	}
 
 	/**

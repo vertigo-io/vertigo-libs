@@ -529,22 +529,19 @@ public abstract class AbstractKVStoreManagerTest {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final int nbFlowers = kvStoreManager.count(FLOWERS);
 			Assertions.assertEquals(0, nbFlowers);
-			//put a flower a t+0s (expire a T+10s)
-			final Flower tulip1 = buildFlower("tulip", 100);
-			kvStoreManager.put(FLOWERS, "1", tulip1);
-			sleep(2);
-
-			//put a flower a t+2s (expire a T+12s)
-			final Flower tulip2 = buildFlower("tulip", 110);
-			kvStoreManager.put(FLOWERS, "2", tulip2);
-			sleep(2);
-
-			//put a flower a t+4s (expire a T+14s)
-			final Flower tulip3 = buildFlower("tulip", 120);
-			kvStoreManager.put(FLOWERS, "3", tulip3);
-			sleep(2);
-			transaction.commit();
 		}
+		//one transaction per put : a transactional store (Speedb) starts the time to live at the commit
+		//put a flower a t+0s (expire a T+10s)
+		putInTransaction(FLOWERS, "1", buildFlower("tulip", 100));
+		sleep(2);
+
+		//put a flower a t+2s (expire a T+12s)
+		putInTransaction(FLOWERS, "2", buildFlower("tulip", 110));
+		sleep(2);
+
+		//put a flower a t+4s (expire a T+14s)
+		putInTransaction(FLOWERS, "3", buildFlower("tulip", 120));
+		sleep(2);
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			//count after 3 inserts and T+6s
 			final long nbFlowers2 = countFlowersFrom(FLOWERS, "1", "2", "3");
@@ -588,21 +585,18 @@ public abstract class AbstractKVStoreManagerTest {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final int nbFlowers = kvStoreManager.count(FLOWERS_TEMP);
 			Assertions.assertEquals(0, nbFlowers);
-			//put a flowerTemp a t+0s (expire a T+5s)
-			final Flower tulip1 = buildFlower("tulip", 50);
-			kvStoreManager.put(FLOWERS_TEMP, "1", tulip1);
-			sleep(2);
-
-			//put a flower a t+2s (expire a T+6s)
-			final Flower tulip2 = buildFlower("tulip", 55);
-			kvStoreManager.put(FLOWERS_TEMP, "2", tulip2);
-			sleep(2);
-
-			//put a flower a t+4s (expire a T+7s)
-			final Flower tulip3 = buildFlower("tulip", 60);
-			kvStoreManager.put(FLOWERS_TEMP, "3", tulip3);
-			transaction.commit();
 		}
+		//one transaction per put : a transactional store (Speedb) starts the time to live at the commit
+		//put a flowerTemp a t+0s (expire a T+5s)
+		putInTransaction(FLOWERS_TEMP, "1", buildFlower("tulip", 50));
+		sleep(2);
+
+		//put a flower a t+2s (expire a T+6s)
+		putInTransaction(FLOWERS_TEMP, "2", buildFlower("tulip", 55));
+		sleep(2);
+
+		//put a flower a t+4s (expire a T+7s)
+		putInTransaction(FLOWERS_TEMP, "3", buildFlower("tulip", 60));
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			//count after 3 inserts and T+4s
 			final long nbFlowers2 = countFlowersFrom(FLOWERS_TEMP, "1", "2", "3");
@@ -644,6 +638,13 @@ public abstract class AbstractKVStoreManagerTest {
 			}
 		}
 		return nbFlowers;
+	}
+
+	private void putInTransaction(final KVCollection collection, final String id, final Flower flower) {
+		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			kvStoreManager.put(collection, id, flower);
+			transaction.commit();
+		}
 	}
 
 	protected void sleep(final double timeSecond) {

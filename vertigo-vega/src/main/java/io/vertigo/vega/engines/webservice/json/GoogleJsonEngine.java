@@ -152,12 +152,14 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 			throw WrappedException.wrap(e, "Error while serializing data {0}", data);
 		}
 		filterFields(jsonValue, includedFields, excludedFields);
-		if (metaDatas.isEmpty() && (data instanceof List || jsonValue.isJsonPrimitive())) {
+		//not an object : List, but also array or Set (json array), or primitive
+		final boolean notJsonObject = data instanceof List || jsonValue.isJsonArray() || jsonValue.isJsonPrimitive();
+		if (metaDatas.isEmpty() && notJsonObject) {
 			return gson.toJson(jsonValue); //only case where result wasn't an object
 		}
 
 		final JsonObject jsonResult;
-		if (data instanceof List || jsonValue.isJsonPrimitive()) {
+		if (notJsonObject) {
 			jsonResult = new JsonObject();
 			jsonResult.add(EXTENDED_VALUE_FIELDNAME, jsonValue);
 		} else {

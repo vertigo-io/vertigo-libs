@@ -45,6 +45,9 @@ import io.vertigo.database.DatabaseFeatures;
  * @author mlaroche
  */
 public final class TimeSeriesTest {
+	private static final String INFLUX_URL = System.getenv("INFLUX_URL") != null ? System.getenv("INFLUX_URL") : "http://docker-vertigo.part.klee.lan.net:8086";
+	private static final String INFLUX_TOKEN = System.getenv("INFLUX_TOKEN") != null ? System.getenv("INFLUX_TOKEN") : "rytuvFE1f5JR4CPD1cOfr-74W2rL7tu1by-6DnO6zbTxMQy6foj7qtBMYSkFGT15Y1vjJCr5OP01Uci_ZdIlIA==";
+
 	@Inject
 	private TimeSeriesManager timeSeriesManager;
 
@@ -178,8 +181,8 @@ public final class TimeSeriesTest {
 						.addPlugin(URLResourceResolverPlugin.class)
 						.build())
 				.addModule(new InfluxDbFeatures().withInfluxDb(
-						Param.of("host", "http://docker-vertigo.part.klee.lan.net:8086"),
-						Param.of("token", "rytuvFE1f5JR4CPD1cOfr-74W2rL7tu1by-6DnO6zbTxMQy6foj7qtBMYSkFGT15Y1vjJCr5OP01Uci_ZdIlIA=="),
+						Param.of("host", INFLUX_URL),
+						Param.of("token", INFLUX_TOKEN),
 						Param.of("org", "vertigo")).build())
 				.addModule(new CommonsFeatures()
 						.build())

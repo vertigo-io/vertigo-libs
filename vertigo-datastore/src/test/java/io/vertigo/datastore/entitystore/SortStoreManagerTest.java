@@ -38,13 +38,16 @@ import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.datamodel.DataModelFeatures;
 import io.vertigo.datamodel.criteria.Criterions;
+import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.model.DtList;
+import io.vertigo.datamodel.data.model.DtListState;
 import io.vertigo.datamodel.data.util.VCollectors;
 import io.vertigo.datamodel.impl.smarttype.ModelDefinitionProvider;
 import io.vertigo.datastore.DataStoreFeatures;
 import io.vertigo.datastore.entitystore.data.DtDefinitions;
 import io.vertigo.datastore.entitystore.data.TestSmartTypes;
 import io.vertigo.datastore.entitystore.data.domain.SmartItem;
+import io.vertigo.datastore.entitystore.data.domain.SortDescItem;
 
 public class SortStoreManagerTest {
 	private static final String Ba_aa = "Ba aa";
@@ -156,6 +159,18 @@ public class SortStoreManagerTest {
 		sortDtc = entityStoreManager.sort(dtc, "id", true);
 		assertEquals(indexDtc, extractLabels(dtc));
 		assertEquals(new String[] { bb_aa, aaa_ba, null, Ba_aa }, extractLabels(sortDtc));
+	}
+
+	@Test
+	public void testDefaultSortDescFromDefinition() {
+		//The default sort direction is carried by the definition (@SortField desc = true annotation)
+		final DataDefinition definition = node.getDefinitionSpace().resolve("DtSortDescItem", DataDefinition.class);
+		Assertions.assertEquals("label", definition.getSortField().map(field -> field.name()).orElse(null));
+		Assertions.assertEquals(Boolean.TRUE, definition.getSortDesc().orElse(null));
+		//The default DtListState inherits the direction from the definition
+		final DtListState listState = DtListState.defaultOf(SortDescItem.class);
+		Assertions.assertEquals("label", listState.getSortFieldName().orElse(null));
+		Assertions.assertEquals(Boolean.TRUE, listState.isSortDesc().orElse(null));
 	}
 
 	/**

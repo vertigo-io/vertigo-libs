@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.thymeleaf.messageresolver.IMessageResolver;
+import org.thymeleaf.messageresolver.StandardMessageResolver;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
 /**
@@ -37,6 +38,11 @@ public class VSpringTemplateEngine extends SpringTemplateEngine {
 
 	@Override
 	protected void initializeSpringSpecific() {
+		// with a MessageSource (setTemplateEngineMessageSource), Spring replaces the resolver of the bundles next to the templates (as
+		// the ones of the components) by its own : they are read after the MessageSource of the project
+		if (getMessageResolvers().stream().noneMatch(StandardMessageResolver.class::isInstance)) {
+			super.addMessageResolver(new StandardMessageResolver());
+		}
 		// add Vertigo LocalManager as secondary message resolver
 		super.addMessageResolver(new VSpringMessageResolver());
 		customMessageResolverList.forEach(super::addMessageResolver);

@@ -34,6 +34,7 @@ import java.util.TreeSet;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -887,6 +888,38 @@ public abstract class AbstractSearchManagerTest {
 	}
 
 	@Test
+	public void testFacetQueryWithSkippedFacet() {
+		index(false);
+		final SearchQuery searchQuery = SearchQuery.builder("QryItemFacet")
+				.withCriteria("")
+				.withFacet(EMPTY_SELECTED_FACET_VALUES)
+				.withSkippedFacets(Set.of(manufacturerFacetDefinition.id()))
+				.build();
+		final var result = doQuery(searchQuery, null);
+		Assertions.assertEquals(itemDataBase.size(), result.getCount());
+		//the skipped facet is neither computed nor returned, the others are unchanged
+		Assertions.assertEquals(3, result.getFacets().size());
+		Assertions.assertTrue(result.getFacets().stream().noneMatch(facet -> facet.getDefinition().equals(manufacturerFacetDefinition)));
+		Assertions.assertFalse(getFacetByName(result, "FctYearItem").getFacetValues().isEmpty());
+	}
+
+	@Test
+	public void testFacetQueryWithSkippedFacetFilter() {
+		index(false);
+		final SearchQuery searchQuery = SearchQuery.builder("QryItemFacet")
+				.withCriteria("")
+				.withFacet(EMPTY_SELECTED_FACET_VALUES)
+				.withSkippedFacetFilter(facetedQueryDefinition -> facetedQueryDefinition.getFacetDefinitions().stream()
+						.filter(facetDefinition -> !facetDefinition.equals(yearFacetDefinition))
+						.map(FacetDefinition::id)
+						.collect(Collectors.toSet()))
+				.build();
+		final var result = doQuery(searchQuery, null);
+		Assertions.assertEquals(1, result.getFacets().size());
+		Assertions.assertEquals(yearFacetDefinition, result.getFacets().get(0).getDefinition());
+	}
+
+	@Test
 	public void testFacetQueryByStringRange() {
 		index(false);
 		final SearchQuery searchQuery = SearchQuery.builder("QryItemDescriptionRangeFacet")
@@ -1115,6 +1148,30 @@ public abstract class AbstractSearchManagerTest {
 			Assertions.assertEquals("FctCustomAvgYearItem", entry.getKey().code());
 			Assertions.assertEquals(2013, entry.getValue());
 		}
+	}
+
+	@Test
+	public void testCustomFacetQueryNoResult() {
+		index(true);
+		final SearchQuery searchQuery = SearchQuery.builder("QryItemCustomAggFacet")
+				.withCriteria("unknownCriteria")
+				.withFacet(EMPTY_SELECTED_FACET_VALUES)
+				.build();
+
+		final FacetedQueryResult<Item, SearchQuery> result = doQuery(searchQuery, null);
+		Assertions.assertEquals(0, result.getCount());
+
+		//metric facets are still listed, even without any document
+		Assertions.assertEquals(3, result.getFacets().size());
+
+		//sum of nothing is 0
+		final Facet customSumPriceFacet = getFacetByName(result, "FctCustomSumPriceItem");
+		Assertions.assertEquals(1, customSumPriceFacet.getFacetValues().size());
+		Assertions.assertEquals(0, customSumPriceFacet.getFacetValues().values().iterator().next());
+
+		//avg of nothing has no value (ES returns null) : no facetValue, rather than a misleading 0
+		Assertions.assertTrue(getFacetByName(result, "FctCustomAvgKiloItem").getFacetValues().isEmpty());
+		Assertions.assertTrue(getFacetByName(result, "FctCustomAvgYearItem").getFacetValues().isEmpty());
 	}
 
 	private void checkOrderByCount(final Facet facet) {

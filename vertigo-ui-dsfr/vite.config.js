@@ -12,7 +12,7 @@ export default defineConfig({
     lib: {
       entry: path.resolve(__dirname, 'src/main.js'),
       name: 'dsfr',
-      fileName: (format) => `dsfr.${format}.js`,
+      fileName: (format) => `vertigo-dsfr.${format}.js`,
     },
     rolldownOptions: {
       external: ['vue'],

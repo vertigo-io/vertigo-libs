@@ -29,12 +29,14 @@ import java.util.NoSuchElementException;
 import java.util.function.Consumer;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.node.definition.DefinitionId;
+import io.vertigo.core.param.Param;
+import io.vertigo.core.param.ParamManager;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.datamodel.data.definitions.DataDefinition;
 import io.vertigo.datamodel.data.model.DataObject;
 import io.vertigo.datamodel.data.model.DtList;
-import io.vertigo.datamodel.data.model.DtListState;
 import io.vertigo.datamodel.data.util.DataModelUtil;
 import io.vertigo.vega.webservice.model.DtListDelta;
 import io.vertigo.vega.webservice.model.UiList;
@@ -50,7 +52,9 @@ import io.vertigo.vega.webservice.validation.UiMessageStack;
 public abstract class AbstractUiListModifiable<D extends DataObject> extends AbstractList<UiObject<D>> implements UiList<D>, Serializable {
 
 	private static final long serialVersionUID = 1L;
-	private static final int DEFAULT_MAX_ROWS = DtListState.DEFAULT_MAX_ROWS; //could be overrided here
+	private static final int DEFAULT_MODIFIABLE_MAX_ROWS = 250;
+	private static final String MODIFIABLE_MAX_ROWS_PARAM_NAME = "UI_LIST_MODIFIABLE_MAX_ROWS";
+	private static volatile int modifiableMaxRows; //0 : not read yet ; read once, all nodes share the same configuration
 	private final DefinitionId<DataDefinition> dataDefinitionId;
 	private final Class<D> objectType;
 
@@ -225,13 +229,33 @@ public abstract class AbstractUiListModifiable<D extends DataObject> extends Abs
 		return dtListDelta;
 	}
 
+	/**
+	 * Max rows of a modifiable list : the param UI_LIST_MODIFIABLE_MAX_ROWS (from the ParamManager), 250 if not set.
+	 * The param is read once.
+	 * @return the max rows of a modifiable list
+	 */
+	private static int getModifiableMaxRows() {
+		int modifiableMaxRowsValue = modifiableMaxRows;
+		if (modifiableMaxRowsValue == 0) {
+			//no lock : at worst, several threads read the same param on the first calls
+			modifiableMaxRowsValue = Node.getNode().getComponentSpace().resolve(ParamManager.class)
+					.getOptionalParam(MODIFIABLE_MAX_ROWS_PARAM_NAME)
+					.map(Param::getValueAsInt)
+					.orElse(DEFAULT_MODIFIABLE_MAX_ROWS);
+			Assertion.check().isTrue(modifiableMaxRowsValue > 0, "Param {0} must be positive ({1})", MODIFIABLE_MAX_ROWS_PARAM_NAME, modifiableMaxRowsValue);
+			modifiableMaxRows = modifiableMaxRowsValue;
+		}
+		return modifiableMaxRowsValue;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public UiObject<D> get(final int row) {
 		//id>=0 : par index dans la UiList (pour boucle, uniquement dans la même request)
+		final int modifiableMaxRowsValue = getModifiableMaxRows();
 		Assertion.check()
 				.isTrue(row >= 0, "Used getter isn't the good one")
-				.isTrue(row <= DEFAULT_MAX_ROWS, "UiListModifiable is limited to " + DEFAULT_MAX_ROWS + " elements");
+				.isTrue(row <= modifiableMaxRowsValue, "UiListModifiable is limited to {0} elements (param {1})", modifiableMaxRowsValue, MODIFIABLE_MAX_ROWS_PARAM_NAME);
 
 		//SKE MLA : lazy initialisation of buffer uiObjects for size changing uiListModifiable
 		final DataDefinition dataDefinition = dataDefinitionId.get();

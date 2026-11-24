@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+  xmlns:vu="https://vertigo.io/thymeleaf/vertigo-ui"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{templates/dsfrLayout}"
+>
+
+<head>
+	<title>Catalog of the DSFR components</title>
+</head>
+
+<body>
+	<div layout:fragment="content">
+		<vu:form>
+			<vu:dsfr-block title="Catalog block" subtitle="DSFR components no demo page shows">
+				<vu:dsfr-tabnav-list componentId="catalogTabs" currentLabel="First tab">
+					<vu:dsfr-tabnav label="First tab" href="@{/catalogDsfr/}" active="true"/>
+					<vu:dsfr-tabnav label="Second tab" href="@{/componentsDemoDsfr/}"/>
+					<vu:dsfr-tabnav label="Anchor tab" href="#catalog-anchor"/>
+				</vu:dsfr-tabnav-list>
+				<vu:dsfr-card class="catalog-dsfr-card">
+					<div class="fr-card__body"><div class="fr-card__content"><p class="fr-card__desc">Card content</p></div></div>
+				</vu:dsfr-card>
+				<vu:dsfr-button-link url="@{/componentsDemo/myFiles}" label="Download"/>
+				<vu:dsfr-button-link url="@{/componentsDemo/myFiles}" icon="fr-icon-download-line" title="Download the file"/>
+				<div class="catalog-dsfr-label">
+					<vu:dsfr-label object="movie" field="title"/>
+				</div>
+				<div class="catalog-dsfr-dropzone">
+					<vu:dsfr-v-fileupload-dropzone uploaderRef="catalogUploader">
+						<vu:dsfr-v-fileupload url="@{/commons/upload}" object="movie" field="pictures" label="Pictures" multiple ref="catalogUploader"/>
+					</vu:dsfr-v-fileupload-dropzone>
+				</div>
+				<div class="catalog-dsfr-facets">
+					<vu:search resultKey="result" searchUrl="@{/catalogDsfr/_search}" collectionComponentId="catalogMovies">
+						<vu:dsfr-facets resultKey="result"/>
+					</vu:search>
+				</div>
+			</vu:dsfr-block>
+		</vu:form>
+	</div>
+</body>
+</html>

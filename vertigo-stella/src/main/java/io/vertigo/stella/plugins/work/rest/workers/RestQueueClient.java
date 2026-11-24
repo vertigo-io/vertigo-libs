@@ -33,6 +33,7 @@ import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.util.ClassUtil;
+import io.vertigo.stella.impl.workers.WorkersManagerImpl;
 import io.vertigo.stella.impl.work.WorkItem;
 import jakarta.ws.rs.ProcessingException;
 import jakarta.ws.rs.client.Client;
@@ -52,25 +53,37 @@ import jakarta.ws.rs.core.Response.StatusType;
  */
 final class RestQueueClient {
 	private static final int CONNECT_TIMEOUT = 10 * 1000; // 10s
+	private static final int SERVER_PULL_TIMEOUT_SECONDS = 5; //server side long poll : the http timeout must be longer
 	private static final Logger LOG = LogManager.getLogger(RestQueueClient.class);
 	private final CodecManager codecManager;
 	private final String serverUrl;
+	private final int nodeTimeoutSeconds;
 	private final Client locatorClient;
 	private final ConcurrentMap<String, Object> lockByWorkType = new ConcurrentHashMap<>();
 
 	/**
 	 * Constructeur.
+	 * @param serverUrl Url of the server
+	 * @param nodeTimeoutSeconds Timeout (seconds) without sign of life before the server sees this node dead (sent with the heartBeat)
+	 * @param httpTimeoutSeconds Read timeout (seconds) of the calls to the server
+	 * @param codecManager Manager d'encodage/decodage
 	 */
-	RestQueueClient(final String serverUrl, final int timeoutSeconds, final CodecManager codecManager) {
+	RestQueueClient(final String serverUrl, final int nodeTimeoutSeconds, final int httpTimeoutSeconds, final CodecManager codecManager) {
 		Assertion.check()
 				.isNotBlank(serverUrl)
+				.isTrue(nodeTimeoutSeconds > WorkersManagerImpl.HEART_BEAT_PERIOD_SECONDS && nodeTimeoutSeconds <= 60 * 60,
+						"timeoutSeconds is the time without sign of life before the master sees the node dead : "
+								+ "it must be greater than the heartBeat period ({0}s) and at most 3600s : {1}s (the http timeout is httpTimeoutSeconds)",
+						WorkersManagerImpl.HEART_BEAT_PERIOD_SECONDS, nodeTimeoutSeconds)
+				.isTrue(httpTimeoutSeconds > SERVER_PULL_TIMEOUT_SECONDS, "httpTimeoutSeconds must be greater than the server long poll ({0}s) : {1}s", SERVER_PULL_TIMEOUT_SECONDS, httpTimeoutSeconds)
 				.isNotNull(codecManager);
 		//-----
 		this.serverUrl = serverUrl;
+		this.nodeTimeoutSeconds = nodeTimeoutSeconds;
 		this.codecManager = codecManager;
 		locatorClient = ClientBuilder.newClient();
 		locatorClient.property(ClientProperties.CONNECT_TIMEOUT, CONNECT_TIMEOUT);
-		locatorClient.property(ClientProperties.READ_TIMEOUT, timeoutSeconds * 1000);
+		locatorClient.property(ClientProperties.READ_TIMEOUT, httpTimeoutSeconds * 1000);
 	}
 
 	<R, W> WorkItem<R, W> pollWorkItem(final String nodeId, final String workType) {
@@ -78,7 +91,7 @@ final class RestQueueClient {
 		try {
 			try {
 				final String jsonResult;
-				final Object lockWork = lockByWorkType.putIfAbsent(workType, new Object());
+				final Object lockWork = lockByWorkType.computeIfAbsent(workType, key -> new Object());
 				//Cette tache est synchronized sur le workType, pour éviter de surcharger le serveur en demandes multiple
 				synchronized (lockWork) {
 					checkInterrupted(); //must be check because Thread.interrupt() doesn't freed the synchronized lock
@@ -102,7 +115,7 @@ final class RestQueueClient {
 			} catch (final ProcessingException c) {
 				LOG.warn("[pollWork] Erreur de connexion au serveur " + serverUrl + "/pollWork/" + workType + " (" + c.getMessage() + ")", c);
 				//En cas d'erreur on attend quelques secondes, pour attendre que le serveur revienne
-				final Object lockWork = lockByWorkType.putIfAbsent(serverUrl, new Object());
+				final Object lockWork = lockByWorkType.computeIfAbsent(serverUrl, key -> new Object());
 				//En cas d'absence du serveur,
 				//ce synchronized permet d'étaler les appels au serveur de chaque worker : le premier attendra 2s, le second 2+2s, le troisième : 4+2s, etc..
 				//dés le retour du serveur, on récupère un worker toute les 2s
@@ -159,7 +172,16 @@ final class RestQueueClient {
 	}
 
 	void heartBeat(final String nodeId, final Set<String> workTypes) {
-		//TODO
+		//call methode distante : keeps the node alive on the master while all its workers are busy
+		final WebTarget remoteWebResource = locatorClient.target(serverUrl + "/heartBeat")
+				.queryParam("nodeUID", nodeId)
+				.queryParam("timeoutSeconds", nodeTimeoutSeconds);
+		try {
+			final Response response = remoteWebResource.request(MediaType.TEXT_PLAIN).post(Entity.text(String.join(";", workTypes)));
+			checkResponseStatus(response);
+		} catch (final Exception c) {
+			LOG.warn("[heartBeat] Erreur de connexion au serveur {} ({})", remoteWebResource.getUri(), c.getMessage());
+		}
 	}
 
 	private void sendValue(final String uuid, final String address, final Object value) {

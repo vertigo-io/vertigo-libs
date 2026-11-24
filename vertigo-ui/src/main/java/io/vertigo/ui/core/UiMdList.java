@@ -80,7 +80,7 @@ final class UiMdList<E extends Entity> extends AbstractUiListUnmodifiable<E> {
 			}
 
 			//load UiObjects
-			if (lazyDtList.size() < NB_MAX_ELEMENTS) {
+			if (lazyDtList.size() < getMaxElements()) {
 				initUiObjectByIdIndex();
 			}
 		}

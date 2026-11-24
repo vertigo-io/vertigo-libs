@@ -8,7 +8,7 @@
 	showMoreLabel="${showMoreLabel}" 
 	selectable="${mySelectable}" 
 	sortUrl="${sortUrl}" >
-		<q-list>
+		<q-list th:classappend="${listClass}">
 			<template th:v-for="|item in paginatedData('${list}', '${componentId}' )|" th::key="|item.${myRowKey}|">
 				<q-item class="q-mb-sm bg-white" th:attr="__${item_attrs}__" >
 					<vu:content/>

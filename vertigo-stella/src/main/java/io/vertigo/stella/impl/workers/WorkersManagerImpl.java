@@ -42,6 +42,8 @@ import io.vertigo.stella.workers.WorkersManager;
  * @author pchretien, npiedeloup
  */
 public final class WorkersManagerImpl implements WorkersManager, Activeable {
+	/** Period of the heartBeat of the workers : the node timeout must be longer. */
+	public static final int HEART_BEAT_PERIOD_SECONDS = 20;
 	private final AnalyticsManager analyticsManager;
 
 	private final List<ScheduledExecutorService> workDispatcherExecutors = new ArrayList<>();
@@ -77,7 +79,7 @@ public final class WorkersManagerImpl implements WorkersManager, Activeable {
 		this.pollFrequencyMs = pollFrequencyMs.orElse(5000);
 	}
 
-	@DaemonScheduled(name = "DmnWorkerHeartBeat", periodInSeconds = 20)
+	@DaemonScheduled(name = "DmnWorkerHeartBeat", periodInSeconds = HEART_BEAT_PERIOD_SECONDS)
 	public void workerHeartBeat() {
 		workerPlugin.heartBeat(nodeId, workTypesMap.keySet());
 	}

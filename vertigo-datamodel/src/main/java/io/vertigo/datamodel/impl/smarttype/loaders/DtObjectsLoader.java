@@ -214,7 +214,8 @@ public final class DtObjectsLoader implements Loader {
 				parseAnnotation(fieldName, dataDefinitionBuilder, methodAnnotation, definitionSpace);
 			}
 			if (method.isAnnotationPresent(io.vertigo.datamodel.data.stereotype.SortField.class)) {
-				dataDefinitionBuilder.withSortField(createFieldName(method));
+				final io.vertigo.datamodel.data.stereotype.SortField sortFieldAnnotation = method.getAnnotation(io.vertigo.datamodel.data.stereotype.SortField.class);
+				dataDefinitionBuilder.withSortField(createFieldName(method), sortFieldAnnotation.desc());
 			}
 			if (method.isAnnotationPresent(io.vertigo.datamodel.data.stereotype.DisplayField.class)) {
 				dataDefinitionBuilder.withDisplayField(createFieldName(method));
@@ -238,7 +239,8 @@ public final class DtObjectsLoader implements Loader {
 				parseAnnotation(createFieldName(field), dataDefinitionBuilder, fieldAnnotation, definitionSpace);
 			}
 			if (field.isAnnotationPresent(io.vertigo.datamodel.data.stereotype.SortField.class)) {
-				dataDefinitionBuilder.withSortField(createFieldName(field));
+				final io.vertigo.datamodel.data.stereotype.SortField sortFieldAnnotation = field.getAnnotation(io.vertigo.datamodel.data.stereotype.SortField.class);
+				dataDefinitionBuilder.withSortField(createFieldName(field), sortFieldAnnotation.desc());
 			}
 			if (field.isAnnotationPresent(io.vertigo.datamodel.data.stereotype.DisplayField.class)) {
 				dataDefinitionBuilder.withDisplayField(createFieldName(field));

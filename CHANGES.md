@@ -8,6 +8,88 @@ Running 5.0.0
 more to come :)
 
 
+Running 4.5.0-SNAPSHOT - 2026-12-XX
+----------------------
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-441-to-450)
+
+* **[Ui] Fix self-closed custom elements (`<q-btn ... />`) : they are now closed automatically in rendered templates** : the browser kept them open, so they swallowed the markup that followed (extended `v-if` scope, siblings absorbed as default slot). Only the elements prefixed by `q-`, `v-`, `vui-` or `dsfr-` are concerned, a list overridable with `VSpringWebConfig.getAutoCloseTagsPrefixes()`. `UnAutoCloseTagsFilter` is deprecated
+* **[Ui] The embedded CDN no longer serves vue 3.5.13, quasar 2.18.1 and axios 1.8.4** : only the default versions and the previous ones are kept (vue 3.5.46 / 3.5.39, quasar 2.35.6 / 2.21.1, axios 1.21.1 / 1.18.1) ; a project setting `vueJsVersion`, `quasarVersion` or `axiosVersion` to a removed version must change it
+* [Ui] Upgrade Quasar 2.21.1 -> 2.35.6, Vue 3.5.39 -> 3.5.46 and axios 1.18.1 -> 1.21.1 (defaults of `vu:head` / `vu:head-meta`) : the message zone under the fields (hint, error) now takes its place in the layout (Quasar 2.25.1), the default margin of the Vertigo error message is removed so a field in error keeps its size, but the narrow columns of `vu:table-modifiable` get wider and their rows higher ; a field keeps the focus while its popup is open ; a sorted date column keeps its empty dates first in ascending order and last in descending order (Quasar 2.23.4 `extractDate` returns an Invalid Date for them)
+* **[Ui] Param `THYMELEAF_DEV_MODE` (true by default) : templates not cached and `vu:` elements without component logged as WARN (once by template)** : set it to false in production ; a WARN at startup says so (`VSpringWebConfig.isDevMode()` returned true unless overridden)
+* **[Ui] The values given to a component by a `th:` attribute, or forwarded by another component, are passed as they are** : `th:url="'@{/commons/upload}'"` gives the text `@{/commons/upload}`, write `url="@{/commons/upload}"` (in dev mode, a page written so fails with this advice, for a param, or an attribute whose text starts with an expression) ; a value given by the page and forwarded by a component wins over the value the component writes on the same tag
+* **[Ui] Fix the attributes of a component (other than its params) set to `true` or `false` : written with `:` to be evaluated by VueJS, as a param (`stack-label="false"` gives `:stack-label="false"`)** : VueJS read the text `"false"` as true (the Quasar or DSFR prop was on, a `disabled="false"` disabled the field). An attribute written with `:` (`:stack-label="vueData.stacked"`, or `true` / `false`) replaces the static attribute of the same name put by the component, VueJS kept the first one ; `x="${null}"` removes it, also when forwarded to an inner component
+* [Ui] Fix `UiFileInfoList.get(FileInfoURI)` : it never found the file, the upload controllers keeping it in session read the file again and added it at each `fileInfos` call (the list grew until purged) ; `add`, `get` and `remove` are synchronized, the uploaders of a page call them at the same time
+* [Ui] Fix the component values written as a number with a leading 0 (`0102030405`, `007`) or a dot with no digit before or after it (`.5`, `5.`) : they were passed as numbers (`102030405`), they are passed as written ; a number keeps its type only when written in its usual form, negatives included (`12`, `-5`, `0.5`), as the values given by a `th:` attribute
+* [Ui] Fix the component param values holding a `$`, `#` or `@` outside an expression (`href="#anchor"`, `label="contact@mail.fr"`, `100$`), the page failed to render : they are passed as a text. A value is an expression when it holds `${`, `#{` or `@{`, or starts with `*{`, `~{`, a literal substitution `|...|` or `'`. A text ending with `\` (`C:\dir\`), also in a `*_attrs` value, failed to render
+* [Ui] A component text value (param or `*_attrs`) is shown as written, `\` included : a `\'` (`@click="confirm('l\'effacer ?')"`) failed to render, `\\` showed `\` ; `\_\_` still shows `__` (Thymeleaf)
+* [Ui] Fix the attributes of a component (other than its params) starting with a literal substitution `|...|`, as `@click="|goTo(${id})|"` : they were written as is, they are evaluated as for a param ; a single `|` (as `separator="|"`) is a text, for a param too
+* [Ui] Fix `vu:cards` without `showMore` (pagination mode), the page failed to render : `pagination_attrs` is now a param of `vu:cards` and `vu:collection`, as of `vu:list`
+* [Ui] `vu:list` : the `listClass` param is applied on the list (`q-list`), it was ignored
+* [Ui] `vu:v-fileupload` (and its `-simple` variants) is shown as a field with its label, as `vu:dsfr-v-fileupload` : the label of the field, or the `label` param (mandatory with `key` in edit mode) ; fix the `key` mode, which failed to render
+* [Ui] Fix `vu:buttons-group` : a button shown inline is no longer repeated in the "more" menu, the "more" button is shown only when some buttons are left out, and the button of rank `xl` is no longer always shown inline
+* [Ui] Add `vu:checkbox-inline` : a checkbox with its label next to it (as for a consent), with a read mode (the box disabled, its value not sent) ; `vu:checkbox-confirm` (no confirmation dialog) is deprecated : it is `vu:checkbox-inline-edit`, always editable as before, even in a read page (a consent to give on a summary page)
+* [Ui] Fix `vu:buttons-group` : the label of the "more" button was not found (`buttons.buttons-group.moreActions` in the template, `moreAction` in its bundle), the page showed its key ; a test checks the keys of the components against their bundles
+* [Ui] Fix the messages of the components (the bundles next to their templates) when the project gives its `MessageSource` by `setTemplateEngineMessageSource` : they were not read, the page showed their keys unless the project declared their basenames ; the keys of this `MessageSource` still win (the `LocaleManager` and the resolvers given by `addCustomMessageResolver` come after these bundles)
+* [dsfr-ui] Add a character counter under `vu:dsfr-text-area` : displayed when the field has a max length (smartType constraint or `max` attribute) or with `showCounter="true"` (hide it with `showCounter="false"`) ; the max length is also set as `maxlength` on the textarea (the browser blocks typing beyond it)
+* [dsfr-ui] `dsfr-facets` : the selected filters of a facet absent from the result (ex: skipped facet) are no longer displayed
+* [dsfr-ui] The DSFR bundle moved to `3rdParty/dsfr/vue-dsfr@8.21.0/`, a folder named by the vue-dsfr version it is built with, and its script is renamed `vertigo-dsfr.umd.js` (was `dsfr.umd.js`) ; the previous version (vue-dsfr 8.17.0, same Vertigo DSFR components) is also shipped, chosen by the `vueDsfrVersion` param of `vu:head` / `vu:head-meta` ; `npm run build-lib` copies the build there. Only the UMD script (with its source map) and its css are shipped : the ES module `dsfr.es.js` is no longer
+* [dsfr-ui] Fix `vu:dsfr-text-field`, `vu:dsfr-select` and `vu:dsfr-select-multiple` in read mode : `emptyValue` (and `hint` of `vu:dsfr-text-field`) was ignored depending on the startup, `emptyValue` of `vu:dsfr-select-multiple` was never used
+* **[DataFactory] Fix ElasticSearch index settings check at startup (broken since 4.4.0, ES9 plugin)** : the analysis settings of the existing index were compared to themselves, so an incompatible change (analyzer, tokenizer, filter, normalizer) was never detected ; the check now compares to the expected settings and fails the startup with the index deletion command
+* [DataFactory] Allow skipping some facets of a `FacetedQueryDefinition` for one search (`SearchQueryBuilder.withSkippedFacets` / `withSkippedFacetFilter`) : no aggregation is computed and the facet is absent from the result (the clustering facet is never skipped)
+* [DataFactory] Fix ES9 metric custom facets (avg, min, max...) on a search without result : a `NullPointerException` was thrown ; the facet is now returned without facetValue (sum, value_count and cardinality still return 0)
+* [DataFactory] Fix the in memory facets and filters (`CollectionsManager.facetList`, `DtListPatternFilter`) failing since 4.4.0 on a term facet of a String smartType without `indexType` (`IllegalArgumentException` : Precisez la valeur "indexType") : the `indexType` is an ElasticSearch index setting, it is no longer required in memory
+* [DataFactory] ES9 : an error reading the index settings file (`config.file`) when creating an index is no longer ignored : the index was created without its settings (analyzers...), it now fails with an explicit message
+* [DataModel] Add `@SortField(desc = true)` to declare a descending default sort direction (ascending remains the default), used by `DtListState.defaultOf(entityClass)`
+* [DataModel] Add the param `DT_LIST_DEFAULT_MAX_ROWS` (read once from the ParamManager, 250 by default, 5000 at most) : default max rows of `DtListState.defaultOf` (new `DtListState.getDefaultMaxRows()`) ; a project overriding the `DtListState` class to change `DEFAULT_MAX_ROWS` can remove its copy and set the param
+* [Ui] The max size of a list sent to the page (1000) follows `DT_LIST_DEFAULT_MAX_ROWS` when it is higher, so a list loaded with `DtListState.defaultOf` always fits (it stayed 1000 whatever the default max rows) ; `AbstractUiListUnmodifiable.NB_MAX_ELEMENTS` is replaced by `getMaxElements()`
+* [Vega] Add the param `UI_LIST_MODIFIABLE_MAX_ROWS` (read once from the ParamManager, 250 by default) : size limit of the modifiable lists (`UiListModifiable`, fixed to 250 before)
+* [DataStore] MasterData cached lists honor `@SortField(desc = true)` for their default sort direction
+* **[Vega] Fix the node configuration files given by environment variable or system property, ignored since 3.4.0** : they are now read under singular names, like `boot.applicationConfiguration` in web.xml : `VERTIGO_BOOT_APPLICATION_CONFIGURATION` and `-Dboot.application-configuration` (the former plural names are no longer read) ; precedence : system property, external properties file, environment variable, web.xml
+* [Vega] Fix the encoding of the webservice client parameters (`@WebServiceProxyAnnotation`) : `@PathParam` and `@QueryParam` were encoded as an html form (space -> `+`), they are now encoded as RFC 3986 (space -> `%20`, `+` -> `%2B`). A space was received as a literal `+` in a path param (even by a Vertigo server), and in a query param by strict REST APIs
+* [Vega] Fix the rate limiting `whiteListUsers` param parsing : a duplicated IP or an empty entry (`a,,b`) failed the startup ; blank entries are now ignored
+* [Vega] Fix the rate limiting with `useForwardedFor` : an X-Forwarded-For proxy chain (`client, proxy1`) failed the request (error 500), the first address (the client one) is now the user IP, the reverse proxy is responsible for the reliability of this header ; a header value that is not an IP is no longer resolved (no DNS lookup) and is never whitelisted
+* [Vega] Fix the rate limiting `whiteListUsers` ranges failing the startup : the IPv6 ranges starting with `::` (`::1-::5`, `::1-5`) and the IPv4 ranges of `0.0.0.x` or `255.255.255.x`
+* [Vega] Fix the webservices returning an array or a collection that is not a List (`Set`...) : error 500 `Not a JSON Object` since 4.3.2 (since the JSON fields filtering of POJO results) ; it also broke the stella REST work dispatching (`pollWork` returns a `String[]`)
+* **[Stella] REST : fix the dead nodes management** : a node busy with long works (over 20s) was seen dead and its works were executed twice (no heartbeat), the works of a dead node were re-queued every 20s, a late result of a re-queued work failed (error 500). New heartbeat route (master and workers must be upgraded together), node timeout 60s (3 heartbeats, like Redis), a late result is kept and its waiting copy removed. Same params as Redis, with the same defaults : master `deadWorkTypeTimeoutSeconds` (timeout of the works waiting without active node for their type, 60s, between 5 and 3600s), workers `timeoutSeconds` (node seen dead without heartbeat for this time, 60s, more than the heartbeat period : 20s, sent with the heartbeat ; it was the HTTP read timeout, which is now the `httpTimeoutSeconds` param, 10s by default) ; the master `timeoutSeconds` param, always ignored, is deprecated (a WARN at startup when set)
+* [Stella] Redis : fix the late result of a re-queued work (its node seen dead while it was only slow) : the re-queued copy stayed in the waiting list, its data deleted once the master read the result, and the node taking it failed (NullPointerException). The copy is now skipped by the node taking it
+* [Commons] Fix the compression codec (`getCompressionCodec`, `getCompressedSerializationCodec` : caches, KV stores, ElasticSearch documents, stella works) : an incompressible payload over about 16 KB (already compressed content : jpeg, pdf, zip...) was silently truncated, then uncompressed with trailing zeros ; a truncated payload now fails to decode instead of giving corrupted data
+* [Vega] SAML2 : fix the signature check logs, a response validated by no IdP certificate was logged as validated by a next one (certificate renewal)
+* [Vega] SAML2 : stricter checks of the SAML response signature ; an unsigned response fails with an explicit message
+* **[Vega] SAML2 : the SAML response is checked as required by the SAML 2.0 Web Browser SSO profile, and its assertion must be encrypted, on by default** : a response not compliant is refused, with an error naming the param to adapt ; an assertion is accepted once and must hold a bearer subject confirmation. Params of the saml connector to adapt to the IdP : `cryptAssertion` (true by default, now applied : an IdP that does not encrypt the assertions needs `cryptAssertion=false`), `checkDestination` (set `externalUrl` behind a proxy), `checkAudience`, `clockSkewSeconds`, `checkInResponseTo` (false by default)
+* New libs
+  - playwright 1.65.1 (test dependency : `UiUpgradeComparisonTest`, disabled by default, compares the vertigo-ui components between two versions of Quasar, Vue, axios or vue-dsfr : screenshots, accessibility tree, overlays, javascript errors and checks)
+* Update libs
+  - c3p0 0.14.1 -> 0.15.1
+  - guava 33.6.0-jre -> 33.8.0-jre
+  - ojdbc11 23.26.2.0.0 -> 23.26.4.0.0
+  - postgresql 42.7.12 -> 42.7.15
+  - h2 2.2.224 -> 2.5.252 (version managed by vertigo-database ; `org.h2.tools.Console` is no longer instantiable, see migration guide)
+  - thymeleaf-spring6 3.1.5.RELEASE -> 3.1.7.RELEASE
+  - tika-core 3.3.1 -> 3.3.3
+  - jackson-core / jackson-dataformat-cbor / jackson-dataformat-smile / jackson-dataformat-yaml 2.22.0 -> 2.23.0 (tests)
+  - opentelemetry-api / opentelemetry-context 1.51.0 -> 1.68.0 (tests)
+  - selenium 4.33.0 -> 4.54.0 (tests)
+  - vue 3.5.39 -> 3.5.46
+  - quasar 2.21.1 -> 2.35.6
+  - axios 1.18.1 -> 1.21.1
+  - ol 10.9.0 -> 10.11.0
+  - core-js 3.49.0 -> 3.51.0
+  - d3-color 3.1.0 -> 3.1.1
+  - d3-interpolate 3.0.1 -> 3.0.2
+  - @gouvminint/vue-dsfr 8.17.0 -> 8.21.0
+  - @tiptap/* 2.27.2 -> 2.27.3
+  - express 4.22.2 -> 4.22.3
+  - vite 8.1.3 -> 8.3.8
+  - @vitejs/plugin-vue 6.0.7 -> 6.0.11
+  - sass-embedded 1.100.0 -> 1.108.2
+  - eslint 10.6.0 -> 10.15.0
+  - eslint-plugin-vue 10.9.2 -> 10.12.1
+  - vitest 4.1.10 -> 4.1.12
+  - @vue/test-utils 2.4.11 -> 2.6.0
+
+more to come :)
+
+
 Release 4.4.1 - 2026/08/28
 ----------------------
 * [DataFactory] Fix ES9 date range facets : range bounds were not sent to ElasticSearch (every range counted all documents) and date bounds threw a `NumberFormatException`

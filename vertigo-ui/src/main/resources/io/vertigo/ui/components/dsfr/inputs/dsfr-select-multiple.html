@@ -26,7 +26,7 @@
     <input th:v-if="|vueData.${object}.${field}.length == 0|" type="hidden" th::name="${model.util.contextKey(object, field, rowIndex)}" value="" />
 </th:block>
 
-<th:block th:fragment="dsfr-select-multiple-read(object,field, rowIndex, label, list, valueField, labelField, emtpyValue, filterFunction, required, edit_content_slot, after_label_slot, input_attrs, label_attrs)"
+<th:block th:fragment="dsfr-select-multiple-read(object, field, rowIndex, label, list, valueField, labelField, emptyValue, filterFunction, required, edit_content_slot, after_label_slot, input_attrs, label_attrs)"
           th:if="${modifiableTable==null}"
           vu:alias="dsfr-select-multiple" vu:selector="${viewMode=='read' || (readonly!=null && readonly)}"
           th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)},
@@ -42,7 +42,7 @@
     </vu:dsfr-label-read>
 </th:block>
 
-<th:block th:fragment="dsfr-select-multiple-read(object, field, rowIndex, label, list, valueField, labelField, filterFunction, required, edit_content_slot, after_label_slot, input_attrs, label_attrs)"
+<th:block th:fragment="dsfr-select-multiple-read(object, field, rowIndex, label, list, valueField, labelField, emptyValue, filterFunction, required, edit_content_slot, after_label_slot, input_attrs, label_attrs)"
           th:if="${modifiableTable!=null}"
           vu:alias="dsfr-select-multiple" vu:selector="${viewMode=='read' || (readonly!=null && readonly)}"
           th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)}, myLabelField=${labelField != null ? labelField : model.util.getDisplayField(list)}">

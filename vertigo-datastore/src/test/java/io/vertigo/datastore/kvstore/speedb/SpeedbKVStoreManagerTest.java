@@ -70,7 +70,8 @@ public final class SpeedbKVStoreManagerTest extends AbstractKVStoreManagerTest {
 				.build();
 	}
 
-	protected void sleep(final int timeSecond) {
+	@Override
+	protected void sleep(final double timeSecond) {
 		super.sleep(timeSecond);
 		((SpeedbKVStorePlugin) speedbKVStorePlugin).forceRemoveTooOldElements();
 	}

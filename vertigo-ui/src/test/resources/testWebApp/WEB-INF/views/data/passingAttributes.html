@@ -17,6 +17,9 @@
                      <vu:include-data object="movie" field="*" />
                        <vu:grid>
                         <vu:text-field :class="{'v-field__required':true}" object="movie" field="movId"/>
+                        <!-- declared params holding a $ # @ that starts no expression : texts -->
+                        <vu:text-field object="movie" field="movId" label="Case #12 (contact@example.com, 100$)"/>
+                        <vu:text-field-read object="movie" field="movId" label="Link #first"/>
                         <vu:text-field :class="{ disabled: true && false || false }" object="movie" field="movId"/>
                         <vu:text-field object="movie" field="movId" anotherAttr="() {dataX.join(';') || && __ } ${notEvaluate}"/>
                         <vu:text-field-read :class="{'v-field__required':true}" object="movie" field="movId"/>

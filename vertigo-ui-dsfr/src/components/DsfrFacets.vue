@@ -3,7 +3,7 @@
     <div class="fr-mb-2w flex flex-column gap--sm" v-if="isAnyFacetValueSelected()" aria-live="polite">
       <ul aria-label="Liste des filtres selectionnés">
         <template v-for="(selectedFacetValues, selectedFacet) in selectedFacets" :key="selectedFacet">
-          <template v-if="!facetMultipleByCode(selectedFacet)">
+          <template v-if="facetByCode(selectedFacet) && !facetMultipleByCode(selectedFacet)">
             <li v-for="selectedFacetValue in selectedFacetValues" :key="selectedFacetValue.code">
               <DsfrTag class="fr-tag--dismiss"
                        tag-name="button"

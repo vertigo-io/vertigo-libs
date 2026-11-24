@@ -51,6 +51,8 @@ import io.vertigo.datastore.filestore.model.VFile;
  * @author npiedeloup
  */
 abstract class AbstractIdentityProviderManagerTest {
+	private static final String LDAP_HOST = System.getenv("LDAP_HOST") != null ? System.getenv("LDAP_HOST") : "docker-vertigo.part.klee.lan.net";
+	private static final String LDAP_PORT = System.getenv("LDAP_PORT") != null ? System.getenv("LDAP_PORT") : "389";
 
 	@Inject
 	private VSecurityManager securityManager;
@@ -91,8 +93,8 @@ abstract class AbstractIdentityProviderManagerTest {
 								Param.of("userSessionClassName", TestUserSession.class.getName()))
 						.withIdentityProvider()
 						.withLdapIdentityProvider(
-								Param.of("ldapServerHost", "docker-vertigo.part.klee.lan.net"),
-								Param.of("ldapServerPort", "389"),
+								Param.of("ldapServerHost", LDAP_HOST),
+								Param.of("ldapServerPort", LDAP_PORT),
 								Param.of("ldapAccountBaseDn", "dc=vertigo,dc=io"),
 								Param.of("ldapReaderLogin", "cn=admin,dc=vertigo,dc=io"),
 								Param.of("ldapReaderPassword", "v3rt1g0"),

@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -45,11 +44,9 @@ import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.util.BeanUtil;
 import io.vertigo.datafactory.collections.definitions.FacetDefinition;
 import io.vertigo.datafactory.collections.model.FacetValue;
-import io.vertigo.datafactory.collections.model.FacetedQuery;
 import io.vertigo.datafactory.collections.model.IndexType;
 import io.vertigo.datafactory.impl.collections.functions.filter.DtListPatternFilterUtil;
 import io.vertigo.datafactory.impl.search.dsl.model.DslGeoDistanceQuery;
-import io.vertigo.datafactory.impl.search.dsl.model.DslGeoExpression;
 import io.vertigo.datafactory.impl.search.dsl.model.DslGeoRangeQuery;
 import io.vertigo.datafactory.impl.search.dsl.rules.DslParserUtil;
 import io.vertigo.datafactory.plugins.search.elasticsearch.DslGeoToQueryBuilderUtil;
@@ -78,57 +75,59 @@ final class ESAggregationBuilder {
 			final Map<Class, BasicTypeAdapter> typeAdapters) {
 		final Map<String, Aggregation> allAggregations = new HashMap<>();
 
-		boolean clusterAlreadyAdded = false;
+		var clusterAlreadyAdded = false;
 		if (searchQuery.getFacetedQuery().isPresent()) {
 
-			final FacetedQuery facetedQuery = searchQuery.getFacetedQuery().get();
+			final var facetedQuery = searchQuery.getFacetedQuery().get();
 			final var facetDefinitions = facetedQuery.getDefinition().getFacetDefinitions();
 
 			for (final FacetDefinition facetDefinition : facetDefinitions) {
-				// 1. Prepare Sub-Aggregations
-				final Map<String, Aggregation> subAggregations = new HashMap<>();
+				if (!searchQuery.getSkippedFacets().contains(facetDefinition.id())) {
+					// 1. Prepare Sub-Aggregations
+					final Map<String, Aggregation> subAggregations = new HashMap<>();
 
-				// A. Clustering (TopHits)
-				if (searchQuery.isClusteringFacet() && facetDefinition.equals(searchQuery.getClusteringFacetDefinition())) {
-					final Aggregation topHitsAgg = createTopHitsAggregation(listState, sortOptions);
-					subAggregations.put(TOPHITS_SUBAGGREGATION_NAME, topHitsAgg);
-					clusterAlreadyAdded = true;
-				}
-
-				// B. Create Base Aggregation
-				final Aggregation mainAggregation = facetToAggregation(facetDefinition, searchQuery.getCriteria(),
-						typeAdapters, subAggregations);
-
-				// 2. Wrap in Filter if MultiSelectable (to exclude own selection from calculation but keep others)
-				// Logic: If I selected "Red", I still want to see counts for "Blue"
-				// (PostFilter), but if I selected "Large" in another facet, I want to respect that.
-				// The standard ES pattern for multi-select facets is:
-				// - Main Query: filters OTHER facets
-				// - Post Filter: filters THIS facet (for hits)
-				// - Aggregation: needs to see hits filtered by OTHER facets, but NOT by THIS facet.
-				// So for each facet, we filter the aggregation capability by "All filters EXCEPT this one".
-
-				final BoolQuery.Builder aggsFilterBuilder = new BoolQuery.Builder();
-				for (final FacetDefinition filterFacetDefinition : facetDefinitions) {
-					if (filterFacetDefinition.isMultiSelectable() && !facetDefinition.equals(filterFacetDefinition)) {
-						// Add filter from OTHER multi-selectable facets
-						// (Mono-selectable are already in Main Query, so already filtered)
-						final boolean useSubKeywordField = useSubKeywordFieldForFacet(filterFacetDefinition);
-						ESSearchQueryBuilder.appendSelectedFacetValuesFilter(aggsFilterBuilder,
-								facetedQuery.getSelectedFacetValues().getFacetValues(filterFacetDefinition.getName()),
-								filterFacetDefinition.getDataField(), useSubKeywordField);
+					// A. Clustering (TopHits)
+					if (searchQuery.isClusteringFacet() && facetDefinition.equals(searchQuery.getClusteringFacetDefinition())) {
+						final var topHitsAgg = createTopHitsAggregation(listState, sortOptions);
+						subAggregations.put(TOPHITS_SUBAGGREGATION_NAME, topHitsAgg);
+						clusterAlreadyAdded = true;
 					}
-				}
 
-				final BoolQuery aggsFilter = aggsFilterBuilder.build();
-				if (aggsFilter.hasClauses()) {
-					// Wrap in Filter Aggregation
-					final Aggregation filteredAgg = Aggregation.of(a -> a
-							.filter(aggsFilter._toQuery())
-							.aggregations(facetDefinition.getName(), mainAggregation));
-					allAggregations.put(facetDefinition.getName() + "_filter", filteredAgg);
-				} else {
-					allAggregations.put(facetDefinition.getName(), mainAggregation);
+					// B. Create Base Aggregation
+					final var mainAggregation = facetToAggregation(facetDefinition, searchQuery.getCriteria(),
+							typeAdapters, subAggregations);
+
+					// 2. Wrap in Filter if MultiSelectable (to exclude own selection from calculation but keep others)
+					// Logic: If I selected "Red", I still want to see counts for "Blue"
+					// (PostFilter), but if I selected "Large" in another facet, I want to respect that.
+					// The standard ES pattern for multi-select facets is:
+					// - Main Query: filters OTHER facets
+					// - Post Filter: filters THIS facet (for hits)
+					// - Aggregation: needs to see hits filtered by OTHER facets, but NOT by THIS facet.
+					// So for each facet, we filter the aggregation capability by "All filters EXCEPT this one".
+
+					final var aggsFilterBuilder = new BoolQuery.Builder();
+					for (final FacetDefinition filterFacetDefinition : facetDefinitions) {
+						if (filterFacetDefinition.isMultiSelectable() && !facetDefinition.equals(filterFacetDefinition)) {
+							// Add filter from OTHER multi-selectable facets
+							// (Mono-selectable are already in Main Query, so already filtered)
+							final var useSubKeywordField = useSubKeywordFieldForFacet(filterFacetDefinition);
+							ESSearchQueryBuilder.appendSelectedFacetValuesFilter(aggsFilterBuilder,
+									facetedQuery.getSelectedFacetValues().getFacetValues(filterFacetDefinition.getName()),
+									filterFacetDefinition.getDataField(), useSubKeywordField);
+						}
+					}
+
+					final var aggsFilter = aggsFilterBuilder.build();
+					if (aggsFilter.hasClauses()) {
+						// Wrap in Filter Aggregation
+						final var filteredAgg = Aggregation.of(a -> a
+								.filter(aggsFilter._toQuery())
+								.aggregations(facetDefinition.getName(), mainAggregation));
+						allAggregations.put(facetDefinition.getName() + "_filter", filteredAgg);
+					} else {
+						allAggregations.put(facetDefinition.getName(), mainAggregation);
+					}
 				}
 			}
 		}
@@ -138,12 +137,12 @@ final class ESAggregationBuilder {
 			// This case was present in AbstractESSearchRequestBuilder, but seems odd.
 			// If clustering facet is not part of facetedQuery definitions, we might need to add it explicitly.
 			// Implementing for fallback safety.
-			final FacetDefinition clusteringFacetDefinition = searchQuery.getClusteringFacetDefinition();
-			final Aggregation topHitsAgg = createTopHitsAggregation(listState, sortOptions);
+			final var clusteringFacetDefinition = searchQuery.getClusteringFacetDefinition();
+			final var topHitsAgg = createTopHitsAggregation(listState, sortOptions);
 			final Map<String, Aggregation> subAggs = new HashMap<>();
 			subAggs.put(TOPHITS_SUBAGGREGATION_NAME, topHitsAgg);
 
-			final Aggregation clusteringAgg = facetToAggregation(clusteringFacetDefinition, searchQuery.getCriteria(),
+			final var clusteringAgg = facetToAggregation(clusteringFacetDefinition, searchQuery.getCriteria(),
 					typeAdapters, subAggs);
 			allAggregations.put(clusteringFacetDefinition.getName(), clusteringAgg);
 		}
@@ -172,7 +171,7 @@ final class ESAggregationBuilder {
 	private static Aggregation facetToAggregation(final FacetDefinition facetDefinition, final Object criteria,
 			final Map<Class, BasicTypeAdapter> typeAdapters,
 			final Map<String, Aggregation> subAggregations) {
-		final DataField dtField = facetDefinition.getDataField();
+		final var dtField = facetDefinition.getDataField();
 
 		if (facetDefinition.isCustomFacet()) {
 			// Custom facet handling
@@ -190,18 +189,18 @@ final class ESAggregationBuilder {
 
 	private static Aggregation termFacetToAggregation(final FacetDefinition facetDefinition, final DataField dtField,
 			final Map<String, Aggregation> subAggregations) {
-		final List<NamedValue<SortOrder>> facetOrder = switch (facetDefinition.getOrder()) {
+		final var facetOrder = switch (facetDefinition.getOrder()) {
 			case alpha -> List.of(NamedValue.of("_key", SortOrder.Asc));
 			case count -> List.of(NamedValue.of("_count", SortOrder.Desc));
 			case definition -> null; // Pas de tri spécifique
 		};
 
-		String fieldName = dtField.name();
+		var fieldName = dtField.name();
 		if (useSubKeywordFieldForFacet(facetDefinition)) {
 			fieldName = fieldName + ".keyword";
 		}
 
-		final String finalFieldName = fieldName;
+		final var finalFieldName = fieldName;
 
 		return Aggregation.of(a -> {
 			a.terms(t -> {
@@ -224,7 +223,7 @@ final class ESAggregationBuilder {
 	}
 
 	private static boolean useSubKeywordFieldForFacet(final FacetDefinition facetDefinition) {
-		final IndexType indexType = IndexType.readIndexType(facetDefinition.getDataField().smartTypeDefinition());
+		final var indexType = IndexType.readIndexType(facetDefinition.getDataField().smartTypeDefinition());
 		return indexType.isIndexSubKeyword();
 	}
 
@@ -233,7 +232,7 @@ final class ESAggregationBuilder {
 
 		switch (dtField.smartTypeDefinition().getScope()) {
 			case BASIC_TYPE:
-				final BasicType dataType = dtField.smartTypeDefinition().getBasicType();
+				final var dataType = dtField.smartTypeDefinition().getBasicType();
 				if (dataType == BasicType.LocalDate) {
 					return dateRangeFacetToAggregation(facetDefinition, dtField, subAggregations);
 				} else if (dataType.isNumber()) {
@@ -255,11 +254,11 @@ final class ESAggregationBuilder {
 		final Map<String, Query> namedFilters = new LinkedHashMap<>();
 
 		for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
-			final String filterValue = facetRange.listFilter().getFilterValue();
+			final var filterValue = facetRange.listFilter().getFilterValue();
 			Assertion.check().isTrue(filterValue.contains(dtField.name()),
 					"RangeFilter query ({1}) should use defined fieldName {0}", dtField.name(), filterValue);
 
-			final Query filterQuery = Query.of(q -> q.queryString(qs -> qs.query(filterValue)));
+			final var filterQuery = Query.of(q -> q.queryString(qs -> qs.query(filterValue)));
 			namedFilters.put(facetRange.code(), filterQuery);
 		}
 
@@ -278,11 +277,11 @@ final class ESAggregationBuilder {
 				.range(r -> {
 					r.field(dtField.name());
 					for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
-						final String filterValue = facetRange.listFilter().getFilterValue();
-						final String[] parsedFilter = DtListPatternFilterUtil.parseFilter(filterValue, RANGE_PATTERN)
+						final var filterValue = facetRange.listFilter().getFilterValue();
+						final var parsedFilter = DtListPatternFilterUtil.parseFilter(filterValue, RANGE_PATTERN)
 								.get();
-						final Optional<Double> minValue = convertToDouble(parsedFilter[3]);
-						final Optional<Double> maxValue = convertToDouble(parsedFilter[4]);
+						final var minValue = convertToDouble(parsedFilter[3]);
+						final var maxValue = convertToDouble(parsedFilter[4]);
 
 						r.ranges(rg -> {
 							rg.key(facetRange.code());
@@ -308,12 +307,12 @@ final class ESAggregationBuilder {
 							.format(DATE_PATTERN);
 
 					for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
-						final String filterValue = facetRange.listFilter().getFilterValue();
-						final String[] parsedFilter = DtListPatternFilterUtil.parseFilter(filterValue, RANGE_PATTERN)
+						final var filterValue = facetRange.listFilter().getFilterValue();
+						final var parsedFilter = DtListPatternFilterUtil.parseFilter(filterValue, RANGE_PATTERN)
 								.orElseThrow(
 										() -> new VSystemException("Range Facet syntaxe invalid : " + filterValue));
-						final Optional<String> minValue = extractBound(parsedFilter[3]);
-						final Optional<String> maxValue = extractBound(parsedFilter[4]);
+						final var minValue = extractBound(parsedFilter[3]);
+						final var maxValue = extractBound(parsedFilter[4]);
 
 						r.ranges(rg -> {
 							rg.key(facetRange.code());
@@ -340,10 +339,10 @@ final class ESAggregationBuilder {
 		final List<AggregationRange> ranges = new ArrayList<>();
 
 		for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
-			final String filterValue = facetRange.listFilter().getFilterValue();
-			final DslGeoExpression dslGeoExpression = DslParserUtil.parseGeoExpression(filterValue);
+			final var filterValue = facetRange.listFilter().getFilterValue();
+			final var dslGeoExpression = DslParserUtil.parseGeoExpression(filterValue);
 
-			final String currentGeoFieldName = dslGeoExpression.getField().getFieldName();
+			final var currentGeoFieldName = dslGeoExpression.getField().getFieldName();
 			Assertion.check().isTrue(currentGeoFieldName.contains(dtField.name()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.name(), filterValue);
 
 			// On stocke le field (tous les ranges ont le même de toutes façons)
@@ -369,7 +368,7 @@ final class ESAggregationBuilder {
 							geoEndDistanceQuery.getGeoPoint().toString(), originExpression, facetDefinition.getName());
 				}
 			} else if (dslGeoExpression.getGeoQuery() instanceof DslGeoRangeQuery) {
-				final DslGeoRangeQuery geoRangeQuery = (DslGeoRangeQuery) dslGeoExpression.getGeoQuery();
+				final var geoRangeQuery = (DslGeoRangeQuery) dslGeoExpression.getGeoQuery();
 				geoStartDistanceQuery = (DslGeoDistanceQuery) geoRangeQuery.getStartGeoPoint();
 				geoEndDistanceQuery = (DslGeoDistanceQuery) geoRangeQuery.getEndGeoPoint();
 
@@ -393,11 +392,11 @@ final class ESAggregationBuilder {
 
 			// NOTA : Si DistanceUnit (issu de ES7) compile toujours car tu as gardé les classes, ça marchera.
 			// Sinon il faudra refaire un simple switch case pour multiplier la valeur par 1000 (km -> mètres)
-			final ESDistanceUnit startDistanceUnit = ESDistanceUnit.fromString(geoStartDistanceQuery.getDistanceUnit());
-			final ESDistanceUnit endDistanceUnit = ESDistanceUnit.fromString(geoEndDistanceQuery.getDistanceUnit());
+			final var startDistanceUnit = ESDistanceUnit.fromString(geoStartDistanceQuery.getDistanceUnit());
+			final var endDistanceUnit = ESDistanceUnit.fromString(geoEndDistanceQuery.getDistanceUnit());
 
-			final double startMeters = startDistanceUnit.toMeters(geoStartDistanceQuery.getDistance());
-			final double endMeters = endDistanceUnit.toMeters(geoEndDistanceQuery.getDistance());
+			final var startMeters = startDistanceUnit.toMeters(geoStartDistanceQuery.getDistance());
+			final var endMeters = endDistanceUnit.toMeters(geoEndDistanceQuery.getDistance());
 
 			// ES9 : Au lieu de rangeBuilder.addRange, on ajoute dans notre liste
 			ranges.add(AggregationRange.of(r -> r
@@ -407,8 +406,8 @@ final class ESAggregationBuilder {
 		}
 
 		// Les lambdas ES9 réclament des variables "effectively final"
-		final String finalGeoFieldName = geoFieldName;
-		final GeoLocation finalOrigin = originGeoLocation;
+		final var finalGeoFieldName = geoFieldName;
+		final var finalOrigin = originGeoLocation;
 
 		// ES9 : On construit l'agrégation finale en injectant la liste préparée
 		return Aggregation.of(a -> a
@@ -423,10 +422,10 @@ final class ESAggregationBuilder {
 
 	private static Aggregation customFacetToAggregation(final FacetDefinition facetDefinition, final Object myCriteria, final Map<String, Aggregation> subAggregations) {
 		// 1. On applique ton remplacement de variables (ex: #precision# -> 5)
-		final Map<String, String> customParams = replaceCriteria(facetDefinition.getCustomParams(), myCriteria);
+		final var customParams = replaceCriteria(facetDefinition.getCustomParams(), myCriteria);
 
 		// 2. On détermine le type de l'agrégation (comme tu le faisais dans ton constructeur ES7)
-		String typeParam = customParams.get("_type");
+		var typeParam = customParams.get("_type");
 		if (typeParam == null) {
 			typeParam = customParams.keySet().stream()
 					.filter(k -> !k.equals("_type") && !k.equals("_innerWriteTo") && !k.equals("_decimalPrecision"))
@@ -435,11 +434,11 @@ final class ESAggregationBuilder {
 		}
 
 		// 3. On récupère le corps JSON (ex: {"field" : "localisation","precision" : 5 })
-		final String jsonBody = customParams.get(typeParam);
+		final var jsonBody = customParams.get(typeParam);
 
 		// 4. On crée le JSON final attendu par l'API ES9
 		// Résultat: { "geohash_grid": {"field" : "localisation","precision" : 5 } }
-		final String es9Json = "{ \"" + typeParam + "\": " + jsonBody + " }";
+		final var es9Json = "{ \"" + typeParam + "\": " + jsonBody + " }";
 
 		// 5. On laisse la magie d'ES9 parser le JSON et on attache les sous-agrégations
 		return Aggregation.of(a -> {
@@ -458,11 +457,11 @@ final class ESAggregationBuilder {
 		return customParams.entrySet().stream()
 				.collect(Collectors.toMap(Entry::getKey,
 						v -> {
-							final Matcher matcher = SIMPLE_CRITERIA_PATTERN.matcher(v.getValue());
-							String result = v.getValue();
+							final var matcher = SIMPLE_CRITERIA_PATTERN.matcher(v.getValue());
+							var result = v.getValue();
 							while (matcher.find()) {
-								final String fieldName = matcher.group(1);
-								final Object fieldValue = BeanUtil.getValue(myCriteria, fieldName);
+								final var fieldName = matcher.group(1);
+								final var fieldValue = BeanUtil.getValue(myCriteria, fieldName);
 								if (fieldValue != null) {
 									result = result.replaceAll("#" + fieldName + "#", String.valueOf(fieldValue));
 								}
@@ -475,7 +474,7 @@ final class ESAggregationBuilder {
 	 * @return the range bound, or empty if unbounded ('*')
 	 */
 	private static Optional<String> extractBound(final String bound) {
-		final String stringValue = bound.trim();
+		final var stringValue = bound.trim();
 		if ("*".equals(stringValue) || "".equals(stringValue)) {
 			return Optional.empty();
 		}

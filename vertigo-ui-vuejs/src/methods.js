@@ -185,11 +185,7 @@ export default {
                         dir = descending === true ? -1 : 1,
                         val = v => v[sortedColumn.field]
 
-                    return data.sort((a, b) => {
-                        let A = val(a),
-                            B = val(b);
-                        return ((Quasar.date.extractDate(A, sortedColumn.datetimeFormat).getTime() > Quasar.date.extractDate(B, sortedColumn.datetimeFormat).getTime()) ? 1 : -1) * dir;
-                    })
+                    return data.sort((a, b) => this.compareDates(val(a), val(b), sortedColumn.datetimeFormat) * dir)
                 } else {
                     return this.sortCiAi(data, sortedColumn.field, descending)
                 }
@@ -324,9 +320,24 @@ export default {
         }
     },
 
+    /**
+     * Compares two dates given as strings : an empty or unparsable date is before any date (ascending sort : first ; descending sort : last).
+     * Since Quasar 2.23.4, extractDate returns an Invalid Date for them (it was 1900-01-01 before).
+     */
+    compareDates: function (date1, date2, format) {
+        const time = date => {
+            const timestamp = Quasar.date.extractDate(date, format).getTime();
+            return isNaN(timestamp) ? -Infinity : timestamp;
+        };
+        const time1 = time(date1),
+            time2 = time(date2);
+        return time1 === time2 ? 0 : (time1 > time2 ? 1 : -1);
+    },
+
     sortDatesAsString: function (format) {
+        const compareDates = this.compareDates;
         return function (date1, date2, rowA, rowB) {
-            return (Quasar.date.extractDate(date1, format).getTime() > Quasar.date.extractDate(date2, format).getTime()) ? 1 : -1;
+            return compareDates(date1, date2, format);
         }
     },
 
