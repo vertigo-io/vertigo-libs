@@ -217,14 +217,14 @@ class IpWhitelistHelper {
 		final String startIp = parts[0].trim();
 		final String endIp = parts[1].trim();
 		// Determine if we're dealing with IPv4 or IPv6
-		final char prefixSep = startIp.indexOf(':') > 0 ? ':' : '.';
+		final char prefixSep = (startIp.indexOf('.') >= 0) ? '.' : ':'; //an IPv6 address may start with :: and end with an IPv4 address (::ffff:1.2.3.4)
 		final String prefix = startIp.substring(0, startIp.lastIndexOf(prefixSep));
 
 		final InetAddress startAdr = InetAddress.getByName(startIp);
 		final InetAddress endAdr;
 
 		// Handle two different formats: full IP in end range or just the last part
-		if (endIp.indexOf(prefixSep) > 0) {
+		if (endIp.indexOf(prefixSep) >= 0) {
 			if (!endIp.startsWith(prefix)) {
 				throw new IllegalArgumentException("Invalid IP range " + ipRange + ", endIp must start with first part of startIp");
 			}
@@ -234,9 +234,10 @@ class IpWhitelistHelper {
 			endAdr = InetAddress.getByName(prefix + prefixSep + endIp);
 		}
 
-		// Convert IP addresses to numeric representation for iteration
-		final BigInteger hmin = new BigInteger(startAdr.getAddress());
-		final BigInteger hmax = new BigInteger(endAdr.getAddress());
+		// Convert IP addresses to numeric representation for iteration (unsigned, as in initCIDR)
+		final int addressLength = startAdr.getAddress().length;
+		final BigInteger hmin = new BigInteger(1, startAdr.getAddress());
+		final BigInteger hmax = new BigInteger(1, endAdr.getAddress());
 		Assertion.check()
 				.isTrue(hmin.compareTo(hmax) <= 0, "Invalid IP range " + ipRange + ", startIp must be less than endIp");
 		if (hmin.add(BigInteger.ONE.shiftLeft(20).subtract(BigInteger.ONE)).compareTo(hmax) < 0) {
@@ -246,7 +247,7 @@ class IpWhitelistHelper {
 		// Generate all IP addresses in the range
 		final var ipRangeSet = new HashSet<String>();
 		for (BigInteger ip = hmin; ip.compareTo(hmax) <= 0; ip = ip.add(BigInteger.ONE)) {
-			final InetAddress ipAddress = InetAddress.getByAddress(ip.toByteArray());
+			final InetAddress ipAddress = InetAddress.getByAddress(toByteArray(ip, addressLength));
 			ipRangeSet.add(ipAddress.getHostAddress());
 		}
 		return ipRangeSet;
