@@ -111,6 +111,7 @@ public final class RoutesOrderTest {
 				.body("get(" + i++ + ")", Matchers.equalTo("Get /contacts () -> interface java.util.List<Contact>"))
 				.body("get(" + i++ + ")", Matchers.equalTo("Get /contacts/contactView/{conId} (long :Path:conId) -> ContactView"))
 				.body("get(" + i++ + ")", Matchers.equalTo("Get /contacts/{conId} (long :Path:conId) -> Contact"))
+				.body("get(" + i++ + ")", Matchers.equalTo("Get /dev/threadDump (class java.lang.String :Query:format, class java.lang.Integer :Query:sampleMs, class java.lang.Integer :Query:maxDepth, class java.lang.String :Query:synchronizers, interface jakarta.servlet.http.HttpServletRequest :Implicit:Request, interface jakarta.servlet.http.HttpServletResponse :Implicit:Response)"))
 				.body("get(" + i++ + ")", Matchers.equalTo("Get /login ()"))
 				.body("get(" + i++ + ")", Matchers.equalTo("Get /secured/contacts () -> interface java.util.List<Contact>"))
 				.body("get(" + i++ + ")", Matchers.equalTo("Get /secured/contacts/contactView/{conId} (long :Path:conId) -> ContactView"))

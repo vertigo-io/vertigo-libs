@@ -21,6 +21,7 @@ Running 5.0.0
 * [All] Replace SLF4J by LOG4J api for internal logging
 * [Ui][Quasar] Add `nullLabel` parameter for `vu:select` and `vu:field-read`.
 * [Account] Add wildcard security key to authorize all possible values (`UserAuthorizations.SECURITY_KEY_ALL_VALUES`).
+* [Vega] Add the feature `webservices.threadDump` : `GET /dev/threadDump`, a thread dump of the JVM for development (html page, json or jstack-like text), CPU of each thread over a sample window, locks and deadlocks ; requires an authenticated user
 
 more to come :)
 

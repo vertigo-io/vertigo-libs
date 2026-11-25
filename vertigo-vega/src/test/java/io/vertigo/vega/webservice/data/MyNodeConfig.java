@@ -95,6 +95,7 @@ public final class MyNodeConfig {
 				.withWebServicesRateLimiting()
 				.withWebServicesSwagger()
 				.withWebServicesCatalog()
+				.withWebServicesThreadDump()
 				.withApiKey(Param.of("apiKey", "MyTestApiKey"));
 
 		final ModuleConfigBuilder webserviceApp = ModuleConfig.builder("webservices-app")

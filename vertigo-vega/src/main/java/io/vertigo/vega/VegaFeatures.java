@@ -31,6 +31,7 @@ import io.vertigo.vega.impl.webservice.WebServiceManagerImpl;
 import io.vertigo.vega.impl.webservice.catalog.CatalogWebServices;
 import io.vertigo.vega.impl.webservice.catalog.SwaggerWebServices;
 import io.vertigo.vega.impl.webservice.client.WebServiceClientAmplifierMethod;
+import io.vertigo.vega.impl.webservice.debug.ThreadDumpWebServices;
 import io.vertigo.vega.impl.webservice.healthcheck.HealthcheckWebServices;
 import io.vertigo.vega.plugins.authentication.aad.AzureAdWebAuthenticationPlugin;
 import io.vertigo.vega.plugins.authentication.local.LocalWebAuthenticationPlugin;
@@ -181,6 +182,18 @@ public final class VegaFeatures extends Features<VegaFeatures> {
 	public VegaFeatures withWebServicesHealthcheck() {
 		getModuleConfigBuilder()
 				.addComponent(HealthcheckWebServices.class);
+		return this;
+	}
+
+	/**
+	 * Thread dump of the JVM, route GET /dev/threadDump (html page, json or jstack-like text), for development and debugging only :
+	 * the stacks expose internal information of the application, the route requires an authenticated user session.
+	 * @return these features
+	 */
+	@Feature("webservices.threadDump")
+	public VegaFeatures withWebServicesThreadDump() {
+		getModuleConfigBuilder()
+				.addComponent(ThreadDumpWebServices.class);
 		return this;
 	}
 
