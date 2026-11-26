@@ -320,6 +320,56 @@ public abstract class AbstractSqlManagerTest {
 	}
 
 	@Test
+	public void testSelectNullValues() throws Exception {
+		// the movie 3 has a title only: each other property is written null by its getter
+		createDatas();
+		//----
+		final List<Movie> movies = executeQuery(Movie.class, "select * from movie where mov_id=3", 1);
+		Assertions.assertEquals(1, movies.size());
+		final Movie movie = movies.get(0);
+		Assertions.assertEquals(Movies.TITLE_MOVIE_3, movie.getTitle());
+		Assertions.assertNull(movie.getMail());
+		Assertions.assertNull(movie.getFps());
+		Assertions.assertNull(movie.getIncome());
+		Assertions.assertNull(movie.getColor());
+		Assertions.assertNull(movie.getReleaseDate());
+		Assertions.assertNull(movie.getReleaseLocalDate());
+		Assertions.assertNull(movie.getReleaseInstant());
+	}
+
+	@Test
+	public void testSelectColumnAlias() throws Exception {
+		// the label of a column gives the property: the alias replaces the name of the column
+		createDatas();
+		//----
+		final List<Movie> movies = executeQuery(Movie.class, "select mov_id, 'psycho' as title from movie where mov_id=1", 1);
+		Assertions.assertEquals(1, movies.size());
+		Assertions.assertEquals(1L, movies.get(0).getMovId());
+		Assertions.assertEquals("psycho", movies.get(0).getTitle());
+	}
+
+	@Test
+	public void testInsertListElement() throws Exception {
+		// #movies.1.title# is the property title of the element 1 of the list
+		final List<Movie> moviesParams = List.of(
+				Movies.createMovie(1, Movies.TITLE_MOVIE_1, null, null, null, null, null, null, null),
+				Movies.createMovie(2, Movies.TITLE_MOVIE_2, null, null, null, null, null, null, null));
+		try (final SqlConnection connection = obtainMainConnection()) {
+			dataBaseManager.executeUpdate(SqlStatement
+					.builder("insert into movie (mov_id, title) values (#movies.1.movId#, #movies.1.title#)")
+					.bind("movies", List.class, moviesParams)
+					.build(),
+					MAIL_ADAPTER,
+					connection);
+			connection.commit();
+		}
+		final List<Movie> movies = executeQuery(Movie.class, "select mov_id, title from movie", null);
+		Assertions.assertEquals(1, movies.size());
+		Assertions.assertEquals(2L, movies.get(0).getMovId());
+		Assertions.assertEquals(Movies.TITLE_MOVIE_2, movies.get(0).getTitle());
+	}
+
+	@Test
 	public void testPrimitiveParam() throws Exception {
 		//On crée les données
 		createDatas();

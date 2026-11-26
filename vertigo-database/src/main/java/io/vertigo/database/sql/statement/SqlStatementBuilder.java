@@ -103,6 +103,10 @@ public final class SqlStatementBuilder implements Builder<SqlStatement> {
 				}
 				final String fieldName = namedParam.getFieldName();
 				final Class valueHolderClass = valueHolder.getClass();
+				if (valueHolderClass.isRecord()) {
+					// a record has no getter: the driver gives the field to the mapper of the record
+					return SqlParameter.of(SqlRecordField.class, new SqlRecordField((Record) valueHolder, fieldName));
+				}
 				final PropertyDescriptor propertyDescriptor = BeanUtil.getPropertyDescriptor(fieldName, valueHolderClass);
 				return SqlParameter.of((Class) propertyDescriptor.getPropertyType(), BeanUtil.getValue(valueHolder, fieldName));
 			}

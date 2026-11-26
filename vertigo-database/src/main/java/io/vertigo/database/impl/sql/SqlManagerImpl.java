@@ -66,16 +66,19 @@ public final class SqlManagerImpl implements SqlManager {
 	 * @param localeManager Manager des messages localisés
 	 * @param analyticsManager Manager de la performance applicative
 	 * @param sqlConnectionProviderPlugins List of connectionProviderPlugin. Names must be unique.
+	 * @param sqlMapperPlugins List of mappers, in their order. Without them, every structure is mapped as a bean.
 	 */
 	@Inject
 	public SqlManagerImpl(
 			final LocaleManager localeManager,
 			final AnalyticsManager analyticsManager,
-			final List<SqlConnectionProviderPlugin> sqlConnectionProviderPlugins) {
+			final List<SqlConnectionProviderPlugin> sqlConnectionProviderPlugins,
+			final List<SqlMapperPlugin> sqlMapperPlugins) {
 		Assertion.check()
 				.isNotNull(localeManager)
 				.isNotNull(analyticsManager)
-				.isNotNull(sqlConnectionProviderPlugins);
+				.isNotNull(sqlConnectionProviderPlugins)
+				.isNotNull(sqlMapperPlugins);
 		//-----
 		this.analyticsManager = analyticsManager;
 		connectionProviderPluginMap = new HashMap<>();
@@ -86,7 +89,7 @@ public final class SqlManagerImpl implements SqlManager {
 		}
 		localeManager.add("io.vertigo.database.impl.sql.DataBase", io.vertigo.database.impl.sql.Resources.values());
 		//---
-		sqlStatementDriver = new SqlStatementDriver();
+		sqlStatementDriver = new SqlStatementDriver(sqlMapperPlugins);
 	}
 
 	/** {@inheritDoc} */

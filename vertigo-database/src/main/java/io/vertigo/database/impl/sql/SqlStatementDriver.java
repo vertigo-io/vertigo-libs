@@ -28,19 +28,15 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Stream;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.core.lang.DataStream;
-import io.vertigo.core.lang.WrappedException;
-import io.vertigo.core.util.BeanUtil;
-import io.vertigo.core.util.ClassUtil;
-import io.vertigo.core.util.StringUtil;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.statement.SqlParameter;
+import io.vertigo.database.sql.statement.SqlRecordField;
 import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
 import io.vertigo.database.sql.vendor.SqlMapping;
 
@@ -54,6 +50,8 @@ import io.vertigo.database.sql.vendor.SqlMapping;
  * 		- primitive ones through a SqlMapping (Vendor specific, retrieved from connection)
  * 		- complex ones through custom adapters that converts an unhandled datatype (ex: Mail) to primitives
  *
+ * The structure of a result (a row) is mapped by a SqlMapperPlugin: the first plugin of the node that accepts it, else the mapping of the beans.
+ *
  * @author  pchretien
  */
 final class SqlStatementDriver {
@@ -62,7 +60,13 @@ final class SqlStatementDriver {
 
 	private static final int FETCH_SIZE = 150;
 
-	SqlStatementDriver() {
+	// the mappers of the node, before the mapping of the beans
+	private final List<? extends SqlMapperPlugin> sqlMappers;
+
+	SqlStatementDriver(final List<? extends SqlMapperPlugin> sqlMappers) {
+		Assertion.check().isNotNull(sqlMappers);
+		//-----
+		this.sqlMappers = List.copyOf(sqlMappers);
 	}
 
 	//------------------ Statement creations ----------------------------------//
@@ -102,7 +106,7 @@ final class SqlStatementDriver {
 			final SqlConnection connection) throws SQLException {
 		//-----
 		for (var index = 0; index < parameters.size(); index++) {
-			final var parameter = parameters.get(index);
+			final var parameter = resolve(parameters.get(index));
 			final var javaDataType = parameter.dataType();
 			if (isPrimitive(parameter.dataType())) {
 				connection.getDataBase().getSqlMapping().setValueOnStatement(
@@ -116,6 +120,24 @@ final class SqlStatementDriver {
 						adapter.toBasic(parameter.value()));
 			}
 		}
+	}
+
+	// a param #holder.field# on a record: its mapper gives the value. Any other param is already resolved
+	private SqlParameter resolve(final SqlParameter parameter) {
+		if (parameter.value() instanceof final SqlRecordField sqlRecordField) {
+			return mapperOf(sqlRecordField.record().getClass()).fieldOf(sqlRecordField.record(), sqlRecordField.field());
+		}
+		return parameter;
+	}
+
+	// the first mapper of the node that accepts the data type, else the mapping of the beans
+	private SqlMapperPlugin mapperOf(final Class<?> dataType) {
+		for (final SqlMapperPlugin sqlMapper : sqlMappers) {
+			if (sqlMapper.accepts(dataType)) {
+				return sqlMapper;
+			}
+		}
+		return BeanSqlMapperPlugin.INSTANCE;
 	}
 
 	//------------------ Retrieve values on resultSet -------------------------//
@@ -144,7 +166,7 @@ final class SqlStatementDriver {
 		return retrieveData(dataType, basicTypeAdapters, sqlMapping, resultSet, limit);
 	}
 
-	private static <O> List<O> retrieveData(
+	private <O> List<O> retrieveData(
 			final Class<O> dataType,
 			final Map<Class, BasicTypeAdapter> basicTypeAdapters,
 			final SqlMapping sqlMapping,
@@ -152,7 +174,8 @@ final class SqlStatementDriver {
 			final Integer limit) throws SQLException {
 		final var isPrimitive = isPrimitive(dataType);
 
-		final var fields = isPrimitive ? null : findFields(dataType, resultSet.getMetaData());
+		final var rowReader = isPrimitive ? null : mapperOf(dataType).reader(dataType, findColumns(resultSet.getMetaData()));
+		final var types = isPrimitive ? null : rowReader.types();
 		//Dans le cas d'une collection on retourne toujours qqChose
 		//Si la requête ne retourne aucune ligne, on retourne une collection vide.
 		final List<O> list = new ArrayList<>();
@@ -163,7 +186,7 @@ final class SqlStatementDriver {
 			if (isPrimitive) {
 				list.add(readPrimitive(sqlMapping, resultSet, dataType));
 			} else {
-				list.add(readRow(basicTypeAdapters, sqlMapping, resultSet, dataType, fields));
+				list.add(rowReader.read(readRow(basicTypeAdapters, sqlMapping, resultSet, types)));
 			}
 		}
 		return list;
@@ -176,65 +199,37 @@ final class SqlStatementDriver {
 		return mapping.getValueForResultSet(resultSet, 1, dataType);
 	}
 
-	private static <O> O readRow(
+	// the values of the columns of the current row, each one read with its type: the mapper makes the object from them
+	private static Object[] readRow(
 			final Map<Class, BasicTypeAdapter> basicTypeAdapters,
 			final SqlMapping mapping,
 			final ResultSet resultSet,
-			final Class<O> dataType,
-			final MyField[] fields) throws SQLException {
-		final var bean = ClassUtil.newInstance(dataType);
-		Object value;
-		for (var i = 0; i < fields.length; i++) {
-			final Class<?> javaFieldDataType = fields[i].type;
+			final List<Class<?>> types) throws SQLException {
+		final var values = new Object[types.size()];
+		for (var i = 0; i < values.length; i++) {
+			final Class<?> javaFieldDataType = types.get(i);
 			if (isPrimitive(javaFieldDataType)) {
-				fields[i].setValue(bean, mapping.getValueForResultSet(resultSet, i + 1, javaFieldDataType));
+				values[i] = mapping.getValueForResultSet(resultSet, i + 1, javaFieldDataType);
 			} else {
 				final var adapter = basicTypeAdapters.get(javaFieldDataType);
-				value = adapter.toJava(mapping.getValueForResultSet(resultSet, i + 1, adapter.getBasicType().getJavaClass()), javaFieldDataType);
-				fields[i].setValue(bean, value);
+				values[i] = adapter.toJava(mapping.getValueForResultSet(resultSet, i + 1, adapter.getBasicType().getJavaClass()), javaFieldDataType);
 			}
 		}
-		return bean;
+		return values;
 	}
 
 	/**
-	 * Détermine les champs ramenés par un select.
+	 * Détermine les colonnes ramenées par un select.
 	 * @param resultSetMetaData Metadonnées obtenues après exécution de la requête SQL.
-	 * @return Tableau de codes de champ.
+	 * @return Les libellés des colonnes, dans leur ordre.
 	 */
-	private static MyField[] findFields(
-			final Class dataType,
-			final ResultSetMetaData resultSetMetaData) throws SQLException {
-		final var fields = new MyField[resultSetMetaData.getColumnCount()];
-		String columnLabel;
-		for (var i = 0; i < fields.length; i++) {
+	private static List<String> findColumns(final ResultSetMetaData resultSetMetaData) throws SQLException {
+		final List<String> columns = new ArrayList<>(resultSetMetaData.getColumnCount());
+		for (var i = 0; i < resultSetMetaData.getColumnCount(); i++) {
 			//getColumnLabel permet de récupérer le nom adapté lors du select (avec un select truc as machin from xxx)
-			columnLabel = resultSetMetaData.getColumnLabel(i + 1);
-			// toUpperCase nécessaire pour postgreSQL et SQLServer
-			final var expectedFieldName = StringUtil.constToLowerCamelCase(columnLabel.toUpperCase(Locale.ENGLISH));
-			try {
-				final var getter = dataType.getDeclaredMethod("get" + StringUtil.first2UpperCase(expectedFieldName));
-				fields[i] = new MyField(expectedFieldName, getter.getReturnType());
-			} catch (final NoSuchMethodException e) {
-				throw WrappedException.wrap(e);
-			}
+			columns.add(resultSetMetaData.getColumnLabel(i + 1));
 		}
-		return fields;
-	}
-
-	private static class MyField {
-		protected final String name;
-		protected final Class<?> type;
-
-		MyField(final String name, final Class<?> type) {
-			this.name = name;
-			this.type = type;
-		}
-
-		void setValue(final Object bean, final Object value) {
-			BeanUtil.setValue(bean, name, value);
-		}
-
+		return columns;
 	}
 
 	private static RuntimeException createTooManyRowsException() {
